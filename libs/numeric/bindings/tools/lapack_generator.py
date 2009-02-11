@@ -1038,15 +1038,15 @@ for level, level_properties in routines.iteritems():
   target_path = bindings_target_path + level
   if not os.path.exists( target_path ):
     os.mkdir( target_path )
-  if not os.path.exists( test_target_path + level ):
-    os.mkdir( test_target_path + level )
+  #if not os.path.exists( test_target_path + level ):
+  #  os.mkdir( test_target_path + level )
 
   for problem_type, problem_properties in level_properties.iteritems():
     if problem_properties.has_key( 'routines_by_value_type' ):
       write_functions( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, target_path )
 
-      write_test_case( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, test_target_path + level, level )
+      #write_test_case( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, test_target_path + level, level )
 
-  write_cmakefile( level_properties, templates, test_target_path + level )
+  #write_cmakefile( level_properties, templates, test_target_path + level )
 
 

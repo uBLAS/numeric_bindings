@@ -1,0 +1,53 @@
+[article Boost.Numeric_Bindings
+    [quickbook 1.4]
+    [version alpha]
+    [authors [author1],[author2]]
+    [copyright 2008 author1 author2]
+    [purpose C++ bindings to widely used numeric libraries.]
+    [license
+        Distributed under the Boost Software License, Version 1.0.
+        (See accompanying file LICENSE_1_0.txt or copy at
+        [@http://www.boost.org/LICENSE_1_0.txt])
+    ]
+]
+
+
+[section:introduction Introduction]
+
+This article is working document for documenting the Numeric Bindings.
+
+[endsect]
+
+[section:traits Datatype Concepts and Traits]
+[endsect]
+
+
+
+[section:lapack High-level LAPACK Interface]
+Here, the high-level LAPACK bindings will be described.
+
+`lapack::solve( a, b );`
+
+``
+lapack::solve( a, b )
+lapack::eigen( a, b, ... );
+}
+``
+
+
+[endsect]
+
+
+[section:blas BLAS Interface]
+[endsect]
+
+
+
+[section:license License]
+
+Copyright 2008 author1, author2.
+Distributed under the Boost Software License, Version 1.0. (See
+accompanying file LICENSE_1_0.txt or copy at
+[@http://www.boost.org/LICENSE_1_0.txt])
+
+[endsect]

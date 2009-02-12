@@ -1022,7 +1022,7 @@ def parse_file( filename, template_map ):
           for arg in tmp_result:
             if arg not in argument_map.keys():
               # variable not found, try user-defined variable definitions
-              args( arg, user_defined_arg_map, template_map, subroutine_group_name + '.' + subroutine_value_type )
+              add_user_defined_args( arg, user_defined_arg_map, template_map, subroutine_group_name + '.' + subroutine_value_type )
 
           argument_properties[ 'assert_size_args' ] = tmp_result
           print "Using user-defined assert_size_args: ", tmp_result

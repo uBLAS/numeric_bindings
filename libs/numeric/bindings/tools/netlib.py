@@ -164,6 +164,8 @@ def level1_typename( name, properties ):
 
 def nested_list_args( arg ):
   print "finding nested list arguments of", arg
+  if arg == None:
+    return None
   if type( arg ) == StringType:
     if re.compile( '^[A-Z]+$' ).match( arg ) == None:
       return [ None ]
@@ -177,7 +179,7 @@ def nested_list_args( arg ):
   if re.compile( '^[A-Z]+$' ).match( arg[0] ) == None:
     for a in arg[1]:
       sub_result = nested_list_args( a )
-      if sub_result != [ None ]:
+      if sub_result != [ None ] and sub_result != None:
         for r in sub_result:
           if r not in result:
             result.append( r )
@@ -194,6 +196,8 @@ def nested_list_args( arg ):
 
 def expand_nested_list( arg, arg_map, use_arg_map = True ):
 
+  if arg == None:
+    return '?None'
   print "Expanding nested list: ", arg, len(arg)
   if type( arg ) == StringType:
     print "Type is string"
@@ -358,7 +362,6 @@ def min_workspace_call_type( name, properties, arg_map ):
         code_result += [ call_level0_type( arg, arg_map[ arg ], arg_map ) ]
       else:
         code_result += [ '?' + arg.upper() ]
-      
     result = ", ".join( code_result )
   return result
 
@@ -621,7 +624,7 @@ def parse_file( filename, template_map ):
 
   code_line_nr = 0
   while code_line_nr < len(code) and not subroutine_found:
-    match_subroutine_name = re.compile( '(DOUBLE PRECISION FUNCTION|REAL FUNCTION|SUBROUTINE)[ ]+([A-Z0-9]+)\(([^\)]+)' ).search( code[ code_line_nr ] )
+    match_subroutine_name = re.compile( '(DOUBLE COMPLEX FUNCTION|COMPLEX FUNCTION|DOUBLE PRECISION FUNCTION|REAL FUNCTION|SUBROUTINE)[ ]+([A-Z0-9]+)\(([^\)]+)' ).search( code[ code_line_nr ] )
     if match_subroutine_name != None:
       subroutine_found = True
       subroutine_name = match_subroutine_name.group( 2 )
@@ -774,28 +777,29 @@ def parse_file( filename, template_map ):
     detected_lapack_style = False
     detected_blas_style = False
     while comment_line_nr < len(comments) and not finished_the_last:
-
-      print comments[ comment_line_nr ]
-
       # Example for LAPACK-style matching. 
       # 45 M       (input) INTEGER
       # 46         The number of rows of the matrix A. M >= 0.
       # 47
       # 48 N       (input) INTEGER
-      match_lapack_style = re.compile( '^[\s]*([A-Z]+[2]?)[\s]+\(([a-z/ ]+)\)' ).search( comments[ comment_line_nr ] )
+      match_lapack_style = re.compile( '^[\s]*([A-Z]+[12]?)[\s]+\(([a-z/ ]+)\)' ).search( comments[ comment_line_nr ] )
       if not detected_blas_style and match_lapack_style != None:
         detected_lapack_style = True
         argument_name = match_lapack_style.group(1)
-        # If we're replacing arguments, we should do se here as well.
+        # If we're replacing arguments, we should do so here as well.
         if argument_replace_map.has_key( argument_name ):
           argument_name = argument_replace_map[ argument_name ]
-        argument_map[ argument_name ][ 'comment_lines' ] = [ comment_line_nr ]
-        split_regex = re.compile( '\/| or ' )
-        argument_map[ argument_name ][ 'io' ] = split_regex.split( match_lapack_style.group(2) )
-        if preceding_argument != '':
-          argument_map[ preceding_argument ][ 'comment_lines' ] += [ comment_line_nr ]
-        preceding_argument = argument_name
-        no_commented_arguments += 1
+        # Check if the argument is in the argument_map, don't crash if it isn't
+        if argument_map.has_key( argument_name ):
+          argument_map[ argument_name ][ 'comment_lines' ] = [ comment_line_nr ]
+          split_regex = re.compile( '\/| or ' )
+          argument_map[ argument_name ][ 'io' ] = split_regex.split( match_lapack_style.group(2) )
+          if preceding_argument != '':
+            argument_map[ preceding_argument ][ 'comment_lines' ] += [ comment_line_nr ]
+          preceding_argument = argument_name
+          no_commented_arguments += 1
+        else:
+          print "WARNING: Skipping argument comment of", argument_name,", not in function argument list"
 
       # Example for BLAS, which doesn't mention input/output on the same line
       # 37 N      - INTEGER.
@@ -861,7 +865,6 @@ def parse_file( filename, template_map ):
   grouped_arguments[ 'by_io' ] = {}
   for argument_name in subroutine_arguments:
     argument_properties = argument_map[ argument_name ]
-    print argument_name, argument_properties
     for io_type in argument_properties[ 'io' ]:
       if not grouped_arguments[ 'by_io' ].has_key( io_type ):
         grouped_arguments[ 'by_io' ][ io_type ] = []
@@ -870,6 +873,7 @@ def parse_file( filename, template_map ):
   #
   # Parse the comment fields
   #
+  print "PARSING COMMENTS:"
   user_defined_arg_map = {}
   for argument_name, argument_properties in argument_map.iteritems():
 
@@ -891,25 +895,28 @@ def parse_file( filename, template_map ):
         '([A-Z]+\s+and\s+[A-Z]+|[A-Z]+)', re.M | re.S ).findall( comment_block )
       if len( match_matrix_traits ) == 1:
         if match_matrix_traits[0][0] == 'order':
+          #
+          # see if the traits are overruled through the template system
+          # logically, these come first
+          traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
+          if my_has_key( traits_key, template_map ):
+            argument_properties[ 'trait_type' ] = 'num_columns'
+            argument_properties[ 'trait_of' ] = template_map[ my_has_key( traits_key, template_map ) ].strip()
           # PANIC: return none
           # e.g., in tridiagonal case, there is no matrix, but a number of 
           # vectors (the diagonals)
-          if not grouped_arguments[ 'by_type' ].has_key( 'matrix' ):
+          elif not grouped_arguments[ 'by_type' ].has_key( 'matrix' ):
+            print "PANIC: returning none"
             # TODO
             # TODO
             return subroutine_name, None
             # TODO
             # TODO
-          if match_matrix_traits[0][3] in grouped_arguments[ 'by_type' ][ 'matrix' ]:
+          elif match_matrix_traits[0][3] in grouped_arguments[ 'by_type' ][ 'matrix' ]:
             # because it is both #rows and #columns, we have to choose one
             argument_properties[ 'trait_type' ] = 'num_columns'
             argument_properties[ 'trait_of' ] = match_matrix_traits[0][3].strip()
 
-          # see if the traits are overruled through the template system
-          traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
-          if my_has_key( traits_key, template_map ):
-            argument_properties[ 'trait_type' ] = 'num_columns'
-            argument_properties[ 'trait_of' ] = template_map[ my_has_key( traits_key, template_map ) ].strip()
 
         else:
           references = match_matrix_traits[0][3].split( 'and' )

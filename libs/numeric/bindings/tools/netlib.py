@@ -114,6 +114,9 @@ def call_level0_type( name, properties, arg_map ):
       result = "traits::vector_size(" + my_name + ")"
     if properties[ 'trait_type' ] == 'uplo':
       result = "traits::matrix_uplo_tag(" + properties[ 'trait_of' ].lower() + ")"
+    if properties[ 'trait_type' ] == 'stride':
+      result = "traits::vector_stride(" + properties[ 'trait_of' ].lower() + ")"
+
   else:
     result = name.lower()
   return result
@@ -618,7 +621,7 @@ def parse_file( filename, template_map ):
 
   code_line_nr = 0
   while code_line_nr < len(code) and not subroutine_found:
-    match_subroutine_name = re.compile( '(DOUBLE PRECISION FUNCTION|REAL FUNCTION|SUBROUTINE)[ ]+([A-Z]+)\(([^\)]+)' ).search( code[ code_line_nr ] )
+    match_subroutine_name = re.compile( '(DOUBLE PRECISION FUNCTION|REAL FUNCTION|SUBROUTINE)[ ]+([A-Z0-9]+)\(([^\)]+)' ).search( code[ code_line_nr ] )
     if match_subroutine_name != None:
       subroutine_found = True
       subroutine_name = match_subroutine_name.group( 2 )
@@ -630,6 +633,7 @@ def parse_file( filename, template_map ):
 
   # If we could not find a subroutine, we quit at our earliest convenience
   if code_line_nr == len(code):
+    print "Could not find function/subroutine statement, bailing out."
     return None, None
 
   #
@@ -679,21 +683,6 @@ def parse_file( filename, template_map ):
             argument_map[ argument_name ][ 'leading_dimension' ] = argument_description[1].split( "," )[0].strip()
     code_line_nr += 1
 
-  # Create convenience lookups by value_type and types of arguments
-  # e.g., grouped_arguments[ 'by_value_type' ][ 'INTEGER' ] will give an array of all integer types
-  #       grouped_arguments[ 'by_type' ][ 'matrix' ] will give an array of all matrices
-  grouped_arguments = {}
-  key_array = [ 'type', 'value_type' ]
-  for s in key_array:
-    grouped_arguments[ 'by_' + s ] = {}
-  # make sure the order of argument names is the same as those in the subroutine argument order
-  for argument_name in subroutine_arguments:
-    argument_properties = argument_map[ argument_name ]
-    for s in key_array:
-      if not grouped_arguments[ 'by_' + s ].has_key( argument_properties[ s ] ):
-        grouped_arguments[ 'by_' + s ][ argument_properties[ s ] ] = []
-      grouped_arguments[ 'by_' + s ][ argument_properties[ s ] ] += [ argument_name ]
-
   # See if we are hard-forcing argument renaming aliases
   # This is needed for BLAS. It has argument names that are tied to the 
   # value_type variant of the routine. E.g., daxpy has dx and dy, caxpy has
@@ -713,19 +702,36 @@ def parse_file( filename, template_map ):
       else:
         prefixes = [ 'S', 'D' ]
       # determine the original name
-      argument_with_value_type = ''
+      argument_with_value_type = None
       for prefix in prefixes:
         try_name = prefix + argument_new_name
         if try_name in subroutine_arguments:
           argument_with_value_type = try_name
-      loc = subroutine_arguments.index( argument_with_value_type )
-      # replace in the overall subroutine arguments list
-      subroutine_arguments[ loc ] = argument_new_name
-      # rename the key in the argument map
-      # create a copy, delete the old
-      argument_replace_map[ argument_with_value_type ] = argument_new_name
-      argument_map[ argument_new_name ] = argument_map[ argument_with_value_type ]
-      del argument_map[ argument_with_value_type ]
+      # only if we could find something, do something
+      if argument_with_value_type != None:
+        loc = subroutine_arguments.index( argument_with_value_type )
+        # replace in the overall subroutine arguments list
+        subroutine_arguments[ loc ] = argument_new_name
+        # rename the key in the argument map
+        # create a copy, delete the old
+        argument_replace_map[ argument_with_value_type ] = argument_new_name
+        argument_map[ argument_new_name ] = argument_map[ argument_with_value_type ]
+        del argument_map[ argument_with_value_type ]
+
+  # Create convenience lookups by value_type and types of arguments
+  # e.g., grouped_arguments[ 'by_value_type' ][ 'INTEGER' ] will give an array of all integer types
+  #       grouped_arguments[ 'by_type' ][ 'matrix' ] will give an array of all matrices
+  grouped_arguments = {}
+  key_array = [ 'type', 'value_type' ]
+  for s in key_array:
+    grouped_arguments[ 'by_' + s ] = {}
+  # make sure the order of argument names is the same as those in the subroutine argument order
+  for argument_name in subroutine_arguments:
+    argument_properties = argument_map[ argument_name ]
+    for s in key_array:
+      if not grouped_arguments[ 'by_' + s ].has_key( argument_properties[ s ] ):
+        grouped_arguments[ 'by_' + s ][ argument_properties[ s ] ] = []
+      grouped_arguments[ 'by_' + s ][ argument_properties[ s ] ] += [ argument_name ]
 
   # The next bulk load of information can be acquired from the comment fields, 
   # this is between "Purpose" and "Arguments". Locate those headers, and init with
@@ -756,11 +762,6 @@ def parse_file( filename, template_map ):
     arguments_line_nr = len(comments)
     comments += template_map[ my_has_key( arguments_key, template_map ) ].splitlines()
     comments += [ '' ]
-    
-    pp.pprint( comments )
-    
-  pp.pprint( argument_map )
-
 
   # Break up the comments
   # Now, for each argument, locate its associated comment field
@@ -924,6 +925,13 @@ def parse_file( filename, template_map ):
       if len( match_array_traits ) > 0 and match_array_traits[ 0 ][ 3 ] in grouped_arguments[ 'by_type' ][ 'vector' ]:
         argument_properties[ 'trait_type' ] = 'size'
         argument_properties[ 'trait_of' ] = match_array_traits[ 0 ][ 3 ]
+
+
+      match_stride_traits = re.compile( '([Tt]he increment)(\s|for|the|elements|of)+([A-Z]+)', re.M | re.S ).findall( comment_block )
+      print match_stride_traits
+      if len( match_stride_traits ) > 0 and match_stride_traits[ 0 ][ 2 ] in grouped_arguments[ 'by_type' ][ 'vector' ]:
+        argument_properties[ 'trait_type' ] = 'stride'
+        argument_properties[ 'trait_of' ] = match_stride_traits[ 0 ][ 2 ]
 
       # Fetch greater-than-or-equal-to integer asserts, such as 
       # M >= 0.

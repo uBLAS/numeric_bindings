@@ -55,9 +55,7 @@ $TEMPLATE[blas_level2]
 template< $TYPES >
 inline integer_t $groupname( $LEVEL2 ) {
     typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
-    integer_t info(0);
-    $groupname_impl< value_type >::compute( $CALL_LEVEL1 );
-    return info;
+    $RETURN_STATEMENT$groupname_impl< value_type >::compute( $CALL_LEVEL1 );
 }
 
 $TEMPLATE[end]

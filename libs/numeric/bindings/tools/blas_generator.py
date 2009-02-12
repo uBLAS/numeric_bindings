@@ -688,6 +688,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       level2_template = level2_template.replace( "$TYPEOF_FIRST_TYPENAME", first_typename_datatype )
       level2_template = level2_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
       level2_template = level2_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
+      level2_template = level2_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
 
       level1_map[ value_type ] = bindings.proper_indent( level1_template )
       level2_map[ value_type ] = bindings.proper_indent( level2_template )

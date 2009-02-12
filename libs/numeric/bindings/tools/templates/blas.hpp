@@ -29,13 +29,13 @@ namespace detail {
 $OVERLOADS}
 
 $LEVEL1
-
+$LEVEL2
 }}}} // namespace boost::numeric::bindings::blas
 
 #endif
 $TEMPLATE[blas_overloads]
-    inline void $groupname( $LEVEL0 ) {
-        BLAS_$SUBROUTINE( $CALL_C_HEADER );
+    inline $RETURN_TYPE $groupname( $LEVEL0 ) {
+        $RETURN_STATEMENTBLAS_$SUBROUTINE( $CALL_C_HEADER );
     }
 $TEMPLATE[blas_level1]
 // value-type based template
@@ -43,15 +43,21 @@ template< typename ValueType >
 struct $groupname_impl {
 
     typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
 
     // templated specialization
     template< $TYPES >
-    static void compute( $LEVEL1 ) {
-#ifndef NDEBUG
-        $ASSERTS
-#endif
-        detail::$groupname( $CALL_LEVEL0 );
+    static $RETURN_TYPE compute( $LEVEL1 ) {
+        $RETURN_STATEMENTdetail::$groupname( $CALL_LEVEL0 );
     }
 };
+$TEMPLATE[blas_level2]
+// template function to call $groupname
+template< $TYPES >
+inline integer_t $groupname( $LEVEL2 ) {
+    typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
+    integer_t info(0);
+    $groupname_impl< value_type >::compute( $CALL_LEVEL1 );
+    return info;
+}
+
 $TEMPLATE[end]

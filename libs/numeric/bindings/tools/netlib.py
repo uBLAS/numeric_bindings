@@ -24,6 +24,14 @@ global_type_map = {
 templates = {}
 
 
+
+
+def value_type( fortran_type ):
+  m_type_map = global_type_map
+  m_type_map[ 'COMPLEX' ] = 'fcomplex_t'
+  m_type_map[ 'COMPLEX*16' ] = 'dcomplex_t'
+  m_type_map[ 'DOUBLE COMPLEX' ] = 'dcomplex_t'
+  return m_type_map[ fortran_type ]
   
 def c_type( name, properties ):
   m_type_map = global_type_map
@@ -44,6 +52,7 @@ def cpp_type( name, properties ):
   m_type_map = global_type_map
   m_type_map[ 'COMPLEX' ] = 'traits::complex_f'
   m_type_map[ 'COMPLEX*16' ] = 'traits::complex_d'
+  m_type_map[ 'DOUBLE COMPLEX' ] = 'traits::complex_d'
   
   result = m_type_map[ properties[ 'value_type' ] ]
   
@@ -65,12 +74,14 @@ def cpp_type( name, properties ):
 def call_c_type( name, properties ):
   result = ''
   if properties[ 'type' ] == 'vector' or properties[ 'type' ] == 'matrix':
-    if properties[ 'value_type' ][ 0:7] == 'COMPLEX':
+    if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
+       properties[ 'value_type' ] == 'DOUBLE COMPLEX':
       result = 'traits::complex_ptr(' + name.lower() + ')'
     else:
       result = name.lower()
   elif properties[ 'type' ] == 'scalar':
-    if properties[ 'value_type' ][ 0:7] == 'COMPLEX':
+    if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
+       properties[ 'value_type' ] == 'DOUBLE COMPLEX':
       result = 'traits::complex_ptr(&' + name.lower() + ')'
     else:
       result = '&' + name.lower()
@@ -603,13 +614,18 @@ def parse_file( filename, template_map ):
   subroutine_found = False
   subroutine_name = ''
   subroutine_arguments = []
+  subroutine_return_type = None
+
   code_line_nr = 0
   while code_line_nr < len(code) and not subroutine_found:
-    match_subroutine_name = re.compile( 'SUBROUTINE[ ]+([A-Z]+)\(([^\)]+)' ).search( code[ code_line_nr ] )
+    match_subroutine_name = re.compile( '(DOUBLE PRECISION FUNCTION|REAL FUNCTION|SUBROUTINE)[ ]+([A-Z]+)\(([^\)]+)' ).search( code[ code_line_nr ] )
     if match_subroutine_name != None:
       subroutine_found = True
-      subroutine_name = match_subroutine_name.group( 1 )
-      subroutine_arguments = match_subroutine_name.group( 2 ).replace( ' ', '' ).split( "," )
+      subroutine_name = match_subroutine_name.group( 2 )
+      subroutine_arguments = match_subroutine_name.group( 3 ).replace( ' ', '' ).split( "," )
+      if match_subroutine_name.group(1) != 'SUBROUTINE':
+        subroutine_return_type = " ".join( match_subroutine_name.group(1).split(" ")[0:-1] )
+
     code_line_nr += 1
 
   # If we could not find a subroutine, we quit at our earliest convenience
@@ -630,6 +646,7 @@ def parse_file( filename, template_map ):
   print "Arguments:  ", len(subroutine_arguments),":",subroutine_arguments
   print "Group name: ", subroutine_group_name
   print "Variant:    ", subroutine_value_type
+  print "Return:     ", subroutine_return_type
 
   # Now we have the names of the arguments. The code following the subroutine statement are
   # the argument declarations. Parse those right now, splitting these examples
@@ -677,6 +694,39 @@ def parse_file( filename, template_map ):
         grouped_arguments[ 'by_' + s ][ argument_properties[ s ] ] = []
       grouped_arguments[ 'by_' + s ][ argument_properties[ s ] ] += [ argument_name ]
 
+  # See if we are hard-forcing argument renaming aliases
+  # This is needed for BLAS. It has argument names that are tied to the 
+  # value_type variant of the routine. E.g., daxpy has dx and dy, caxpy has
+  # cx and cy. This is confusing for the generator, so we replace it with 
+  # x and y, if the command for that is issued in its template.
+  argument_replace_map = {}
+  argument_value_type_prepend_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.remove_argument_value_type_prepend'
+  if my_has_key( argument_value_type_prepend_key, template_map ):
+    arguments_to_do = template_map[ my_has_key( argument_value_type_prepend_key, template_map ) ].strip().split(",")
+    for argument_new_name in arguments_to_do:
+      argument_new_name = argument_new_name.strip()
+      # try to find the original argument with value type
+      # it's either from a complex or double variant, 
+      # not as cleanly applied as we might say
+      if subroutine_value_type == 'complex':
+        prefixes = [ 'C', 'Z' ]
+      else:
+        prefixes = [ 'S', 'D' ]
+      # determine the original name
+      argument_with_value_type = ''
+      for prefix in prefixes:
+        try_name = prefix + argument_new_name
+        if try_name in subroutine_arguments:
+          argument_with_value_type = try_name
+      loc = subroutine_arguments.index( argument_with_value_type )
+      # replace in the overall subroutine arguments list
+      subroutine_arguments[ loc ] = argument_new_name
+      # rename the key in the argument map
+      # create a copy, delete the old
+      argument_replace_map[ argument_with_value_type ] = argument_new_name
+      argument_map[ argument_new_name ] = argument_map[ argument_with_value_type ]
+      del argument_map[ argument_with_value_type ]
+
   # The next bulk load of information can be acquired from the comment fields, 
   # this is between "Purpose" and "Arguments". Locate those headers, and init with
   # -1 so that we can check if they where found.
@@ -699,6 +749,19 @@ def parse_file( filename, template_map ):
   if purpose_line_nr > 0 and arguments_line_nr > 0:
     subroutine_purpose = "//" + "\n//".join( comments[ purpose_line_nr+3:arguments_line_nr-1 ] )
 
+  # try to see if we are overriding the arguments piece
+  arguments_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.arguments'
+  if my_has_key( arguments_key, template_map ):
+    print arguments_line_nr, comment_line_nr
+    arguments_line_nr = len(comments)
+    comments += template_map[ my_has_key( arguments_key, template_map ) ].splitlines()
+    comments += [ '' ]
+    
+    pp.pprint( comments )
+    
+  pp.pprint( argument_map )
+
+
   # Break up the comments
   # Now, for each argument, locate its associated comment field
   #
@@ -711,6 +774,8 @@ def parse_file( filename, template_map ):
     detected_blas_style = False
     while comment_line_nr < len(comments) and not finished_the_last:
 
+      print comments[ comment_line_nr ]
+
       # Example for LAPACK-style matching. 
       # 45 M       (input) INTEGER
       # 46         The number of rows of the matrix A. M >= 0.
@@ -720,6 +785,9 @@ def parse_file( filename, template_map ):
       if not detected_blas_style and match_lapack_style != None:
         detected_lapack_style = True
         argument_name = match_lapack_style.group(1)
+        # If we're replacing arguments, we should do se here as well.
+        if argument_replace_map.has_key( argument_name ):
+          argument_name = argument_replace_map[ argument_name ]
         argument_map[ argument_name ][ 'comment_lines' ] = [ comment_line_nr ]
         split_regex = re.compile( '\/| or ' )
         argument_map[ argument_name ][ 'io' ] = split_regex.split( match_lapack_style.group(2) )
@@ -946,7 +1014,7 @@ def parse_file( filename, template_map ):
           for arg in tmp_result:
             if arg not in argument_map.keys():
               # variable not found, try user-defined variable definitions
-              add_user_defined_args( arg, user_defined_arg_map, template_map, subroutine_group_name + '.' + subroutine_value_type )
+              args( arg, user_defined_arg_map, template_map, subroutine_group_name + '.' + subroutine_value_type )
 
           argument_properties[ 'assert_size_args' ] = tmp_result
           print "Using user-defined assert_size_args: ", tmp_result
@@ -1025,9 +1093,18 @@ def parse_file( filename, template_map ):
   info_map = {}
   info_map[ 'arguments' ] = subroutine_arguments
   info_map[ 'purpose' ] = subroutine_purpose
+  info_map[ 'return_type' ] = subroutine_return_type
   info_map[ 'argument_map' ] = argument_map
   info_map[ 'grouped_arguments' ] = grouped_arguments
-  
+  if subroutine_return_type != None:
+    info_map[ 'return_value_type' ] = value_type( subroutine_return_type )
+    info_map[ 'level1_return_type' ] = 'value_type'
+    info_map[ 'return_statement' ] = 'return '
+  else:
+    info_map[ 'return_value_type' ] = 'void'
+    info_map[ 'level1_return_type' ] = 'void'
+    info_map[ 'return_statement' ] = ''
+
   #
   # Pass / check user-defined stuff right here.
   #

@@ -109,6 +109,8 @@ def write_header( global_info_map, group, template_map, dest_file ):
 
       template = template.replace( "$SUBROUTINE", k )
       template = template.replace( "$ARGUMENTS", ", ".join( arg_list ) )
+      template = template.replace( '$RETURN_TYPE', global_info_map[ k ][ 'return_value_type' ] )
+      template = template.replace( '$RETURN_STATEMENT', global_info_map[ k ][ 'return_statement' ] )
       content += proper_indent( template )
 
     content += '\n'

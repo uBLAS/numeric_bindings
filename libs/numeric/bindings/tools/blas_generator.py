@@ -613,6 +613,8 @@ def write_functions( info_map, group, template_map, base_dir ):
       sub_template = sub_template.replace( "$CALL_C_HEADER", ", ".join( lapack_arg_list ) )
       sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
       sub_template = sub_template.replace( '$groupname', group_name.lower() )
+      sub_template = sub_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'return_value_type' ] )
+      sub_template = sub_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
       
       overloads += bindings.proper_indent( sub_template )
   
@@ -640,9 +642,11 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = ''
       level2_template = ''
       level1_template = template_map[ 'blas_level1' ]
+      level2_template = template_map[ 'blas_level2' ]
 
       level0_arg_list = []
       level1_arg_list = []
+      level2_arg_list = []
       call_level1_arg_list = []
       level1_type_arg_list = []
       level1_assert_list = []
@@ -657,6 +661,8 @@ def write_functions( info_map, group, template_map, base_dir ):
           level1_type_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_type' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_assert' ] != None:
           level1_assert_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_assert' ] ]
+        if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] != None:
+          level2_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] ]
 
       # Level 1 replacements
       level1_template = level1_template.replace( "$CALL_LEVEL0", ", ".join( level0_arg_list ) )
@@ -664,8 +670,28 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = level1_template.replace( "$LEVEL1", ", ".join( level1_arg_list ) )
       level1_template = level1_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
       level1_template = level1_template.replace( "$ASSERTS", "\n        ".join( level1_assert_list ) )
+      level1_template = level1_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'level1_return_type' ] )
+      level1_template = level1_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
+
+      # Level 2 replacements
+      # some special stuff is done here, such as replacing real_type with a 
+      # type-traits deduction, etc..
+      level2_template = level2_template.replace( "$LEVEL2", ", ".join( level2_arg_list ) )
+      
+      if len(level1_type_arg_list)>0:
+        first_typename = level1_type_arg_list[0].split(" ")[-1]
+        first_typename_datatype = first_typename[0:6].lower() # 'matrix' or 'vector'
+      else:
+        first_typename = 'TODO'
+        first_typename_datatype = 'TODO'
+      level2_template = level2_template.replace( "$FIRST_TYPENAME", first_typename )
+      level2_template = level2_template.replace( "$TYPEOF_FIRST_TYPENAME", first_typename_datatype )
+      level2_template = level2_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
+      level2_template = level2_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
 
       level1_map[ value_type ] = bindings.proper_indent( level1_template )
+      level2_map[ value_type ] = bindings.proper_indent( level2_template )
+
 
     #
     # LEVEL 1 and 2 FINALIZATION
@@ -681,6 +707,10 @@ def write_functions( info_map, group, template_map, base_dir ):
     level1 = ''
     for value_type in level1_map.keys():
       level1 += level1_map[ value_type ]
+
+    level2 = ''
+    for value_type in level2_map.keys():
+      level2 += level2_map[ value_type ]
 
     #
     # handle addition of includes
@@ -698,6 +728,7 @@ def write_functions( info_map, group, template_map, base_dir ):
     result = result.replace( '$INCLUDES', includes_code )
     result = result.replace( '$OVERLOADS', overloads )
     result = result.replace( '$LEVEL1', level1 )
+    result = result.replace( '$LEVEL2', level2 )
     result = result.replace( '$GROUPNAME', group_name )
     result = result.replace( '$groupname', group_name.lower() )
 
@@ -781,14 +812,14 @@ value_type_groups = {}
 value_type_groups = group_by_value_type( function_info_map )
 
 routines = {}
-routines[ 'level_1' ] = {}
-routines[ 'level_1' ][ 'endings' ] = [ 'ROTG', 'OTMG', 'ROT', 'ROTM', 'SWAP', 'SCAL', 'COPY', 'AXPY', 'DOT', 'DOTU', 'DOTC', 'NRM2', 'ASUM', 'AMAX' ]
+routines[ 'level1' ] = {}
+routines[ 'level1' ][ 'endings' ] = [ 'ROTG', 'OTMG', 'ROT', 'ROTM', 'SWAP', 'SCAL', 'COPY', 'AXPY', 'DOT', 'DOTU', 'DOTC', 'NRM2', 'ASUM', 'AMAX' ]
 
-routines[ 'level_2' ] = {}
-routines[ 'level_2' ][ 'endings' ] = [ 'MV', 'SV', 'GER', 'GERU', 'GERC', 'HER', 'HPR', 'HER2', 'HPR2', 'SYR', 'SPR', 'SYR2' ]
+routines[ 'level2' ] = {}
+routines[ 'level2' ][ 'endings' ] = [ 'MV', 'SV', 'GER', 'GERU', 'GERC', 'HER', 'HPR', 'HER2', 'HPR2', 'SYR', 'SPR', 'SYR2' ]
 
-routines[ 'level_3' ] = {}
-routines[ 'level_3' ][ 'endings' ] = [ 'MM', 'RK', 'R2K', 'SM' ]
+routines[ 'level3' ] = {}
+routines[ 'level3' ][ 'endings' ] = [ 'MM', 'RK', 'R2K', 'SM' ]
 
 for name in value_type_groups.keys():
   found = False

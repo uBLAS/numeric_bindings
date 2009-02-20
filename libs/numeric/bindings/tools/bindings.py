@@ -10,6 +10,21 @@
 import re
 
 #
+# Desired order of routines in C++ code: float, double, single complex, double complex
+#
+def routine_cmp( a, b ):
+  letter_a = a[0]
+  letter_b = b[0]
+  value_map = { 'S': 0, 'D': 1, 'C': 2, 'Z': 3 }
+  result = 0
+  if value_map[ a[0] ] < value_map[ b[ 0] ]:
+    result = -1
+  if value_map[ a[0] ] > value_map[ b[ 0] ]:
+    result = 1
+  return result
+
+
+#
 # This routine actually does what it's named after :-).
 # Changes: 
 # * used regex matching on delimiter instead of .find

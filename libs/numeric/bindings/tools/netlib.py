@@ -260,11 +260,12 @@ def level1_assert( name, properties, arg_map ):
       min_workspace_call = '$CALL_MIN_SIZE'
     result = 'assert( traits::vector_size(work.select(' + workspace_type( name, properties ) + '()) >= ' + \
              'min_size_' + name.lower() + '( ' + min_workspace_call + ' )));'
-  
+
+  # assert_size is vector-type specific
   elif properties.has_key( 'assert_size' ):
-    result = "assert( traits::vector_size(" + call_level0_type( name, properties, arg_map ) + ") >= " + \
+    result = "assert( traits::vector_size(" + call_level1_type( name, properties ) + ") >= " + \
       expand_nested_list( properties[ 'assert_size' ], arg_map ) + ' );'
-  
+
   return result
 
 
@@ -348,7 +349,10 @@ def min_workspace_arg_type( name, properties, arg_map ):
       if arg_map.has_key( arg ):
         code_result += [ cpp_type( arg, arg_map[ arg ] ) ]
       else:
-        code_result += [ '?' + arg.upper() ]
+        if type( properties[ 'assert_size' ] ) == StringType:
+          code_result += [ '?' + properties[ 'assert_size' ] ]
+        else:
+          code_result += [ '??' ]
     result = ", ".join( code_result )
   return result
 
@@ -361,7 +365,13 @@ def min_workspace_call_type( name, properties, arg_map ):
       if arg_map.has_key( arg ):
         code_result += [ call_level0_type( arg, arg_map[ arg ], arg_map ) ]
       else:
-        code_result += [ '?' + arg.upper() ]
+        if arg != None:
+          code_result += [ '?' + arg.upper() ]
+        else:
+          if type( properties[ 'assert_size' ] ) == StringType:
+            code_result += [ '?' + properties[ 'assert_size' ] ]
+          else:
+            code_result += [ '??' ]
     result = ", ".join( code_result )
   return result
 
@@ -637,6 +647,11 @@ def parse_file( filename, template_map ):
   # If we could not find a subroutine, we quit at our earliest convenience
   if code_line_nr == len(code):
     print "Could not find function/subroutine statement, bailing out."
+    return None, None
+
+  # IF there are no arguments, bail out
+  if subroutine_arguments == ['']:
+    print "Function without arguments not supported."
     return None, None
 
   #

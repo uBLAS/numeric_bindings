@@ -43,10 +43,11 @@ template< typename ValueType >
 struct $groupname_impl {
 
     typedef ValueType value_type;
+    typedef $RETURN_TYPE return_type;
 
     // templated specialization
     template< $TYPES >
-    static $RETURN_TYPE compute( $LEVEL1 ) {
+    static return_type compute( $LEVEL1 ) {
         $RETURN_STATEMENTdetail::$groupname( $CALL_LEVEL0 );
     }
 };

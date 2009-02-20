@@ -24,16 +24,19 @@ $TEMPLATE[lapack.h]
 
 extern "C" {
 
-$CONTENT
+$CONTENT//
+// LAPACK auxiliary routines
+//
 
-    int LAPACK_ILAENV(int const* ispec, const char* name, const char* opt,
-        int const* n1, int const* n2, int const* n3, int const* n4, int, int);
+int LAPACK_ILAENV(int const* ispec, const char* name, const char* opt,
+    int const* n1, int const* n2, int const* n3, int const* n4, int, int);
+
 }
 
 #endif
 
 $TEMPLATE[lapack.h_function]
-    void LAPACK_$SUBROUTINE( $ARGUMENTS );
+void LAPACK_$SUBROUTINE( $ARGUMENTS );
 $TEMPLATE[lapack_names.h]
 //
 // Copyright (c) 2003--2009
@@ -57,9 +60,7 @@ $TEMPLATE[lapack_names.h]
 #  define FORTRAN_ID( id ) id##_
 #endif
 
-$CONTENT
-
-#endif
+$CONTENT#endif
 
 $TEMPLATE[lapack_names.h_function]
 #define LAPACK_$SUBROUTINE FORTRAN_ID( $subroutine )

@@ -11,36 +11,51 @@
     ]
 ]
 
+[section:preface Preface]
+
+
+[endsect]
 
 [section:introduction Introduction]
 
-This article is working document for documenting the Numeric Bindings.
+Boost.Numeric_Bindings is a library for high-performance numeric computing. 
+
+The Bindings Library contains bindings to popular non-boost 
+(numeric) libraries, usually written in Fortran or C. 
+These non-boost libraries generally use data structures in their API for which
+there might be boostified equivalents or other popular non-boost equivalents.
+The Bindings Library offers a generic thin layer API on top of the 
+original API of the external library. This generic API accepts a whole range of
+data structures from different origins and usually hides or reduces the 
+complexity of the original API.
+
+For instance, [@http://math-atlas.sourceforge.net/ ATLAS] a C library
+implementing BLAS (and few LAPACK routines), represents matrices
+by means of a pointer and the dimensions. Now boost also contains
+matrix classes [@http://www.boost.org/libs/numeric/ublas/doc/index.htm uBLAS] 
+and there are also other matrix libraries in widespread use.
+
+Therefore the Bindings library features a generic interface 
+for ATLAS which provides the possibility
+to call e.g. the matrix-multiplication routine of ATLAS using matrices defined
+in uBLAS, TNT, etc.
 
 [endsect]
 
 [section:traits Datatype Concepts and Traits]
 [endsect]
 
+[section:tutorial Tutorial]
 
 
-[section:lapack High-level LAPACK Interface]
-Here, the high-level LAPACK bindings will be described.
 
-`lapack::solve( a, b );`
-
-``
-lapack::solve( a, b )
-lapack::eigen( a, b, ... );
-}
-``
 
 
 [endsect]
 
 
-[section:blas BLAS Interface]
-[endsect]
-
+[include blas.qbk]
+[include lapack.qbk]
 
 
 [section:license License]

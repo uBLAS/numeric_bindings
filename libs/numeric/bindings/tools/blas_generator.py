@@ -297,8 +297,8 @@ for name in value_type_groups.keys():
 print routines 
 
 
-bindings.write_names_header( function_info_map, value_type_groups, templates, bindings_target_path + 'blas_names.h' )
-bindings.write_header( function_info_map, value_type_groups, templates, bindings_target_path + 'blas.h' )
+bindings.write_names_header( function_info_map, routines, templates, bindings_target_path + 'blas_names.h' )
+bindings.write_header( function_info_map, routines, templates, bindings_target_path + 'blas.h' )
 
 for level, level_properties in routines.iteritems():
   target_path = bindings_target_path + level

@@ -82,21 +82,45 @@ def proper_indent( input_string ):
 
 
 #
-# Write the blas.h/lapack_names.h file.
+# For a group of routines, write their part in the 
+# blas_names.h/lapack_names.h file.
 #
-def write_names_header( global_info_map, group, template_map, dest_file ):
-  parsermode = template_map[ 'PARSERMODE' ].lower()
-  group_keys = group.keys()
-  group_keys.sort()
+def write_by_value_type( properties, template_map ):
   content = ''
+  group_keys = properties.keys()
+  group_keys.sort()
   for g in group_keys:
-    content += '// Variants of ' + g.lower() + '\n'
-    for k in group[ g ]:
-      template = template_map[ parsermode + '_names.h_function' ]
+    content += '// Value-type variants of ' + g.lower() + '\n'
+    for k in properties[ g ]:
+      template = template_map[ template_map[ 'PARSERMODE' ].lower() + '_names.h_function' ]
       template = template.replace( '$SUBROUTINE', k )
       template = template.replace( '$subroutine', k.lower() )
       content += template
     content += '\n'
+  return content
+
+#
+# Write the blas_names.h/lapack_names.h file.
+#
+def write_names_header( global_info_map, routines, template_map, dest_file ):
+  parsermode = template_map[ 'PARSERMODE' ].lower()
+  content = ''
+
+  for level, level_properties in routines.iteritems():
+    content += '//\n'
+    content += '// ' + template_map[ 'PARSERMODE' ] + ' ' + level + ' routines\n'
+    content += '//\n\n'
+
+    if template_map[ 'PARSERMODE' ] == 'BLAS':
+      if level_properties.has_key( 'routines_by_value_type' ):
+        content += write_by_value_type( level_properties[ 'routines_by_value_type'], template_map )
+    else:
+      for problem_type, problem_properties in level_properties.iteritems():
+        #
+        # Here, we could write an informative header about the problem types
+        #
+        if problem_properties.has_key( 'routines_by_value_type' ):
+          content += write_by_value_type( problem_properties[ 'routines_by_value_type'], template_map )
 
   result = template_map[ parsermode + '_names.h' ]
   result = result.replace( "$CONTENT", content )
@@ -105,17 +129,18 @@ def write_names_header( global_info_map, group, template_map, dest_file ):
   open( dest_file, 'wb' ).write( result )
 
 
-#
-# Write the blas.h/lapack.h file
-#
-def write_header( global_info_map, group, template_map, dest_file ):
+
+
+
+
+def write_header_part( global_info_map, properties, template_map ):
   parsermode = template_map[ 'PARSERMODE' ].lower()
-  group_keys = group.keys()
+  group_keys = properties.keys()
   group_keys.sort()
   content = ''
   for g in group_keys:
-    content += '$INDENT// Variants of ' + g.lower() + '\n'
-    for k in group[ g ]:
+    content += '// Value-type variants of ' + g.lower() + '\n'
+    for k in properties[ g ]:
 
       template = template_map[ parsermode + '.h_function' ]
       arg_list = []
@@ -129,10 +154,37 @@ def write_header( global_info_map, group, template_map, dest_file ):
       content += proper_indent( template )
 
     content += '\n'
+  return content
+
+
+
+#
+# Write the blas.h/lapack.h file
+#
+def write_header( global_info_map, routines, template_map, dest_file ):
+  parsermode = template_map[ 'PARSERMODE' ].lower()
+  content = ''
+  
+  for level, level_properties in routines.iteritems():
+    content += '//\n'
+    content += '// ' + template_map[ 'PARSERMODE' ] + ' ' + level + ' routines\n'
+    content += '//\n\n'
+
+    if template_map[ 'PARSERMODE' ] == 'BLAS':
+      if level_properties.has_key( 'routines_by_value_type' ):
+        content += write_header_part( global_info_map, \
+          level_properties[ 'routines_by_value_type'], template_map )
+    else:
+      for problem_type, problem_properties in level_properties.iteritems():
+        #
+        # Here, we could write an informative header about the problem types
+        #
+        if problem_properties.has_key( 'routines_by_value_type' ):
+          content += write_header_part( global_info_map, \
+                problem_properties[ 'routines_by_value_type'], template_map )
 
   result = template_map[ parsermode + '.h' ]
   result = result.replace( "$CONTENT", content )
-  result = result.replace( '$INDENT', '    ' )
   #result = result.replace( "$PARSERMODE", template_map[ "PARSERMODE" ] )
 
   open( dest_file, 'wb' ).write( result )

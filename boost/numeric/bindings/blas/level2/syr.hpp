@@ -47,21 +47,22 @@ struct syr_impl {
 
     // templated specialization
     template< typename VectorX, typename MatrixA >
-    static return_type compute( char const uplo, real_type const alpha,
-            VectorX& x, MatrixA& a ) {
-        detail::syr( uplo, traits::matrix_size2(a), alpha,
-                traits::vector_storage(x), traits::vector_stride(x),
-                traits::matrix_storage(a), traits::leading_dimension(a) );
+    static return_type compute( real_type const alpha, VectorX& x,
+            MatrixA& a ) {
+        detail::syr( traits::matrix_uplo_tag(a),
+                traits::matrix_size2(a), alpha, traits::vector_storage(x),
+                traits::vector_stride(x), traits::matrix_storage(a),
+                traits::leading_dimension(a) );
     }
 };
 
 // template function to call syr
 template< typename VectorX, typename MatrixA >
-inline integer_t syr( char const uplo,
-        typename traits::vector_traits< VectorX >::value_type const alpha,
+
+        inline integer_t syr( typename traits::vector_traits< VectorX >::value_type const alpha,
         VectorX& x, MatrixA& a ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    syr_impl< value_type >::compute( uplo, alpha, x, a );
+    syr_impl< value_type >::compute( alpha, x, a );
 }
 
 

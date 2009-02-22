@@ -59,20 +59,20 @@ struct tpmv_impl {
 
     // templated specialization
     template< typename MatrixAP, typename VectorX >
-    static return_type compute( char const uplo, char const trans,
-            char const diag, MatrixAP& ap, VectorX& x ) {
-        detail::tpmv( uplo, trans, diag, traits::matrix_size2(ap),
-                traits::matrix_storage(ap), traits::vector_storage(x),
-                traits::vector_stride(x) );
+    static return_type compute( char const trans, char const diag,
+            MatrixAP& ap, VectorX& x ) {
+        detail::tpmv( traits::matrix_uplo_tag(ap), trans, diag,
+                traits::matrix_size2(ap), traits::matrix_storage(ap),
+                traits::vector_storage(x), traits::vector_stride(x) );
     }
 };
 
 // template function to call tpmv
 template< typename MatrixAP, typename VectorX >
-inline integer_t tpmv( char const uplo, char const trans,
-        char const diag, MatrixAP& ap, VectorX& x ) {
+inline integer_t tpmv( char const trans, char const diag, MatrixAP& ap,
+        VectorX& x ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
-    tpmv_impl< value_type >::compute( uplo, trans, diag, ap, x );
+    tpmv_impl< value_type >::compute( trans, diag, ap, x );
 }
 
 

@@ -51,21 +51,21 @@ struct hpr_impl {
 
     // templated specialization
     template< typename VectorX, typename MatrixAP >
-    static return_type compute( char const uplo, real_type const alpha,
-            VectorX& x, MatrixAP& ap ) {
-        detail::hpr( uplo, traits::matrix_size2(ap), alpha,
-                traits::vector_storage(x), traits::vector_stride(x),
-                traits::matrix_storage(ap) );
+    static return_type compute( real_type const alpha, VectorX& x,
+            MatrixAP& ap ) {
+        detail::hpr( traits::matrix_uplo_tag(ap),
+                traits::matrix_size2(ap), alpha, traits::vector_storage(x),
+                traits::vector_stride(x), traits::matrix_storage(ap) );
     }
 };
 
 // template function to call hpr
 template< typename VectorX, typename MatrixAP >
-inline integer_t hpr( char const uplo,
-        typename traits::vector_traits< VectorX >::value_type const alpha,
+
+        inline integer_t hpr( typename traits::vector_traits< VectorX >::value_type const alpha,
         VectorX& x, MatrixAP& ap ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    hpr_impl< value_type >::compute( uplo, alpha, x, ap );
+    hpr_impl< value_type >::compute( alpha, x, ap );
 }
 
 

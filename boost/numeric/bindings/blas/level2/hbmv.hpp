@@ -57,23 +57,23 @@ struct hbmv_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type compute( char const uplo, integer_t const k,
+    static return_type compute( integer_t const k,
             traits::complex_d const alpha, MatrixA& a, VectorX& x,
             traits::complex_d const beta, VectorY& y ) {
-        detail::hbmv( uplo, traits::matrix_size2(a), k, alpha,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(x), traits::vector_stride(x), beta,
-                traits::vector_storage(y), traits::vector_stride(y) );
+        detail::hbmv( traits::matrix_uplo_tag(a),
+                traits::matrix_size2(a), k, alpha, traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(x),
+                traits::vector_stride(x), beta, traits::vector_storage(y),
+                traits::vector_stride(y) );
     }
 };
 
 // template function to call hbmv
 template< typename MatrixA, typename VectorX, typename VectorY >
-inline integer_t hbmv( char const uplo, integer_t const k,
-        traits::complex_d const alpha, MatrixA& a, VectorX& x,
-        traits::complex_d const beta, VectorY& y ) {
+inline integer_t hbmv( integer_t const k, traits::complex_d const alpha,
+        MatrixA& a, VectorX& x, traits::complex_d const beta, VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    hbmv_impl< value_type >::compute( uplo, k, alpha, a, x, beta, y );
+    hbmv_impl< value_type >::compute( k, alpha, a, x, beta, y );
 }
 
 

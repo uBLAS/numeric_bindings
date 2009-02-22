@@ -55,22 +55,21 @@ struct hpr2_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename MatrixAP >
-    static return_type compute( char const uplo,
-            traits::complex_d const alpha, VectorX& x, VectorY& y,
-            MatrixAP& ap ) {
-        detail::hpr2( uplo, traits::matrix_size2(ap), alpha,
-                traits::vector_storage(x), traits::vector_stride(x),
-                traits::vector_storage(y), traits::vector_stride(y),
-                traits::matrix_storage(ap) );
+    static return_type compute( traits::complex_d const alpha, VectorX& x,
+            VectorY& y, MatrixAP& ap ) {
+        detail::hpr2( traits::matrix_uplo_tag(ap),
+                traits::matrix_size2(ap), alpha, traits::vector_storage(x),
+                traits::vector_stride(x), traits::vector_storage(y),
+                traits::vector_stride(y), traits::matrix_storage(ap) );
     }
 };
 
 // template function to call hpr2
 template< typename VectorX, typename VectorY, typename MatrixAP >
-inline integer_t hpr2( char const uplo, traits::complex_d const alpha,
-        VectorX& x, VectorY& y, MatrixAP& ap ) {
+inline integer_t hpr2( traits::complex_d const alpha, VectorX& x,
+        VectorY& y, MatrixAP& ap ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    hpr2_impl< value_type >::compute( uplo, alpha, x, y, ap );
+    hpr2_impl< value_type >::compute( alpha, x, y, ap );
 }
 
 

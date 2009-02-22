@@ -61,20 +61,21 @@ struct tbsv_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorX >
-    static return_type compute( char const uplo, char const trans,
-            char const diag, integer_t const k, MatrixA& a, VectorX& x ) {
-        detail::tbsv( uplo, trans, diag, traits::matrix_size2(a), k,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(x), traits::vector_stride(x) );
+    static return_type compute( char const trans, char const diag,
+            integer_t const k, MatrixA& a, VectorX& x ) {
+        detail::tbsv( traits::matrix_uplo_tag(a), trans, diag,
+                traits::matrix_size2(a), k, traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(x),
+                traits::vector_stride(x) );
     }
 };
 
 // template function to call tbsv
 template< typename MatrixA, typename VectorX >
-inline integer_t tbsv( char const uplo, char const trans,
-        char const diag, integer_t const k, MatrixA& a, VectorX& x ) {
+inline integer_t tbsv( char const trans, char const diag,
+        integer_t const k, MatrixA& a, VectorX& x ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    tbsv_impl< value_type >::compute( uplo, trans, diag, k, a, x );
+    tbsv_impl< value_type >::compute( trans, diag, k, a, x );
 }
 
 

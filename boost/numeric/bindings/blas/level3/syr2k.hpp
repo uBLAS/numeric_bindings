@@ -71,24 +71,24 @@ struct syr2k_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static return_type compute( char const uplo, char const trans,
-            integer_t const k, traits::complex_d const alpha, MatrixA& a,
-            MatrixB& b, traits::complex_d const beta, MatrixC& c ) {
-        detail::syr2k( uplo, trans, traits::matrix_size2(c), k, alpha,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::matrix_storage(b), traits::leading_dimension(b), beta,
-                traits::matrix_storage(c), traits::leading_dimension(c) );
+    static return_type compute( char const trans, integer_t const k,
+            traits::complex_d const alpha, MatrixA& a, MatrixB& b,
+            traits::complex_d const beta, MatrixC& c ) {
+        detail::syr2k( traits::matrix_uplo_tag(c), trans,
+                traits::matrix_size2(c), k, alpha, traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::matrix_storage(b),
+                traits::leading_dimension(b), beta, traits::matrix_storage(c),
+                traits::leading_dimension(c) );
     }
 };
 
 // template function to call syr2k
 template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline integer_t syr2k( char const uplo, char const trans,
-        integer_t const k, traits::complex_d const alpha, MatrixA& a,
-        MatrixB& b, traits::complex_d const beta, MatrixC& c ) {
+inline integer_t syr2k( char const trans, integer_t const k,
+        traits::complex_d const alpha, MatrixA& a, MatrixB& b,
+        traits::complex_d const beta, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    syr2k_impl< value_type >::compute( uplo, trans, k, alpha, a, b, beta,
-            c );
+    syr2k_impl< value_type >::compute( trans, k, alpha, a, b, beta, c );
 }
 
 

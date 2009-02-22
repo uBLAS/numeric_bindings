@@ -49,24 +49,24 @@ struct spmv_impl {
 
     // templated specialization
     template< typename MatrixAP, typename VectorX, typename VectorY >
-    static return_type compute( char const uplo, real_type const alpha,
-            MatrixAP& ap, VectorX& x, real_type const beta, VectorY& y ) {
-        detail::spmv( uplo, traits::matrix_size2(ap), alpha,
-                traits::matrix_storage(ap), traits::vector_storage(x),
-                traits::vector_stride(x), beta, traits::vector_storage(y),
-                traits::vector_stride(y) );
+    static return_type compute( real_type const alpha, MatrixAP& ap,
+            VectorX& x, real_type const beta, VectorY& y ) {
+        detail::spmv( traits::matrix_uplo_tag(ap),
+                traits::matrix_size2(ap), alpha, traits::matrix_storage(ap),
+                traits::vector_storage(x), traits::vector_stride(x), beta,
+                traits::vector_storage(y), traits::vector_stride(y) );
     }
 };
 
 // template function to call spmv
 template< typename MatrixAP, typename VectorX, typename VectorY >
-inline integer_t spmv( char const uplo,
-        typename traits::matrix_traits< MatrixAP >::value_type const alpha,
+
+        inline integer_t spmv( typename traits::matrix_traits< MatrixAP >::value_type const alpha,
         MatrixAP& ap, VectorX& x,
         typename traits::matrix_traits< MatrixAP >::value_type const beta,
         VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
-    spmv_impl< value_type >::compute( uplo, alpha, ap, x, beta, y );
+    spmv_impl< value_type >::compute( alpha, ap, x, beta, y );
 }
 
 

@@ -51,21 +51,22 @@ struct her_impl {
 
     // templated specialization
     template< typename VectorX, typename MatrixA >
-    static return_type compute( char const uplo, real_type const alpha,
-            VectorX& x, MatrixA& a ) {
-        detail::her( uplo, traits::matrix_size2(a), alpha,
-                traits::vector_storage(x), traits::vector_stride(x),
-                traits::matrix_storage(a), traits::leading_dimension(a) );
+    static return_type compute( real_type const alpha, VectorX& x,
+            MatrixA& a ) {
+        detail::her( traits::matrix_uplo_tag(a),
+                traits::matrix_size2(a), alpha, traits::vector_storage(x),
+                traits::vector_stride(x), traits::matrix_storage(a),
+                traits::leading_dimension(a) );
     }
 };
 
 // template function to call her
 template< typename VectorX, typename MatrixA >
-inline integer_t her( char const uplo,
-        typename traits::vector_traits< VectorX >::value_type const alpha,
+
+        inline integer_t her( typename traits::vector_traits< VectorX >::value_type const alpha,
         VectorX& x, MatrixA& a ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    her_impl< value_type >::compute( uplo, alpha, x, a );
+    her_impl< value_type >::compute( alpha, x, a );
 }
 
 

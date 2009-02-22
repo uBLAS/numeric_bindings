@@ -49,22 +49,22 @@ struct spr2_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename MatrixAP >
-    static return_type compute( char const uplo, real_type const alpha,
-            VectorX& x, VectorY& y, MatrixAP& ap ) {
-        detail::spr2( uplo, traits::matrix_size2(ap), alpha,
-                traits::vector_storage(x), traits::vector_stride(x),
-                traits::vector_storage(y), traits::vector_stride(y),
-                traits::matrix_storage(ap) );
+    static return_type compute( real_type const alpha, VectorX& x, VectorY& y,
+            MatrixAP& ap ) {
+        detail::spr2( traits::matrix_uplo_tag(ap),
+                traits::matrix_size2(ap), alpha, traits::vector_storage(x),
+                traits::vector_stride(x), traits::vector_storage(y),
+                traits::vector_stride(y), traits::matrix_storage(ap) );
     }
 };
 
 // template function to call spr2
 template< typename VectorX, typename VectorY, typename MatrixAP >
-inline integer_t spr2( char const uplo,
-        typename traits::vector_traits< VectorX >::value_type const alpha,
+
+        inline integer_t spr2( typename traits::vector_traits< VectorX >::value_type const alpha,
         VectorX& x, VectorY& y, MatrixAP& ap ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    spr2_impl< value_type >::compute( uplo, alpha, x, y, ap );
+    spr2_impl< value_type >::compute( alpha, x, y, ap );
 }
 
 

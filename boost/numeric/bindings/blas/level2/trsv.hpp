@@ -61,20 +61,21 @@ struct trsv_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorX >
-    static return_type compute( char const uplo, char const trans,
-            char const diag, MatrixA& a, VectorX& x ) {
-        detail::trsv( uplo, trans, diag, traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(x), traits::vector_stride(x) );
+    static return_type compute( char const trans, char const diag, MatrixA& a,
+            VectorX& x ) {
+        detail::trsv( traits::matrix_uplo_tag(a), trans, diag,
+                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(x),
+                traits::vector_stride(x) );
     }
 };
 
 // template function to call trsv
 template< typename MatrixA, typename VectorX >
-inline integer_t trsv( char const uplo, char const trans,
-        char const diag, MatrixA& a, VectorX& x ) {
+inline integer_t trsv( char const trans, char const diag, MatrixA& a,
+        VectorX& x ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    trsv_impl< value_type >::compute( uplo, trans, diag, a, x );
+    trsv_impl< value_type >::compute( trans, diag, a, x );
 }
 
 

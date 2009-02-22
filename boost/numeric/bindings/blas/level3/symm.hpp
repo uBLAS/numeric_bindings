@@ -71,24 +71,23 @@ struct symm_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static return_type compute( char const side, char const uplo,
+    static return_type compute( char const side,
             traits::complex_d const alpha, MatrixA& a, MatrixB& b,
             traits::complex_d const beta, MatrixC& c ) {
-        detail::symm( side, uplo, traits::matrix_size1(c),
-                traits::matrix_size2(c), alpha, traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b), beta, traits::matrix_storage(c),
-                traits::leading_dimension(c) );
+        detail::symm( side, traits::matrix_uplo_tag(a),
+                traits::matrix_size1(c), traits::matrix_size2(c), alpha,
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b), beta,
+                traits::matrix_storage(c), traits::leading_dimension(c) );
     }
 };
 
 // template function to call symm
 template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline integer_t symm( char const side, char const uplo,
-        traits::complex_d const alpha, MatrixA& a, MatrixB& b,
-        traits::complex_d const beta, MatrixC& c ) {
+inline integer_t symm( char const side, traits::complex_d const alpha,
+        MatrixA& a, MatrixB& b, traits::complex_d const beta, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    symm_impl< value_type >::compute( side, uplo, alpha, a, b, beta, c );
+    symm_impl< value_type >::compute( side, alpha, a, b, beta, c );
 }
 
 

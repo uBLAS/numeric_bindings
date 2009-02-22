@@ -69,23 +69,23 @@ struct syrk_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixC >
-    static return_type compute( char const uplo, char const trans,
-            integer_t const k, traits::complex_d const alpha, MatrixA& a,
+    static return_type compute( char const trans, integer_t const k,
+            traits::complex_d const alpha, MatrixA& a,
             traits::complex_d const beta, MatrixC& c ) {
-        detail::syrk( uplo, trans, traits::matrix_size2(c), k, alpha,
-                traits::matrix_storage(a), traits::leading_dimension(a), beta,
-                traits::matrix_storage(c), traits::leading_dimension(c) );
+        detail::syrk( traits::matrix_uplo_tag(c), trans,
+                traits::matrix_size2(c), k, alpha, traits::matrix_storage(a),
+                traits::leading_dimension(a), beta, traits::matrix_storage(c),
+                traits::leading_dimension(c) );
     }
 };
 
 // template function to call syrk
 template< typename MatrixA, typename MatrixC >
-inline integer_t syrk( char const uplo, char const trans,
-        integer_t const k, traits::complex_d const alpha, MatrixA& a,
+inline integer_t syrk( char const trans, integer_t const k,
+        traits::complex_d const alpha, MatrixA& a,
         traits::complex_d const beta, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    syrk_impl< value_type >::compute( uplo, trans, k, alpha, a, beta,
-            c );
+    syrk_impl< value_type >::compute( trans, k, alpha, a, beta, c );
 }
 
 

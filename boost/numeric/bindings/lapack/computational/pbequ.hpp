@@ -61,32 +61,31 @@ struct pbequ_impl {
 
     // templated specialization
     template< typename MatrixAB, typename VectorS >
-    static void compute( char const uplo, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorS& s, real_type& scond,
-            real_type& amax, integer_t& info ) {
+    static void compute( integer_t const n, integer_t const kd, MatrixAB& ab,
+            VectorS& s, real_type& scond, real_type& amax, integer_t& info ) {
 #ifndef NDEBUG
-        assert( uplo == 'U' || uplo == 'L' );
+        assert( traits::matrix_uplo_tag(a) == 'U' ||
+                traits::matrix_uplo_tag(a) == 'L' );
         assert( n >= 0 );
         assert( kd >= 0 );
         assert( traits::leading_dimension(ab) >= kd+1 );
 #endif
-        detail::pbequ( uplo, n, kd, traits::matrix_storage(ab),
-                traits::leading_dimension(ab), traits::vector_storage(s),
-                scond, amax, info );
+        detail::pbequ( traits::matrix_uplo_tag(a), n, kd,
+                traits::matrix_storage(ab), traits::leading_dimension(ab),
+                traits::vector_storage(s), scond, amax, info );
     }
 };
 
 
 // template function to call pbequ
 template< typename MatrixAB, typename VectorS >
-inline integer_t pbequ( char const uplo, integer_t const n,
-        integer_t const kd, MatrixAB& ab, VectorS& s,
+inline integer_t pbequ( integer_t const n, integer_t const kd,
+        MatrixAB& ab, VectorS& s,
         typename traits::matrix_traits< MatrixAB >::value_type& scond,
         typename traits::matrix_traits< MatrixAB >::value_type& amax ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    pbequ_impl< value_type >::compute( uplo, n, kd, ab, s, scond, amax,
-            info );
+    pbequ_impl< value_type >::compute( n, kd, ab, s, scond, amax, info );
     return info;
 }
 

@@ -57,22 +57,21 @@ struct hpmv_impl {
 
     // templated specialization
     template< typename MatrixAP, typename VectorX, typename VectorY >
-    static return_type compute( char const uplo,
-            traits::complex_d const alpha, MatrixAP& ap, VectorX& x,
-            traits::complex_d const beta, VectorY& y ) {
-        detail::hpmv( uplo, traits::matrix_size2(ap), alpha,
-                traits::matrix_storage(ap), traits::vector_storage(x),
-                traits::vector_stride(x), beta, traits::vector_storage(y),
-                traits::vector_stride(y) );
+    static return_type compute( traits::complex_d const alpha, MatrixAP& ap,
+            VectorX& x, traits::complex_d const beta, VectorY& y ) {
+        detail::hpmv( traits::matrix_uplo_tag(ap),
+                traits::matrix_size2(ap), alpha, traits::matrix_storage(ap),
+                traits::vector_storage(x), traits::vector_stride(x), beta,
+                traits::vector_storage(y), traits::vector_stride(y) );
     }
 };
 
 // template function to call hpmv
 template< typename MatrixAP, typename VectorX, typename VectorY >
-inline integer_t hpmv( char const uplo, traits::complex_d const alpha,
-        MatrixAP& ap, VectorX& x, traits::complex_d const beta, VectorY& y ) {
+inline integer_t hpmv( traits::complex_d const alpha, MatrixAP& ap,
+        VectorX& x, traits::complex_d const beta, VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
-    hpmv_impl< value_type >::compute( uplo, alpha, ap, x, beta, y );
+    hpmv_impl< value_type >::compute( alpha, ap, x, beta, y );
 }
 
 

@@ -49,24 +49,25 @@ struct symv_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type compute( char const uplo, real_type const alpha,
-            MatrixA& a, VectorX& x, real_type const beta, VectorY& y ) {
-        detail::symv( uplo, traits::matrix_size2(a), alpha,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(x), traits::vector_stride(x), beta,
-                traits::vector_storage(y), traits::vector_stride(y) );
+    static return_type compute( real_type const alpha, MatrixA& a, VectorX& x,
+            real_type const beta, VectorY& y ) {
+        detail::symv( traits::matrix_uplo_tag(a),
+                traits::matrix_size2(a), alpha, traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(x),
+                traits::vector_stride(x), beta, traits::vector_storage(y),
+                traits::vector_stride(y) );
     }
 };
 
 // template function to call symv
 template< typename MatrixA, typename VectorX, typename VectorY >
-inline integer_t symv( char const uplo,
-        typename traits::matrix_traits< MatrixA >::value_type const alpha,
+
+        inline integer_t symv( typename traits::matrix_traits< MatrixA >::value_type const alpha,
         MatrixA& a, VectorX& x,
         typename traits::matrix_traits< MatrixA >::value_type const beta,
         VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    symv_impl< value_type >::compute( uplo, alpha, a, x, beta, y );
+    symv_impl< value_type >::compute( alpha, a, x, beta, y );
 }
 
 

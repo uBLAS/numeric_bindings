@@ -69,24 +69,23 @@ struct trmm_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixB >
-    static return_type compute( char const side, char const uplo,
-            char const transa, char const diag, traits::complex_d const alpha,
-            MatrixA& a, MatrixB& b ) {
-        detail::trmm( side, uplo, transa, diag, traits::matrix_size1(b),
-                traits::matrix_size2(b), alpha, traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b) );
+    static return_type compute( char const side, char const transa,
+            char const diag, traits::complex_d const alpha, MatrixA& a,
+            MatrixB& b ) {
+        detail::trmm( side, traits::matrix_uplo_tag(a), transa, diag,
+                traits::matrix_size1(b), traits::matrix_size2(b), alpha,
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b) );
     }
 };
 
 // template function to call trmm
 template< typename MatrixA, typename MatrixB >
-inline integer_t trmm( char const side, char const uplo,
-        char const transa, char const diag, traits::complex_d const alpha,
-        MatrixA& a, MatrixB& b ) {
+inline integer_t trmm( char const side, char const transa,
+        char const diag, traits::complex_d const alpha, MatrixA& a,
+        MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    trmm_impl< value_type >::compute( side, uplo, transa, diag, alpha,
-            a, b );
+    trmm_impl< value_type >::compute( side, transa, diag, alpha, a, b );
 }
 
 

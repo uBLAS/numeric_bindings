@@ -53,25 +53,25 @@ struct sbmv_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type compute( char const uplo, integer_t const k,
-            real_type const alpha, MatrixA& a, VectorX& x,
-            real_type const beta, VectorY& y ) {
-        detail::sbmv( uplo, traits::matrix_size2(a), k, alpha,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(x), traits::vector_stride(x), beta,
-                traits::vector_storage(y), traits::vector_stride(y) );
+    static return_type compute( integer_t const k, real_type const alpha,
+            MatrixA& a, VectorX& x, real_type const beta, VectorY& y ) {
+        detail::sbmv( traits::matrix_uplo_tag(a),
+                traits::matrix_size2(a), k, alpha, traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(x),
+                traits::vector_stride(x), beta, traits::vector_storage(y),
+                traits::vector_stride(y) );
     }
 };
 
 // template function to call sbmv
 template< typename MatrixA, typename VectorX, typename VectorY >
-inline integer_t sbmv( char const uplo, integer_t const k,
+inline integer_t sbmv( integer_t const k,
         typename traits::matrix_traits< MatrixA >::value_type const alpha,
         MatrixA& a, VectorX& x,
         typename traits::matrix_traits< MatrixA >::value_type const beta,
         VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    sbmv_impl< value_type >::compute( uplo, k, alpha, a, x, beta, y );
+    sbmv_impl< value_type >::compute( k, alpha, a, x, beta, y );
 }
 
 

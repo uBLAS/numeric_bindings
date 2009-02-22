@@ -55,22 +55,22 @@ struct her2_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename MatrixA >
-    static return_type compute( char const uplo,
-            traits::complex_d const alpha, VectorX& x, VectorY& y,
-            MatrixA& a ) {
-        detail::her2( uplo, traits::matrix_size2(a), alpha,
-                traits::vector_storage(x), traits::vector_stride(x),
-                traits::vector_storage(y), traits::vector_stride(y),
-                traits::matrix_storage(a), traits::leading_dimension(a) );
+    static return_type compute( traits::complex_d const alpha, VectorX& x,
+            VectorY& y, MatrixA& a ) {
+        detail::her2( traits::matrix_uplo_tag(a),
+                traits::matrix_size2(a), alpha, traits::vector_storage(x),
+                traits::vector_stride(x), traits::vector_storage(y),
+                traits::vector_stride(y), traits::matrix_storage(a),
+                traits::leading_dimension(a) );
     }
 };
 
 // template function to call her2
 template< typename VectorX, typename VectorY, typename MatrixA >
-inline integer_t her2( char const uplo, traits::complex_d const alpha,
-        VectorX& x, VectorY& y, MatrixA& a ) {
+inline integer_t her2( traits::complex_d const alpha, VectorX& x,
+        VectorY& y, MatrixA& a ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    her2_impl< value_type >::compute( uplo, alpha, x, y, a );
+    her2_impl< value_type >::compute( alpha, x, y, a );
 }
 
 

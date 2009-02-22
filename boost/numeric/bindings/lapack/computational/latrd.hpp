@@ -71,16 +71,17 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // templated specialization
     template< typename MatrixA, typename VectorE, typename VectorTAU,
             typename MatrixW >
-    static void compute( char const uplo, integer_t const nb, MatrixA& a,
-            VectorE& e, VectorTAU& tau, MatrixW& w ) {
+    static void compute( integer_t const nb, MatrixA& a, VectorE& e,
+            VectorTAU& tau, MatrixW& w ) {
 #ifndef NDEBUG
-        assert( uplo == 'U' || uplo == 'L' );
+        assert( traits::matrix_uplo_tag(a) == 'U' ||
+                traits::matrix_uplo_tag(a) == 'L' );
         assert( traits::leading_dimension(a) >= (ERROR) );
         assert( traits::leading_dimension(w) >= std::max(1,
                 traits::matrix_size2(a)) );
 #endif
-        detail::latrd( uplo, traits::matrix_size2(a), nb,
-                traits::matrix_storage(a), traits::leading_dimension(a),
+        detail::latrd( traits::matrix_uplo_tag(a), traits::matrix_size2(a),
+                nb, traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(e), traits::vector_storage(tau),
                 traits::matrix_storage(w), traits::leading_dimension(w) );
     }
@@ -96,17 +97,18 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // templated specialization
     template< typename MatrixA, typename VectorE, typename VectorTAU,
             typename MatrixW >
-    static void compute( char const uplo, integer_t const nb, MatrixA& a,
-            VectorE& e, VectorTAU& tau, MatrixW& w ) {
+    static void compute( integer_t const nb, MatrixA& a, VectorE& e,
+            VectorTAU& tau, MatrixW& w ) {
 #ifndef NDEBUG
-        assert( uplo == 'U' || uplo == 'L' );
+        assert( traits::matrix_uplo_tag(h) == 'U' ||
+                traits::matrix_uplo_tag(h) == 'L' );
         assert( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_size2(a)) );
         assert( traits::leading_dimension(w) >= std::max(1,
                 traits::matrix_size2(a)) );
 #endif
-        detail::latrd( uplo, traits::matrix_size2(a), nb,
-                traits::matrix_storage(a), traits::leading_dimension(a),
+        detail::latrd( traits::matrix_uplo_tag(h), traits::matrix_size2(a),
+                nb, traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(e), traits::vector_storage(tau),
                 traits::matrix_storage(w), traits::leading_dimension(w) );
     }
@@ -116,11 +118,11 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call latrd
 template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
-inline integer_t latrd( char const uplo, integer_t const nb, MatrixA& a,
-        VectorE& e, VectorTAU& tau, MatrixW& w ) {
+inline integer_t latrd( integer_t const nb, MatrixA& a, VectorE& e,
+        VectorTAU& tau, MatrixW& w ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    latrd_impl< value_type >::compute( uplo, nb, a, e, tau, w );
+    latrd_impl< value_type >::compute( nb, a, e, tau, w );
     return info;
 }
 

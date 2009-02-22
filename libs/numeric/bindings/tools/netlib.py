@@ -995,17 +995,25 @@ def parse_file( filename, template_map ):
             argument_properties[ 'assert_char' ] += [ letter ]
 
       if argument_name == 'UPLO':
-        match_uplo = re.compile( '(Upper|Lower)(triangle|triangles|of|input|matrix|\s)+([A-Z]+)' ).findall( comment_block )
-        if len( match_uplo ) == 2 and len( argument_properties[ 'assert_char' ] ) == 2 and \
-          'U' in argument_properties[ 'assert_char' ] and 'L' in argument_properties[ 'assert_char' ]:
-          print "adding uplo trait"
+        # see if the traits are overruled through the template system
+        traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
+        if my_has_key( traits_key, template_map ):
           argument_properties[ 'trait_type' ] = 'uplo'
-          argument_properties[ 'trait_of' ] = match_uplo[ 0 ][ 2 ]
-
-          # see if the traits are overruled through the template system
-          traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
-          if my_has_key( traits_key, template_map ):
-            argument_properties[ 'trait_of' ] = template_map[ my_has_key( traits_key, template_map ) ].strip()
+          argument_properties[ 'trait_of' ] = template_map[ my_has_key( traits_key, template_map ) ].strip()
+        
+        else:
+          match_uplo = re.compile( '([Uu]pper|[Ll]ower)(or|triangular|triangle|triangles|part|of|the|band|hermitian|symmetric|input|matrix|\s)+([A-Z]+)', re.M ).findall( comment_block )
+          print "UPLO:", match_uplo
+          uplo_trait_of = None
+          if len( match_uplo ) > 0:
+            uplo_trait_of = match_uplo[ 0 ][ 2 ]
+          for match in match_uplo:
+            if uplo_trait_of != None and match[2] != uplo_trait_of:
+              uplo_trait_of = None
+          if uplo_trait_of != None:
+            print "adding uplo trait"
+            argument_properties[ 'trait_type' ] = 'uplo'
+            argument_properties[ 'trait_of' ] = uplo_trait_of
 
     #
     # Minimal workspace dimension recognition

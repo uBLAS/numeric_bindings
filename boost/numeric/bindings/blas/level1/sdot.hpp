@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -45,6 +47,9 @@ struct sdot_impl {
     template< typename VectorSX, typename VectorSY >
     static return_type compute( integer_t const n, VectorSX& sx,
             integer_t const incx, VectorSY& sy, integer_t const incy ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorSX >::value_type, typename traits::vector_traits<
+                VectorSY >::value_type > );
         return detail::sdot( n, traits::vector_storage(sx), incx,
                 traits::vector_storage(sy), incy );
     }
@@ -52,12 +57,13 @@ struct sdot_impl {
 
 // template function to call sdot
 template< typename VectorSX, typename VectorSY >
-inline integer_t sdot( integer_t const n, VectorSX& sx,
-        integer_t const incx, VectorSY& sy, integer_t const incy ) {
+inline typename sdot_impl< typename traits::vector_traits<
+        VectorSX >::value_type >::return_type
+sdot( integer_t const n, VectorSX& sx, integer_t const incx,
+        VectorSY& sy, integer_t const incy ) {
     typedef typename traits::vector_traits< VectorSX >::value_type value_type;
     return sdot_impl< value_type >::compute( n, sx, incx, sy, incy );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

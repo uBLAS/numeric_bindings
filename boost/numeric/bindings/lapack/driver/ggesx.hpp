@@ -22,6 +22,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -118,6 +120,30 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
             integer_t& info, detail::workspace3< WORK, IWORK, BWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorALPHAR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorALPHAI >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorBETA >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVSL >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVSR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorRCONDE >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorRCONDV >::value_type > );
 #ifndef NDEBUG
         assert( jobvsl == 'N' || jobvsl == 'V' );
         assert( jobvsr == 'N' || jobvsr == 'V' );
@@ -250,6 +276,24 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
             VectorRCONDV& rcondv, integer_t& info, detail::workspace4< WORK,
             RWORK, IWORK, BWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorRCONDE >::value_type, typename traits::vector_traits<
+                VectorRCONDV >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorALPHA >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorBETA >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVSL >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVSR >::value_type > );
 #ifndef NDEBUG
         assert( jobvsl == 'N' || jobvsl == 'V' );
         assert( jobvsr == 'N' || jobvsr == 'V' );
@@ -389,7 +433,6 @@ inline integer_t ggesx( char const jobvsl, char const jobvsr,
             info, work );
     return info;
 }
-
 // template function to call ggesx
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
@@ -406,7 +449,6 @@ inline integer_t ggesx( char const jobvsl, char const jobvsr,
             work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

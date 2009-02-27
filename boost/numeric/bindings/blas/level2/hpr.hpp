@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -53,6 +55,9 @@ struct hpr_impl {
     template< typename VectorX, typename MatrixAP >
     static return_type compute( real_type const alpha, VectorX& x,
             MatrixAP& ap ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorX >::value_type, typename traits::matrix_traits<
+                MatrixAP >::value_type > );
         detail::hpr( traits::matrix_uplo_tag(ap),
                 traits::matrix_size2(ap), alpha, traits::vector_storage(x),
                 traits::vector_stride(x), traits::matrix_storage(ap) );
@@ -61,13 +66,13 @@ struct hpr_impl {
 
 // template function to call hpr
 template< typename VectorX, typename MatrixAP >
-
-        inline integer_t hpr( typename traits::vector_traits< VectorX >::value_type const alpha,
+inline typename hpr_impl< typename traits::vector_traits<
+        VectorX >::value_type >::return_type
+hpr( typename traits::vector_traits< VectorX >::value_type const alpha,
         VectorX& x, MatrixAP& ap ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     hpr_impl< value_type >::compute( alpha, x, ap );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

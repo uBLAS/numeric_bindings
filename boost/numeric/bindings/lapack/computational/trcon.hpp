@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -75,8 +77,9 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // user-defined workspace specialization
     template< typename MatrixA, typename WORK, typename IWORK >
     static void compute( char const norm, char const uplo, char const diag,
-            MatrixA& a, real_type& rcond, integer_t& info,
-            detail::workspace2< WORK, IWORK > work ) {
+            MatrixA& a, real_type& rcond, integer_t& info, detail::workspace2<
+            WORK, IWORK > work ) {
+        
 #ifndef NDEBUG
         assert( norm == '1' || norm == 'O' || norm == 'I' );
         assert( uplo == 'U' || uplo == 'L' );
@@ -135,8 +138,9 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // user-defined workspace specialization
     template< typename MatrixA, typename WORK, typename RWORK >
     static void compute( char const norm, char const uplo, char const diag,
-            MatrixA& a, real_type& rcond, integer_t& info,
-            detail::workspace2< WORK, RWORK > work ) {
+            MatrixA& a, real_type& rcond, integer_t& info, detail::workspace2<
+            WORK, RWORK > work ) {
+        
 #ifndef NDEBUG
         assert( norm == '1' || norm == 'O' || norm == 'I' );
         assert( uplo == 'U' || uplo == 'L' );
@@ -189,16 +193,14 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call trcon
 template< typename MatrixA, typename Workspace >
 inline integer_t trcon( char const norm, char const uplo,
-        char const diag, MatrixA& a,
-        typename traits::matrix_traits< MatrixA >::value_type& rcond,
-        Workspace work = optimal_workspace() ) {
+        char const diag, MatrixA& a, typename traits::matrix_traits<
+        MatrixA >::value_type& rcond, Workspace work = optimal_workspace() ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     trcon_impl< value_type >::compute( norm, uplo, diag, a, rcond, info,
             work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

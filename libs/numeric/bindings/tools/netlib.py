@@ -135,6 +135,11 @@ def level1_type( name, properties ):
         result = result.replace( "float", "real_type" )
       if properties[ 'value_type' ] == 'DOUBLE PRECISION':
         result = result.replace( "double", "real_type" )
+      if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
+        properties[ 'value_type' ] == 'DOUBLE COMPLEX':
+         result = result.replace( "traits::complex_d", "value_type" )
+         result = result.replace( "traits::complex_f", "value_type" )
+
   return result
 
 
@@ -147,7 +152,10 @@ def level2_type( name, properties ):
     if properties[ 'value_type' ] == 'REAL' or properties[ 'value_type' ] == 'DOUBLE PRECISION':
       result = result.replace( "real_type", "typename traits::$TYPEOF_FIRST_TYPENAME" + \
         "_traits< $FIRST_TYPENAME >::value_type" )
-
+    if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
+      properties[ 'value_type' ] == 'DOUBLE COMPLEX':
+      result = result.replace( "value_type", "typename traits::$TYPEOF_FIRST_TYPENAME" + \
+        "_traits< $FIRST_TYPENAME >::value_type" )
   return result
 
 
@@ -160,6 +168,17 @@ def level1_typename( name, properties ):
       result = "typename Vector" + name
   return result
 
+
+def level1_static_assert( name, properties ):
+  result = None
+  if 'workspace' not in properties[ 'io' ]:
+    if properties[ 'type' ] == 'matrix':
+      result = "typename traits::matrix_traits< " + level1_typename( name, properties ).replace( "typename ", "") + " >::value_type"
+    elif properties[ 'type' ] == 'vector':
+      result = "typename traits::vector_traits< " + level1_typename( name, properties ).replace( "typename ", "") + " >::value_type"
+    elif properties[ 'type' ] == 'scalar':
+      result = "TODO"
+  return result
 
 
 def nested_list_args( arg ):
@@ -1111,6 +1130,7 @@ def parse_file( filename, template_map ):
   # variables which have been assigned their code in pass 1.
   for argument_name, argument_properties in argument_map.iteritems():
     argument_properties[ 'code' ][ 'level_1_assert' ] = level1_assert( argument_name, argument_properties, argument_map )
+    argument_properties[ 'code' ][ 'level_1_static_assert' ] = level1_static_assert( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'opt_workspace_query' ] = opt_workspace_query_type( argument_name, argument_properties, argument_map )
     argument_properties[ 'code' ][ 'opt_workspace_pre' ] = opt_workspace_pre_type( argument_name, argument_properties, argument_map )
     argument_properties[ 'code' ][ 'opt_workspace_post' ] = opt_workspace_post_type( argument_name, argument_properties )

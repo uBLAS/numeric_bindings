@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -47,6 +49,9 @@ struct srot_impl {
     template< typename VectorCX, typename VectorCY >
     static return_type compute( integer_t const n, VectorCX& cx, VectorCY& cy,
             real_type const c, real_type const s ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorCX >::value_type, typename traits::vector_traits<
+                VectorCY >::value_type > );
         detail::srot( n, traits::vector_storage(cx),
                 traits::vector_stride(cx), traits::vector_storage(cy),
                 traits::vector_stride(cy), c, s );
@@ -55,13 +60,14 @@ struct srot_impl {
 
 // template function to call srot
 template< typename VectorCX, typename VectorCY >
-inline integer_t srot( integer_t const n, VectorCX& cx, VectorCY& cy,
+inline typename srot_impl< typename traits::vector_traits<
+        VectorCX >::value_type >::return_type
+srot( integer_t const n, VectorCX& cx, VectorCY& cy,
         typename traits::vector_traits< VectorCX >::value_type const c,
         typename traits::vector_traits< VectorCX >::value_type const s ) {
     typedef typename traits::vector_traits< VectorCX >::value_type value_type;
     srot_impl< value_type >::compute( n, cx, cy, c, s );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

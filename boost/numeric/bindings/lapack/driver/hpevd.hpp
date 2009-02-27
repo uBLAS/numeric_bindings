@@ -20,6 +20,8 @@
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -64,6 +66,9 @@ struct hpevd_impl {
     static void compute( char const jobz, integer_t const n, MatrixAP& ap,
             VectorW& w, MatrixZ& z, integer_t& info, detail::workspace3< WORK,
             RWORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAP >::value_type, typename traits::matrix_traits<
+                MatrixZ >::value_type > );
 #ifndef NDEBUG
         assert( jobz == 'N' || jobz == 'V' );
         assert( traits::matrix_uplo_tag(ap) == 'U' ||
@@ -163,7 +168,6 @@ inline integer_t hpevd( char const jobz, integer_t const n, MatrixAP& ap,
     hpevd_impl< value_type >::compute( jobz, n, ap, w, z, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

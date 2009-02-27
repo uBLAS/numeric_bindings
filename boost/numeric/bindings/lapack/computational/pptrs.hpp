@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -63,6 +65,9 @@ struct pptrs_impl {
     template< typename VectorAP, typename MatrixB >
     static void compute( integer_t const n, VectorAP& ap, MatrixB& b,
             integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorAP >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
@@ -85,7 +90,6 @@ inline integer_t pptrs( integer_t const n, VectorAP& ap, MatrixB& b ) {
     pptrs_impl< value_type >::compute( n, ap, b, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

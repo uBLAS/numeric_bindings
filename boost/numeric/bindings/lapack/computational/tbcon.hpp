@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -80,6 +82,7 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t const n, integer_t const kd, MatrixAB& ab,
             real_type& rcond, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
+        
 #ifndef NDEBUG
         assert( norm == '1' || norm == 'O' || norm == 'I' );
         assert( uplo == 'U' || uplo == 'L' );
@@ -140,6 +143,7 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t const n, integer_t const kd, MatrixAB& ab,
             real_type& rcond, integer_t& info, detail::workspace2< WORK,
             RWORK > work ) {
+        
 #ifndef NDEBUG
         assert( norm == '1' || norm == 'O' || norm == 'I' );
         assert( uplo == 'U' || uplo == 'L' );
@@ -200,7 +204,6 @@ inline integer_t tbcon( char const norm, char const uplo,
             rcond, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

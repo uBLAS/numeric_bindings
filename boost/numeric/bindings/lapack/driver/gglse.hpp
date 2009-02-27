@@ -22,6 +22,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -86,6 +88,18 @@ struct gglse_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename VectorD, typename VectorX, typename WORK >
     static void compute( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
             VectorX& x, integer_t& info, detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorC >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorD >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorX >::value_type > );
 #ifndef NDEBUG
         assert( traits::matrix_size1(a) >= 0 );
         assert( traits::matrix_size2(b) >= 0 );
@@ -155,6 +169,18 @@ struct gglse_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorD, typename VectorX, typename WORK >
     static void compute( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
             VectorX& x, integer_t& info, detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorC >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorD >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorX >::value_type > );
 #ifndef NDEBUG
         assert( traits::matrix_size1(a) >= 0 );
         assert( traits::matrix_size2(b) >= 0 );
@@ -223,7 +249,6 @@ inline integer_t gglse( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
     gglse_impl< value_type >::compute( a, b, c, d, x, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

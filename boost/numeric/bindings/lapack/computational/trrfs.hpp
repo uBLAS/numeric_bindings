@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -92,6 +94,18 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
             VectorBERR& berr, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixX >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorFERR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorBERR >::value_type > );
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
@@ -168,6 +182,15 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
             VectorBERR& berr, integer_t& info, detail::workspace2< WORK,
             RWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorFERR >::value_type, typename traits::vector_traits<
+                VectorBERR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixX >::value_type > );
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
@@ -242,7 +265,6 @@ inline integer_t trrfs( char const uplo, char const trans,
             berr, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

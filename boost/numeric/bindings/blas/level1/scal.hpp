@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -57,7 +59,8 @@ struct scal_impl {
 
     // templated specialization
     template< typename VectorX >
-    static return_type compute( traits::complex_d const a, VectorX& x ) {
+    static return_type compute( value_type const a, VectorX& x ) {
+        
         detail::scal( traits::vector_size(x), a,
                 traits::vector_storage(x), traits::vector_stride(x) );
     }
@@ -65,11 +68,13 @@ struct scal_impl {
 
 // template function to call scal
 template< typename VectorX >
-inline integer_t scal( traits::complex_d const a, VectorX& x ) {
+inline typename scal_impl< typename traits::vector_traits<
+        VectorX >::value_type >::return_type
+scal( typename traits::vector_traits< VectorX >::value_type const a,
+        VectorX& x ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     scal_impl< value_type >::compute( a, x );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

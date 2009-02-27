@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -78,6 +80,7 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
+        
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( traits::matrix_size2(a) >= 0 );
@@ -138,6 +141,7 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             detail::workspace1< WORK > work ) {
+        
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( traits::matrix_size2(a) >= 0 );
@@ -189,7 +193,6 @@ inline integer_t sycon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

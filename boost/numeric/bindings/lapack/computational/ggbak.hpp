@@ -15,8 +15,13 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GGBAK_HPP
 
 #include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/traits/is_complex.hpp>
+#include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cassert>
 
 namespace boost {
@@ -59,8 +64,12 @@ namespace detail {
 }
 
 // value-type based template
+template< typename ValueType, typename Enable = void >
+struct ggbak_impl{};
+
+// real specialization
 template< typename ValueType >
-struct ggbak_impl {
+struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
@@ -70,6 +79,45 @@ struct ggbak_impl {
     static void compute( char const job, char const side, integer_t const ilo,
             integer_t const ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
             MatrixV& v, integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorLSCALE >::value_type, typename traits::vector_traits<
+                VectorRSCALE >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorLSCALE >::value_type, typename traits::matrix_traits<
+                MatrixV >::value_type > );
+#ifndef NDEBUG
+        assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
+        assert( side == 'R' || side == 'L' );
+        assert( traits::matrix_size1(v) >= 0 );
+        assert( traits::vector_size(lscale) >= traits::matrix_size1(v) );
+        assert( traits::vector_size(rscale) >= traits::matrix_size1(v) );
+        assert( traits::matrix_size2(v) >= 0 );
+        assert( traits::leading_dimension(v) >= std::max(1,
+                traits::matrix_size1(v)) );
+#endif
+        detail::ggbak( job, side, traits::matrix_size1(v), ilo, ihi,
+                traits::vector_storage(lscale),
+                traits::vector_storage(rscale), traits::matrix_size2(v),
+                traits::matrix_storage(v), traits::leading_dimension(v),
+                info );
+    }
+};
+
+// complex specialization
+template< typename ValueType >
+struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+
+    typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
+
+    // templated specialization
+    template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
+    static void compute( char const job, char const side, integer_t const ilo,
+            integer_t const ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
+            MatrixV& v, integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorLSCALE >::value_type, typename traits::vector_traits<
+                VectorRSCALE >::value_type > );
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         assert( side == 'R' || side == 'L' );
@@ -94,13 +142,13 @@ template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
 inline integer_t ggbak( char const job, char const side,
         integer_t const ilo, integer_t const ihi, VectorLSCALE& lscale,
         VectorRSCALE& rscale, MatrixV& v ) {
-    typedef typename traits::vector_traits< VectorLSCALE >::value_type value_type;
+    typedef typename traits::vector_traits<
+            VectorLSCALE >::value_type value_type;
     integer_t info(0);
     ggbak_impl< value_type >::compute( job, side, ilo, ihi, lscale,
             rscale, v, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

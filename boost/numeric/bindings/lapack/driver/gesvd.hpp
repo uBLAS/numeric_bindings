@@ -22,6 +22,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -87,6 +89,15 @@ struct gesvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( char const jobu, char const jobvt, MatrixA& a,
             VectorS& s, MatrixU& u, MatrixVT& vt, integer_t& info,
             detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorS >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixU >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVT >::value_type > );
 #ifndef NDEBUG
         assert( jobu == 'A' || jobu == 'S' || jobu == 'O' || jobu == 'N' );
         assert( jobvt == 'A' || jobvt == 'S' || jobvt == 'O' || jobvt == 'N' );
@@ -156,9 +167,15 @@ struct gesvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( char const jobu, char const jobvt, MatrixA& a,
             VectorS& s, MatrixU& u, MatrixVT& vt, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
-#ifndef NDEBUG
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixU >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVT >::value_type > );
         integer_t minmn = std::min( traits::matrix_size1(a),
                 traits::matrix_size2(a) );
+#ifndef NDEBUG
         assert( jobu == 'A' || jobu == 'S' || jobu == 'O' || jobu == 'N' );
         assert( jobvt == 'A' || jobvt == 'S' || jobvt == 'O' || jobvt == 'N' );
         assert( traits::matrix_size1(a) >= 0 );
@@ -245,7 +262,6 @@ inline integer_t gesvd( char const jobu, char const jobvt, MatrixA& a,
             work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

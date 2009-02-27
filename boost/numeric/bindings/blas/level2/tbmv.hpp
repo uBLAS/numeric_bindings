@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -63,6 +65,9 @@ struct tbmv_impl {
     template< typename MatrixA, typename VectorX >
     static return_type compute( char const trans, char const diag,
             integer_t const k, MatrixA& a, VectorX& x ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorX >::value_type > );
         detail::tbmv( traits::matrix_uplo_tag(a), trans, diag,
                 traits::matrix_size2(a), k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(x),
@@ -72,12 +77,13 @@ struct tbmv_impl {
 
 // template function to call tbmv
 template< typename MatrixA, typename VectorX >
-inline integer_t tbmv( char const trans, char const diag,
-        integer_t const k, MatrixA& a, VectorX& x ) {
+inline typename tbmv_impl< typename traits::matrix_traits<
+        MatrixA >::value_type >::return_type
+tbmv( char const trans, char const diag, integer_t const k, MatrixA& a,
+        VectorX& x ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     tbmv_impl< value_type >::compute( trans, diag, k, a, x );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

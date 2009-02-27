@@ -15,8 +15,13 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GBEQU_HPP
 
 #include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/traits/is_complex.hpp>
+#include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cassert>
 
 namespace boost {
@@ -59,8 +64,12 @@ namespace detail {
 }
 
 // value-type based template
+template< typename ValueType, typename Enable = void >
+struct gbequ_impl{};
+
+// real specialization
 template< typename ValueType >
-struct gbequ_impl {
+struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
@@ -71,6 +80,41 @@ struct gbequ_impl {
             integer_t const kl, integer_t const ku, MatrixAB& ab, VectorR& r,
             VectorC& c, real_type& rowcnd, real_type& colcnd, real_type& amax,
             integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::vector_traits<
+                VectorR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::vector_traits<
+                VectorC >::value_type > );
+#ifndef NDEBUG
+        assert( m >= 0 );
+        assert( n >= 0 );
+        assert( kl >= 0 );
+        assert( ku >= 0 );
+        assert( traits::leading_dimension(ab) >= kl+ku+1 );
+#endif
+        detail::gbequ( m, n, kl, ku, traits::matrix_storage(ab),
+                traits::leading_dimension(ab), traits::vector_storage(r),
+                traits::vector_storage(c), rowcnd, colcnd, amax, info );
+    }
+};
+
+// complex specialization
+template< typename ValueType >
+struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+
+    typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
+
+    // templated specialization
+    template< typename MatrixAB, typename VectorR, typename VectorC >
+    static void compute( integer_t const m, integer_t const n,
+            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorR& r,
+            VectorC& c, real_type& rowcnd, real_type& colcnd, real_type& amax,
+            integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorR >::value_type, typename traits::vector_traits<
+                VectorC >::value_type > );
 #ifndef NDEBUG
         assert( m >= 0 );
         assert( n >= 0 );
@@ -89,17 +133,16 @@ struct gbequ_impl {
 template< typename MatrixAB, typename VectorR, typename VectorC >
 inline integer_t gbequ( integer_t const m, integer_t const n,
         integer_t const kl, integer_t const ku, MatrixAB& ab, VectorR& r,
-        VectorC& c,
-        typename traits::matrix_traits< MatrixAB >::value_type& rowcnd,
-        typename traits::matrix_traits< MatrixAB >::value_type& colcnd,
-        typename traits::matrix_traits< MatrixAB >::value_type& amax ) {
+        VectorC& c, typename traits::matrix_traits<
+        MatrixAB >::value_type& rowcnd, typename traits::matrix_traits<
+        MatrixAB >::value_type& colcnd, typename traits::matrix_traits<
+        MatrixAB >::value_type& amax ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     gbequ_impl< value_type >::compute( m, n, kl, ku, ab, r, c, rowcnd,
             colcnd, amax, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

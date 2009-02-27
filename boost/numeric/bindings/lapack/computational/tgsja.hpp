@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -106,8 +108,26 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
             real_type const tola, real_type const tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-            integer_t& ncycle, integer_t& info,
-            detail::workspace1< WORK > work ) {
+            integer_t& ncycle, integer_t& info, detail::workspace1<
+            WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorALPHA >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorBETA >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixU >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixV >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixQ >::value_type > );
 #ifndef NDEBUG
         assert( jobu == 'U' || jobu == 'I' || jobu == 'N' );
         assert( jobv == 'V' || jobv == 'I' || jobv == 'N' );
@@ -184,8 +204,23 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
             real_type const tola, real_type const tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
-            integer_t& ncycle, integer_t& info,
-            detail::workspace1< WORK > work ) {
+            integer_t& ncycle, integer_t& info, detail::workspace1<
+            WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorALPHA >::value_type, typename traits::vector_traits<
+                VectorBETA >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixU >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixV >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixQ >::value_type > );
 #ifndef NDEBUG
         assert( jobu == 'U' || jobu == 'I' || jobu == 'N' );
         assert( jobv == 'V' || jobv == 'I' || jobv == 'N' );
@@ -254,18 +289,17 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename MatrixQ, typename Workspace >
 inline integer_t tgsja( char const jobu, char const jobv,
         char const jobq, integer_t const k, integer_t const l, MatrixA& a,
-        MatrixB& b,
-        typename traits::matrix_traits< MatrixA >::value_type const tola,
-        typename traits::matrix_traits< MatrixA >::value_type const tolb,
-        VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
-        MatrixQ& q, integer_t& ncycle, Workspace work = optimal_workspace() ) {
+        MatrixB& b, typename traits::matrix_traits<
+        MatrixA >::value_type const tola, typename traits::matrix_traits<
+        MatrixA >::value_type const tolb, VectorALPHA& alpha,
+        VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
+        integer_t& ncycle, Workspace work = optimal_workspace() ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     tgsja_impl< value_type >::compute( jobu, jobv, jobq, k, l, a, b,
             tola, tolb, alpha, beta, u, v, q, ncycle, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

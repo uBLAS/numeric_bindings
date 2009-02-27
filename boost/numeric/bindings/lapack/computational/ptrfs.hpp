@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -90,6 +92,27 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorE >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorDF >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorEF >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::matrix_traits<
+                MatrixX >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorFERR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorBERR >::value_type > );
 #ifndef NDEBUG
         assert( n >= 0 );
         assert( traits::matrix_size2(b) >= 0 );
@@ -158,6 +181,24 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorE& e, VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorDF >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorFERR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorBERR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorE >::value_type, typename traits::vector_traits<
+                VectorEF >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorE >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorE >::value_type, typename traits::matrix_traits<
+                MatrixX >::value_type > );
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( n >= 0 );
@@ -233,7 +274,6 @@ inline integer_t ptrfs( integer_t const n, VectorD& d, VectorE& e,
             info, work );
     return info;
 }
-
 // template function to call ptrfs
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
@@ -248,7 +288,6 @@ inline integer_t ptrfs( char const uplo, integer_t const n, VectorD& d,
             berr, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

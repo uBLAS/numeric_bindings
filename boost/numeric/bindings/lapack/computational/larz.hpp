@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -77,6 +79,9 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     static void compute( char const side, integer_t const l, VectorV& v,
             integer_t const incv, real_type const tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorV >::value_type, typename traits::matrix_traits<
+                MatrixC >::value_type > );
 #ifndef NDEBUG
         assert( side == 'L' || side == 'R' );
         assert( traits::leading_dimension(c) >= std::max(1,
@@ -127,8 +132,11 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     // user-defined workspace specialization
     template< typename VectorV, typename MatrixC, typename WORK >
     static void compute( char const side, integer_t const l, VectorV& v,
-            integer_t const incv, traits::complex_f const tau, MatrixC& c,
+            integer_t const incv, value_type const tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorV >::value_type, typename traits::matrix_traits<
+                MatrixC >::value_type > );
 #ifndef NDEBUG
         assert( side == 'L' || side == 'R' );
         assert( traits::leading_dimension(c) >= std::max(1,
@@ -146,7 +154,7 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     // minimal workspace specialization
     template< typename VectorV, typename MatrixC >
     static void compute( char const side, integer_t const l, VectorV& v,
-            integer_t const incv, traits::complex_f const tau, MatrixC& c,
+            integer_t const incv, value_type const tau, MatrixC& c,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( side,
                 traits::matrix_size1(c), traits::matrix_size2(c) ) );
@@ -156,7 +164,7 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     // optimal workspace specialization
     template< typename VectorV, typename MatrixC >
     static void compute( char const side, integer_t const l, VectorV& v,
-            integer_t const incv, traits::complex_f const tau, MatrixC& c,
+            integer_t const incv, value_type const tau, MatrixC& c,
             optimal_workspace work ) {
         compute( side, l, v, incv, tau, c, minimal_workspace() );
     }
@@ -174,26 +182,14 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 // template function to call larz
 template< typename VectorV, typename MatrixC, typename Workspace >
 inline integer_t larz( char const side, integer_t const l, VectorV& v,
-        integer_t const incv,
-        typename traits::vector_traits< VectorV >::value_type const tau,
-        MatrixC& c, Workspace work = optimal_workspace() ) {
-    typedef typename traits::vector_traits< VectorV >::value_type value_type;
-    integer_t info(0);
-    larz_impl< value_type >::compute( side, l, v, incv, tau, c, work );
-    return info;
-}
-
-// template function to call larz
-template< typename VectorV, typename MatrixC, typename Workspace >
-inline integer_t larz( char const side, integer_t const l, VectorV& v,
-        integer_t const incv, traits::complex_f const tau, MatrixC& c,
+        integer_t const incv, typename traits::vector_traits<
+        VectorV >::value_type const tau, MatrixC& c,
         Workspace work = optimal_workspace() ) {
     typedef typename traits::vector_traits< VectorV >::value_type value_type;
     integer_t info(0);
     larz_impl< value_type >::compute( side, l, v, incv, tau, c, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

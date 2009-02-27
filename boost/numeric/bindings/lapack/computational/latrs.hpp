@@ -15,8 +15,13 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_LATRS_HPP
 
 #include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/traits/is_complex.hpp>
+#include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cassert>
 
 namespace boost {
@@ -61,8 +66,12 @@ namespace detail {
 }
 
 // value-type based template
+template< typename ValueType, typename Enable = void >
+struct latrs_impl{};
+
+// real specialization
 template< typename ValueType >
-struct latrs_impl {
+struct latrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
@@ -72,6 +81,43 @@ struct latrs_impl {
     static void compute( char const uplo, char const trans, char const diag,
             char const normin, MatrixA& a, VectorX& x, real_type& scale,
             VectorCNORM& cnorm, integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorX >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorCNORM >::value_type > );
+#ifndef NDEBUG
+        assert( uplo == 'U' || uplo == 'L' );
+        assert( trans == 'N' || trans == 'T' || trans == 'C' );
+        assert( diag == 'N' || diag == 'U' );
+        assert( normin == 'Y' || normin == 'N' );
+        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::leading_dimension(a) >= ?MAX );
+        assert( traits::vector_size(x) >= traits::matrix_size2(a) );
+#endif
+        detail::latrs( uplo, trans, diag, normin, traits::matrix_size2(a),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(x), scale,
+                traits::vector_storage(cnorm), info );
+    }
+};
+
+// complex specialization
+template< typename ValueType >
+struct latrs_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+
+    typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
+
+    // templated specialization
+    template< typename MatrixA, typename VectorX, typename VectorCNORM >
+    static void compute( char const uplo, char const trans, char const diag,
+            char const normin, MatrixA& a, VectorX& x, real_type& scale,
+            VectorCNORM& cnorm, integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorX >::value_type > );
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
@@ -101,7 +147,6 @@ inline integer_t latrs( char const uplo, char const trans,
             scale, cnorm, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

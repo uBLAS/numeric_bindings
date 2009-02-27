@@ -22,6 +22,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -106,6 +108,27 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t& ihi, VectorSCALE& scale, real_type& abnrm,
             VectorRCONDE& rconde, VectorRCONDV& rcondv, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorWR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorWI >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVL >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorSCALE >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorRCONDE >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorRCONDV >::value_type > );
 #ifndef NDEBUG
         assert( balanc == 'N' || balanc == 'P' || balanc == 'S' ||
                 balanc == 'B' );
@@ -222,6 +245,21 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorSCALE& scale, real_type& abnrm, VectorRCONDE& rconde,
             VectorRCONDV& rcondv, integer_t& info, detail::workspace2< WORK,
             RWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorSCALE >::value_type, typename traits::vector_traits<
+                VectorRCONDE >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorSCALE >::value_type, typename traits::vector_traits<
+                VectorRCONDV >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorW >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVL >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVR >::value_type > );
 #ifndef NDEBUG
         assert( balanc == 'N' || balanc == 'P' || balanc == 'S' ||
                 balanc == 'B' );
@@ -318,10 +356,9 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
 inline integer_t geevx( char const balanc, char const jobvl,
         char const jobvr, char const sense, MatrixA& a, VectorWR& wr,
         VectorWI& wi, MatrixVL& vl, MatrixVR& vr, integer_t& ilo,
-        integer_t& ihi, VectorSCALE& scale,
-        typename traits::matrix_traits< MatrixA >::value_type& abnrm,
-        VectorRCONDE& rconde, VectorRCONDV& rcondv,
-        Workspace work = optimal_workspace() ) {
+        integer_t& ihi, VectorSCALE& scale, typename traits::matrix_traits<
+        MatrixA >::value_type& abnrm, VectorRCONDE& rconde,
+        VectorRCONDV& rcondv, Workspace work = optimal_workspace() ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     geevx_impl< value_type >::compute( balanc, jobvl, jobvr, sense, a,
@@ -329,7 +366,6 @@ inline integer_t geevx( char const balanc, char const jobvl,
             work );
     return info;
 }
-
 // template function to call geevx
 template< typename MatrixA, typename VectorW, typename MatrixVL,
         typename MatrixVR, typename VectorSCALE, typename VectorRCONDE,
@@ -337,17 +373,15 @@ template< typename MatrixA, typename VectorW, typename MatrixVL,
 inline integer_t geevx( char const balanc, char const jobvl,
         char const jobvr, char const sense, MatrixA& a, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
-        VectorSCALE& scale,
-        typename traits::matrix_traits< MatrixA >::value_type& abnrm,
-        VectorRCONDE& rconde, VectorRCONDV& rcondv,
-        Workspace work = optimal_workspace() ) {
+        VectorSCALE& scale, typename traits::matrix_traits<
+        MatrixA >::value_type& abnrm, VectorRCONDE& rconde,
+        VectorRCONDV& rcondv, Workspace work = optimal_workspace() ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     geevx_impl< value_type >::compute( balanc, jobvl, jobvr, sense, a, w,
             vl, vr, ilo, ihi, scale, abnrm, rconde, rcondv, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

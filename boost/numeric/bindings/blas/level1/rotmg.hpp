@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -49,22 +51,24 @@ struct rotmg_impl {
     template< typename VectorDPARAM >
     static return_type compute( real_type& d1, real_type& d2, real_type& x1,
             real_type const y1, VectorDPARAM& dparam ) {
+        
         detail::rotmg( d1, d2, x1, y1, traits::vector_storage(dparam) );
     }
 };
 
 // template function to call rotmg
 template< typename VectorDPARAM >
-
-        inline integer_t rotmg( typename traits::vector_traits< VectorDPARAM >::value_type& d1,
+inline typename rotmg_impl< typename traits::vector_traits<
+        VectorDPARAM >::value_type >::return_type
+rotmg( typename traits::vector_traits< VectorDPARAM >::value_type& d1,
         typename traits::vector_traits< VectorDPARAM >::value_type& d2,
         typename traits::vector_traits< VectorDPARAM >::value_type& x1,
         typename traits::vector_traits< VectorDPARAM >::value_type const y1,
         VectorDPARAM& dparam ) {
-    typedef typename traits::vector_traits< VectorDPARAM >::value_type value_type;
+    typedef typename traits::vector_traits<
+            VectorDPARAM >::value_type value_type;
     rotmg_impl< value_type >::compute( d1, d2, x1, y1, dparam );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

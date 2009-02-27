@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -93,6 +95,18 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
             VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixT >::value_type, typename traits::matrix_traits<
+                MatrixVL >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixT >::value_type, typename traits::matrix_traits<
+                MatrixVR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixT >::value_type, typename traits::vector_traits<
+                VectorS >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixT >::value_type, typename traits::vector_traits<
+                VectorSEP >::value_type > );
 #ifndef NDEBUG
         assert( job == 'E' || job == 'V' || job == 'B' );
         assert( howmny == 'A' || howmny == 'S' );
@@ -165,6 +179,15 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
             VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorS >::value_type, typename traits::vector_traits<
+                VectorSEP >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixT >::value_type, typename traits::matrix_traits<
+                MatrixVL >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixT >::value_type, typename traits::matrix_traits<
+                MatrixVR >::value_type > );
 #ifndef NDEBUG
         assert( job == 'E' || job == 'V' || job == 'B' );
         assert( howmny == 'A' || howmny == 'S' );
@@ -231,13 +254,13 @@ inline integer_t trsna( char const job, char const howmny,
         VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
         VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
         Workspace work = optimal_workspace() ) {
-    typedef typename traits::vector_traits< VectorSELECT >::value_type value_type;
+    typedef typename traits::vector_traits<
+            VectorSELECT >::value_type value_type;
     integer_t info(0);
     trsna_impl< value_type >::compute( job, howmny, select, t, vl, vr, s,
             sep, mm, m, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

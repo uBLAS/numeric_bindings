@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -63,6 +65,9 @@ struct gesv_impl {
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static void compute( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
 #ifndef NDEBUG
         assert( traits::matrix_size2(a) >= 0 );
         assert( traits::matrix_size2(b) >= 0 );
@@ -88,7 +93,6 @@ inline integer_t gesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
     gesv_impl< value_type >::compute( a, ipiv, b, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

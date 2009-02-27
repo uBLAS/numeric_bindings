@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -68,6 +70,7 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorX, typename V, typename ISGN >
     static void compute( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, detail::workspace2< V, ISGN > work ) {
+        
 #ifndef NDEBUG
         assert( n >= 1 );
         assert( traits::vector_size(work.select(real_type()) >=
@@ -116,6 +119,7 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorX, typename V >
     static void compute( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, detail::workspace1< V > work ) {
+        
 #ifndef NDEBUG
         assert( n >= 1 );
         assert( traits::vector_size(work.select(value_type()) >=
@@ -156,7 +160,6 @@ inline integer_t lacon( integer_t const n, VectorX& x,
     lacon_impl< value_type >::compute( n, x, est, kase, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

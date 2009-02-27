@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -87,6 +89,15 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t const ilo, integer_t const ihi, MatrixH& h,
             VectorWR& wr, VectorWI& wi, MatrixZ& z, integer_t& info,
             detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::vector_traits<
+                VectorWR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::vector_traits<
+                VectorWI >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::matrix_traits<
+                MatrixZ >::value_type > );
 #ifndef NDEBUG
         assert( job == 'E' || job == 'S' );
         assert( compz == 'N' || compz == 'I' || compz == 'V' );
@@ -144,6 +155,12 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( char const job, char const compz,
             integer_t const ilo, integer_t const ihi, MatrixH& h, VectorW& w,
             MatrixZ& z, integer_t& info, detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::vector_traits<
+                VectorW >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::matrix_traits<
+                MatrixZ >::value_type > );
 #ifndef NDEBUG
         assert( job == 'E' || job == 'S' );
         assert( compz == 'N' || compz == 'I' || compz == 'V' );
@@ -194,7 +211,6 @@ inline integer_t hseqr( char const job, char const compz,
             z, info, work );
     return info;
 }
-
 // template function to call hseqr
 template< typename MatrixH, typename VectorW, typename MatrixZ,
         typename Workspace >
@@ -207,7 +223,6 @@ inline integer_t hseqr( char const job, char const compz,
             info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

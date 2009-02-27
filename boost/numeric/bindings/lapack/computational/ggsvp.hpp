@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -107,8 +109,20 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( char const jobu, char const jobv, char const jobq,
             MatrixA& a, MatrixB& b, real_type const tola,
             real_type const tolb, integer_t& k, integer_t& l, MatrixU& u,
-            MatrixV& v, MatrixQ& q, integer_t& info,
-            detail::workspace3< IWORK, TAU, WORK > work ) {
+            MatrixV& v, MatrixQ& q, integer_t& info, detail::workspace3<
+            IWORK, TAU, WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixU >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixV >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixQ >::value_type > );
 #ifndef NDEBUG
         assert( jobu == 'U' || jobu == 'N' );
         assert( jobv == 'V' || jobv == 'N' );
@@ -150,7 +164,8 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             MatrixV& v, MatrixQ& q, integer_t& info, minimal_workspace work ) {
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 traits::matrix_size2(b) ) );
-        traits::detail::array< real_type > tmp_tau( min_size_tau( traits::matrix_size2(b) ) );
+        traits::detail::array<
+                real_type > tmp_tau( min_size_tau( traits::matrix_size2(b) ) );
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_size2(b), traits::matrix_size1(a),
                 traits::matrix_size1(b) ) );
@@ -197,8 +212,20 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( char const jobu, char const jobv, char const jobq,
             MatrixA& a, MatrixB& b, real_type const tola,
             real_type const tolb, integer_t& k, integer_t& l, MatrixU& u,
-            MatrixV& v, MatrixQ& q, integer_t& info,
-            detail::workspace4< IWORK, RWORK, TAU, WORK > work ) {
+            MatrixV& v, MatrixQ& q, integer_t& info, detail::workspace4<
+            IWORK, RWORK, TAU, WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixU >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixV >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixQ >::value_type > );
 #ifndef NDEBUG
         assert( jobu == 'U' || jobu == 'N' );
         assert( jobv == 'V' || jobv == 'N' );
@@ -245,7 +272,8 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_size2(b) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_size2(b) ) );
-        traits::detail::array< value_type > tmp_tau( min_size_tau( traits::matrix_size2(b) ) );
+        traits::detail::array<
+                value_type > tmp_tau( min_size_tau( traits::matrix_size2(b) ) );
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_size2(b), traits::matrix_size1(a),
                 traits::matrix_size1(b) ) );
@@ -298,7 +326,6 @@ inline integer_t ggsvp( char const jobu, char const jobv,
             tolb, k, l, u, v, q, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

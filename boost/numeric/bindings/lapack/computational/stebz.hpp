@@ -19,6 +19,8 @@
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -67,6 +69,15 @@ struct stebz_impl {
             VectorD& d, VectorE& e, integer_t& m, integer_t& nsplit,
             VectorW& w, VectorIBLOCK& iblock, VectorISPLIT& isplit,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorE >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorW >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorIBLOCK >::value_type, typename traits::vector_traits<
+                VectorISPLIT >::value_type > );
 #ifndef NDEBUG
         assert( range == 'A' || range == 'V' || range == 'I' );
         assert( order == 'B' || order == 'E' );
@@ -131,21 +142,19 @@ struct stebz_impl {
 template< typename VectorD, typename VectorE, typename VectorW,
         typename VectorIBLOCK, typename VectorISPLIT, typename Workspace >
 inline integer_t stebz( char const range, char const order,
-        integer_t const n,
-        typename traits::vector_traits< VectorD >::value_type const vl,
-        typename traits::vector_traits< VectorD >::value_type const vu,
-        integer_t const il, integer_t const iu,
-        typename traits::vector_traits< VectorD >::value_type const abstol,
-        VectorD& d, VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
-        VectorIBLOCK& iblock, VectorISPLIT& isplit,
-        Workspace work = optimal_workspace() ) {
+        integer_t const n, typename traits::vector_traits<
+        VectorD >::value_type const vl, typename traits::vector_traits<
+        VectorD >::value_type const vu, integer_t const il,
+        integer_t const iu, typename traits::vector_traits<
+        VectorD >::value_type const abstol, VectorD& d, VectorE& e,
+        integer_t& m, integer_t& nsplit, VectorW& w, VectorIBLOCK& iblock,
+        VectorISPLIT& isplit, Workspace work = optimal_workspace() ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     stebz_impl< value_type >::compute( range, order, n, vl, vu, il, iu,
             abstol, d, e, m, nsplit, w, iblock, isplit, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

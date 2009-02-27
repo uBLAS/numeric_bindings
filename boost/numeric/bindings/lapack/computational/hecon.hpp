@@ -19,6 +19,8 @@
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -58,6 +60,7 @@ struct hecon_impl {
     static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             detail::workspace1< WORK > work ) {
+        
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( traits::matrix_size2(a) >= 0 );
@@ -109,7 +112,6 @@ inline integer_t hecon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

@@ -15,8 +15,13 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_PBEQU_HPP
 
 #include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/traits/is_complex.hpp>
+#include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cassert>
 
 namespace boost {
@@ -53,8 +58,12 @@ namespace detail {
 }
 
 // value-type based template
+template< typename ValueType, typename Enable = void >
+struct pbequ_impl{};
+
+// real specialization
 template< typename ValueType >
-struct pbequ_impl {
+struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
@@ -63,6 +72,34 @@ struct pbequ_impl {
     template< typename MatrixAB, typename VectorS >
     static void compute( integer_t const n, integer_t const kd, MatrixAB& ab,
             VectorS& s, real_type& scond, real_type& amax, integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::vector_traits<
+                VectorS >::value_type > );
+#ifndef NDEBUG
+        assert( traits::matrix_uplo_tag(a) == 'U' ||
+                traits::matrix_uplo_tag(a) == 'L' );
+        assert( n >= 0 );
+        assert( kd >= 0 );
+        assert( traits::leading_dimension(ab) >= kd+1 );
+#endif
+        detail::pbequ( traits::matrix_uplo_tag(a), n, kd,
+                traits::matrix_storage(ab), traits::leading_dimension(ab),
+                traits::vector_storage(s), scond, amax, info );
+    }
+};
+
+// complex specialization
+template< typename ValueType >
+struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+
+    typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
+
+    // templated specialization
+    template< typename MatrixAB, typename VectorS >
+    static void compute( integer_t const n, integer_t const kd, MatrixAB& ab,
+            VectorS& s, real_type& scond, real_type& amax, integer_t& info ) {
+        
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
@@ -80,15 +117,14 @@ struct pbequ_impl {
 // template function to call pbequ
 template< typename MatrixAB, typename VectorS >
 inline integer_t pbequ( integer_t const n, integer_t const kd,
-        MatrixAB& ab, VectorS& s,
-        typename traits::matrix_traits< MatrixAB >::value_type& scond,
-        typename traits::matrix_traits< MatrixAB >::value_type& amax ) {
+        MatrixAB& ab, VectorS& s, typename traits::matrix_traits<
+        MatrixAB >::value_type& scond, typename traits::matrix_traits<
+        MatrixAB >::value_type& amax ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     pbequ_impl< value_type >::compute( n, kd, ab, s, scond, amax, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

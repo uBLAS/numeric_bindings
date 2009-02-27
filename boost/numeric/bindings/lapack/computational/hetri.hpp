@@ -19,6 +19,8 @@
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -55,6 +57,7 @@ struct hetri_impl {
     template< typename MatrixA, typename VectorIPIV, typename WORK >
     static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             integer_t& info, detail::workspace1< WORK > work ) {
+        
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( traits::matrix_size2(a) >= 0 );
@@ -101,7 +104,6 @@ inline integer_t hetri( char const uplo, MatrixA& a, VectorIPIV& ipiv,
     hetri_impl< value_type >::compute( uplo, a, ipiv, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

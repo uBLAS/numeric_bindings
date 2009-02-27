@@ -22,6 +22,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -73,6 +75,7 @@ struct getri_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename VectorIPIV, typename WORK >
     static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info,
             detail::workspace1< WORK > work ) {
+        
 #ifndef NDEBUG
         assert( traits::matrix_size2(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
@@ -125,6 +128,7 @@ struct getri_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename VectorIPIV, typename WORK >
     static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info,
             detail::workspace1< WORK > work ) {
+        
 #ifndef NDEBUG
         assert( traits::matrix_size2(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
@@ -176,7 +180,6 @@ inline integer_t getri( MatrixA& a, VectorIPIV& ipiv,
     getri_impl< value_type >::compute( a, ipiv, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

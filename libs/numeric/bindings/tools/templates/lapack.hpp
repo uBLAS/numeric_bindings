@@ -59,8 +59,9 @@ $TEMPLATE[level1_workspace]
     // user-defined workspace specialization
     template< $TYPES, $WORKSPACE_TYPENAMES >
     static void compute( $LEVEL1, detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
-#ifndef NDEBUG
+        $STATIC_ASSERTS
         $INIT_USER_DEFINED_VARIABLES
+#ifndef NDEBUG
         $ASSERTS
 #endif
         detail::$groupname( $CALL_LEVEL0 );
@@ -100,7 +101,6 @@ inline integer_t $groupname( $LEVEL2, Workspace work = optimal_workspace() ) {
     $groupname_impl< value_type >::compute( $CALL_LEVEL1, work );
     return info;
 }
-
 $TEMPLATE[setup_min_workspace]
         traits::detail::array< $WORKSPACE_TYPE > tmp_$NAME( min_size_$NAME( $CALL_MIN_SIZE ) );
 $TEMPLATE[setup_opt_workspace]
@@ -117,6 +117,7 @@ $TEMPLATE[level1_noworkspace]
     // templated specialization
     template< $TYPES >
     static void compute( $LEVEL1 ) {
+        $STATIC_ASSERTS
 #ifndef NDEBUG
         $ASSERTS
 #endif
@@ -133,5 +134,4 @@ inline integer_t $groupname( $LEVEL2 ) {
     $groupname_impl< value_type >::compute( $CALL_LEVEL1 );
     return info;
 }
-
 $TEMPLATE[end]

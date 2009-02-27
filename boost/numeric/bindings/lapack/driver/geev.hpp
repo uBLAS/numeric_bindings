@@ -22,6 +22,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -90,6 +92,18 @@ struct geev_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     static void compute( char const jobvl, char const jobvr, MatrixA& a,
             VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
             integer_t& info, detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorWR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorWI >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVL >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVR >::value_type > );
 #ifndef NDEBUG
         assert( jobvl == 'N' || jobvl == 'V' );
         assert( jobvr == 'N' || jobvr == 'V' );
@@ -163,6 +177,15 @@ struct geev_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     static void compute( char const jobvl, char const jobvr, MatrixA& a,
             VectorW& w, MatrixVL& vl, MatrixVR& vr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorW >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVL >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixVR >::value_type > );
 #ifndef NDEBUG
         assert( jobvl == 'N' || jobvl == 'V' );
         assert( jobvr == 'N' || jobvr == 'V' );
@@ -242,7 +265,6 @@ inline integer_t geev( char const jobvl, char const jobvr, MatrixA& a,
             info, work );
     return info;
 }
-
 // template function to call geev
 template< typename MatrixA, typename VectorW, typename MatrixVL,
         typename MatrixVR, typename Workspace >
@@ -255,7 +277,6 @@ inline integer_t geev( char const jobvl, char const jobvr, MatrixA& a,
             work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

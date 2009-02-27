@@ -58,8 +58,10 @@ def write_functions( info_map, group, template_map, base_dir ):
     includes = [ '#include <cassert>',
       '#include <boost/numeric/bindings/traits/traits.hpp>',
       '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
-      '#include <boost/numeric/bindings/lapack/lapack.h>' ]
-      
+      '#include <boost/numeric/bindings/lapack/lapack.h>',
+      '#include <boost/type_traits/is_same.hpp>',
+      '#include <boost/static_assert.hpp' ]
+
     if template_map.has_key( group_name.lower() + '.includes' ):
       includes += template_map[ group_name.lower() + '.includes' ].splitlines()
 
@@ -125,10 +127,32 @@ def write_functions( info_map, group, template_map, base_dir ):
       level2_arg_list = []
       level1_type_arg_list = []
       level1_assert_list = []
+      level1_static_assert_list = []
       call_level1_arg_list = []
       workspace_query_arg_list = []
       user_defined_arg_list = []
       user_defined_opt_arg_list = []
+
+      #
+      # Create static assertions, first by value type
+      #
+      for value_type_tmp_key in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_value_type' ].keys():
+        # look up whether they are template params
+        static_asserts = []
+        for arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_value_type' ][ value_type_tmp_key ]:
+          if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_type' ] != None:
+            static_asserts.append( arg )
+        if len(static_asserts)>1:
+          arg_A = static_asserts[0]
+          for arg_B in static_asserts[1:]:
+            print "Adding static assert for argA", arg_A, " argb", arg_B
+            assert_line = 'BOOST_STATIC_ASSERT( boost::is_same< ' + \
+                info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ', ' + \
+                info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + \
+                ' > );'
+            level1_static_assert_list += [ assert_line ]
+
+      # import the code, by argument
       for arg in info_map[ subroutine ][ 'arguments' ]:
         level0_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_level_0' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1' ] != None:
@@ -144,26 +168,28 @@ def write_functions( info_map, group, template_map, base_dir ):
           call_level1_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_level_1' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'opt_workspace_query' ] != None:
           workspace_query_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'opt_workspace_query' ] ]
-          
+
       if info_map[ subroutine ][ 'user_defined_variables' ] != None:
         for arg in info_map[ subroutine ][ 'user_defined_variables' ]:
           print arg
           if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'user_defined_init' ] != None:
             user_defined_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'user_defined_init' ] ]
-      
+
       if info_map[ subroutine ][ 'user_defined_opt_variables' ] != None:
         for arg in info_map[ subroutine ][ 'user_defined_opt_variables' ]:
           print arg
           if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'user_defined_init' ] != None:
             user_defined_opt_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'user_defined_init' ] ]
-      
+
       # Level 1 replacements
       level1_template = level1_template.replace( "$CALL_LEVEL0", ", ".join( level0_arg_list ) )
       level1_template = level1_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
       level1_template = level1_template.replace( "$LEVEL1", ", ".join( level1_arg_list ) )
       level1_template = level1_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
       level1_template = level1_template.replace( "$ASSERTS", "\n        ".join( level1_assert_list ) )
-      
+      level1_template = level1_template.replace( "$STATIC_ASSERTS", "\n        ".join( level1_static_assert_list ) )
+
+
       if len( user_defined_arg_list ) > 0:
         level1_template = level1_template.replace( "$INIT_USER_DEFINED_VARIABLES", indent_lines( "\n".join(user_defined_arg_list), 8 ) )
       else:
@@ -221,8 +247,8 @@ def write_functions( info_map, group, template_map, base_dir ):
             setup_opt_workarrays_pre += [ info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'opt_workspace_pre' ] ]
           if info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'opt_workspace_post' ] != None:
             setup_opt_workarrays_post += [ info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'opt_workspace_post' ] ]
-          
-          
+
+
         # if the length of setup_opt_workarrays_post equals 0, it's equal to the minimal_case
         opt_workspace_template = ''
         if len( setup_opt_workarrays_post ) == 0:
@@ -231,7 +257,7 @@ def write_functions( info_map, group, template_map, base_dir ):
         else:
           includes += [ '#include <boost/numeric/bindings/traits/detail/utils.hpp>' ]
           opt_workspace_template = template_map[ 'level1_opt_workspace' ]
-          
+
         opt_workspace_template = opt_workspace_template.replace( "$WORKSPACE_QUERY", ", ".join( workspace_query_arg_list ) )
         opt_workspace_template = opt_workspace_template.replace( "$SETUP_OPT_WORKARRAYS_POST", "\n        ".join( setup_opt_workarrays_post ) )
         opt_workspace_template = opt_workspace_template.replace( "$SETUP_OPT_WORKARRAYS_PRE", "\n        ".join( setup_opt_workarrays_pre ) )
@@ -257,18 +283,13 @@ def write_functions( info_map, group, template_map, base_dir ):
         for name in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ][ 'workspace' ]:
           sub_template = template_map[ 'min_size_func' ]
           sub_template = sub_template.replace( "$NAME", name.lower() )
-          
+
           # first: user-defined stuff (overrules any auto-detected stuff)
+
           my_key = group_name.lower() + '.' + value_type + '.min_size_' + name.lower()
-          my_key_all = group_name.lower() + '.all.min_size_' + name.lower()
-          print my_key
-          if template_map.has_key( my_key ):
-            sub_template = sub_template.replace( "$MIN_SIZE", indent_lines( template_map[ my_key ].rstrip(), 8 ) )
-            
-          # if that fails, try the more generic key "all"
-          elif template_map.has_key( my_key_all ):
-            sub_template = sub_template.replace( "$MIN_SIZE", indent_lines( template_map[ my_key_all ].rstrip(), 8 ) )
-          
+          if netlib.my_has_key( my_key, template_map ):
+            sub_template = sub_template.replace( "$MIN_SIZE", indent_lines( template_map[ netlib.my_has_key( my_key, template_map ) ].rstrip(), 8 ) )
+
           elif info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace' ] != None:
             resulting_code = 'return ' + info_map[ subroutine ][ 'argument_map' ][ name ][ 'code' ][ 'min_workspace' ] + ';'
             sub_template = sub_template.replace( "$MIN_SIZE", resulting_code.rstrip() )

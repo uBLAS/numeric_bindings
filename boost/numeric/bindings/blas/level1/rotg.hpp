@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -55,21 +57,24 @@ struct rotg_impl {
 
     // templated specialization
     template<  >
-    static return_type compute( traits::complex_d& a, traits::complex_d& b,
-            real_type& c, traits::complex_d& s ) {
+    static return_type compute( value_type& a, value_type& b, real_type& c,
+            value_type& s ) {
+        
         detail::rotg( a, b, c, s );
     }
 };
 
 // template function to call rotg
 template<  >
-inline integer_t rotg( traits::complex_d& a, traits::complex_d& b,
+inline typename rotg_impl< typename traits::TODO_traits<
+        TODO >::value_type >::return_type
+rotg( typename traits::TODO_traits< TODO >::value_type& a,
+        typename traits::TODO_traits< TODO >::value_type& b,
         typename traits::TODO_traits< TODO >::value_type& c,
-        traits::complex_d& s ) {
+        typename traits::TODO_traits< TODO >::value_type& s ) {
     typedef typename traits::TODO_traits< TODO >::value_type value_type;
     rotg_impl< value_type >::compute( a, b, c, s );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

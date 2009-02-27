@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -64,6 +66,7 @@ struct gbtrf_impl {
     static void compute( integer_t const m, integer_t const n,
             integer_t const kl, integer_t const ku, MatrixAB& ab,
             VectorIPIV& ipiv, integer_t& info ) {
+        
 #ifndef NDEBUG
         assert( m >= 0 );
         assert( n >= 0 );
@@ -89,7 +92,6 @@ inline integer_t gbtrf( integer_t const m, integer_t const n,
     gbtrf_impl< value_type >::compute( m, n, kl, ku, ab, ipiv, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

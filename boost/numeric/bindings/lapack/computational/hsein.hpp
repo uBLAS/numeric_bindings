@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -99,6 +101,21 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, integer_t& info,
             detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::vector_traits<
+                VectorWR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::vector_traits<
+                VectorWI >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::matrix_traits<
+                MatrixVL >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::matrix_traits<
+                MatrixVR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorIFAILL >::value_type, typename traits::vector_traits<
+                VectorIFAILR >::value_type > );
 #ifndef NDEBUG
         assert( side == 'R' || side == 'L' || side == 'B' );
         assert( eigsrc == 'Q' || eigsrc == 'N' );
@@ -173,6 +190,18 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             MatrixVR& vr, integer_t const mm, integer_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorIFAILL >::value_type, typename traits::vector_traits<
+                VectorIFAILR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::vector_traits<
+                VectorW >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::matrix_traits<
+                MatrixVL >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixH >::value_type, typename traits::matrix_traits<
+                MatrixVR >::value_type > );
 #ifndef NDEBUG
         assert( side == 'R' || side == 'L' || side == 'B' );
         assert( eigsrc == 'Q' || eigsrc == 'N' );
@@ -248,13 +277,13 @@ inline integer_t hsein( char const side, char const eigsrc,
         VectorWI& wi, MatrixVL& vl, MatrixVR& vr, integer_t const mm,
         integer_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
         Workspace work = optimal_workspace() ) {
-    typedef typename traits::vector_traits< VectorSELECT >::value_type value_type;
+    typedef typename traits::vector_traits<
+            VectorSELECT >::value_type value_type;
     integer_t info(0);
     hsein_impl< value_type >::compute( side, eigsrc, initv, select, h,
             wr, wi, vl, vr, mm, m, ifaill, ifailr, info, work );
     return info;
 }
-
 // template function to call hsein
 template< typename VectorSELECT, typename MatrixH, typename VectorW,
         typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
@@ -264,13 +293,13 @@ inline integer_t hsein( char const side, char const eigsrc,
         MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr,
         Workspace work = optimal_workspace() ) {
-    typedef typename traits::vector_traits< VectorSELECT >::value_type value_type;
+    typedef typename traits::vector_traits<
+            VectorSELECT >::value_type value_type;
     integer_t info(0);
     hsein_impl< value_type >::compute( side, eigsrc, initv, select, h, w,
             vl, vr, mm, m, ifaill, ifailr, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

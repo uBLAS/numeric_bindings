@@ -20,6 +20,8 @@
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -55,6 +57,9 @@ struct orghr_impl {
     static void compute( integer_t const n, integer_t const ilo,
             integer_t const ihi, MatrixA& a, VectorTAU& tau, integer_t& info,
             detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorTAU >::value_type > );
 #ifndef NDEBUG
         assert( n >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,n) );
@@ -108,7 +113,6 @@ inline integer_t orghr( integer_t const n, integer_t const ilo,
     orghr_impl< value_type >::compute( n, ilo, ihi, a, tau, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

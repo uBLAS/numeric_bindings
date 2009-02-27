@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -70,8 +72,10 @@ struct trmm_impl {
     // templated specialization
     template< typename MatrixA, typename MatrixB >
     static return_type compute( char const side, char const transa,
-            char const diag, traits::complex_d const alpha, MatrixA& a,
-            MatrixB& b ) {
+            char const diag, value_type const alpha, MatrixA& a, MatrixB& b ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
         detail::trmm( side, traits::matrix_uplo_tag(a), transa, diag,
                 traits::matrix_size1(b), traits::matrix_size2(b), alpha,
                 traits::matrix_storage(a), traits::leading_dimension(a),
@@ -81,13 +85,14 @@ struct trmm_impl {
 
 // template function to call trmm
 template< typename MatrixA, typename MatrixB >
-inline integer_t trmm( char const side, char const transa,
-        char const diag, traits::complex_d const alpha, MatrixA& a,
-        MatrixB& b ) {
+inline typename trmm_impl< typename traits::matrix_traits<
+        MatrixA >::value_type >::return_type
+trmm( char const side, char const transa, char const diag,
+        typename traits::matrix_traits< MatrixA >::value_type const alpha,
+        MatrixA& a, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     trmm_impl< value_type >::compute( side, transa, diag, alpha, a, b );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

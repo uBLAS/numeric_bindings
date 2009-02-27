@@ -22,6 +22,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -75,6 +77,9 @@ struct gerqf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename VectorTAU, typename WORK >
     static void compute( MatrixA& a, VectorTAU& tau, integer_t& info,
             detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorTAU >::value_type > );
 #ifndef NDEBUG
         assert( traits::matrix_size1(a) >= 0 );
         assert( traits::matrix_size2(a) >= 0 );
@@ -130,6 +135,9 @@ struct gerqf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename VectorTAU, typename WORK >
     static void compute( MatrixA& a, VectorTAU& tau, integer_t& info,
             detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorTAU >::value_type > );
 #ifndef NDEBUG
         assert( traits::matrix_size1(a) >= 0 );
         assert( traits::matrix_size2(a) >= 0 );
@@ -184,7 +192,6 @@ inline integer_t gerqf( MatrixA& a, VectorTAU& tau,
     gerqf_impl< value_type >::compute( a, tau, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

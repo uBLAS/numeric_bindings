@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -50,6 +52,12 @@ struct rotm_impl {
     static return_type compute( integer_t const n, VectorX& x,
             integer_t const incx, VectorY& y, integer_t const incy,
             VectorPARAM& param ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorX >::value_type, typename traits::vector_traits<
+                VectorY >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorX >::value_type, typename traits::vector_traits<
+                VectorPARAM >::value_type > );
         detail::rotm( n, traits::vector_storage(x), incx,
                 traits::vector_storage(y), incy,
                 traits::vector_storage(param) );
@@ -58,13 +66,13 @@ struct rotm_impl {
 
 // template function to call rotm
 template< typename VectorX, typename VectorY, typename VectorPARAM >
-inline integer_t rotm( integer_t const n, VectorX& x,
-        integer_t const incx, VectorY& y, integer_t const incy,
-        VectorPARAM& param ) {
+inline typename rotm_impl< typename traits::vector_traits<
+        VectorX >::value_type >::return_type
+rotm( integer_t const n, VectorX& x, integer_t const incx, VectorY& y,
+        integer_t const incy, VectorPARAM& param ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     rotm_impl< value_type >::compute( n, x, incx, y, incy, param );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

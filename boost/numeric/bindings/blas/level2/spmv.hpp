@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -51,6 +53,12 @@ struct spmv_impl {
     template< typename MatrixAP, typename VectorX, typename VectorY >
     static return_type compute( real_type const alpha, MatrixAP& ap,
             VectorX& x, real_type const beta, VectorY& y ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAP >::value_type, typename traits::vector_traits<
+                VectorX >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAP >::value_type, typename traits::vector_traits<
+                VectorY >::value_type > );
         detail::spmv( traits::matrix_uplo_tag(ap),
                 traits::matrix_size2(ap), alpha, traits::matrix_storage(ap),
                 traits::vector_storage(x), traits::vector_stride(x), beta,
@@ -60,15 +68,15 @@ struct spmv_impl {
 
 // template function to call spmv
 template< typename MatrixAP, typename VectorX, typename VectorY >
-
-        inline integer_t spmv( typename traits::matrix_traits< MatrixAP >::value_type const alpha,
-        MatrixAP& ap, VectorX& x,
+inline typename spmv_impl< typename traits::matrix_traits<
+        MatrixAP >::value_type >::return_type
+spmv( typename traits::matrix_traits<
+        MatrixAP >::value_type const alpha, MatrixAP& ap, VectorX& x,
         typename traits::matrix_traits< MatrixAP >::value_type const beta,
         VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     spmv_impl< value_type >::compute( alpha, ap, x, beta, y );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

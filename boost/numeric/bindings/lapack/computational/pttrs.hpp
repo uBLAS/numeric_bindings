@@ -19,6 +19,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -68,6 +70,12 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorD, typename VectorE, typename MatrixB >
     static void compute( integer_t const n, VectorD& d, VectorE& e,
             MatrixB& b, integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorE >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
 #ifndef NDEBUG
         assert( n >= 0 );
         assert( traits::matrix_size2(b) >= 0 );
@@ -92,6 +100,9 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorD, typename VectorE, typename MatrixB >
     static void compute( char const uplo, integer_t const n, VectorD& d,
             VectorE& e, MatrixB& b, integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorE >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( n >= 0 );
@@ -116,7 +127,6 @@ inline integer_t pttrs( integer_t const n, VectorD& d, VectorE& e,
     pttrs_impl< value_type >::compute( n, d, e, b, info );
     return info;
 }
-
 // template function to call pttrs
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline integer_t pttrs( char const uplo, integer_t const n, VectorD& d,
@@ -126,7 +136,6 @@ inline integer_t pttrs( char const uplo, integer_t const n, VectorD& d,
     pttrs_impl< value_type >::compute( uplo, n, d, e, b, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

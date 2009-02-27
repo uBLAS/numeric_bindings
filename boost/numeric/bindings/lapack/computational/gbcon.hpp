@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -83,6 +85,7 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t const kl, integer_t const ku, MatrixAB& ab,
             VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
+        
 #ifndef NDEBUG
         assert( norm == '1' || norm == 'O' || norm == 'I' );
         assert( n >= 0 );
@@ -147,6 +150,7 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t const kl, integer_t const ku, MatrixAB& ab,
             VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
+        
 #ifndef NDEBUG
         assert( norm == '1' || norm == 'O' || norm == 'I' );
         assert( n >= 0 );
@@ -202,17 +206,15 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixAB, typename VectorIPIV, typename Workspace >
 inline integer_t gbcon( char const norm, integer_t const n,
         integer_t const kl, integer_t const ku, MatrixAB& ab,
-        VectorIPIV& ipiv,
-        typename traits::matrix_traits< MatrixAB >::value_type const anorm,
-        typename traits::matrix_traits< MatrixAB >::value_type& rcond,
-        Workspace work = optimal_workspace() ) {
+        VectorIPIV& ipiv, typename traits::matrix_traits<
+        MatrixAB >::value_type const anorm, typename traits::matrix_traits<
+        MatrixAB >::value_type& rcond, Workspace work = optimal_workspace() ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     gbcon_impl< value_type >::compute( norm, n, kl, ku, ab, ipiv, anorm,
             rcond, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

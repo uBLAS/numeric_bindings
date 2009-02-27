@@ -15,8 +15,13 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GEBAL_HPP
 
 #include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/traits/is_complex.hpp>
+#include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cassert>
 
 namespace boost {
@@ -53,8 +58,12 @@ namespace detail {
 }
 
 // value-type based template
+template< typename ValueType, typename Enable = void >
+struct gebal_impl{};
+
+// real specialization
 template< typename ValueType >
-struct gebal_impl {
+struct gebal_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
@@ -63,6 +72,33 @@ struct gebal_impl {
     template< typename MatrixA, typename VectorSCALE >
     static void compute( char const job, MatrixA& a, integer_t& ilo,
             integer_t& ihi, VectorSCALE& scale, integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorSCALE >::value_type > );
+#ifndef NDEBUG
+        assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
+        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::leading_dimension(a) >= std::max(1,
+                traits::matrix_size2(a)) );
+#endif
+        detail::gebal( job, traits::matrix_size2(a),
+                traits::matrix_storage(a), traits::leading_dimension(a), ilo,
+                ihi, traits::vector_storage(scale), info );
+    }
+};
+
+// complex specialization
+template< typename ValueType >
+struct gebal_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+
+    typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
+
+    // templated specialization
+    template< typename MatrixA, typename VectorSCALE >
+    static void compute( char const job, MatrixA& a, integer_t& ilo,
+            integer_t& ihi, VectorSCALE& scale, integer_t& info ) {
+        
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         assert( traits::matrix_size2(a) >= 0 );
@@ -85,7 +121,6 @@ inline integer_t gebal( char const job, MatrixA& a, integer_t& ilo,
     gebal_impl< value_type >::compute( job, a, ilo, ihi, scale, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -46,6 +48,7 @@ struct nrm2_impl {
     // templated specialization
     template< typename VectorX >
     static return_type compute( VectorX& x ) {
+        
         return detail::nrm2( traits::vector_size(x),
                 traits::vector_storage(x), traits::vector_stride(x) );
     }
@@ -53,11 +56,12 @@ struct nrm2_impl {
 
 // template function to call nrm2
 template< typename VectorX >
-inline integer_t nrm2( VectorX& x ) {
+inline typename nrm2_impl< typename traits::vector_traits<
+        VectorX >::value_type >::return_type
+nrm2( VectorX& x ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     return nrm2_impl< value_type >::compute( x );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

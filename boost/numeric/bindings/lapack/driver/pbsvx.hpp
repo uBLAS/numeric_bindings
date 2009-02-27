@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -99,6 +101,24 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::matrix_traits<
+                MatrixAFB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::vector_traits<
+                VectorS >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::matrix_traits<
+                MatrixX >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::vector_traits<
+                VectorFERR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::vector_traits<
+                VectorBERR >::value_type > );
 #ifndef NDEBUG
         assert( fact == 'F' || fact == 'Y' || fact == 'N' || fact == 'E' );
         assert( traits::matrix_uplo_tag(ab) == 'U' ||
@@ -182,6 +202,21 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorS >::value_type, typename traits::vector_traits<
+                VectorFERR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorS >::value_type, typename traits::vector_traits<
+                VectorBERR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::matrix_traits<
+                MatrixAFB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::matrix_traits<
+                MatrixX >::value_type > );
 #ifndef NDEBUG
         assert( fact == 'F' || fact == 'Y' || fact == 'N' || fact == 'E' );
         assert( traits::matrix_uplo_tag(ab) == 'U' ||
@@ -256,9 +291,8 @@ template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename VectorBERR, typename Workspace >
 inline integer_t pbsvx( char const fact, integer_t const n,
         integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
-        VectorS& s, MatrixB& b, MatrixX& x,
-        typename traits::matrix_traits< MatrixAB >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr,
+        VectorS& s, MatrixB& b, MatrixX& x, typename traits::matrix_traits<
+        MatrixAB >::value_type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work = optimal_workspace() ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
@@ -266,7 +300,6 @@ inline integer_t pbsvx( char const fact, integer_t const n,
             x, rcond, ferr, berr, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

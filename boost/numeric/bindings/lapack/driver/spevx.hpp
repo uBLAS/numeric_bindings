@@ -19,6 +19,8 @@
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -65,6 +67,12 @@ struct spevx_impl {
             integer_t const il, integer_t const iu, real_type const abstol,
             integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAP >::value_type, typename traits::vector_traits<
+                VectorW >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAP >::value_type, typename traits::matrix_traits<
+                MatrixZ >::value_type > );
 #ifndef NDEBUG
         assert( jobz == 'N' || jobz == 'V' );
         assert( range == 'A' || range == 'V' || range == 'I' );
@@ -125,12 +133,12 @@ struct spevx_impl {
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
 inline integer_t spevx( char const jobz, char const range,
-        integer_t const n, MatrixAP& ap,
-        typename traits::matrix_traits< MatrixAP >::value_type const vl,
-        typename traits::matrix_traits< MatrixAP >::value_type const vu,
-        integer_t const il, integer_t const iu,
-        typename traits::matrix_traits< MatrixAP >::value_type const abstol,
-        integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
+        integer_t const n, MatrixAP& ap, typename traits::matrix_traits<
+        MatrixAP >::value_type const vl, typename traits::matrix_traits<
+        MatrixAP >::value_type const vu, integer_t const il,
+        integer_t const iu, typename traits::matrix_traits<
+        MatrixAP >::value_type const abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail,
         Workspace work = optimal_workspace() ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
@@ -138,7 +146,6 @@ inline integer_t spevx( char const jobz, char const range,
             iu, abstol, m, w, z, ifail, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

@@ -19,6 +19,8 @@
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -61,6 +63,12 @@ struct hbtrd_impl {
     static void compute( char const vect, integer_t const n,
             integer_t const kd, MatrixAB& ab, VectorD& d, VectorE& e,
             MatrixQ& q, integer_t& info, detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorE >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::matrix_traits<
+                MatrixQ >::value_type > );
 #ifndef NDEBUG
         assert( vect == 'N' || vect == 'V' || vect == 'U' );
         assert( traits::matrix_uplo_tag(a) == 'U' ||
@@ -116,7 +124,6 @@ inline integer_t hbtrd( char const vect, integer_t const n,
             work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

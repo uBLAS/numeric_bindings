@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -56,6 +58,7 @@ struct potri_impl {
     // templated specialization
     template< typename MatrixA >
     static void compute( MatrixA& a, integer_t& info ) {
+        
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
@@ -78,7 +81,6 @@ inline integer_t potri( MatrixA& a ) {
     potri_impl< value_type >::compute( a, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

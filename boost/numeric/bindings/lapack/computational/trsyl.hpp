@@ -19,6 +19,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -82,6 +84,12 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t const isgn, integer_t const m, integer_t const n,
             MatrixA& a, MatrixB& b, MatrixC& c, real_type& scale,
             integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixC >::value_type > );
 #ifndef NDEBUG
         assert( trana == 'N' || trana == 'T' || trana == 'C' );
         assert( tranb == 'N' || tranb == 'T' || tranb == 'C' );
@@ -111,6 +119,12 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t const isgn, integer_t const m, integer_t const n,
             MatrixA& a, MatrixB& b, MatrixC& c, real_type& scale,
             integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixC >::value_type > );
 #ifndef NDEBUG
         assert( trana == 'N' || trana == 'C' );
         assert( tranb == 'N' || tranb == 'C' );
@@ -132,15 +146,14 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline integer_t trsyl( char const trana, char const tranb,
         integer_t const isgn, integer_t const m, integer_t const n,
-        MatrixA& a, MatrixB& b, MatrixC& c,
-        typename traits::matrix_traits< MatrixA >::value_type& scale ) {
+        MatrixA& a, MatrixB& b, MatrixC& c, typename traits::matrix_traits<
+        MatrixA >::value_type& scale ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     trsyl_impl< value_type >::compute( trana, tranb, isgn, m, n, a, b, c,
             scale, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

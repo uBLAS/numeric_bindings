@@ -19,6 +19,8 @@
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -66,6 +68,12 @@ struct hbgv_impl {
             integer_t const ka, integer_t const kb, MatrixAB& ab,
             MatrixBB& bb, VectorW& w, MatrixZ& z, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::matrix_traits<
+                MatrixBB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixAB >::value_type, typename traits::matrix_traits<
+                MatrixZ >::value_type > );
 #ifndef NDEBUG
         assert( jobz == 'N' || jobz == 'V' );
         assert( traits::matrix_uplo_tag(ab) == 'U' ||
@@ -134,7 +142,6 @@ inline integer_t hbgv( char const jobz, integer_t const n,
             info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

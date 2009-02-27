@@ -15,8 +15,13 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_PTSV_HPP
 
 #include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/traits/is_complex.hpp>
+#include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cassert>
 
 namespace boost {
@@ -51,8 +56,12 @@ namespace detail {
 }
 
 // value-type based template
+template< typename ValueType, typename Enable = void >
+struct ptsv_impl{};
+
+// real specialization
 template< typename ValueType >
-struct ptsv_impl {
+struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
@@ -61,6 +70,39 @@ struct ptsv_impl {
     template< typename VectorD, typename VectorE, typename MatrixB >
     static void compute( integer_t const n, VectorD& d, VectorE& e,
             MatrixB& b, integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::vector_traits<
+                VectorE >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+#ifndef NDEBUG
+        assert( n >= 0 );
+        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::vector_size(d) >= n );
+        assert( traits::vector_size(e) >= n-1 );
+        assert( traits::leading_dimension(b) >= std::max(1,n) );
+#endif
+        detail::ptsv( n, traits::matrix_size2(b), traits::vector_storage(d),
+                traits::vector_storage(e), traits::matrix_storage(b),
+                traits::leading_dimension(b), info );
+    }
+};
+
+// complex specialization
+template< typename ValueType >
+struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+
+    typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
+
+    // templated specialization
+    template< typename VectorD, typename VectorE, typename MatrixB >
+    static void compute( integer_t const n, VectorD& d, VectorE& e,
+            MatrixB& b, integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorE >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
 #ifndef NDEBUG
         assert( n >= 0 );
         assert( traits::matrix_size2(b) >= 0 );
@@ -84,7 +126,6 @@ inline integer_t ptsv( integer_t const n, VectorD& d, VectorE& e,
     ptsv_impl< value_type >::compute( n, d, e, b, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

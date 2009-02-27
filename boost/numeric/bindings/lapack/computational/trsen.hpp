@@ -20,6 +20,8 @@
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -65,6 +67,12 @@ struct trsen_impl {
             VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             integer_t& m, real_type& s, real_type& sep, integer_t& info,
             detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixT >::value_type, typename traits::matrix_traits<
+                MatrixQ >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixT >::value_type, typename traits::vector_traits<
+                VectorW >::value_type > );
 #ifndef NDEBUG
         assert( job == 'N' || job == 'E' || job == 'V' || job == 'B' );
         assert( compq == 'V' || compq == 'N' );
@@ -127,17 +135,17 @@ template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW, typename Workspace >
 inline integer_t trsen( char const job, char const compq,
         VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
-        integer_t& m,
-        typename traits::vector_traits< VectorSELECT >::value_type& s,
-        typename traits::vector_traits< VectorSELECT >::value_type& sep,
+        integer_t& m, typename traits::vector_traits<
+        VectorSELECT >::value_type& s, typename traits::vector_traits<
+        VectorSELECT >::value_type& sep,
         Workspace work = optimal_workspace() ) {
-    typedef typename traits::vector_traits< VectorSELECT >::value_type value_type;
+    typedef typename traits::vector_traits<
+            VectorSELECT >::value_type value_type;
     integer_t info(0);
     trsen_impl< value_type >::compute( job, compq, select, t, q, w, m, s,
             sep, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

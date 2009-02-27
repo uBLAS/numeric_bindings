@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -58,8 +60,14 @@ struct her2k_impl {
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
     static return_type compute( char const trans, integer_t const k,
-            traits::complex_d const alpha, MatrixA& a, MatrixB& b,
+            value_type const alpha, MatrixA& a, MatrixB& b,
             real_type const beta, MatrixC& c ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixC >::value_type > );
         detail::her2k( traits::matrix_uplo_tag(c), trans,
                 traits::matrix_size2(c), k, alpha, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
@@ -70,14 +78,15 @@ struct her2k_impl {
 
 // template function to call her2k
 template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline integer_t her2k( char const trans, integer_t const k,
-        traits::complex_d const alpha, MatrixA& a, MatrixB& b,
-        typename traits::matrix_traits< MatrixA >::value_type const beta,
-        MatrixC& c ) {
+inline typename her2k_impl< typename traits::matrix_traits<
+        MatrixA >::value_type >::return_type
+her2k( char const trans, integer_t const k,
+        typename traits::matrix_traits< MatrixA >::value_type const alpha,
+        MatrixA& a, MatrixB& b, typename traits::matrix_traits<
+        MatrixA >::value_type const beta, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     her2k_impl< value_type >::compute( trans, k, alpha, a, b, beta, c );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

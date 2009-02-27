@@ -21,6 +21,8 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
 
@@ -100,6 +102,27 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorC& c, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixAF >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorC >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixX >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorFERR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorBERR >::value_type > );
 #ifndef NDEBUG
         assert( fact == 'F' || fact == 'N' || fact == 'E' );
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
@@ -189,6 +212,24 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorC& c, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorR >::value_type, typename traits::vector_traits<
+                VectorC >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorR >::value_type, typename traits::vector_traits<
+                VectorFERR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorR >::value_type, typename traits::vector_traits<
+                VectorBERR >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixAF >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixX >::value_type > );
 #ifndef NDEBUG
         assert( fact == 'F' || fact == 'N' || fact == 'E' );
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
@@ -269,9 +310,8 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename Workspace >
 inline integer_t gesvx( char const fact, char const trans, MatrixA& a,
         MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x,
-        typename traits::matrix_traits< MatrixA >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr,
+        MatrixB& b, MatrixX& x, typename traits::matrix_traits<
+        MatrixA >::value_type& rcond, VectorFERR& ferr, VectorBERR& berr,
         Workspace work = optimal_workspace() ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -279,7 +319,6 @@ inline integer_t gesvx( char const fact, char const trans, MatrixA& a,
             r, c, b, x, rcond, ferr, berr, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

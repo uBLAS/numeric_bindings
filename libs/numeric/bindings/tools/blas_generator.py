@@ -50,7 +50,9 @@ def write_functions( info_map, group, template_map, base_dir ):
     includes = [ '#include <cassert>',
       '#include <boost/numeric/bindings/traits/traits.hpp>',
       '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
-      '#include <boost/numeric/bindings/blas/blas.h>' ]
+      '#include <boost/numeric/bindings/blas/blas.h>',
+      '#include <boost/type_traits/is_same.hpp>',
+      '#include <boost/static_assert.hpp' ]
       
     if template_map.has_key( group_name.lower() + '.includes' ):
       includes += template_map[ group_name.lower() + '.includes' ].splitlines()
@@ -91,6 +93,7 @@ def write_functions( info_map, group, template_map, base_dir ):
           cases[ 'complex' ][ 'subroutines' ] = []
         cases[ 'complex' ][ 'subroutines' ] += [ subroutine ]
 
+
     #
     # LEVEL 1 and 2 HANDLING
     #
@@ -108,6 +111,28 @@ def write_functions( info_map, group, template_map, base_dir ):
       call_level1_arg_list = []
       level1_type_arg_list = []
       level1_assert_list = []
+      level1_static_assert_list = []
+
+      #
+      # Create static assertions, first by value type
+      #
+      for value_type_tmp_key in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_value_type' ].keys():
+        # look up whether they are template params
+        static_asserts = []
+        for arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_value_type' ][ value_type_tmp_key ]:
+          if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_type' ] != None:
+            static_asserts.append( arg )
+        if len(static_asserts)>1:
+          arg_A = static_asserts[0]
+          for arg_B in static_asserts[1:]:
+            print "Adding static assert for argA", arg_A, " argb", arg_B
+            assert_line = 'BOOST_STATIC_ASSERT( boost::is_same< ' + \
+                info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ', ' + \
+                info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + \
+                ' > );'
+            level1_static_assert_list += [ assert_line ]
+
+      # import the code by argument
       for arg in info_map[ subroutine ][ 'arguments' ]:
         level0_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_level_0' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1' ] != None:
@@ -128,6 +153,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = level1_template.replace( "$LEVEL1", ", ".join( level1_arg_list ) )
       level1_template = level1_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
       level1_template = level1_template.replace( "$ASSERTS", "\n        ".join( level1_assert_list ) )
+      level1_template = level1_template.replace( "$STATIC_ASSERTS", "\n        ".join( level1_static_assert_list ) )
       level1_template = level1_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'level1_return_type' ] )
       level1_template = level1_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
 

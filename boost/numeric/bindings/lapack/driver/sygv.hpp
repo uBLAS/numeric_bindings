@@ -20,6 +20,8 @@
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -60,6 +62,12 @@ struct sygv_impl {
     static void compute( integer_t const itype, char const jobz,
             integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
             integer_t& info, detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorW >::value_type > );
 #ifndef NDEBUG
         assert( jobz == 'N' || jobz == 'V' );
         assert( traits::matrix_uplo_tag(a) == 'U' ||
@@ -120,7 +128,6 @@ inline integer_t sygv( integer_t const itype, char const jobz,
             work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

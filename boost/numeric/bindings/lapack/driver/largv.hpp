@@ -15,8 +15,13 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_LARGV_HPP
 
 #include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/traits/is_complex.hpp>
+#include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cassert>
 
 namespace boost {
@@ -52,8 +57,12 @@ namespace detail {
 }
 
 // value-type based template
+template< typename ValueType, typename Enable = void >
+struct largv_impl{};
+
+// real specialization
 template< typename ValueType >
-struct largv_impl {
+struct largv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
@@ -63,6 +72,38 @@ struct largv_impl {
     static void compute( integer_t const n, VectorX& x, integer_t const incx,
             VectorY& y, integer_t const incy, VectorC& c,
             integer_t const incc ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorX >::value_type, typename traits::vector_traits<
+                VectorY >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorX >::value_type, typename traits::vector_traits<
+                VectorC >::value_type > );
+#ifndef NDEBUG
+        assert( traits::vector_size(x) >= 1+(n-1)*incx );
+        assert( traits::vector_size(y) >= 1+(n-1)*incy );
+        assert( traits::vector_size(c) >= 1+(n-1)*incc );
+#endif
+        detail::largv( n, traits::vector_storage(x), incx,
+                traits::vector_storage(y), incy, traits::vector_storage(c),
+                incc );
+    }
+};
+
+// complex specialization
+template< typename ValueType >
+struct largv_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+
+    typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
+
+    // templated specialization
+    template< typename VectorX, typename VectorY, typename VectorC >
+    static void compute( integer_t const n, VectorX& x, integer_t const incx,
+            VectorY& y, integer_t const incy, VectorC& c,
+            integer_t const incc ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorX >::value_type, typename traits::vector_traits<
+                VectorY >::value_type > );
 #ifndef NDEBUG
         assert( traits::vector_size(x) >= 1+(n-1)*incx );
         assert( traits::vector_size(y) >= 1+(n-1)*incy );
@@ -85,7 +126,6 @@ inline integer_t largv( integer_t const n, VectorX& x,
     largv_impl< value_type >::compute( n, x, incx, y, incy, c, incc );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

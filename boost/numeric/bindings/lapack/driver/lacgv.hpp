@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -49,6 +51,7 @@ struct lacgv_impl {
     template< typename VectorX >
     static void compute( integer_t const n, VectorX& x,
             integer_t const incx ) {
+        
 #ifndef NDEBUG
         assert( n >= 0 );
 #endif
@@ -66,7 +69,6 @@ inline integer_t lacgv( integer_t const n, VectorX& x,
     lacgv_impl< value_type >::compute( n, x, incx );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

@@ -19,6 +19,8 @@
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -60,6 +62,12 @@ struct upgtr_impl {
             typename WORK >
     static void compute( char const uplo, VectorAP& ap, VectorTAU& tau,
             MatrixQ& q, integer_t& info, detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorAP >::value_type, typename traits::vector_traits<
+                VectorTAU >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorAP >::value_type, typename traits::matrix_traits<
+                MatrixQ >::value_type > );
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( traits::matrix_size2(q) >= 0 );
@@ -109,7 +117,6 @@ inline integer_t upgtr( char const uplo, VectorAP& ap, VectorTAU& tau,
     upgtr_impl< value_type >::compute( uplo, ap, tau, q, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

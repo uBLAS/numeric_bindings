@@ -48,15 +48,16 @@ struct $groupname_impl {
     // templated specialization
     template< $TYPES >
     static return_type compute( $LEVEL1 ) {
+        $STATIC_ASSERTS
         $RETURN_STATEMENTdetail::$groupname( $CALL_LEVEL0 );
     }
 };
 $TEMPLATE[blas_level2]
 // template function to call $groupname
 template< $TYPES >
-inline integer_t $groupname( $LEVEL2 ) {
+inline typename $groupname_impl< typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type >::return_type
+$groupname( $LEVEL2 ) {
     typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
     $RETURN_STATEMENT$groupname_impl< value_type >::compute( $CALL_LEVEL1 );
 }
-
 $TEMPLATE[end]

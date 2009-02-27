@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -58,6 +60,7 @@ struct getrf_impl {
     // templated specialization
     template< typename MatrixA, typename VectorIPIV >
     static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info ) {
+        
 #ifndef NDEBUG
         assert( traits::matrix_size1(a) >= 0 );
         assert( traits::matrix_size2(a) >= 0 );
@@ -81,7 +84,6 @@ inline integer_t getrf( MatrixA& a, VectorIPIV& ipiv ) {
     getrf_impl< value_type >::compute( a, ipiv, info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

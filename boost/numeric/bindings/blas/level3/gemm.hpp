@@ -17,6 +17,8 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -74,9 +76,14 @@ struct gemm_impl {
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
     static return_type compute( char const transa, char const transb,
-            integer_t const m, integer_t const k,
-            traits::complex_d const alpha, MatrixA& a, MatrixB& b,
-            traits::complex_d const beta, MatrixC& c ) {
+            integer_t const m, integer_t const k, value_type const alpha,
+            MatrixA& a, MatrixB& b, value_type const beta, MatrixC& c ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixB >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::matrix_traits<
+                MatrixC >::value_type > );
         detail::gemm( transa, transb, m, traits::matrix_size2(c), k,
                 alpha, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
@@ -87,14 +94,17 @@ struct gemm_impl {
 
 // template function to call gemm
 template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline integer_t gemm( char const transa, char const transb,
-        integer_t const m, integer_t const k, traits::complex_d const alpha,
-        MatrixA& a, MatrixB& b, traits::complex_d const beta, MatrixC& c ) {
+inline typename gemm_impl< typename traits::matrix_traits<
+        MatrixA >::value_type >::return_type
+gemm( char const transa, char const transb, integer_t const m,
+        integer_t const k, typename traits::matrix_traits<
+        MatrixA >::value_type const alpha, MatrixA& a, MatrixB& b,
+        typename traits::matrix_traits< MatrixA >::value_type const beta,
+        MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     gemm_impl< value_type >::compute( transa, transb, m, k, alpha, a, b,
             beta, c );
 }
-
 
 }}}} // namespace boost::numeric::bindings::blas
 

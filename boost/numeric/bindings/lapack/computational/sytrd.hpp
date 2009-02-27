@@ -20,6 +20,8 @@
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
 namespace boost {
@@ -55,6 +57,15 @@ struct sytrd_impl {
             typename VectorTAU, typename WORK >
     static void compute( MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau,
             integer_t& info, detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorD >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorE >::value_type > );
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixA >::value_type, typename traits::vector_traits<
+                VectorTAU >::value_type > );
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
@@ -116,7 +127,6 @@ inline integer_t sytrd( MatrixA& a, VectorD& d, VectorE& e,
     sytrd_impl< value_type >::compute( a, d, e, tau, info, work );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

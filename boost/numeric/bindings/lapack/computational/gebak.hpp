@@ -15,8 +15,13 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GEBAK_HPP
 
 #include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/traits/is_complex.hpp>
+#include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/static_assert.hpp
+#include <boost/type_traits/is_same.hpp>
+#include <boost/utility/enable_if.hpp>
 #include <cassert>
 
 namespace boost {
@@ -59,8 +64,12 @@ namespace detail {
 }
 
 // value-type based template
+template< typename ValueType, typename Enable = void >
+struct gebak_impl{};
+
+// real specialization
 template< typename ValueType >
-struct gebak_impl {
+struct gebak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
@@ -70,6 +79,38 @@ struct gebak_impl {
     static void compute( char const job, char const side, integer_t const ilo,
             integer_t const ihi, VectorSCALE& scale, MatrixV& v,
             integer_t& info ) {
+        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorSCALE >::value_type, typename traits::matrix_traits<
+                MatrixV >::value_type > );
+#ifndef NDEBUG
+        assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
+        assert( side == 'R' || side == 'L' );
+        assert( traits::matrix_size1(v) >= 0 );
+        assert( traits::vector_size(scale) >= traits::matrix_size1(v) );
+        assert( traits::matrix_size2(v) >= 0 );
+        assert( traits::leading_dimension(v) >= std::max(1,
+                traits::matrix_size1(v)) );
+#endif
+        detail::gebak( job, side, traits::matrix_size1(v), ilo, ihi,
+                traits::vector_storage(scale), traits::matrix_size2(v),
+                traits::matrix_storage(v), traits::leading_dimension(v),
+                info );
+    }
+};
+
+// complex specialization
+template< typename ValueType >
+struct gebak_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+
+    typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
+
+    // templated specialization
+    template< typename VectorSCALE, typename MatrixV >
+    static void compute( char const job, char const side, integer_t const ilo,
+            integer_t const ihi, VectorSCALE& scale, MatrixV& v,
+            integer_t& info ) {
+        
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         assert( side == 'R' || side == 'L' );
@@ -92,13 +133,13 @@ template< typename VectorSCALE, typename MatrixV >
 inline integer_t gebak( char const job, char const side,
         integer_t const ilo, integer_t const ihi, VectorSCALE& scale,
         MatrixV& v ) {
-    typedef typename traits::vector_traits< VectorSCALE >::value_type value_type;
+    typedef typename traits::vector_traits<
+            VectorSCALE >::value_type value_type;
     integer_t info(0);
     gebak_impl< value_type >::compute( job, side, ilo, ihi, scale, v,
             info );
     return info;
 }
-
 
 }}}} // namespace boost::numeric::bindings::lapack
 

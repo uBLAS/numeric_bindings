@@ -67,7 +67,7 @@ struct tpsv_impl {
                 MatrixAP >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
         detail::tpsv( traits::matrix_uplo_tag(ap), trans, diag,
-                traits::matrix_size2(ap), traits::matrix_storage(ap),
+                traits::matrix_num_columns(ap), traits::matrix_storage(ap),
                 traits::vector_storage(x), traits::vector_stride(x) );
     }
 };

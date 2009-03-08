@@ -101,25 +101,26 @@ struct ggglm_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size1(b) >= 0 );
-        assert( traits::matrix_size2(b) >=
-                traits::matrix_size1(b)-traits::matrix_size2(a) );
+        assert( traits::matrix_num_rows(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >=
+                traits::matrix_num_rows(b)-traits::matrix_num_columns(a) );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(b)) );
+                traits::matrix_num_rows(b)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size1(b)) );
-        assert( traits::vector_size(d) >= traits::matrix_size1(b) );
-        assert( traits::vector_size(x) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(y) >= traits::matrix_size2(b) );
+                traits::matrix_num_rows(b)) );
+        assert( traits::vector_size(d) >= traits::matrix_num_rows(b) );
+        assert( traits::vector_size(x) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(y) >= traits::matrix_num_columns(b) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(a), traits::matrix_size1(b),
-                traits::matrix_size2(b) )));
+                traits::matrix_num_columns(a), traits::matrix_num_rows(b),
+                traits::matrix_num_columns(b) )));
 #endif
-        detail::ggglm( traits::matrix_size1(b), traits::matrix_size2(a),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(d),
-                traits::vector_storage(x), traits::vector_storage(y),
+        detail::ggglm( traits::matrix_num_rows(b),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                traits::vector_storage(d), traits::vector_storage(x),
+                traits::vector_storage(y),
                 traits::vector_storage(work.select(real_type())),
                 traits::vector_size(work.select(real_type())), info );
     }
@@ -130,8 +131,8 @@ struct ggglm_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
             VectorY& y, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(a), traits::matrix_size1(b),
-                traits::matrix_size2(b) ) );
+                traits::matrix_num_columns(a), traits::matrix_num_rows(b),
+                traits::matrix_num_columns(b) ) );
         compute( a, b, d, x, y, info, workspace( tmp_work ) );
     }
 
@@ -141,12 +142,12 @@ struct ggglm_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
             VectorY& y, integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
-        detail::ggglm( traits::matrix_size1(b), traits::matrix_size2(a),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(d),
-                traits::vector_storage(x), traits::vector_storage(y),
-                &opt_size_work, -1, info );
+        detail::ggglm( traits::matrix_num_rows(b),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                traits::vector_storage(d), traits::vector_storage(x),
+                traits::vector_storage(y), &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         compute( a, b, d, x, y, info, workspace( tmp_work ) );
@@ -183,25 +184,26 @@ struct ggglm_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size1(b) >= 0 );
-        assert( traits::matrix_size2(b) >=
-                traits::matrix_size1(b)-traits::matrix_size2(a) );
+        assert( traits::matrix_num_rows(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >=
+                traits::matrix_num_rows(b)-traits::matrix_num_columns(a) );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(b)) );
+                traits::matrix_num_rows(b)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size1(b)) );
-        assert( traits::vector_size(d) >= traits::matrix_size1(b) );
-        assert( traits::vector_size(x) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(y) >= traits::matrix_size2(b) );
+                traits::matrix_num_rows(b)) );
+        assert( traits::vector_size(d) >= traits::matrix_num_rows(b) );
+        assert( traits::vector_size(x) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(y) >= traits::matrix_num_columns(b) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(a),
-                traits::matrix_size1(b), traits::matrix_size2(b) )));
+                min_size_work( traits::matrix_num_columns(a),
+                traits::matrix_num_rows(b), traits::matrix_num_columns(b) )));
 #endif
-        detail::ggglm( traits::matrix_size1(b), traits::matrix_size2(a),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(d),
-                traits::vector_storage(x), traits::vector_storage(y),
+        detail::ggglm( traits::matrix_num_rows(b),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                traits::vector_storage(d), traits::vector_storage(x),
+                traits::vector_storage(y),
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_size(work.select(value_type())), info );
     }
@@ -212,8 +214,8 @@ struct ggglm_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
             VectorY& y, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(a), traits::matrix_size1(b),
-                traits::matrix_size2(b) ) );
+                traits::matrix_num_columns(a), traits::matrix_num_rows(b),
+                traits::matrix_num_columns(b) ) );
         compute( a, b, d, x, y, info, workspace( tmp_work ) );
     }
 
@@ -223,12 +225,12 @@ struct ggglm_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
             VectorY& y, integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
-        detail::ggglm( traits::matrix_size1(b), traits::matrix_size2(a),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(d),
-                traits::vector_storage(x), traits::vector_storage(y),
-                &opt_size_work, -1, info );
+        detail::ggglm( traits::matrix_num_rows(b),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                traits::vector_storage(d), traits::vector_storage(x),
+                traits::vector_storage(y), &opt_size_work, -1, info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         compute( a, b, d, x, y, info, workspace( tmp_work ) );

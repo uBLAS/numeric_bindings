@@ -97,23 +97,26 @@ struct gebrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAUP >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
-        assert( traits::vector_size(d) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(tauq) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(taup) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
+                traits::matrix_num_rows(a)) );
+        assert( traits::vector_size(d) >= std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(tauq) >=
+                std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(taup) >=
+                std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size1(a), traits::matrix_size2(a) )));
+                traits::matrix_num_rows(a), traits::matrix_num_columns(a) )));
 #endif
-        detail::gebrd( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::vector_storage(tauq), traits::vector_storage(taup),
+        detail::gebrd( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(d),
+                traits::vector_storage(e), traits::vector_storage(tauq),
+                traits::vector_storage(taup),
                 traits::vector_storage(work.select(real_type())),
                 traits::vector_size(work.select(real_type())), info );
     }
@@ -124,7 +127,7 @@ struct gebrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
             VectorTAUP& taup, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size1(a), traits::matrix_size2(a) ) );
+                traits::matrix_num_rows(a), traits::matrix_num_columns(a) ) );
         compute( a, d, e, tauq, taup, info, workspace( tmp_work ) );
     }
 
@@ -134,11 +137,11 @@ struct gebrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
             VectorTAUP& taup, integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
-        detail::gebrd( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::vector_storage(tauq), traits::vector_storage(taup),
-                &opt_size_work, -1, info );
+        detail::gebrd( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(d),
+                traits::vector_storage(e), traits::vector_storage(tauq),
+                traits::vector_storage(taup), &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         compute( a, d, e, tauq, taup, info, workspace( tmp_work ) );
@@ -172,24 +175,27 @@ struct gebrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAUP >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
-        assert( traits::vector_size(d) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(tauq) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(taup) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
+                traits::matrix_num_rows(a)) );
+        assert( traits::vector_size(d) >= std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(tauq) >=
+                std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(taup) >=
+                std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size1(a),
-                traits::matrix_size2(a) )));
+                min_size_work( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a) )));
 #endif
-        detail::gebrd( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::vector_storage(tauq), traits::vector_storage(taup),
+        detail::gebrd( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(d),
+                traits::vector_storage(e), traits::vector_storage(tauq),
+                traits::vector_storage(taup),
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_size(work.select(value_type())), info );
     }
@@ -200,7 +206,7 @@ struct gebrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
             VectorTAUP& taup, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size1(a), traits::matrix_size2(a) ) );
+                traits::matrix_num_rows(a), traits::matrix_num_columns(a) ) );
         compute( a, d, e, tauq, taup, info, workspace( tmp_work ) );
     }
 
@@ -210,11 +216,11 @@ struct gebrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
             VectorTAUP& taup, integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
-        detail::gebrd( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::vector_storage(tauq), traits::vector_storage(taup),
-                &opt_size_work, -1, info );
+        detail::gebrd( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(d),
+                traits::vector_storage(e), traits::vector_storage(tauq),
+                traits::vector_storage(taup), &opt_size_work, -1, info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         compute( a, d, e, tauq, taup, info, workspace( tmp_work ) );

@@ -88,17 +88,17 @@ struct hpsvx_impl {
         assert( traits::matrix_uplo_tag(ap) == 'U' ||
                 traits::matrix_uplo_tag(ap) == 'L' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( n )));
         assert( traits::vector_size(work.select(real_type()) >=
                 min_size_rwork( n )));
 #endif
         detail::hpsvx( fact, traits::matrix_uplo_tag(ap), n,
-                traits::matrix_size2(x), traits::matrix_storage(ap),
+                traits::matrix_num_columns(x), traits::matrix_storage(ap),
                 traits::matrix_storage(afp), traits::vector_storage(ipiv),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 traits::matrix_storage(x), traits::leading_dimension(x),

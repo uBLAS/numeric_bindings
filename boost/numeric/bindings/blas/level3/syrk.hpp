@@ -78,9 +78,9 @@ struct syrk_impl {
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
         detail::syrk( traits::matrix_uplo_tag(c), trans,
-                traits::matrix_size2(c), k, alpha, traits::matrix_storage(a),
-                traits::leading_dimension(a), beta, traits::matrix_storage(c),
-                traits::leading_dimension(c) );
+                traits::matrix_num_columns(c), k, alpha,
+                traits::matrix_storage(a), traits::leading_dimension(a), beta,
+                traits::matrix_storage(c), traits::leading_dimension(c) );
     }
 };
 

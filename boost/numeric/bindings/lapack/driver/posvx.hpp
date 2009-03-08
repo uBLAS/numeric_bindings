@@ -120,25 +120,25 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( fact == 'F' || fact == 'Y' || fact == 'N' || fact == 'E' );
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(af) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( equed == 'N' || equed == 'Y' );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(a) )));
+                traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_size2(a) )));
+                min_size_iwork( traits::matrix_num_columns(a) )));
 #endif
         detail::posvx( fact, traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_size2(x),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(x),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(af), traits::leading_dimension(af),
                 equed, traits::vector_storage(s), traits::matrix_storage(b),
@@ -158,9 +158,9 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( fact, a, af, equed, s, b, x, rcond, ferr, berr, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
@@ -220,25 +220,25 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( fact == 'F' || fact == 'Y' || fact == 'N' || fact == 'E' );
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(af) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( equed == 'N' || equed == 'Y' );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(a) )));
+                min_size_work( traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(a) )));
+                min_size_rwork( traits::matrix_num_columns(a) )));
 #endif
         detail::posvx( fact, traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_size2(x),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(x),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(af), traits::leading_dimension(af),
                 equed, traits::vector_storage(s), traits::matrix_storage(b),
@@ -258,9 +258,9 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( fact, a, af, equed, s, b, x, rcond, ferr, berr, info,
                 workspace( tmp_work, tmp_rwork ) );
     }

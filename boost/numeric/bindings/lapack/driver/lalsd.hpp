@@ -101,15 +101,15 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 1 );
+        assert( traits::matrix_num_columns(b) >= 1 );
         assert( traits::vector_size(e) >= n-1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n, smlsiz, nlvl, traits::matrix_size2(b) )));
+                n, smlsiz, nlvl, traits::matrix_num_columns(b) )));
         assert( traits::vector_size(work.select(integer_t()) >=
                 min_size_iwork( n, nlvl )));
 #endif
-        detail::lalsd( uplo, smlsiz, n, traits::matrix_size2(b),
+        detail::lalsd( uplo, smlsiz, n, traits::matrix_num_columns(b),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 rcond, rank, traits::vector_storage(work.select(real_type())),
@@ -127,7 +127,7 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                     1)) /
             std::log(static_cast<real_type>(2.)) ) + 1 );
         traits::detail::array< real_type > tmp_work( min_size_work( n, smlsiz,
-                nlvl, traits::matrix_size2(b) ) );
+                nlvl, traits::matrix_num_columns(b) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n,
                 nlvl ) );
         compute( uplo, smlsiz, n, d, e, b, rcond, rank, info,
@@ -182,17 +182,18 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 1 );
+        assert( traits::matrix_num_columns(b) >= 1 );
         assert( traits::vector_size(e) >= n-1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( n, traits::matrix_size2(b) )));
+                min_size_work( n, traits::matrix_num_columns(b) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( n, smlsiz, nlvl, traits::matrix_size2(b) )));
+                min_size_rwork( n, smlsiz, nlvl,
+                traits::matrix_num_columns(b) )));
         assert( traits::vector_size(work.select(integer_t()) >=
                 min_size_iwork( n, nlvl )));
 #endif
-        detail::lalsd( uplo, smlsiz, n, traits::matrix_size2(b),
+        detail::lalsd( uplo, smlsiz, n, traits::matrix_num_columns(b),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 rcond, rank,
@@ -213,9 +214,9 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             static_cast<real_type>(smlsiz+1)) /
             std::log(static_cast<real_type>(2.))) + 1 );
         traits::detail::array< value_type > tmp_work( min_size_work( n,
-                traits::matrix_size2(b) ) );
+                traits::matrix_num_columns(b) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n,
-                smlsiz, nlvl, traits::matrix_size2(b) ) );
+                smlsiz, nlvl, traits::matrix_num_columns(b) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n,
                 nlvl ) );
         compute( uplo, smlsiz, n, d, e, b, rcond, rank, info,

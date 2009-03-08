@@ -80,12 +80,12 @@ struct gbtrs_impl {
         assert( n >= 0 );
         assert( kl >= 0 );
         assert( ku >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(ab) >= 2 );
         assert( traits::vector_size(ipiv) >= n );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
 #endif
-        detail::gbtrs( trans, n, kl, ku, traits::matrix_size2(b),
+        detail::gbtrs( trans, n, kl, ku, traits::matrix_num_columns(b),
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 traits::vector_storage(ipiv), traits::matrix_storage(b),
                 traits::leading_dimension(b), info );

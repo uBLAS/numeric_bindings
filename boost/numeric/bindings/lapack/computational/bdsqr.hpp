@@ -103,17 +103,17 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(vt) >= 0 );
-        assert( traits::matrix_size1(u) >= 0 );
-        assert( traits::matrix_size2(c) >= 0 );
+        assert( traits::matrix_num_columns(vt) >= 0 );
+        assert( traits::matrix_num_rows(u) >= 0 );
+        assert( traits::matrix_num_columns(c) >= 0 );
         assert( traits::leading_dimension(u) >= std::max(1,
-                traits::matrix_size1(u)) );
+                traits::matrix_num_rows(u)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n, traits::matrix_size2(vt), traits::matrix_size1(u),
-                traits::matrix_size2(c) )));
+                n, traits::matrix_num_columns(vt), traits::matrix_num_rows(u),
+                traits::matrix_num_columns(c) )));
 #endif
-        detail::bdsqr( uplo, n, traits::matrix_size2(vt),
-                traits::matrix_size1(u), traits::matrix_size2(c),
+        detail::bdsqr( uplo, n, traits::matrix_num_columns(vt),
+                traits::matrix_num_rows(u), traits::matrix_num_columns(c),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::matrix_storage(vt), traits::leading_dimension(vt),
                 traits::matrix_storage(u), traits::leading_dimension(u),
@@ -128,8 +128,8 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n,
-                traits::matrix_size2(vt), traits::matrix_size1(u),
-                traits::matrix_size2(c) ) );
+                traits::matrix_num_columns(vt), traits::matrix_num_rows(u),
+                traits::matrix_num_columns(c) ) );
         compute( uplo, n, d, e, vt, u, c, info, workspace( tmp_work ) );
     }
 
@@ -176,17 +176,17 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(vt) >= 0 );
-        assert( traits::matrix_size1(u) >= 0 );
-        assert( traits::matrix_size2(c) >= 0 );
+        assert( traits::matrix_num_columns(vt) >= 0 );
+        assert( traits::matrix_num_rows(u) >= 0 );
+        assert( traits::matrix_num_columns(c) >= 0 );
         assert( traits::leading_dimension(u) >= std::max(1,
-                traits::matrix_size1(u)) );
+                traits::matrix_num_rows(u)) );
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( n, traits::matrix_size2(vt),
-                traits::matrix_size1(u), traits::matrix_size2(c) )));
+                min_size_rwork( n, traits::matrix_num_columns(vt),
+                traits::matrix_num_rows(u), traits::matrix_num_columns(c) )));
 #endif
-        detail::bdsqr( uplo, n, traits::matrix_size2(vt),
-                traits::matrix_size1(u), traits::matrix_size2(c),
+        detail::bdsqr( uplo, n, traits::matrix_num_columns(vt),
+                traits::matrix_num_rows(u), traits::matrix_num_columns(c),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::matrix_storage(vt), traits::leading_dimension(vt),
                 traits::matrix_storage(u), traits::leading_dimension(u),
@@ -201,8 +201,8 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n,
-                traits::matrix_size2(vt), traits::matrix_size1(u),
-                traits::matrix_size2(c) ) );
+                traits::matrix_num_columns(vt), traits::matrix_num_rows(u),
+                traits::matrix_num_columns(c) ) );
         compute( uplo, n, d, e, vt, u, c, info, workspace( tmp_rwork ) );
     }
 

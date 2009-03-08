@@ -104,21 +104,22 @@ struct labrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixY >::value_type >::value) );
 #ifndef NDEBUG
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
-        assert( traits::vector_size(d) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(e) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(tauq) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(taup) >= traits::matrix_size2(a) );
-        assert( traits::leading_dimension(x) >= traits::matrix_size1(a) );
-        assert( traits::leading_dimension(y) >= traits::matrix_size2(a) );
+                traits::matrix_num_rows(a)) );
+        assert( traits::vector_size(d) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(e) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(tauq) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(taup) >= traits::matrix_num_columns(a) );
+        assert( traits::leading_dimension(x) >= traits::matrix_num_rows(a) );
+        assert( traits::leading_dimension(y) >=
+                traits::matrix_num_columns(a) );
 #endif
-        detail::labrd( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_size2(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(d),
-                traits::vector_storage(e), traits::vector_storage(tauq),
-                traits::vector_storage(taup), traits::matrix_storage(x),
-                traits::leading_dimension(x), traits::matrix_storage(y),
-                traits::leading_dimension(y) );
+        detail::labrd( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(a),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(d), traits::vector_storage(e),
+                traits::vector_storage(tauq), traits::vector_storage(taup),
+                traits::matrix_storage(x), traits::leading_dimension(x),
+                traits::matrix_storage(y), traits::leading_dimension(y) );
     }
 };
 
@@ -152,23 +153,23 @@ struct labrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixY >::value_type >::value) );
 #ifndef NDEBUG
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
-        assert( traits::vector_size(d) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(e) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(tauq) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(taup) >= traits::matrix_size2(a) );
+                traits::matrix_num_rows(a)) );
+        assert( traits::vector_size(d) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(e) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(tauq) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(taup) >= traits::matrix_num_columns(a) );
         assert( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_size1(a)) );
+                traits::matrix_num_rows(a)) );
         assert( traits::leading_dimension(y) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
 #endif
-        detail::labrd( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_size2(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(d),
-                traits::vector_storage(e), traits::vector_storage(tauq),
-                traits::vector_storage(taup), traits::matrix_storage(x),
-                traits::leading_dimension(x), traits::matrix_storage(y),
-                traits::leading_dimension(y) );
+        detail::labrd( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(a),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(d), traits::vector_storage(e),
+                traits::vector_storage(tauq), traits::vector_storage(taup),
+                traits::matrix_storage(x), traits::leading_dimension(x),
+                traits::matrix_storage(y), traits::leading_dimension(y) );
     }
 };
 

@@ -65,8 +65,9 @@ struct gerc_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::matrix_traits<
                 MatrixA >::value_type >::value) );
-        detail::gerc( traits::matrix_size1(a), traits::matrix_size2(a),
-                alpha, traits::vector_storage(x), traits::vector_stride(x),
+        detail::gerc( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), alpha,
+                traits::vector_storage(x), traits::vector_stride(x),
                 traits::vector_storage(y), traits::vector_stride(y),
                 traits::matrix_storage(a), traits::leading_dimension(a) );
     }

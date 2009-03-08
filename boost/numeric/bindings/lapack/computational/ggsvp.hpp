@@ -127,23 +127,23 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( jobu == 'U' || jobu == 'N' );
         assert( jobv == 'V' || jobv == 'N' );
         assert( jobq == 'Q' || jobq == 'N' );
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size1(b) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_rows(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
+                traits::matrix_num_rows(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size1(b)) );
+                traits::matrix_num_rows(b)) );
         assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_size2(b) )));
+                min_size_iwork( traits::matrix_num_columns(b) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_tau( traits::matrix_size2(b) )));
+                min_size_tau( traits::matrix_num_columns(b) )));
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(b), traits::matrix_size1(a),
-                traits::matrix_size1(b) )));
+                traits::matrix_num_columns(b), traits::matrix_num_rows(a),
+                traits::matrix_num_rows(b) )));
 #endif
-        detail::ggsvp( jobu, jobv, jobq, traits::matrix_size1(a),
-                traits::matrix_size1(b), traits::matrix_size2(b),
+        detail::ggsvp( jobu, jobv, jobq, traits::matrix_num_rows(a),
+                traits::matrix_num_rows(b), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b), tola,
                 tolb, k, l, traits::matrix_storage(u),
@@ -163,12 +163,12 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             real_type const tolb, integer_t& k, integer_t& l, MatrixU& u,
             MatrixV& v, MatrixQ& q, integer_t& info, minimal_workspace work ) {
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_size2(b) ) );
+                traits::matrix_num_columns(b) ) );
         traits::detail::array<
-                real_type > tmp_tau( min_size_tau( traits::matrix_size2(b) ) );
+                real_type > tmp_tau( min_size_tau( traits::matrix_num_columns(b) ) );
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(b), traits::matrix_size1(a),
-                traits::matrix_size1(b) ) );
+                traits::matrix_num_columns(b), traits::matrix_num_rows(a),
+                traits::matrix_num_rows(b) ) );
         compute( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q, info,
                 workspace( tmp_iwork, tmp_tau, tmp_work ) );
     }
@@ -230,25 +230,25 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( jobu == 'U' || jobu == 'N' );
         assert( jobv == 'V' || jobv == 'N' );
         assert( jobq == 'Q' || jobq == 'N' );
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size1(b) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_rows(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
+                traits::matrix_num_rows(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size1(b)) );
+                traits::matrix_num_rows(b)) );
         assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_size2(b) )));
+                min_size_iwork( traits::matrix_num_columns(b) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(b) )));
+                min_size_rwork( traits::matrix_num_columns(b) )));
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_tau( traits::matrix_size2(b) )));
+                min_size_tau( traits::matrix_num_columns(b) )));
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(b),
-                traits::matrix_size1(a), traits::matrix_size1(b) )));
+                min_size_work( traits::matrix_num_columns(b),
+                traits::matrix_num_rows(a), traits::matrix_num_rows(b) )));
 #endif
-        detail::ggsvp( jobu, jobv, jobq, traits::matrix_size1(a),
-                traits::matrix_size1(b), traits::matrix_size2(b),
+        detail::ggsvp( jobu, jobv, jobq, traits::matrix_num_rows(a),
+                traits::matrix_num_rows(b), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b), tola,
                 tolb, k, l, traits::matrix_storage(u),
@@ -269,14 +269,14 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             real_type const tolb, integer_t& k, integer_t& l, MatrixU& u,
             MatrixV& v, MatrixQ& q, integer_t& info, minimal_workspace work ) {
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_size2(b) ) );
+                traits::matrix_num_columns(b) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(b) ) );
+                traits::matrix_num_columns(b) ) );
         traits::detail::array<
-                value_type > tmp_tau( min_size_tau( traits::matrix_size2(b) ) );
+                value_type > tmp_tau( min_size_tau( traits::matrix_num_columns(b) ) );
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(b), traits::matrix_size1(a),
-                traits::matrix_size1(b) ) );
+                traits::matrix_num_columns(b), traits::matrix_num_rows(a),
+                traits::matrix_num_rows(b) ) );
         compute( jobu, jobv, jobq, a, b, tola, tolb, k, l, u, v, q, info,
                 workspace( tmp_iwork, tmp_rwork, tmp_tau, tmp_work ) );
     }

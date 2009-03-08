@@ -135,24 +135,25 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( jobvl == 'N' || jobvl == 'V' || jobvl == 'E' || jobvl == 'B' );
         assert( jobvr == 'N' || jobvr == 'V' || jobvr == 'E' || jobvr == 'B' );
         assert( sense == 'N' || sense == 'E' || sense == 'V' || sense == 'B' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(wr) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(wi) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(rconde) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(rcondv) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(wr) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(wi) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(rconde) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(rcondv) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                sense, jobvl, jobvr, traits::matrix_size2(a) )));
+                sense, jobvl, jobvr, traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( sense, traits::matrix_size2(a) )));
+                min_size_iwork( sense, traits::matrix_num_columns(a) )));
 #endif
-        detail::geevx( balanc, jobvl, jobvr, sense, traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(wr), traits::vector_storage(wi),
-                traits::matrix_storage(vl), traits::leading_dimension(vl),
-                traits::matrix_storage(vr), traits::leading_dimension(vr),
-                ilo, ihi, traits::vector_storage(scale), abnrm,
+        detail::geevx( balanc, jobvl, jobvr, sense,
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(wr),
+                traits::vector_storage(wi), traits::matrix_storage(vl),
+                traits::leading_dimension(vl), traits::matrix_storage(vr),
+                traits::leading_dimension(vr), ilo, ihi,
+                traits::vector_storage(scale), abnrm,
                 traits::vector_storage(rconde),
                 traits::vector_storage(rcondv),
                 traits::vector_storage(work.select(real_type())),
@@ -171,9 +172,9 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorRCONDE& rconde, VectorRCONDV& rcondv, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( sense,
-                jobvl, jobvr, traits::matrix_size2(a) ) );
+                jobvl, jobvr, traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( sense,
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi,
                 scale, abnrm, rconde, rcondv, info, workspace( tmp_work,
                 tmp_iwork ) );
@@ -191,9 +192,9 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             optimal_workspace work ) {
         real_type opt_size_work;
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( sense,
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         detail::geevx( balanc, jobvl, jobvr, sense,
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(wr),
                 traits::vector_storage(wi), traits::matrix_storage(vl),
                 traits::leading_dimension(vl), traits::matrix_storage(vr),
@@ -266,23 +267,23 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( jobvl == 'N' || jobvl == 'V' || jobvl == 'E' || jobvl == 'B' );
         assert( jobvr == 'N' || jobvr == 'V' || jobvr == 'E' || jobvr == 'B' );
         assert( sense == 'N' || sense == 'E' || sense == 'V' || sense == 'B' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(w) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(rconde) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(rcondv) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(w) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(rconde) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(rcondv) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( sense, traits::matrix_size2(a) )));
+                min_size_work( sense, traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(a) )));
+                min_size_rwork( traits::matrix_num_columns(a) )));
 #endif
-        detail::geevx( balanc, jobvl, jobvr, sense, traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(w), traits::matrix_storage(vl),
-                traits::leading_dimension(vl), traits::matrix_storage(vr),
-                traits::leading_dimension(vr), ilo, ihi,
-                traits::vector_storage(scale), abnrm,
+        detail::geevx( balanc, jobvl, jobvr, sense,
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(w),
+                traits::matrix_storage(vl), traits::leading_dimension(vl),
+                traits::matrix_storage(vr), traits::leading_dimension(vr),
+                ilo, ihi, traits::vector_storage(scale), abnrm,
                 traits::vector_storage(rconde),
                 traits::vector_storage(rcondv),
                 traits::vector_storage(work.select(value_type())),
@@ -300,9 +301,9 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorSCALE& scale, real_type& abnrm, VectorRCONDE& rconde,
             VectorRCONDV& rcondv, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( sense,
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale,
                 abnrm, rconde, rcondv, info, workspace( tmp_work,
                 tmp_rwork ) );
@@ -319,9 +320,9 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorRCONDV& rcondv, integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         detail::geevx( balanc, jobvl, jobvr, sense,
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(w),
                 traits::matrix_storage(vl), traits::leading_dimension(vl),
                 traits::matrix_storage(vr), traits::leading_dimension(vr),

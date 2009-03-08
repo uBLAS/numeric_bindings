@@ -73,17 +73,18 @@ struct ormbr_impl {
         assert( vect == 'Q' || vect == 'P' );
         assert( side == 'L' || side == 'R' );
         assert( trans == 'N' || trans == 'T' );
-        assert( traits::matrix_size1(c) >= 0 );
-        assert( traits::matrix_size2(c) >= 0 );
+        assert( traits::matrix_num_rows(c) >= 0 );
+        assert( traits::matrix_num_columns(c) >= 0 );
         assert( k >= 0 );
         assert( traits::vector_size(tau) >= std::min(?NQ,k) );
         assert( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_size1(c)) );
+                traits::matrix_num_rows(c)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                side, traits::matrix_size1(c), traits::matrix_size2(c) )));
+                side, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c) )));
 #endif
-        detail::ormbr( vect, side, trans, traits::matrix_size1(c),
-                traits::matrix_size2(c), k, traits::matrix_storage(a),
+        detail::ormbr( vect, side, trans, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c), k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),
                 traits::matrix_storage(c), traits::leading_dimension(c),
                 traits::vector_storage(work.select(real_type())),
@@ -96,7 +97,7 @@ struct ormbr_impl {
             integer_t const k, MatrixA& a, VectorTAU& tau, MatrixC& c,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( side,
-                traits::matrix_size1(c), traits::matrix_size2(c) ) );
+                traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
         compute( vect, side, trans, k, a, tau, c, info,
                 workspace( tmp_work ) );
     }
@@ -107,8 +108,8 @@ struct ormbr_impl {
             integer_t const k, MatrixA& a, VectorTAU& tau, MatrixC& c,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
-        detail::ormbr( vect, side, trans, traits::matrix_size1(c),
-                traits::matrix_size2(c), k, traits::matrix_storage(a),
+        detail::ormbr( vect, side, trans, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c), k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),
                 traits::matrix_storage(c), traits::leading_dimension(c),
                 &opt_size_work, -1, info );

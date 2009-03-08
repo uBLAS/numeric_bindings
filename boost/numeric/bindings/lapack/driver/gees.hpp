@@ -106,17 +106,17 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 #ifndef NDEBUG
         assert( jobvs == 'N' || jobvs == 'V' );
         assert( sort == 'N' || sort == 'S' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(wr) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(wi) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(wr) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(wi) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(a) )));
+                traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(bool()) >= min_size_bwork(
-                traits::matrix_size2(a), sort )));
+                traits::matrix_num_columns(a), sort )));
 #endif
-        detail::gees( jobvs, sort, select, traits::matrix_size2(a),
+        detail::gees( jobvs, sort, select, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a), sdim,
                 traits::vector_storage(wr), traits::vector_storage(wi),
                 traits::matrix_storage(vs), traits::leading_dimension(vs),
@@ -132,9 +132,9 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
             MatrixA& a, integer_t& sdim, VectorWR& wr, VectorWI& wi,
             MatrixVS& vs, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
-                traits::matrix_size2(a), sort ) );
+                traits::matrix_num_columns(a), sort ) );
         compute( jobvs, sort, select, a, sdim, wr, wi, vs, info,
                 workspace( tmp_work, tmp_bwork ) );
     }
@@ -147,9 +147,10 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
             MatrixVS& vs, integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
-                traits::matrix_size2(a), sort ) );
-        detail::gees( jobvs, sort, select, traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a), sdim,
+                traits::matrix_num_columns(a), sort ) );
+        detail::gees( jobvs, sort, select,
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), sdim,
                 traits::vector_storage(wr), traits::vector_storage(wi),
                 traits::matrix_storage(vs), traits::leading_dimension(vs),
                 &opt_size_work, -1, traits::vector_storage(tmp_bwork), info );
@@ -193,18 +194,18 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 #ifndef NDEBUG
         assert( jobvs == 'N' || jobvs == 'V' );
         assert( sort == 'N' || sort == 'S' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(w) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(w) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(a) )));
+                min_size_work( traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(a) )));
+                min_size_rwork( traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(bool()) >= min_size_bwork(
-                traits::matrix_size2(a), sort )));
+                traits::matrix_num_columns(a), sort )));
 #endif
-        detail::gees( jobvs, sort, select, traits::matrix_size2(a),
+        detail::gees( jobvs, sort, select, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a), sdim,
                 traits::vector_storage(w), traits::matrix_storage(vs),
                 traits::leading_dimension(vs),
@@ -220,11 +221,11 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
             MatrixA& a, integer_t& sdim, VectorW& w, MatrixVS& vs,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
-                traits::matrix_size2(a), sort ) );
+                traits::matrix_num_columns(a), sort ) );
         compute( jobvs, sort, select, a, sdim, w, vs, info,
                 workspace( tmp_work, tmp_rwork, tmp_bwork ) );
     }
@@ -236,14 +237,14 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
-                traits::matrix_size2(a), sort ) );
-        detail::gees( jobvs, sort, select, traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a), sdim,
-                traits::vector_storage(w), traits::matrix_storage(vs),
-                traits::leading_dimension(vs), &opt_size_work, -1,
-                traits::vector_storage(tmp_rwork),
+                traits::matrix_num_columns(a), sort ) );
+        detail::gees( jobvs, sort, select,
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), sdim, traits::vector_storage(w),
+                traits::matrix_storage(vs), traits::leading_dimension(vs),
+                &opt_size_work, -1, traits::vector_storage(tmp_rwork),
                 traits::vector_storage(tmp_bwork), info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );

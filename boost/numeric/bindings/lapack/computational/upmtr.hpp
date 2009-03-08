@@ -73,15 +73,15 @@ struct upmtr_impl {
         assert( side == 'L' || side == 'R' );
         assert( uplo == 'U' || uplo == 'L' );
         assert( trans == 'N' || trans == 'C' );
-        assert( traits::matrix_size1(c) >= 0 );
-        assert( traits::matrix_size2(c) >= 0 );
+        assert( traits::matrix_num_rows(c) >= 0 );
+        assert( traits::matrix_num_columns(c) >= 0 );
         assert( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_size1(c)) );
+                traits::matrix_num_rows(c)) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( $CALL_MIN_SIZE )));
 #endif
-        detail::upmtr( side, uplo, trans, traits::matrix_size1(c),
-                traits::matrix_size2(c), traits::vector_storage(ap),
+        detail::upmtr( side, uplo, trans, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c), traits::vector_storage(ap),
                 traits::vector_storage(tau), traits::matrix_storage(c),
                 traits::leading_dimension(c),
                 traits::vector_storage(work.select(value_type())), info );

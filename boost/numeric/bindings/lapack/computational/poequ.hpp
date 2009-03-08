@@ -74,13 +74,13 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorS >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
 #endif
-        detail::poequ( traits::matrix_size2(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(s),
-                scond, amax, info );
+        detail::poequ( traits::matrix_num_columns(a),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(s), scond, amax, info );
     }
 };
 
@@ -97,13 +97,13 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             real_type& amax, integer_t& info ) {
         
 #ifndef NDEBUG
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
 #endif
-        detail::poequ( traits::matrix_size2(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(s),
-                scond, amax, info );
+        detail::poequ( traits::matrix_num_columns(a),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(s), scond, amax, info );
     }
 };
 

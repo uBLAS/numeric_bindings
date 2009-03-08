@@ -102,9 +102,9 @@ def call_level0_type( name, properties, arg_map ):
     if properties[ 'trait_type' ] == 'lda':
       result = "traits::leading_dimension(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'num_columns':
-      result = "traits::matrix_size2(" + properties[ 'trait_of' ].lower() + ")"
+      result = "traits::matrix_num_columns(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'num_rows':
-      result = "traits::matrix_size1(" + properties[ 'trait_of' ].lower() + ")"
+      result = "traits::matrix_num_rows(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'size':
       my_name = properties[ 'trait_of' ].lower()
       referring_to_properties = arg_map[ properties[ 'trait_of' ] ]

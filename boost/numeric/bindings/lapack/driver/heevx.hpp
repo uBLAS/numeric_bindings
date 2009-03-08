@@ -83,19 +83,19 @@ struct heevx_impl {
         assert( range == 'A' || range == 'V' || range == 'I' );
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(w) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(w) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(a) )));
+                min_size_work( traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(a) )));
+                min_size_rwork( traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_size2(a) )));
+                min_size_iwork( traits::matrix_num_columns(a) )));
 #endif
         detail::heevx( jobz, range, traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), vl, vu, il, iu, abstol, m,
                 traits::vector_storage(w), traits::matrix_storage(z),
                 traits::leading_dimension(z),
@@ -115,11 +115,11 @@ struct heevx_impl {
             VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
                 workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
@@ -134,11 +134,11 @@ struct heevx_impl {
             optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         detail::heevx( jobz, range, traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), vl, vu, il, iu, abstol, m,
                 traits::vector_storage(w), traits::matrix_storage(z),
                 traits::leading_dimension(z), &opt_size_work, -1,

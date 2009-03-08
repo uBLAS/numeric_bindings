@@ -95,7 +95,7 @@ struct gghrd_impl {
         assert( traits::leading_dimension(a) >= std::max(1,n) );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
 #endif
-        detail::gghrd( compq, compz, n, ilo, traits::matrix_size2(a),
+        detail::gghrd( compq, compz, n, ilo, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 traits::matrix_storage(q), traits::leading_dimension(q),

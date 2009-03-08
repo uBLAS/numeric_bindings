@@ -99,22 +99,24 @@ struct ggrqf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAUB >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size1(b) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_rows(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
-        assert( traits::vector_size(taua) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(b)) );
+                traits::matrix_num_rows(a)) );
+        assert( traits::vector_size(taua) >=
+                std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(b)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size1(b)) );
-        assert( traits::vector_size(taub) >= std::min(traits::matrix_size1(b),
-                traits::matrix_size2(b)) );
+                traits::matrix_num_rows(b)) );
+        assert( traits::vector_size(taub) >=
+                std::min(traits::matrix_num_rows(b),
+                traits::matrix_num_columns(b)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
                 $CALL_MIN_SIZE )));
 #endif
-        detail::ggrqf( traits::matrix_size1(a), traits::matrix_size1(b),
-                traits::matrix_size2(b), traits::matrix_storage(a),
+        detail::ggrqf( traits::matrix_num_rows(a), traits::matrix_num_rows(b),
+                traits::matrix_num_columns(b), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(taua),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 traits::vector_storage(taub),
@@ -138,11 +140,12 @@ struct ggrqf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( MatrixA& a, VectorTAUA& taua, MatrixB& b,
             VectorTAUB& taub, integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
-        detail::ggrqf( traits::matrix_size1(a), traits::matrix_size1(b),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(taua),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                traits::vector_storage(taub), &opt_size_work, -1, info );
+        detail::ggrqf( traits::matrix_num_rows(a),
+                traits::matrix_num_rows(b), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(taua), traits::matrix_storage(b),
+                traits::leading_dimension(b), traits::vector_storage(taub),
+                &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         compute( a, taua, b, taub, info, workspace( tmp_work ) );
@@ -176,22 +179,24 @@ struct ggrqf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAUB >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size1(b) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_rows(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
-        assert( traits::vector_size(taua) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(b)) );
+                traits::matrix_num_rows(a)) );
+        assert( traits::vector_size(taua) >=
+                std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(b)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size1(b)) );
-        assert( traits::vector_size(taub) >= std::min(traits::matrix_size1(b),
-                traits::matrix_size2(b)) );
+                traits::matrix_num_rows(b)) );
+        assert( traits::vector_size(taub) >=
+                std::min(traits::matrix_num_rows(b),
+                traits::matrix_num_columns(b)) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( $CALL_MIN_SIZE )));
 #endif
-        detail::ggrqf( traits::matrix_size1(a), traits::matrix_size1(b),
-                traits::matrix_size2(b), traits::matrix_storage(a),
+        detail::ggrqf( traits::matrix_num_rows(a), traits::matrix_num_rows(b),
+                traits::matrix_num_columns(b), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(taua),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 traits::vector_storage(taub),
@@ -215,11 +220,12 @@ struct ggrqf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( MatrixA& a, VectorTAUA& taua, MatrixB& b,
             VectorTAUB& taub, integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
-        detail::ggrqf( traits::matrix_size1(a), traits::matrix_size1(b),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(taua),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                traits::vector_storage(taub), &opt_size_work, -1, info );
+        detail::ggrqf( traits::matrix_num_rows(a),
+                traits::matrix_num_rows(b), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(taua), traits::matrix_storage(b),
+                traits::leading_dimension(b), traits::vector_storage(taub),
+                &opt_size_work, -1, info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         compute( a, taua, b, taub, info, workspace( tmp_work ) );

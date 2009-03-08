@@ -80,15 +80,15 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorC >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
+                traits::matrix_num_rows(a)) );
 #endif
-        detail::geequ( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(r), traits::vector_storage(c), rowcnd,
-                colcnd, amax, info );
+        detail::geequ( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(r),
+                traits::vector_storage(c), rowcnd, colcnd, amax, info );
     }
 };
 
@@ -108,15 +108,15 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 VectorR >::value_type, typename traits::vector_traits<
                 VectorC >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
+                traits::matrix_num_rows(a)) );
 #endif
-        detail::geequ( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(r), traits::vector_storage(c), rowcnd,
-                colcnd, amax, info );
+        detail::geequ( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(r),
+                traits::vector_storage(c), rowcnd, colcnd, amax, info );
     }
 };
 

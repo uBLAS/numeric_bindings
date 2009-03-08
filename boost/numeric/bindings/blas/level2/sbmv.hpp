@@ -64,10 +64,10 @@ struct sbmv_impl {
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
         detail::sbmv( traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), k, alpha, traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(x),
-                traits::vector_stride(x), beta, traits::vector_storage(y),
-                traits::vector_stride(y) );
+                traits::matrix_num_columns(a), k, alpha,
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(x), traits::vector_stride(x), beta,
+                traits::vector_storage(y), traits::vector_stride(y) );
     }
 };
 

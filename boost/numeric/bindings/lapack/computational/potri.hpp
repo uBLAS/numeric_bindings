@@ -62,13 +62,13 @@ struct potri_impl {
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
 #endif
-        detail::potri( traits::matrix_uplo_tag(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                info );
+        detail::potri( traits::matrix_uplo_tag(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), info );
     }
 };
 

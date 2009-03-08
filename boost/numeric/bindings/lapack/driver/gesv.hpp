@@ -69,18 +69,19 @@ struct gesv_impl {
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(ipiv) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(a) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
 #endif
-        detail::gesv( traits::matrix_size2(a), traits::matrix_size2(b),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(ipiv), traits::matrix_storage(b),
-                traits::leading_dimension(b), info );
+        detail::gesv( traits::matrix_num_columns(a),
+                traits::matrix_num_columns(b), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(ipiv),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                info );
     }
 };
 

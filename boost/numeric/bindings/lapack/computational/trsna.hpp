@@ -110,9 +110,9 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 #ifndef NDEBUG
         assert( job == 'E' || job == 'V' || job == 'B' );
         assert( howmny == 'A' || howmny == 'S' );
-        assert( traits::matrix_size2(t) >= 0 );
+        assert( traits::matrix_num_columns(t) >= 0 );
         assert( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_size2(t)) );
+                traits::matrix_num_columns(t)) );
         assert( mm >= m );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
                 $CALL_MIN_SIZE )));
@@ -120,7 +120,7 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 min_size_iwork( $CALL_MIN_SIZE )));
 #endif
         detail::trsna( job, howmny, traits::vector_storage(select),
-                traits::matrix_size2(t), traits::matrix_storage(t),
+                traits::matrix_num_columns(t), traits::matrix_storage(t),
                 traits::leading_dimension(t), traits::matrix_storage(vl),
                 traits::leading_dimension(vl), traits::matrix_storage(vr),
                 traits::leading_dimension(vr), traits::vector_storage(s),
@@ -191,9 +191,9 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 #ifndef NDEBUG
         assert( job == 'E' || job == 'V' || job == 'B' );
         assert( howmny == 'A' || howmny == 'S' );
-        assert( traits::matrix_size2(t) >= 0 );
+        assert( traits::matrix_num_columns(t) >= 0 );
         assert( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_size2(t)) );
+                traits::matrix_num_columns(t)) );
         assert( mm >= m );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( $CALL_MIN_SIZE )));
@@ -201,7 +201,7 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 min_size_rwork( $CALL_MIN_SIZE )));
 #endif
         detail::trsna( job, howmny, traits::vector_storage(select),
-                traits::matrix_size2(t), traits::matrix_storage(t),
+                traits::matrix_num_columns(t), traits::matrix_storage(t),
                 traits::leading_dimension(t), traits::matrix_storage(vl),
                 traits::leading_dimension(vl), traits::matrix_storage(vr),
                 traits::leading_dimension(vr), traits::vector_storage(s),

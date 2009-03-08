@@ -76,16 +76,16 @@ struct trsen_impl {
 #ifndef NDEBUG
         assert( job == 'N' || job == 'E' || job == 'V' || job == 'B' );
         assert( compq == 'V' || compq == 'N' );
-        assert( traits::vector_size(select) >= traits::matrix_size2(t) );
-        assert( traits::matrix_size2(t) >= 0 );
+        assert( traits::vector_size(select) >= traits::matrix_num_columns(t) );
+        assert( traits::matrix_num_columns(t) >= 0 );
         assert( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_size2(t)) );
-        assert( traits::vector_size(w) >= traits::matrix_size2(t) );
+                traits::matrix_num_columns(t)) );
+        assert( traits::vector_size(w) >= traits::matrix_num_columns(t) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( $CALL_MIN_SIZE )));
 #endif
         detail::trsen( job, compq, traits::vector_storage(select),
-                traits::matrix_size2(t), traits::matrix_storage(t),
+                traits::matrix_num_columns(t), traits::matrix_storage(t),
                 traits::leading_dimension(t), traits::matrix_storage(q),
                 traits::leading_dimension(q), traits::vector_storage(w), m, s,
                 sep, traits::vector_storage(work.select(value_type())),
@@ -114,7 +114,7 @@ struct trsen_impl {
             optimal_workspace work ) {
         value_type opt_size_work;
         detail::trsen( job, compq, traits::vector_storage(select),
-                traits::matrix_size2(t), traits::matrix_storage(t),
+                traits::matrix_num_columns(t), traits::matrix_storage(t),
                 traits::leading_dimension(t), traits::matrix_storage(q),
                 traits::leading_dimension(q), traits::vector_storage(w), m, s,
                 sep, &opt_size_work, -1, info );

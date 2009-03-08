@@ -71,15 +71,16 @@ struct pbsv_impl {
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(ab) == 'U' ||
                 traits::matrix_uplo_tag(ab) == 'L' );
-        assert( traits::matrix_size2(ab) >= 0 );
+        assert( traits::matrix_num_columns(ab) >= 0 );
         assert( kd >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(ab) >= kd+1 );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(ab)) );
+                traits::matrix_num_columns(ab)) );
 #endif
-        detail::pbsv( traits::matrix_uplo_tag(ab), traits::matrix_size2(ab),
-                kd, traits::matrix_size2(b), traits::matrix_storage(ab),
+        detail::pbsv( traits::matrix_uplo_tag(ab),
+                traits::matrix_num_columns(ab), kd,
+                traits::matrix_num_columns(b), traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::matrix_storage(b),
                 traits::leading_dimension(b), info );
     }

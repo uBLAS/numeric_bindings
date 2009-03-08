@@ -68,10 +68,11 @@ struct hemm_impl {
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
         detail::hemm( side, traits::matrix_uplo_tag(a),
-                traits::matrix_size1(c), traits::matrix_size2(c), alpha,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::matrix_storage(b), traits::leading_dimension(b), beta,
-                traits::matrix_storage(c), traits::leading_dimension(c) );
+                traits::matrix_num_rows(c), traits::matrix_num_columns(c),
+                alpha, traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::matrix_storage(b),
+                traits::leading_dimension(b), beta, traits::matrix_storage(c),
+                traits::leading_dimension(c) );
     }
 };
 

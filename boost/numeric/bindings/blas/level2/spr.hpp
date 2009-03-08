@@ -55,8 +55,9 @@ struct spr_impl {
                 VectorX >::value_type, typename traits::matrix_traits<
                 MatrixAP >::value_type >::value) );
         detail::spr( traits::matrix_uplo_tag(ap),
-                traits::matrix_size2(ap), alpha, traits::vector_storage(x),
-                traits::vector_stride(x), traits::matrix_storage(ap) );
+                traits::matrix_num_columns(ap), alpha,
+                traits::vector_storage(x), traits::vector_stride(x),
+                traits::matrix_storage(ap) );
     }
 };
 

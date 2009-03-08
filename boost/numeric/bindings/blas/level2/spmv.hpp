@@ -60,9 +60,10 @@ struct spmv_impl {
                 MatrixAP >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
         detail::spmv( traits::matrix_uplo_tag(ap),
-                traits::matrix_size2(ap), alpha, traits::matrix_storage(ap),
-                traits::vector_storage(x), traits::vector_stride(x), beta,
-                traits::vector_storage(y), traits::vector_stride(y) );
+                traits::matrix_num_columns(ap), alpha,
+                traits::matrix_storage(ap), traits::vector_storage(x),
+                traits::vector_stride(x), beta, traits::vector_storage(y),
+                traits::vector_stride(y) );
     }
 };
 

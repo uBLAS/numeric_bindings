@@ -3,7 +3,7 @@ MINMN
 $TEMPLATE[gesdd.all.extra_opt_variables]
 MINMN
 $TEMPLATE[gesdd.all.MINMN.init]
-integer_t minmn = std::min( traits::matrix_size1(a), traits::matrix_size2(a) );
+integer_t minmn = std::min( traits::matrix_num_rows(a), traits::matrix_num_columns(a) );
 $TEMPLATE[gesdd.all.min_size_work.args]
 M, N, JOBZ, MINMN
 $TEMPLATE[gesdd.real.min_size_work]

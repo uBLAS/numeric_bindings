@@ -120,18 +120,18 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( side == 'R' || side == 'L' || side == 'B' );
         assert( eigsrc == 'Q' || eigsrc == 'N' );
         assert( initv == 'N' || initv == 'U' );
-        assert( traits::vector_size(select) >= traits::matrix_size2(h) );
-        assert( traits::matrix_size2(h) >= 0 );
+        assert( traits::vector_size(select) >= traits::matrix_num_columns(h) );
+        assert( traits::matrix_num_columns(h) >= 0 );
         assert( traits::leading_dimension(h) >= std::max(1,
-                traits::matrix_size2(h)) );
-        assert( traits::vector_size(wr) >= traits::matrix_size2(h) );
-        assert( traits::vector_size(wi) >= traits::matrix_size2(h) );
+                traits::matrix_num_columns(h)) );
+        assert( traits::vector_size(wr) >= traits::matrix_num_columns(h) );
+        assert( traits::vector_size(wi) >= traits::matrix_num_columns(h) );
         assert( mm >= m );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(h), ?2 )));
+                traits::matrix_num_columns(h), ?2 )));
 #endif
         detail::hsein( side, eigsrc, initv, traits::vector_storage(select),
-                traits::matrix_size2(h), traits::matrix_storage(h),
+                traits::matrix_num_columns(h), traits::matrix_storage(h),
                 traits::leading_dimension(h), traits::vector_storage(wr),
                 traits::vector_storage(wi), traits::matrix_storage(vl),
                 traits::leading_dimension(vl), traits::matrix_storage(vr),
@@ -151,7 +151,7 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(h), ?2 ) );
+                traits::matrix_num_columns(h), ?2 ) );
         compute( side, eigsrc, initv, select, h, wr, wi, vl, vr, mm, m,
                 ifaill, ifailr, info, workspace( tmp_work ) );
     }
@@ -206,19 +206,19 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( side == 'R' || side == 'L' || side == 'B' );
         assert( eigsrc == 'Q' || eigsrc == 'N' );
         assert( initv == 'N' || initv == 'U' );
-        assert( traits::vector_size(select) >= traits::matrix_size2(h) );
-        assert( traits::matrix_size2(h) >= 0 );
+        assert( traits::vector_size(select) >= traits::matrix_num_columns(h) );
+        assert( traits::matrix_num_columns(h) >= 0 );
         assert( traits::leading_dimension(h) >= std::max(1,
-                traits::matrix_size2(h)) );
-        assert( traits::vector_size(w) >= traits::matrix_size2(h) );
+                traits::matrix_num_columns(h)) );
+        assert( traits::vector_size(w) >= traits::matrix_num_columns(h) );
         assert( mm >= m );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(h) )));
+                min_size_work( traits::matrix_num_columns(h) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(h) )));
+                min_size_rwork( traits::matrix_num_columns(h) )));
 #endif
         detail::hsein( side, eigsrc, initv, traits::vector_storage(select),
-                traits::matrix_size2(h), traits::matrix_storage(h),
+                traits::matrix_num_columns(h), traits::matrix_storage(h),
                 traits::leading_dimension(h), traits::vector_storage(w),
                 traits::matrix_storage(vl), traits::leading_dimension(vl),
                 traits::matrix_storage(vr), traits::leading_dimension(vr), mm,
@@ -238,9 +238,9 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(h) ) );
+                traits::matrix_num_columns(h) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(h) ) );
+                traits::matrix_num_columns(h) ) );
         compute( side, eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill,
                 ifailr, info, workspace( tmp_work, tmp_rwork ) );
     }

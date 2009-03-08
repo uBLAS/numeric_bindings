@@ -70,16 +70,17 @@ struct upgtr_impl {
                 MatrixQ >::value_type >::value) );
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
-        assert( traits::matrix_size2(q) >= 0 );
+        assert( traits::matrix_num_columns(q) >= 0 );
         assert( traits::vector_size(ap) >=
-                traits::matrix_size2(q)*(traits::matrix_size2(q)+1)/2 );
-        assert( traits::vector_size(tau) >= traits::matrix_size2(q)-1 );
+                traits::matrix_num_columns(q)*(traits::matrix_num_columns(q)+
+                1)/2 );
+        assert( traits::vector_size(tau) >= traits::matrix_num_columns(q)-1 );
         assert( traits::leading_dimension(q) >= std::max(1,
-                traits::matrix_size2(q)) );
+                traits::matrix_num_columns(q)) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(q) )));
+                min_size_work( traits::matrix_num_columns(q) )));
 #endif
-        detail::upgtr( uplo, traits::matrix_size2(q),
+        detail::upgtr( uplo, traits::matrix_num_columns(q),
                 traits::vector_storage(ap), traits::vector_storage(tau),
                 traits::matrix_storage(q), traits::leading_dimension(q),
                 traits::vector_storage(work.select(value_type())), info );
@@ -90,7 +91,7 @@ struct upgtr_impl {
     static void compute( char const uplo, VectorAP& ap, VectorTAU& tau,
             MatrixQ& q, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(q) ) );
+                traits::matrix_num_columns(q) ) );
         compute( uplo, ap, tau, q, info, workspace( tmp_work ) );
     }
 

@@ -62,16 +62,18 @@ struct getrf_impl {
     static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info ) {
         
 #ifndef NDEBUG
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
-        assert( traits::vector_size(ipiv) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
+                traits::matrix_num_rows(a)) );
+        assert( traits::vector_size(ipiv) >=
+                std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
 #endif
-        detail::getrf( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(ipiv), info );
+        detail::getrf( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(ipiv),
+                info );
     }
 };
 

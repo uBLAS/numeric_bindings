@@ -118,16 +118,16 @@ struct ptsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 #ifndef NDEBUG
         assert( fact == 'F' || fact == 'N' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n-1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
                 n )));
 #endif
-        detail::ptsvx( fact, n, traits::matrix_size2(x),
+        detail::ptsvx( fact, n, traits::matrix_num_columns(x),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::vector_storage(df), traits::vector_storage(ef),
                 traits::matrix_storage(b), traits::leading_dimension(b),
@@ -204,18 +204,18 @@ struct ptsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 #ifndef NDEBUG
         assert( fact == 'F' || fact == 'N' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n-1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( n )));
         assert( traits::vector_size(work.select(real_type()) >=
                 min_size_rwork( n )));
 #endif
-        detail::ptsvx( fact, n, traits::matrix_size2(x),
+        detail::ptsvx( fact, n, traits::matrix_num_columns(x),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::vector_storage(df), traits::vector_storage(ef),
                 traits::matrix_storage(b), traits::leading_dimension(b),

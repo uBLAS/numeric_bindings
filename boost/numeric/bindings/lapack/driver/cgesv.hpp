@@ -64,26 +64,27 @@ struct cgesv_impl {
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixX >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(ipiv) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(a) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( $CALL_MIN_SIZE )));
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_swork( traits::matrix_size2(a),
-                traits::matrix_size2(b) )));
+                min_size_swork( traits::matrix_num_columns(a),
+                traits::matrix_num_columns(b) )));
 #endif
-        detail::cgesv( traits::matrix_size2(a), traits::matrix_size2(b),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(ipiv), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::matrix_storage(x),
-                traits::leading_dimension(x), traits::matrix_storage(work),
+        detail::cgesv( traits::matrix_num_columns(a),
+                traits::matrix_num_columns(b), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(ipiv),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                traits::matrix_storage(x), traits::leading_dimension(x),
+                traits::matrix_storage(work),
                 traits::vector_storage(work.select(value_type())), iter,
                 info );
     }
@@ -96,7 +97,8 @@ struct cgesv_impl {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         traits::detail::array< value_type > tmp_swork( min_size_swork(
-                traits::matrix_size2(a), traits::matrix_size2(b) ) );
+                traits::matrix_num_columns(a),
+                traits::matrix_num_columns(b) ) );
         compute( a, ipiv, b, x, iter, info, workspace( tmp_work, tmp_swork ) );
     }
 

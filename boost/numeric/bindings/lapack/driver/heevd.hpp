@@ -70,18 +70,18 @@ struct heevd_impl {
         assert( jobz == 'N' || jobz == 'V' );
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( jobz, traits::matrix_size2(a) )));
+                min_size_work( jobz, traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( jobz, traits::matrix_size2(a) )));
+                min_size_rwork( jobz, traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( jobz, traits::matrix_size2(a) )));
+                min_size_iwork( jobz, traits::matrix_num_columns(a) )));
 #endif
         detail::heevd( jobz, traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(w),
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_size(work.select(value_type())),
@@ -96,11 +96,11 @@ struct heevd_impl {
     static void compute( char const jobz, MatrixA& a, VectorW& w,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( jobz,
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( jobz,
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( jobz,
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( jobz, a, w, info, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
@@ -113,7 +113,7 @@ struct heevd_impl {
         real_type opt_size_rwork;
         integer_t opt_size_iwork;
         detail::heevd( jobz, traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(w),
                 &opt_size_work, -1, &opt_size_rwork, -1, &opt_size_iwork, -1,
                 info );

@@ -112,21 +112,22 @@ struct tbrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( diag == 'N' || diag == 'U' );
         assert( n >= 0 );
         assert( kd >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::leading_dimension(ab) >= kd+1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
                 n )));
         assert( traits::vector_size(work.select(integer_t()) >=
                 min_size_iwork( n )));
 #endif
-        detail::tbrfs( uplo, trans, diag, n, kd, traits::matrix_size2(x),
-                traits::matrix_storage(ab), traits::leading_dimension(ab),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                traits::matrix_storage(x), traits::leading_dimension(x),
-                traits::vector_storage(ferr), traits::vector_storage(berr),
+        detail::tbrfs( uplo, trans, diag, n, kd,
+                traits::matrix_num_columns(x), traits::matrix_storage(ab),
+                traits::leading_dimension(ab), traits::matrix_storage(b),
+                traits::leading_dimension(b), traits::matrix_storage(x),
+                traits::leading_dimension(x), traits::vector_storage(ferr),
+                traits::vector_storage(berr),
                 traits::vector_storage(work.select(real_type())),
                 traits::vector_storage(work.select(integer_t())), info );
     }
@@ -194,21 +195,22 @@ struct tbrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( diag == 'N' || diag == 'U' );
         assert( n >= 0 );
         assert( kd >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::leading_dimension(ab) >= kd+1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( n )));
         assert( traits::vector_size(work.select(real_type()) >=
                 min_size_rwork( n )));
 #endif
-        detail::tbrfs( uplo, trans, diag, n, kd, traits::matrix_size2(x),
-                traits::matrix_storage(ab), traits::leading_dimension(ab),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                traits::matrix_storage(x), traits::leading_dimension(x),
-                traits::vector_storage(ferr), traits::vector_storage(berr),
+        detail::tbrfs( uplo, trans, diag, n, kd,
+                traits::matrix_num_columns(x), traits::matrix_storage(ab),
+                traits::leading_dimension(ab), traits::matrix_storage(b),
+                traits::leading_dimension(b), traits::matrix_storage(x),
+                traits::leading_dimension(x), traits::vector_storage(ferr),
+                traits::vector_storage(berr),
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_storage(work.select(real_type())), info );
     }

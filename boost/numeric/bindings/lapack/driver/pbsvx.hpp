@@ -125,20 +125,20 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::matrix_uplo_tag(ab) == 'L' );
         assert( n >= 0 );
         assert( kd >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::leading_dimension(ab) >= kd+1 );
         assert( traits::leading_dimension(afb) >= kd+1 );
         assert( equed == 'N' || equed == 'Y' );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
                 n )));
         assert( traits::vector_size(work.select(integer_t()) >=
                 min_size_iwork( n )));
 #endif
         detail::pbsvx( fact, traits::matrix_uplo_tag(ab), n, kd,
-                traits::matrix_size2(x), traits::matrix_storage(ab),
+                traits::matrix_num_columns(x), traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::matrix_storage(afb),
                 traits::leading_dimension(afb), equed,
                 traits::vector_storage(s), traits::matrix_storage(b),
@@ -223,20 +223,20 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_uplo_tag(ab) == 'L' );
         assert( n >= 0 );
         assert( kd >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::leading_dimension(ab) >= kd+1 );
         assert( traits::leading_dimension(afb) >= kd+1 );
         assert( equed == 'N' || equed == 'Y' );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( n )));
         assert( traits::vector_size(work.select(real_type()) >=
                 min_size_rwork( n )));
 #endif
         detail::pbsvx( fact, traits::matrix_uplo_tag(ab), n, kd,
-                traits::matrix_size2(x), traits::matrix_storage(ab),
+                traits::matrix_num_columns(x), traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::matrix_storage(afb),
                 traits::leading_dimension(afb), equed,
                 traits::vector_storage(s), traits::matrix_storage(b),

@@ -73,10 +73,10 @@ struct tptrs_impl {
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
         assert( diag == 'N' || diag == 'U' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
 #endif
-        detail::tptrs( uplo, trans, diag, n, traits::matrix_size2(b),
+        detail::tptrs( uplo, trans, diag, n, traits::matrix_num_columns(b),
                 traits::matrix_storage(ap), traits::matrix_storage(b),
                 traits::leading_dimension(b), info );
     }

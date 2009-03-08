@@ -132,20 +132,20 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( jobu == 'U' || jobu == 'I' || jobu == 'N' );
         assert( jobv == 'V' || jobv == 'I' || jobv == 'N' );
         assert( jobq == 'Q' || jobq == 'I' || jobq == 'N' );
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size1(b) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_rows(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
+                traits::matrix_num_rows(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size1(b)) );
-        assert( traits::vector_size(alpha) >= traits::matrix_size2(b) );
+                traits::matrix_num_rows(b)) );
+        assert( traits::vector_size(alpha) >= traits::matrix_num_columns(b) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(b) )));
+                traits::matrix_num_columns(b) )));
 #endif
-        detail::tgsja( jobu, jobv, jobq, traits::matrix_size1(a),
-                traits::matrix_size1(b), traits::matrix_size2(b), k, l,
-                traits::matrix_storage(a), traits::leading_dimension(a),
+        detail::tgsja( jobu, jobv, jobq, traits::matrix_num_rows(a),
+                traits::matrix_num_rows(b), traits::matrix_num_columns(b), k,
+                l, traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b), tola,
                 tolb, traits::vector_storage(alpha),
                 traits::vector_storage(beta), traits::matrix_storage(u),
@@ -166,7 +166,7 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(b) ) );
+                traits::matrix_num_columns(b) ) );
         compute( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
                 q, ncycle, info, workspace( tmp_work ) );
     }
@@ -225,20 +225,20 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( jobu == 'U' || jobu == 'I' || jobu == 'N' );
         assert( jobv == 'V' || jobv == 'I' || jobv == 'N' );
         assert( jobq == 'Q' || jobq == 'I' || jobq == 'N' );
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size1(b) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_rows(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
+                traits::matrix_num_rows(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size1(b)) );
-        assert( traits::vector_size(alpha) >= traits::matrix_size2(b) );
+                traits::matrix_num_rows(b)) );
+        assert( traits::vector_size(alpha) >= traits::matrix_num_columns(b) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(b) )));
+                min_size_work( traits::matrix_num_columns(b) )));
 #endif
-        detail::tgsja( jobu, jobv, jobq, traits::matrix_size1(a),
-                traits::matrix_size1(b), traits::matrix_size2(b), k, l,
-                traits::matrix_storage(a), traits::leading_dimension(a),
+        detail::tgsja( jobu, jobv, jobq, traits::matrix_num_rows(a),
+                traits::matrix_num_rows(b), traits::matrix_num_columns(b), k,
+                l, traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b), tola,
                 tolb, traits::vector_storage(alpha),
                 traits::vector_storage(beta), traits::matrix_storage(u),
@@ -259,7 +259,7 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(b) ) );
+                traits::matrix_num_columns(b) ) );
         compute( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
                 q, ncycle, info, workspace( tmp_work ) );
     }

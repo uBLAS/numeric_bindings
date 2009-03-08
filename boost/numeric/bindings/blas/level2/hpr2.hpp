@@ -66,9 +66,10 @@ struct hpr2_impl {
                 VectorX >::value_type, typename traits::matrix_traits<
                 MatrixAP >::value_type >::value) );
         detail::hpr2( traits::matrix_uplo_tag(ap),
-                traits::matrix_size2(ap), alpha, traits::vector_storage(x),
-                traits::vector_stride(x), traits::vector_storage(y),
-                traits::vector_stride(y), traits::matrix_storage(ap) );
+                traits::matrix_num_columns(ap), alpha,
+                traits::vector_storage(x), traits::vector_stride(x),
+                traits::vector_storage(y), traits::vector_stride(y),
+                traits::matrix_storage(ap) );
     }
 };
 

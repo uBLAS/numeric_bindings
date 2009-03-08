@@ -90,7 +90,7 @@ struct gttrs_impl {
                 MatrixB >::value_type >::value) );
 #ifndef NDEBUG
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::vector_size(dl) >= n-1 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(du) >= n-1 );
@@ -98,7 +98,7 @@ struct gttrs_impl {
         assert( traits::vector_size(ipiv) >= n );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
 #endif
-        detail::gttrs( trans, n, traits::matrix_size2(b),
+        detail::gttrs( trans, n, traits::matrix_num_columns(b),
                 traits::vector_storage(dl), traits::vector_storage(d),
                 traits::vector_storage(du), traits::vector_storage(du2),
                 traits::vector_storage(ipiv), traits::matrix_storage(b),

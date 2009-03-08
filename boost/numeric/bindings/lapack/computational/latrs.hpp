@@ -92,14 +92,14 @@ struct latrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
         assert( diag == 'N' || diag == 'U' );
         assert( normin == 'Y' || normin == 'N' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= ?MAX );
-        assert( traits::vector_size(x) >= traits::matrix_size2(a) );
+        assert( traits::vector_size(x) >= traits::matrix_num_columns(a) );
 #endif
-        detail::latrs( uplo, trans, diag, normin, traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(x), scale,
-                traits::vector_storage(cnorm), info );
+        detail::latrs( uplo, trans, diag, normin,
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(x),
+                scale, traits::vector_storage(cnorm), info );
     }
 };
 
@@ -123,14 +123,14 @@ struct latrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
         assert( diag == 'N' || diag == 'U' );
         assert( normin == 'Y' || normin == 'N' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= ?MAX );
-        assert( traits::vector_size(x) >= traits::matrix_size2(a) );
+        assert( traits::vector_size(x) >= traits::matrix_num_columns(a) );
 #endif
-        detail::latrs( uplo, trans, diag, normin, traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(x), scale,
-                traits::vector_storage(cnorm), info );
+        detail::latrs( uplo, trans, diag, normin,
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(x),
+                scale, traits::vector_storage(cnorm), info );
     }
 };
 

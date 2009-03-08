@@ -83,14 +83,14 @@ struct tbtrs_impl {
         assert( diag == 'N' || diag == 'U' );
         assert( n >= 0 );
         assert( kd >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(ab) >= kd+1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
 #endif
-        detail::tbtrs( uplo, trans, diag, n, kd, traits::matrix_size2(b),
-                traits::matrix_storage(ab), traits::leading_dimension(ab),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                info );
+        detail::tbtrs( uplo, trans, diag, n, kd,
+                traits::matrix_num_columns(b), traits::matrix_storage(ab),
+                traits::leading_dimension(ab), traits::matrix_storage(b),
+                traits::leading_dimension(b), info );
     }
 };
 

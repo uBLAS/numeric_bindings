@@ -69,15 +69,16 @@ struct opmtr_impl {
         assert( side == 'L' || side == 'R' );
         assert( uplo == 'U' || uplo == 'L' );
         assert( trans == 'N' || trans == 'T' );
-        assert( traits::matrix_size1(c) >= 0 );
-        assert( traits::matrix_size2(c) >= 0 );
+        assert( traits::matrix_num_rows(c) >= 0 );
+        assert( traits::matrix_num_columns(c) >= 0 );
         assert( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_size1(c)) );
+                traits::matrix_num_rows(c)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                side, traits::matrix_size1(c), traits::matrix_size2(c) )));
+                side, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c) )));
 #endif
-        detail::opmtr( side, uplo, trans, traits::matrix_size1(c),
-                traits::matrix_size2(c), traits::vector_storage(ap),
+        detail::opmtr( side, uplo, trans, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c), traits::vector_storage(ap),
                 traits::vector_storage(tau), traits::matrix_storage(c),
                 traits::leading_dimension(c),
                 traits::vector_storage(work.select(real_type())), info );
@@ -89,7 +90,7 @@ struct opmtr_impl {
             VectorAP& ap, VectorTAU& tau, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( side,
-                traits::matrix_size1(c), traits::matrix_size2(c) ) );
+                traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
         compute( side, uplo, trans, ap, tau, c, info, workspace( tmp_work ) );
     }
 

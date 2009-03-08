@@ -84,18 +84,20 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
-        assert( traits::vector_size(tau) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
+                traits::matrix_num_rows(a)) );
+        assert( traits::vector_size(tau) >=
+                std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
                 $CALL_MIN_SIZE )));
 #endif
-        detail::geqp3( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(jpvt), traits::vector_storage(tau),
+        detail::geqp3( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(jpvt),
+                traits::vector_storage(tau),
                 traits::vector_storage(work.select(real_type())),
                 traits::vector_size(work.select(real_type())), info );
     }
@@ -114,10 +116,10 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
-        detail::geqp3( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(jpvt), traits::vector_storage(tau),
-                &opt_size_work, -1, info );
+        detail::geqp3( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(jpvt),
+                traits::vector_storage(tau), &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         compute( a, jpvt, tau, info, workspace( tmp_work ) );
@@ -144,20 +146,22 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
-        assert( traits::vector_size(tau) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
+                traits::matrix_num_rows(a)) );
+        assert( traits::vector_size(tau) >=
+                std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( $CALL_MIN_SIZE )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(a) )));
+                min_size_rwork( traits::matrix_num_columns(a) )));
 #endif
-        detail::geqp3( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(jpvt), traits::vector_storage(tau),
+        detail::geqp3( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(jpvt),
+                traits::vector_storage(tau),
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_size(work.select(value_type())),
                 traits::vector_storage(work.select(real_type())), info );
@@ -170,7 +174,7 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( a, jpvt, tau, info, workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -180,11 +184,12 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
-        detail::geqp3( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(jpvt), traits::vector_storage(tau),
-                &opt_size_work, -1, traits::vector_storage(tmp_rwork), info );
+                traits::matrix_num_columns(a) ) );
+        detail::geqp3( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(jpvt),
+                traits::vector_storage(tau), &opt_size_work, -1,
+                traits::vector_storage(tmp_rwork), info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         compute( a, jpvt, tau, info, workspace( tmp_work, tmp_rwork ) );

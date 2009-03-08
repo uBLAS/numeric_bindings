@@ -63,14 +63,14 @@ struct hecon_impl {
         
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(ipiv) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(a) )));
+                min_size_work( traits::matrix_num_columns(a) )));
 #endif
-        detail::hecon( uplo, traits::matrix_size2(a),
+        detail::hecon( uplo, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(ipiv), anorm, rcond,
                 traits::vector_storage(work.select(value_type())), info );
@@ -82,7 +82,7 @@ struct hecon_impl {
             real_type const anorm, real_type& rcond, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work ) );
     }
 

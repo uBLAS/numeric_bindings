@@ -89,12 +89,13 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::matrix_uplo_tag(a) == 'L' );
         assert( traits::leading_dimension(a) >= (ERROR) );
         assert( traits::leading_dimension(w) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
 #endif
-        detail::latrd( traits::matrix_uplo_tag(a), traits::matrix_size2(a),
-                nb, traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(e), traits::vector_storage(tau),
-                traits::matrix_storage(w), traits::leading_dimension(w) );
+        detail::latrd( traits::matrix_uplo_tag(a),
+                traits::matrix_num_columns(a), nb, traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(e),
+                traits::vector_storage(tau), traits::matrix_storage(w),
+                traits::leading_dimension(w) );
     }
 };
 
@@ -120,14 +121,15 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::matrix_uplo_tag(h) == 'U' ||
                 traits::matrix_uplo_tag(h) == 'L' );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(w) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
 #endif
-        detail::latrd( traits::matrix_uplo_tag(h), traits::matrix_size2(a),
-                nb, traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(e), traits::vector_storage(tau),
-                traits::matrix_storage(w), traits::leading_dimension(w) );
+        detail::latrd( traits::matrix_uplo_tag(h),
+                traits::matrix_num_columns(a), nb, traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(e),
+                traits::vector_storage(tau), traits::matrix_storage(w),
+                traits::leading_dimension(w) );
     }
 };
 

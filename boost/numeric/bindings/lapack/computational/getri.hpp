@@ -77,15 +77,16 @@ struct getri_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             detail::workspace1< WORK > work ) {
         
 #ifndef NDEBUG
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(ipiv) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(a) )));
+                traits::matrix_num_columns(a) )));
 #endif
-        detail::getri( traits::matrix_size2(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(ipiv),
+        detail::getri( traits::matrix_num_columns(a),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(ipiv),
                 traits::vector_storage(work.select(real_type())),
                 traits::vector_size(work.select(real_type())), info );
     }
@@ -95,7 +96,7 @@ struct getri_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( a, ipiv, info, workspace( tmp_work ) );
     }
 
@@ -104,7 +105,7 @@ struct getri_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
-        detail::getri( traits::matrix_size2(a),
+        detail::getri( traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(ipiv), &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
@@ -130,15 +131,16 @@ struct getri_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             detail::workspace1< WORK > work ) {
         
 #ifndef NDEBUG
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(ipiv) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(a) )));
+                min_size_work( traits::matrix_num_columns(a) )));
 #endif
-        detail::getri( traits::matrix_size2(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(ipiv),
+        detail::getri( traits::matrix_num_columns(a),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(ipiv),
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_size(work.select(value_type())), info );
     }
@@ -148,7 +150,7 @@ struct getri_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( a, ipiv, info, workspace( tmp_work ) );
     }
 
@@ -157,7 +159,7 @@ struct getri_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info,
             optimal_workspace work ) {
         value_type opt_size_work;
-        detail::getri( traits::matrix_size2(a),
+        detail::getri( traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(ipiv), &opt_size_work, -1, info );
         traits::detail::array< value_type > tmp_work(

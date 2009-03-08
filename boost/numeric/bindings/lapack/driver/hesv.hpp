@@ -69,19 +69,20 @@ struct hesv_impl {
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work(  )));
 #endif
-        detail::hesv( traits::matrix_uplo_tag(a), traits::matrix_size2(a),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(ipiv),
-                traits::matrix_storage(b), traits::leading_dimension(b),
+        detail::hesv( traits::matrix_uplo_tag(a),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(ipiv), traits::matrix_storage(b),
+                traits::leading_dimension(b),
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_size(work.select(value_type())), info );
     }
@@ -100,7 +101,7 @@ struct hesv_impl {
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         detail::hesv( traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_size2(b),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(ipiv), traits::matrix_storage(b),
                 traits::leading_dimension(b), &opt_size_work, -1, info );

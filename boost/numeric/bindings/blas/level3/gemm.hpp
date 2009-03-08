@@ -84,8 +84,8 @@ struct gemm_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
-        detail::gemm( transa, transb, m, traits::matrix_size2(c), k,
-                alpha, traits::matrix_storage(a),
+        detail::gemm( transa, transb, m, traits::matrix_num_columns(c),
+                k, alpha, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), beta, traits::matrix_storage(c),
                 traits::leading_dimension(c) );

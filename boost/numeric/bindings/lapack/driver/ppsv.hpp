@@ -70,15 +70,15 @@ struct ppsv_impl {
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(ap) == 'U' ||
                 traits::matrix_uplo_tag(ap) == 'L' );
-        assert( traits::matrix_size2(ap) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(ap) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(ap)) );
+                traits::matrix_num_columns(ap)) );
 #endif
-        detail::ppsv( traits::matrix_uplo_tag(ap), traits::matrix_size2(ap),
-                traits::matrix_size2(b), traits::matrix_storage(ap),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                info );
+        detail::ppsv( traits::matrix_uplo_tag(ap),
+                traits::matrix_num_columns(ap), traits::matrix_num_columns(b),
+                traits::matrix_storage(ap), traits::matrix_storage(b),
+                traits::leading_dimension(b), info );
     }
 };
 

@@ -63,11 +63,11 @@ struct trtri_impl {
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( diag == 'N' || diag == 'U' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
 #endif
-        detail::trtri( uplo, diag, traits::matrix_size2(a),
+        detail::trtri( uplo, diag, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 info );
     }

@@ -72,12 +72,13 @@ struct pptrs_impl {
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
 #endif
-        detail::pptrs( traits::matrix_uplo_tag(a), n, traits::matrix_size2(b),
-                traits::vector_storage(ap), traits::matrix_storage(b),
-                traits::leading_dimension(b), info );
+        detail::pptrs( traits::matrix_uplo_tag(a), n,
+                traits::matrix_num_columns(b), traits::vector_storage(ap),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                info );
     }
 };
 

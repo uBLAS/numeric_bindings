@@ -88,21 +88,22 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
                 MatrixB >::value_type >::value) );
 #ifndef NDEBUG
         assert( trans == 'N' || trans == 'T' );
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
+                traits::matrix_num_rows(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                std::max(traits::matrix_size1(a),traits::matrix_size2(a))) );
+                std::max(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a))) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_size2(b) )));
+                traits::matrix_num_rows(a), traits::matrix_num_columns(a),
+                traits::matrix_num_columns(b) )));
 #endif
-        detail::gels( trans, traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b),
+        detail::gels( trans, traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b),
                 traits::vector_storage(work.select(real_type())),
                 traits::vector_size(work.select(real_type())), info );
     }
@@ -112,8 +113,8 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     static void compute( char const trans, MatrixA& a, MatrixB& b,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_size2(b) ) );
+                traits::matrix_num_rows(a), traits::matrix_num_columns(a),
+                traits::matrix_num_columns(b) ) );
         compute( trans, a, b, info, workspace( tmp_work ) );
     }
 
@@ -122,8 +123,8 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     static void compute( char const trans, MatrixA& a, MatrixB& b,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
-        detail::gels( trans, traits::matrix_size1(a),
-                traits::matrix_size2(a), traits::matrix_size2(b),
+        detail::gels( trans, traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 &opt_size_work, -1, info );
@@ -155,21 +156,23 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
                 MatrixB >::value_type >::value) );
 #ifndef NDEBUG
         assert( trans == 'N' || trans == 'C' );
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
+                traits::matrix_num_rows(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                std::max(traits::matrix_size1(a),traits::matrix_size2(a))) );
+                std::max(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a))) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size1(a),
-                traits::matrix_size2(a), traits::matrix_size2(b) )));
+                min_size_work( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a),
+                traits::matrix_num_columns(b) )));
 #endif
-        detail::gels( trans, traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b),
+        detail::gels( trans, traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b),
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_size(work.select(value_type())), info );
     }
@@ -179,8 +182,8 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     static void compute( char const trans, MatrixA& a, MatrixB& b,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_size2(b) ) );
+                traits::matrix_num_rows(a), traits::matrix_num_columns(a),
+                traits::matrix_num_columns(b) ) );
         compute( trans, a, b, info, workspace( tmp_work ) );
     }
 
@@ -189,8 +192,8 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     static void compute( char const trans, MatrixA& a, MatrixB& b,
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
-        detail::gels( trans, traits::matrix_size1(a),
-                traits::matrix_size2(a), traits::matrix_size2(b),
+        detail::gels( trans, traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 &opt_size_work, -1, info );

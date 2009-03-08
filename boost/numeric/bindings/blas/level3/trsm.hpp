@@ -77,9 +77,10 @@ struct trsm_impl {
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
         detail::trsm( side, traits::matrix_uplo_tag(a), transa, diag,
-                traits::matrix_size1(b), traits::matrix_size2(b), alpha,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::matrix_storage(b), traits::leading_dimension(b) );
+                traits::matrix_num_rows(b), traits::matrix_num_columns(b),
+                alpha, traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::matrix_storage(b),
+                traits::leading_dimension(b) );
     }
 };
 

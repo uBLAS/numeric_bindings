@@ -72,20 +72,20 @@ struct ormrz_impl {
 #ifndef NDEBUG
         assert( side == 'L' || side == 'R' );
         assert( trans == 'N' || trans == 'T' );
-        assert( traits::matrix_size1(c) >= 0 );
-        assert( traits::matrix_size2(c) >= 0 );
+        assert( traits::matrix_num_rows(c) >= 0 );
+        assert( traits::matrix_num_columns(c) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,k) );
         assert( traits::vector_size(tau) >= k );
         assert( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_size1(c)) );
+                traits::matrix_num_rows(c)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
                 $CALL_MIN_SIZE )));
 #endif
-        detail::ormrz( side, trans, traits::matrix_size1(c),
-                traits::matrix_size2(c), k, traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(tau), traits::matrix_storage(c),
-                traits::leading_dimension(c),
+        detail::ormrz( side, trans, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c), k,
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(tau),
+                traits::matrix_storage(c), traits::leading_dimension(c),
                 traits::vector_storage(work.select(real_type())),
                 traits::vector_size(work.select(real_type())), info );
     }
@@ -106,11 +106,12 @@ struct ormrz_impl {
             MatrixA& a, VectorTAU& tau, MatrixC& c, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
-        detail::ormrz( side, trans, traits::matrix_size1(c),
-                traits::matrix_size2(c), k, traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(tau), traits::matrix_storage(c),
-                traits::leading_dimension(c), &opt_size_work, -1, info );
+        detail::ormrz( side, trans, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c), k,
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(tau),
+                traits::matrix_storage(c), traits::leading_dimension(c),
+                &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         compute( side, trans, k, a, tau, c, info, workspace( tmp_work ) );

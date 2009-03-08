@@ -71,12 +71,12 @@ struct sptrs_impl {
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::vector_size(ap) >= n*(n+1)/2 );
         assert( traits::vector_size(ipiv) >= n );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
 #endif
-        detail::sptrs( uplo, n, traits::matrix_size2(b),
+        detail::sptrs( uplo, n, traits::matrix_num_columns(b),
                 traits::matrix_storage(ap), traits::vector_storage(ipiv),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 info );

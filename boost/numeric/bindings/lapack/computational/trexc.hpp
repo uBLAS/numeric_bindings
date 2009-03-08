@@ -83,15 +83,15 @@ struct trexc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixQ >::value_type >::value) );
 #ifndef NDEBUG
         assert( compq == 'V' || compq == 'N' );
-        assert( traits::matrix_size2(t) >= 0 );
+        assert( traits::matrix_num_columns(t) >= 0 );
         assert( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_size2(t)) );
+                traits::matrix_num_columns(t)) );
         assert( traits::leading_dimension(q) >= std::max(1,
-                traits::matrix_size2(t)) );
+                traits::matrix_num_columns(t)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(t) )));
+                traits::matrix_num_columns(t) )));
 #endif
-        detail::trexc( compq, traits::matrix_size2(t),
+        detail::trexc( compq, traits::matrix_num_columns(t),
                 traits::matrix_storage(t), traits::leading_dimension(t),
                 traits::matrix_storage(q), traits::leading_dimension(q), ifst,
                 ilst, traits::vector_storage(work.select(real_type())), info );
@@ -115,13 +115,13 @@ struct trexc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixQ >::value_type >::value) );
 #ifndef NDEBUG
         assert( compq == 'V' || compq == 'N' );
-        assert( traits::matrix_size2(t) >= 0 );
+        assert( traits::matrix_num_columns(t) >= 0 );
         assert( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_size2(t)) );
+                traits::matrix_num_columns(t)) );
         assert( traits::leading_dimension(q) >= std::max(1,
-                traits::matrix_size2(t)) );
+                traits::matrix_num_columns(t)) );
 #endif
-        detail::trexc( compq, traits::matrix_size2(t),
+        detail::trexc( compq, traits::matrix_num_columns(t),
                 traits::matrix_storage(t), traits::leading_dimension(t),
                 traits::matrix_storage(q), traits::leading_dimension(q), ifst,
                 ilst, info );

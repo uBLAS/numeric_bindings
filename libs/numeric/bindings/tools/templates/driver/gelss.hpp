@@ -8,7 +8,7 @@ MINMN
 $TEMPLATE[gelss.complex.extra_opt_variables]
 MINMN
 $TEMPLATE[gelss.complex.MINMN.init]
-integer_t minmn = std::min( traits::matrix_size1(a), traits::matrix_size2(a) );
+integer_t minmn = std::min( traits::matrix_num_rows(a), traits::matrix_num_columns(a) );
 $TEMPLATE[gelss.complex.min_size_work.args]
 M,N,NRHS,MINMN
 $TEMPLATE[gelss.complex.min_size_work]

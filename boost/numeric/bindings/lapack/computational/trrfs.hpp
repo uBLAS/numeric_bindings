@@ -110,22 +110,22 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( uplo == 'U' || uplo == 'L' );
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
         assert( diag == 'N' || diag == 'U' );
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(a) )));
+                traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_size2(a) )));
+                min_size_iwork( traits::matrix_num_columns(a) )));
 #endif
-        detail::trrfs( uplo, trans, diag, traits::matrix_size2(a),
-                traits::matrix_size2(x), traits::matrix_storage(a),
+        detail::trrfs( uplo, trans, diag, traits::matrix_num_columns(a),
+                traits::matrix_num_columns(x), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), traits::matrix_storage(x),
                 traits::leading_dimension(x), traits::vector_storage(ferr),
@@ -141,9 +141,9 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
             VectorBERR& berr, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( uplo, trans, diag, a, b, x, ferr, berr, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
@@ -195,22 +195,22 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( uplo == 'U' || uplo == 'L' );
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
         assert( diag == 'N' || diag == 'U' );
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(a) )));
+                min_size_work( traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(a) )));
+                min_size_rwork( traits::matrix_num_columns(a) )));
 #endif
-        detail::trrfs( uplo, trans, diag, traits::matrix_size2(a),
-                traits::matrix_size2(x), traits::matrix_storage(a),
+        detail::trrfs( uplo, trans, diag, traits::matrix_num_columns(a),
+                traits::matrix_num_columns(x), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), traits::matrix_storage(x),
                 traits::leading_dimension(x), traits::vector_storage(ferr),
@@ -226,9 +226,9 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
             VectorBERR& berr, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( uplo, trans, diag, a, b, x, ferr, berr, info,
                 workspace( tmp_work, tmp_rwork ) );
     }

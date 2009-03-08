@@ -85,13 +85,15 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 #ifndef NDEBUG
         assert( side == 'L' || side == 'R' );
         assert( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_size1(c)) );
+                traits::matrix_num_rows(c)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                side, traits::matrix_size1(c), traits::matrix_size2(c) )));
+                side, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c) )));
 #endif
-        detail::larz( side, traits::matrix_size1(c), traits::matrix_size2(c),
-                l, traits::vector_storage(v), incv, tau,
-                traits::matrix_storage(c), traits::leading_dimension(c),
+        detail::larz( side, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c), l, traits::vector_storage(v),
+                incv, tau, traits::matrix_storage(c),
+                traits::leading_dimension(c),
                 traits::vector_storage(work.select(real_type())) );
     }
 
@@ -101,7 +103,7 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
             integer_t const incv, real_type const tau, MatrixC& c,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( side,
-                traits::matrix_size1(c), traits::matrix_size2(c) ) );
+                traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
         compute( side, l, v, incv, tau, c, workspace( tmp_work ) );
     }
 
@@ -140,14 +142,15 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 #ifndef NDEBUG
         assert( side == 'L' || side == 'R' );
         assert( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_size1(c)) );
+                traits::matrix_num_rows(c)) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( side, traits::matrix_size1(c),
-                traits::matrix_size2(c) )));
+                min_size_work( side, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c) )));
 #endif
-        detail::larz( side, traits::matrix_size1(c), traits::matrix_size2(c),
-                l, traits::vector_storage(v), incv, tau,
-                traits::matrix_storage(c), traits::leading_dimension(c),
+        detail::larz( side, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c), l, traits::vector_storage(v),
+                incv, tau, traits::matrix_storage(c),
+                traits::leading_dimension(c),
                 traits::vector_storage(work.select(value_type())) );
     }
 
@@ -157,7 +160,7 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
             integer_t const incv, value_type const tau, MatrixC& c,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( side,
-                traits::matrix_size1(c), traits::matrix_size2(c) ) );
+                traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
         compute( side, l, v, incv, tau, c, workspace( tmp_work ) );
     }
 

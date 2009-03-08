@@ -69,7 +69,7 @@ struct tbsv_impl {
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
         detail::tbsv( traits::matrix_uplo_tag(a), trans, diag,
-                traits::matrix_size2(a), k, traits::matrix_storage(a),
+                traits::matrix_num_columns(a), k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(x),
                 traits::vector_stride(x) );
     }

@@ -73,15 +73,16 @@ struct ormtr_impl {
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         assert( trans == 'N' || trans == 'T' );
-        assert( traits::matrix_size1(c) >= 0 );
-        assert( traits::matrix_size2(c) >= 0 );
+        assert( traits::matrix_num_rows(c) >= 0 );
+        assert( traits::matrix_num_columns(c) >= 0 );
         assert( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_size1(c)) );
+                traits::matrix_num_rows(c)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                side, traits::matrix_size1(c), traits::matrix_size2(c) )));
+                side, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c) )));
 #endif
         detail::ormtr( side, traits::matrix_uplo_tag(a), trans,
-                traits::matrix_size1(c), traits::matrix_size2(c),
+                traits::matrix_num_rows(c), traits::matrix_num_columns(c),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(tau), traits::matrix_storage(c),
                 traits::leading_dimension(c),
@@ -95,7 +96,7 @@ struct ormtr_impl {
             VectorTAU& tau, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( side,
-                traits::matrix_size1(c), traits::matrix_size2(c) ) );
+                traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
         compute( side, trans, a, tau, c, info, workspace( tmp_work ) );
     }
 
@@ -106,7 +107,7 @@ struct ormtr_impl {
             optimal_workspace work ) {
         real_type opt_size_work;
         detail::ormtr( side, traits::matrix_uplo_tag(a), trans,
-                traits::matrix_size1(c), traits::matrix_size2(c),
+                traits::matrix_num_rows(c), traits::matrix_num_columns(c),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(tau), traits::matrix_storage(c),
                 traits::leading_dimension(c), &opt_size_work, -1, info );

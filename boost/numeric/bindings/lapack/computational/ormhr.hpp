@@ -74,17 +74,19 @@ struct ormhr_impl {
 #ifndef NDEBUG
         assert( side == 'L' || side == 'R' );
         assert( trans == 'N' || trans == 'T' );
-        assert( traits::matrix_size1(c) >= 0 );
-        assert( traits::matrix_size2(c) >= 0 );
+        assert( traits::matrix_num_rows(c) >= 0 );
+        assert( traits::matrix_num_columns(c) >= 0 );
         assert( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_size1(c)) );
+                traits::matrix_num_rows(c)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                side, traits::matrix_size1(c), traits::matrix_size2(c) )));
+                side, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c) )));
 #endif
-        detail::ormhr( side, trans, traits::matrix_size1(c),
-                traits::matrix_size2(c), ilo, ihi, traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(tau),
-                traits::matrix_storage(c), traits::leading_dimension(c),
+        detail::ormhr( side, trans, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c), ilo, ihi,
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(tau), traits::matrix_storage(c),
+                traits::leading_dimension(c),
                 traits::vector_storage(work.select(real_type())),
                 traits::vector_size(work.select(real_type())), info );
     }
@@ -96,7 +98,7 @@ struct ormhr_impl {
             VectorTAU& tau, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( side,
-                traits::matrix_size1(c), traits::matrix_size2(c) ) );
+                traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
         compute( side, trans, ilo, ihi, a, tau, c, info,
                 workspace( tmp_work ) );
     }
@@ -108,11 +110,11 @@ struct ormhr_impl {
             VectorTAU& tau, MatrixC& c, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
-        detail::ormhr( side, trans, traits::matrix_size1(c),
-                traits::matrix_size2(c), ilo, ihi, traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(tau),
-                traits::matrix_storage(c), traits::leading_dimension(c),
-                &opt_size_work, -1, info );
+        detail::ormhr( side, trans, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c), ilo, ihi,
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::vector_storage(tau), traits::matrix_storage(c),
+                traits::leading_dimension(c), &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         compute( side, trans, ilo, ihi, a, tau, c, info,

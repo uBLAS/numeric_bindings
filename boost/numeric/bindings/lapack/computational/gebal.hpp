@@ -77,11 +77,11 @@ struct gebal_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 VectorSCALE >::value_type >::value) );
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
 #endif
-        detail::gebal( job, traits::matrix_size2(a),
+        detail::gebal( job, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a), ilo,
                 ihi, traits::vector_storage(scale), info );
     }
@@ -101,11 +101,11 @@ struct gebal_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
 #endif
-        detail::gebal( job, traits::matrix_size2(a),
+        detail::gebal( job, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a), ilo,
                 ihi, traits::vector_storage(scale), info );
     }

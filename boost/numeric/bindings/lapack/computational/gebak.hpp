@@ -85,14 +85,14 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         assert( side == 'R' || side == 'L' );
-        assert( traits::matrix_size1(v) >= 0 );
-        assert( traits::vector_size(scale) >= traits::matrix_size1(v) );
-        assert( traits::matrix_size2(v) >= 0 );
+        assert( traits::matrix_num_rows(v) >= 0 );
+        assert( traits::vector_size(scale) >= traits::matrix_num_rows(v) );
+        assert( traits::matrix_num_columns(v) >= 0 );
         assert( traits::leading_dimension(v) >= std::max(1,
-                traits::matrix_size1(v)) );
+                traits::matrix_num_rows(v)) );
 #endif
-        detail::gebak( job, side, traits::matrix_size1(v), ilo, ihi,
-                traits::vector_storage(scale), traits::matrix_size2(v),
+        detail::gebak( job, side, traits::matrix_num_rows(v), ilo, ihi,
+                traits::vector_storage(scale), traits::matrix_num_columns(v),
                 traits::matrix_storage(v), traits::leading_dimension(v),
                 info );
     }
@@ -114,14 +114,14 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         assert( side == 'R' || side == 'L' );
-        assert( traits::matrix_size1(v) >= 0 );
-        assert( traits::vector_size(scale) >= traits::matrix_size1(v) );
-        assert( traits::matrix_size2(v) >= 0 );
+        assert( traits::matrix_num_rows(v) >= 0 );
+        assert( traits::vector_size(scale) >= traits::matrix_num_rows(v) );
+        assert( traits::matrix_num_columns(v) >= 0 );
         assert( traits::leading_dimension(v) >= std::max(1,
-                traits::matrix_size1(v)) );
+                traits::matrix_num_rows(v)) );
 #endif
-        detail::gebak( job, side, traits::matrix_size1(v), ilo, ihi,
-                traits::vector_storage(scale), traits::matrix_size2(v),
+        detail::gebak( job, side, traits::matrix_num_rows(v), ilo, ihi,
+                traits::vector_storage(scale), traits::matrix_num_columns(v),
                 traits::matrix_storage(v), traits::leading_dimension(v),
                 info );
     }

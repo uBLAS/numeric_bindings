@@ -113,7 +113,7 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( vect == 'N' || vect == 'Q' || vect == 'P' || vect == 'B' );
         assert( m >= 0 );
         assert( n >= 0 );
-        assert( traits::matrix_size2(c) >= 0 );
+        assert( traits::matrix_num_columns(c) >= 0 );
         assert( kl >= 0 );
         assert( ku >= 0 );
         assert( traits::leading_dimension(ab) >= kl+ku+1 );
@@ -122,7 +122,7 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
                 m, n )));
 #endif
-        detail::gbbrd( vect, m, n, traits::matrix_size2(c), kl, ku,
+        detail::gbbrd( vect, m, n, traits::matrix_num_columns(c), kl, ku,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::matrix_storage(q), traits::leading_dimension(q),
@@ -191,7 +191,7 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( vect == 'N' || vect == 'Q' || vect == 'P' || vect == 'B' );
         assert( m >= 0 );
         assert( n >= 0 );
-        assert( traits::matrix_size2(c) >= 0 );
+        assert( traits::matrix_num_columns(c) >= 0 );
         assert( kl >= 0 );
         assert( ku >= 0 );
         assert( traits::leading_dimension(ab) >= kl+ku+1 );
@@ -202,7 +202,7 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::vector_size(work.select(real_type()) >=
                 min_size_rwork( m, n )));
 #endif
-        detail::gbbrd( vect, m, n, traits::matrix_size2(c), kl, ku,
+        detail::gbbrd( vect, m, n, traits::matrix_num_columns(c), kl, ku,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::matrix_storage(q), traits::leading_dimension(q),

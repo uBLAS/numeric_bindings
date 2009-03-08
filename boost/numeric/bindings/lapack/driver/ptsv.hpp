@@ -78,14 +78,15 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
                 MatrixB >::value_type >::value) );
 #ifndef NDEBUG
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n-1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
 #endif
-        detail::ptsv( n, traits::matrix_size2(b), traits::vector_storage(d),
-                traits::vector_storage(e), traits::matrix_storage(b),
-                traits::leading_dimension(b), info );
+        detail::ptsv( n, traits::matrix_num_columns(b),
+                traits::vector_storage(d), traits::vector_storage(e),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                info );
     }
 };
 
@@ -105,14 +106,15 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
                 MatrixB >::value_type >::value) );
 #ifndef NDEBUG
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n-1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
 #endif
-        detail::ptsv( n, traits::matrix_size2(b), traits::vector_storage(d),
-                traits::vector_storage(e), traits::matrix_storage(b),
-                traits::leading_dimension(b), info );
+        detail::ptsv( n, traits::matrix_num_columns(b),
+                traits::vector_storage(d), traits::vector_storage(e),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                info );
     }
 };
 

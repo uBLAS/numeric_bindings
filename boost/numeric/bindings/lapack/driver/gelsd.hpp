@@ -98,32 +98,34 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorS >::value_type >::value) );
-        integer_t minmn = std::min( traits::matrix_size1(a),
-                traits::matrix_size2(a) );
+        integer_t minmn = std::min( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a) );
         integer_t smlsiz = ilaenv(9, "GELSD", "");
         integer_t nlvl = static_cast<integer_t>(((std::log(
                 static_cast<real_type>(minmn)) /
                 std::log(static_cast<real_type>(2.))) / (smlsiz+1)) + 1);
 #ifndef NDEBUG
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
+                traits::matrix_num_rows(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                std::max(traits::matrix_size1(a),traits::matrix_size2(a))) );
-        assert( traits::vector_size(s) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
+                std::max(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a))) );
+        assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                minmn, smlsiz, nlvl, traits::matrix_size2(b) )));
+                minmn, smlsiz, nlvl, traits::matrix_num_columns(b) )));
         assert( traits::vector_size(work.select(integer_t()) >=
                 min_size_iwork( minmn, nlvl )));
 #endif
-        detail::gelsd( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(s),
-                rcond, rank, traits::vector_storage(work.select(real_type())),
+        detail::gelsd( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                traits::vector_storage(s), rcond, rank,
+                traits::vector_storage(work.select(real_type())),
                 traits::vector_size(work.select(real_type())),
                 traits::vector_storage(work.select(integer_t())), info );
     }
@@ -133,14 +135,14 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( MatrixA& a, MatrixB& b, VectorS& s,
             real_type const rcond, integer_t& rank, integer_t& info,
             minimal_workspace work ) {
-        integer_t minmn = std::min( traits::matrix_size1(a),
-                traits::matrix_size2(a) );
+        integer_t minmn = std::min( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a) );
         integer_t smlsiz = ilaenv(9, "GELSD", "");
         integer_t nlvl = static_cast<integer_t>(((std::log(
                 static_cast<real_type>(minmn)) /
                 std::log(static_cast<real_type>(2.))) / (smlsiz+1)) + 1);
         traits::detail::array< real_type > tmp_work( min_size_work( minmn,
-                smlsiz, nlvl, traits::matrix_size2(b) ) );
+                smlsiz, nlvl, traits::matrix_num_columns(b) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( minmn,
                 nlvl ) );
         compute( a, b, s, rcond, rank, info, workspace( tmp_work,
@@ -154,11 +156,12 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             optimal_workspace work ) {
         real_type opt_size_work;
         integer_t opt_size_iwork;
-        detail::gelsd( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(s),
-                rcond, rank, &opt_size_work, -1, &opt_size_iwork, info );
+        detail::gelsd( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                traits::vector_storage(s), rcond, rank, &opt_size_work, -1,
+                &opt_size_iwork, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         traits::detail::array< integer_t > tmp_iwork( opt_size_iwork );
@@ -196,35 +199,36 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
-        integer_t minmn = std::min( traits::matrix_size1(a),
-                traits::matrix_size2(a) );
+        integer_t minmn = std::min( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a) );
         integer_t smlsiz = ilaenv(9, "GELSD", "");
         integer_t nlvl = static_cast<integer_t>(((std::log(
                 static_cast<real_type>(minmn)) /
                 std::log(static_cast<real_type>(2.))) / (smlsiz+1)) + 1);
 #ifndef NDEBUG
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
+                traits::matrix_num_rows(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                std::max(traits::matrix_size1(a),traits::matrix_size2(a))) );
-        assert( traits::vector_size(s) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
+                std::max(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a))) );
+        assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( minmn, traits::matrix_size2(b) )));
+                min_size_work( minmn, traits::matrix_num_columns(b) )));
         assert( traits::vector_size(work.select(real_type()) >=
                 min_size_rwork( minmn, smlsiz, nlvl,
-                traits::matrix_size2(b) )));
+                traits::matrix_num_columns(b) )));
         assert( traits::vector_size(work.select(integer_t()) >=
                 min_size_iwork( minmn, nlvl )));
 #endif
-        detail::gelsd( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(s),
-                rcond, rank,
+        detail::gelsd( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                traits::vector_storage(s), rcond, rank,
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_size(work.select(value_type())),
                 traits::vector_storage(work.select(real_type())),
@@ -236,16 +240,16 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( MatrixA& a, MatrixB& b, VectorS& s,
             real_type const rcond, integer_t& rank, integer_t& info,
             minimal_workspace work ) {
-        integer_t minmn = std::min( traits::matrix_size1(a),
-                traits::matrix_size2(a) );
+        integer_t minmn = std::min( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a) );
         integer_t smlsiz = ilaenv(9, "GELSD", "");
         integer_t nlvl = static_cast<integer_t>(((std::log(
                 static_cast<real_type>(minmn)) /
                 std::log(static_cast<real_type>(2.))) / (smlsiz+1)) + 1);
         traits::detail::array< value_type > tmp_work( min_size_work( minmn,
-                traits::matrix_size2(b) ) );
+                traits::matrix_num_columns(b) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( minmn,
-                smlsiz, nlvl, traits::matrix_size2(b) ) );
+                smlsiz, nlvl, traits::matrix_num_columns(b) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( minmn,
                 nlvl ) );
         compute( a, b, s, rcond, rank, info, workspace( tmp_work, tmp_rwork,
@@ -260,12 +264,12 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         value_type opt_size_work;
         real_type opt_size_rwork;
         integer_t opt_size_iwork;
-        detail::gelsd( traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_size2(b), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(s),
-                rcond, rank, &opt_size_work, -1, &opt_size_rwork,
-                &opt_size_iwork, info );
+        detail::gelsd( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                traits::vector_storage(s), rcond, rank, &opt_size_work, -1,
+                &opt_size_rwork, &opt_size_iwork, info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         traits::detail::array< real_type > tmp_rwork(

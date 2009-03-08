@@ -149,22 +149,22 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( jobvsr == 'N' || jobvsr == 'V' );
         assert( sort == 'N' || sort == 'S' );
         assert( sense == 'N' || sense == 'E' || sense == 'V' || sense == 'B' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(alphar) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(alphai) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(alphar) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(alphai) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(a), sense )));
+                traits::matrix_num_columns(a), sense )));
         assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_size2(a), sense )));
+                min_size_iwork( traits::matrix_num_columns(a), sense )));
         assert( traits::vector_size(work.select(bool()) >= min_size_bwork(
-                traits::matrix_size2(a), sort )));
+                traits::matrix_num_columns(a), sort )));
 #endif
         detail::ggesx( jobvsl, jobvsr, sort, selctg, sense,
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), sdim,
                 traits::vector_storage(alphar),
@@ -191,11 +191,11 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(a), sense ) );
+                traits::matrix_num_columns(a), sense ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_size2(a), sense ) );
+                traits::matrix_num_columns(a), sense ) );
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
-                traits::matrix_size2(a), sort ) );
+                traits::matrix_num_columns(a), sort ) );
         compute( jobvsl, jobvsr, sort, selctg, sense, a, b, sdim, alphar,
                 alphai, beta, vsl, vsr, rconde, rcondv, info,
                 workspace( tmp_work, tmp_iwork, tmp_bwork ) );
@@ -214,9 +214,9 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         real_type opt_size_work;
         integer_t opt_size_iwork;
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
-                traits::matrix_size2(a), sort ) );
+                traits::matrix_num_columns(a), sort ) );
         detail::ggesx( jobvsl, jobvsr, sort, selctg, sense,
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), sdim,
                 traits::vector_storage(alphar),
@@ -299,24 +299,24 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( jobvsr == 'N' || jobvsr == 'V' );
         assert( sort == 'N' || sort == 'S' );
         assert( sense == 'N' || sense == 'E' || sense == 'V' || sense == 'B' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(alpha) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(beta) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(alpha) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(beta) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(a), sense )));
+                min_size_work( traits::matrix_num_columns(a), sense )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(a) )));
+                min_size_rwork( traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_size2(a), sense )));
+                min_size_iwork( traits::matrix_num_columns(a), sense )));
         assert( traits::vector_size(work.select(bool()) >= min_size_bwork(
-                traits::matrix_size2(a), sort )));
+                traits::matrix_num_columns(a), sort )));
 #endif
         detail::ggesx( jobvsl, jobvsr, sort, selctg, sense,
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), sdim,
                 traits::vector_storage(alpha), traits::vector_storage(beta),
@@ -342,13 +342,13 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
             VectorRCONDV& rcondv, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(a), sense ) );
+                traits::matrix_num_columns(a), sense ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_size2(a), sense ) );
+                traits::matrix_num_columns(a), sense ) );
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
-                traits::matrix_size2(a), sort ) );
+                traits::matrix_num_columns(a), sort ) );
         compute( jobvsl, jobvsr, sort, selctg, sense, a, b, sdim, alpha, beta,
                 vsl, vsr, rconde, rcondv, info, workspace( tmp_work,
                 tmp_rwork, tmp_iwork, tmp_bwork ) );
@@ -365,12 +365,12 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorRCONDV& rcondv, integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         integer_t opt_size_iwork;
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
-                traits::matrix_size2(a), sort ) );
+                traits::matrix_num_columns(a), sort ) );
         detail::ggesx( jobvsl, jobvsr, sort, selctg, sense,
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), sdim,
                 traits::vector_storage(alpha), traits::vector_storage(beta),

@@ -115,23 +115,23 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 VectorBERR >::value_type >::value) );
 #ifndef NDEBUG
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n-1 );
         assert( traits::vector_size(df) >= n );
         assert( traits::vector_size(ef) >= n-1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(b) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(b) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
                 n )));
 #endif
-        detail::ptrfs( n, traits::matrix_size2(b), traits::vector_storage(d),
-                traits::vector_storage(e), traits::vector_storage(df),
-                traits::vector_storage(ef), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::matrix_storage(x),
-                traits::leading_dimension(x), traits::vector_storage(ferr),
-                traits::vector_storage(berr),
+        detail::ptrfs( n, traits::matrix_num_columns(b),
+                traits::vector_storage(d), traits::vector_storage(e),
+                traits::vector_storage(df), traits::vector_storage(ef),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                traits::matrix_storage(x), traits::leading_dimension(x),
+                traits::vector_storage(ferr), traits::vector_storage(berr),
                 traits::vector_storage(work.select(real_type())), info );
     }
 
@@ -202,20 +202,20 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n-1 );
         assert( traits::vector_size(df) >= n );
         assert( traits::vector_size(ef) >= n-1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(b) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(b) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( n )));
         assert( traits::vector_size(work.select(real_type()) >=
                 min_size_rwork( n )));
 #endif
-        detail::ptrfs( uplo, n, traits::matrix_size2(b),
+        detail::ptrfs( uplo, n, traits::matrix_num_columns(b),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::vector_storage(df), traits::vector_storage(ef),
                 traits::matrix_storage(b), traits::leading_dimension(b),

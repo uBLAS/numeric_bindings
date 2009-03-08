@@ -120,17 +120,17 @@ struct gegv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 #ifndef NDEBUG
         assert( jobvl == 'N' || jobvl == 'V' );
         assert( jobvr == 'N' || jobvr == 'V' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(alphar) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(beta) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(alphar) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(beta) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(a) )));
+                traits::matrix_num_columns(a) )));
 #endif
-        detail::gegv( jobvl, jobvr, traits::matrix_size2(a),
+        detail::gegv( jobvl, jobvr, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 traits::vector_storage(alphar),
@@ -150,7 +150,7 @@ struct gegv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
             VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr, info,
                 workspace( tmp_work ) );
     }
@@ -164,7 +164,7 @@ struct gegv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
             VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
-        detail::gegv( jobvl, jobvr, traits::matrix_size2(a),
+        detail::gegv( jobvl, jobvr, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 traits::vector_storage(alphar),
@@ -216,19 +216,19 @@ struct gegv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 #ifndef NDEBUG
         assert( jobvl == 'N' || jobvl == 'V' );
         assert( jobvr == 'N' || jobvr == 'V' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(alpha) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(beta) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(alpha) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(beta) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(a) )));
+                min_size_work( traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(a) )));
+                min_size_rwork( traits::matrix_num_columns(a) )));
 #endif
-        detail::gegv( jobvl, jobvr, traits::matrix_size2(a),
+        detail::gegv( jobvl, jobvr, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 traits::vector_storage(alpha), traits::vector_storage(beta),
@@ -246,9 +246,9 @@ struct gegv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
             MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
             MatrixVR& vr, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( jobvl, jobvr, a, b, alpha, beta, vl, vr, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
@@ -261,8 +261,8 @@ struct gegv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
             MatrixVR& vr, integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
-        detail::gegv( jobvl, jobvr, traits::matrix_size2(a),
+                traits::matrix_num_columns(a) ) );
+        detail::gegv( jobvl, jobvr, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 traits::vector_storage(alpha), traits::vector_storage(beta),

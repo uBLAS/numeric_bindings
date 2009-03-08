@@ -88,16 +88,16 @@ struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         assert( side == 'R' || side == 'L' );
-        assert( traits::matrix_size1(v) >= 0 );
-        assert( traits::vector_size(lscale) >= traits::matrix_size1(v) );
-        assert( traits::vector_size(rscale) >= traits::matrix_size1(v) );
-        assert( traits::matrix_size2(v) >= 0 );
+        assert( traits::matrix_num_rows(v) >= 0 );
+        assert( traits::vector_size(lscale) >= traits::matrix_num_rows(v) );
+        assert( traits::vector_size(rscale) >= traits::matrix_num_rows(v) );
+        assert( traits::matrix_num_columns(v) >= 0 );
         assert( traits::leading_dimension(v) >= std::max(1,
-                traits::matrix_size1(v)) );
+                traits::matrix_num_rows(v)) );
 #endif
-        detail::ggbak( job, side, traits::matrix_size1(v), ilo, ihi,
+        detail::ggbak( job, side, traits::matrix_num_rows(v), ilo, ihi,
                 traits::vector_storage(lscale),
-                traits::vector_storage(rscale), traits::matrix_size2(v),
+                traits::vector_storage(rscale), traits::matrix_num_columns(v),
                 traits::matrix_storage(v), traits::leading_dimension(v),
                 info );
     }
@@ -121,16 +121,16 @@ struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         assert( side == 'R' || side == 'L' );
-        assert( traits::matrix_size1(v) >= 0 );
-        assert( traits::vector_size(lscale) >= traits::matrix_size1(v) );
-        assert( traits::vector_size(rscale) >= traits::matrix_size1(v) );
-        assert( traits::matrix_size2(v) >= 0 );
+        assert( traits::matrix_num_rows(v) >= 0 );
+        assert( traits::vector_size(lscale) >= traits::matrix_num_rows(v) );
+        assert( traits::vector_size(rscale) >= traits::matrix_num_rows(v) );
+        assert( traits::matrix_num_columns(v) >= 0 );
         assert( traits::leading_dimension(v) >= std::max(1,
-                traits::matrix_size1(v)) );
+                traits::matrix_num_rows(v)) );
 #endif
-        detail::ggbak( job, side, traits::matrix_size1(v), ilo, ihi,
+        detail::ggbak( job, side, traits::matrix_num_rows(v), ilo, ihi,
                 traits::vector_storage(lscale),
-                traits::vector_storage(rscale), traits::matrix_size2(v),
+                traits::vector_storage(rscale), traits::matrix_num_columns(v),
                 traits::matrix_storage(v), traits::leading_dimension(v),
                 info );
     }

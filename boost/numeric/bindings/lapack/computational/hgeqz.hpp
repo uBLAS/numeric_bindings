@@ -125,14 +125,14 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( job == 'E' || job == 'S' );
         assert( compq == 'N' || compq == 'I' || compq == 'V' );
         assert( compz == 'N' || compz == 'I' || compz == 'V' );
-        assert( traits::matrix_size2(h) >= 0 );
-        assert( traits::vector_size(alphar) >= traits::matrix_size2(h) );
-        assert( traits::vector_size(beta) >= traits::matrix_size2(h) );
+        assert( traits::matrix_num_columns(h) >= 0 );
+        assert( traits::vector_size(alphar) >= traits::matrix_num_columns(h) );
+        assert( traits::vector_size(beta) >= traits::matrix_num_columns(h) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(h) )));
+                traits::matrix_num_columns(h) )));
 #endif
-        detail::hgeqz( job, compq, compz, traits::matrix_size2(h), ilo,
-                traits::matrix_size2(h), traits::matrix_storage(h),
+        detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h), ilo,
+                traits::matrix_num_columns(h), traits::matrix_storage(h),
                 traits::leading_dimension(h), traits::matrix_storage(t),
                 traits::leading_dimension(t), traits::vector_storage(alphar),
                 traits::vector_storage(alphai), traits::vector_storage(beta),
@@ -151,7 +151,7 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(h) ) );
+                traits::matrix_num_columns(h) ) );
         compute( job, compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
                 info, workspace( tmp_work ) );
     }
@@ -165,8 +165,8 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
-        detail::hgeqz( job, compq, compz, traits::matrix_size2(h), ilo,
-                traits::matrix_size2(h), traits::matrix_storage(h),
+        detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h),
+                ilo, traits::matrix_num_columns(h), traits::matrix_storage(h),
                 traits::leading_dimension(h), traits::matrix_storage(t),
                 traits::leading_dimension(t), traits::vector_storage(alphar),
                 traits::vector_storage(alphai), traits::vector_storage(beta),
@@ -218,16 +218,16 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( job == 'E' || job == 'S' );
         assert( compq == 'N' || compq == 'I' || compq == 'V' );
         assert( compz == 'N' || compz == 'I' || compz == 'V' );
-        assert( traits::matrix_size2(h) >= 0 );
-        assert( traits::vector_size(alpha) >= traits::matrix_size2(h) );
-        assert( traits::vector_size(beta) >= traits::matrix_size2(h) );
+        assert( traits::matrix_num_columns(h) >= 0 );
+        assert( traits::vector_size(alpha) >= traits::matrix_num_columns(h) );
+        assert( traits::vector_size(beta) >= traits::matrix_num_columns(h) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(h) )));
+                min_size_work( traits::matrix_num_columns(h) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(h) )));
+                min_size_rwork( traits::matrix_num_columns(h) )));
 #endif
-        detail::hgeqz( job, compq, compz, traits::matrix_size2(h), ilo,
-                traits::matrix_size2(h), traits::matrix_storage(h),
+        detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h), ilo,
+                traits::matrix_num_columns(h), traits::matrix_storage(h),
                 traits::leading_dimension(h), traits::matrix_storage(t),
                 traits::leading_dimension(t), traits::vector_storage(alpha),
                 traits::vector_storage(beta), traits::matrix_storage(q),
@@ -246,9 +246,9 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(h) ) );
+                traits::matrix_num_columns(h) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(h) ) );
+                traits::matrix_num_columns(h) ) );
         compute( job, compq, compz, ilo, h, t, alpha, beta, q, z, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
@@ -262,9 +262,9 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(h) ) );
-        detail::hgeqz( job, compq, compz, traits::matrix_size2(h), ilo,
-                traits::matrix_size2(h), traits::matrix_storage(h),
+                traits::matrix_num_columns(h) ) );
+        detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h),
+                ilo, traits::matrix_num_columns(h), traits::matrix_storage(h),
                 traits::leading_dimension(h), traits::matrix_storage(t),
                 traits::leading_dimension(t), traits::vector_storage(alpha),
                 traits::vector_storage(beta), traits::matrix_storage(q),

@@ -83,16 +83,16 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(ipiv) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(a) )));
+                traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_size2(a) )));
+                min_size_iwork( traits::matrix_num_columns(a) )));
 #endif
-        detail::sycon( uplo, traits::matrix_size2(a),
+        detail::sycon( uplo, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(ipiv), anorm, rcond,
                 traits::vector_storage(work.select(real_type())),
@@ -105,9 +105,9 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             real_type const anorm, real_type& rcond, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work,
                 tmp_iwork ) );
     }
@@ -144,14 +144,14 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(ipiv) >= traits::matrix_size2(a) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(a) )));
+                min_size_work( traits::matrix_num_columns(a) )));
 #endif
-        detail::sycon( uplo, traits::matrix_size2(a),
+        detail::sycon( uplo, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(ipiv), anorm, rcond,
                 traits::vector_storage(work.select(value_type())), info );
@@ -163,7 +163,7 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             real_type const anorm, real_type& rcond, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work ) );
     }
 

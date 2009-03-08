@@ -72,18 +72,18 @@ struct hetrd_impl {
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(d) >= traits::matrix_size2(a) );
-        assert( traits::vector_size(tau) >= traits::matrix_size2(a)-1 );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(d) >= traits::matrix_num_columns(a) );
+        assert( traits::vector_size(tau) >= traits::matrix_num_columns(a)-1 );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work(  )));
 #endif
-        detail::hetrd( traits::matrix_uplo_tag(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::vector_storage(tau),
+        detail::hetrd( traits::matrix_uplo_tag(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(d),
+                traits::vector_storage(e), traits::vector_storage(tau),
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_size(work.select(value_type())), info );
     }
@@ -104,7 +104,7 @@ struct hetrd_impl {
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         detail::hetrd( traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(d),
                 traits::vector_storage(e), traits::vector_storage(tau),
                 &opt_size_work, -1, info );

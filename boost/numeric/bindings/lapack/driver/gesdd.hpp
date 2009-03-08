@@ -99,27 +99,27 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixVT >::value_type >::value) );
-        integer_t minmn = std::min( traits::matrix_size1(a),
-                traits::matrix_size2(a) );
+        integer_t minmn = std::min( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a) );
 #ifndef NDEBUG
         assert( jobz == 'A' || jobz == 'S' || jobz == 'O' || jobz == 'N' );
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
-        assert( traits::vector_size(s) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
+                traits::matrix_num_rows(a)) );
+        assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size1(a), traits::matrix_size2(a), jobz,
-                minmn )));
+                traits::matrix_num_rows(a), traits::matrix_num_columns(a),
+                jobz, minmn )));
         assert( traits::vector_size(work.select(integer_t()) >=
                 min_size_iwork( minmn )));
 #endif
-        detail::gesdd( jobz, traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(s), traits::matrix_storage(u),
-                traits::leading_dimension(u), traits::matrix_storage(vt),
-                traits::leading_dimension(vt),
+        detail::gesdd( jobz, traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(s),
+                traits::matrix_storage(u), traits::leading_dimension(u),
+                traits::matrix_storage(vt), traits::leading_dimension(vt),
                 traits::vector_storage(work.select(real_type())),
                 traits::vector_size(work.select(real_type())),
                 traits::vector_storage(work.select(integer_t())), info );
@@ -130,11 +130,11 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename MatrixVT >
     static void compute( char const jobz, MatrixA& a, VectorS& s, MatrixU& u,
             MatrixVT& vt, integer_t& info, minimal_workspace work ) {
-        integer_t minmn = std::min( traits::matrix_size1(a),
-                traits::matrix_size2(a) );
+        integer_t minmn = std::min( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a) );
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size1(a), traits::matrix_size2(a), jobz,
-                minmn ) );
+                traits::matrix_num_rows(a), traits::matrix_num_columns(a),
+                jobz, minmn ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 minmn ) );
         compute( jobz, a, s, u, vt, info, workspace( tmp_work, tmp_iwork ) );
@@ -182,29 +182,29 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixVT >::value_type >::value) );
-        integer_t minmn = std::min( traits::matrix_size1(a),
-                traits::matrix_size2(a) );
+        integer_t minmn = std::min( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a) );
 #ifndef NDEBUG
         assert( jobz == 'A' || jobz == 'S' || jobz == 'O' || jobz == 'N' );
-        assert( traits::matrix_size1(a) >= 0 );
-        assert( traits::matrix_size2(a) >= 0 );
+        assert( traits::matrix_num_rows(a) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size1(a)) );
-        assert( traits::vector_size(s) >= std::min(traits::matrix_size1(a),
-                traits::matrix_size2(a)) );
+                traits::matrix_num_rows(a)) );
+        assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size1(a),
-                traits::matrix_size2(a), jobz, minmn )));
+                min_size_work( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), jobz, minmn )));
         assert( traits::vector_size(work.select(real_type()) >=
                 min_size_rwork( minmn, jobz )));
         assert( traits::vector_size(work.select(integer_t()) >=
                 min_size_iwork( minmn )));
 #endif
-        detail::gesdd( jobz, traits::matrix_size1(a), traits::matrix_size2(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(s), traits::matrix_storage(u),
-                traits::leading_dimension(u), traits::matrix_storage(vt),
-                traits::leading_dimension(vt),
+        detail::gesdd( jobz, traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::vector_storage(s),
+                traits::matrix_storage(u), traits::leading_dimension(u),
+                traits::matrix_storage(vt), traits::leading_dimension(vt),
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_size(work.select(value_type())),
                 traits::vector_storage(work.select(real_type())),
@@ -216,11 +216,11 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename MatrixVT >
     static void compute( char const jobz, MatrixA& a, VectorS& s, MatrixU& u,
             MatrixVT& vt, integer_t& info, minimal_workspace work ) {
-        integer_t minmn = std::min( traits::matrix_size1(a),
-                traits::matrix_size2(a) );
+        integer_t minmn = std::min( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a) );
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size1(a), traits::matrix_size2(a), jobz,
-                minmn ) );
+                traits::matrix_num_rows(a), traits::matrix_num_columns(a),
+                jobz, minmn ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( minmn,
                 jobz ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
@@ -234,15 +234,15 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename MatrixVT >
     static void compute( char const jobz, MatrixA& a, VectorS& s, MatrixU& u,
             MatrixVT& vt, integer_t& info, optimal_workspace work ) {
-        integer_t minmn = std::min( traits::matrix_size1(a),
-                traits::matrix_size2(a) );
+        integer_t minmn = std::min( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a) );
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( minmn,
                 jobz ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 minmn ) );
-        detail::gesdd( jobz, traits::matrix_size1(a),
-                traits::matrix_size2(a), traits::matrix_storage(a),
+        detail::gesdd( jobz, traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(s),
                 traits::matrix_storage(u), traits::leading_dimension(u),
                 traits::matrix_storage(vt), traits::leading_dimension(vt),

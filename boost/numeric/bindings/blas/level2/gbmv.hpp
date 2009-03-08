@@ -84,8 +84,8 @@ struct gbmv_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
-        detail::gbmv( trans, traits::matrix_size1(a),
-                traits::matrix_size2(a), kl, ku, alpha,
+        detail::gbmv( trans, traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), kl, ku, alpha,
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(x), traits::vector_stride(x), beta,
                 traits::vector_storage(y), traits::vector_stride(y) );

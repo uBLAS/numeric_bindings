@@ -78,14 +78,15 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixB >::value_type >::value) );
 #ifndef NDEBUG
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n-1 );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
 #endif
-        detail::pttrs( n, traits::matrix_size2(b), traits::vector_storage(d),
-                traits::vector_storage(e), traits::matrix_storage(b),
-                traits::leading_dimension(b), info );
+        detail::pttrs( n, traits::matrix_num_columns(b),
+                traits::vector_storage(d), traits::vector_storage(e),
+                traits::matrix_storage(b), traits::leading_dimension(b),
+                info );
     }
 };
 
@@ -106,11 +107,11 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::vector_size(d) >= n );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
 #endif
-        detail::pttrs( uplo, n, traits::matrix_size2(b),
+        detail::pttrs( uplo, n, traits::matrix_num_columns(b),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 info );

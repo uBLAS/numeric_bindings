@@ -69,7 +69,7 @@ struct trmv_impl {
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
         detail::trmv( traits::matrix_uplo_tag(a), trans, diag,
-                traits::matrix_size2(a), traits::matrix_storage(a),
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(x),
                 traits::vector_stride(x) );
     }

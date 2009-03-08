@@ -66,10 +66,10 @@ struct her2_impl {
                 VectorX >::value_type, typename traits::matrix_traits<
                 MatrixA >::value_type >::value) );
         detail::her2( traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), alpha, traits::vector_storage(x),
-                traits::vector_stride(x), traits::vector_storage(y),
-                traits::vector_stride(y), traits::matrix_storage(a),
-                traits::leading_dimension(a) );
+                traits::matrix_num_columns(a), alpha,
+                traits::vector_storage(x), traits::vector_stride(x),
+                traits::vector_storage(y), traits::vector_stride(y),
+                traits::matrix_storage(a), traits::leading_dimension(a) );
     }
 };
 

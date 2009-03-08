@@ -139,7 +139,7 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 #ifndef NDEBUG
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::vector_size(dl) >= n-1 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(du) >= n-1 );
@@ -150,13 +150,13 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::vector_size(ipiv) >= n );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(b) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(b) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
                 n )));
         assert( traits::vector_size(work.select(integer_t()) >=
                 min_size_iwork( n )));
 #endif
-        detail::gtrfs( trans, n, traits::matrix_size2(b),
+        detail::gtrfs( trans, n, traits::matrix_num_columns(b),
                 traits::vector_storage(dl), traits::vector_storage(d),
                 traits::vector_storage(du), traits::vector_storage(dlf),
                 traits::vector_storage(df), traits::vector_storage(duf),
@@ -255,7 +255,7 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 #ifndef NDEBUG
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
         assert( n >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::vector_size(dl) >= n-1 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(du) >= n-1 );
@@ -266,13 +266,13 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::vector_size(ipiv) >= n );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(b) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(b) );
         assert( traits::vector_size(work.select(value_type()) >=
                 min_size_work( n )));
         assert( traits::vector_size(work.select(real_type()) >=
                 min_size_rwork( n )));
 #endif
-        detail::gtrfs( trans, n, traits::matrix_size2(b),
+        detail::gtrfs( trans, n, traits::matrix_num_columns(b),
                 traits::vector_storage(dl), traits::vector_storage(d),
                 traits::vector_storage(du), traits::vector_storage(dlf),
                 traits::vector_storage(df), traits::vector_storage(duf),

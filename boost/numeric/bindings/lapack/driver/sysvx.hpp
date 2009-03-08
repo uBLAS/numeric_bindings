@@ -120,24 +120,24 @@ struct sysvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( fact == 'F' || fact == 'N' );
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(af) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_size2(a) )));
+                traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_size2(a) )));
+                min_size_iwork( traits::matrix_num_columns(a) )));
 #endif
         detail::sysvx( fact, traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_size2(x),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(x),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(af), traits::leading_dimension(af),
                 traits::vector_storage(ipiv), traits::matrix_storage(b),
@@ -158,9 +158,9 @@ struct sysvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( fact, a, af, ipiv, b, x, rcond, ferr, berr, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
@@ -175,9 +175,9 @@ struct sysvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             optimal_workspace work ) {
         real_type opt_size_work;
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         detail::sysvx( fact, traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_size2(x),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(x),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(af), traits::leading_dimension(af),
                 traits::vector_storage(ipiv), traits::matrix_storage(b),
@@ -231,24 +231,24 @@ struct sysvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( fact == 'F' || fact == 'N' );
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( traits::matrix_size2(a) >= 0 );
-        assert( traits::matrix_size2(x) >= 0 );
+        assert( traits::matrix_num_columns(a) >= 0 );
+        assert( traits::matrix_num_columns(x) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(af) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(a)) );
+                traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_size2(a)) );
-        assert( traits::vector_size(berr) >= traits::matrix_size2(x) );
+                traits::matrix_num_columns(a)) );
+        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
         assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_size2(a) )));
+                min_size_work( traits::matrix_num_columns(a) )));
         assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_size2(a) )));
+                min_size_rwork( traits::matrix_num_columns(a) )));
 #endif
         detail::sysvx( fact, traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_size2(x),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(x),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(af), traits::leading_dimension(af),
                 traits::vector_storage(ipiv), traits::matrix_storage(b),
@@ -269,9 +269,9 @@ struct sysvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         compute( fact, a, af, ipiv, b, x, rcond, ferr, berr, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
@@ -286,9 +286,9 @@ struct sysvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_size2(a) ) );
+                traits::matrix_num_columns(a) ) );
         detail::sysvx( fact, traits::matrix_uplo_tag(a),
-                traits::matrix_size2(a), traits::matrix_size2(x),
+                traits::matrix_num_columns(a), traits::matrix_num_columns(x),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(af), traits::leading_dimension(af),
                 traits::vector_storage(ipiv), traits::matrix_storage(b),

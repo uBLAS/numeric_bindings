@@ -73,17 +73,17 @@ struct gbsv_impl {
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
 #ifndef NDEBUG
-        assert( traits::matrix_size2(ab) >= 0 );
+        assert( traits::matrix_num_columns(ab) >= 0 );
         assert( kl >= 0 );
         assert( ku >= 0 );
-        assert( traits::matrix_size2(b) >= 0 );
+        assert( traits::matrix_num_columns(b) >= 0 );
         assert( traits::leading_dimension(ab) >= 2 );
-        assert( traits::vector_size(ipiv) >= traits::matrix_size2(ab) );
+        assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(ab) );
         assert( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_size2(ab)) );
+                traits::matrix_num_columns(ab)) );
 #endif
-        detail::gbsv( traits::matrix_size2(ab), kl, ku,
-                traits::matrix_size2(b), traits::matrix_storage(ab),
+        detail::gbsv( traits::matrix_num_columns(ab), kl, ku,
+                traits::matrix_num_columns(b), traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::vector_storage(ipiv),
                 traits::matrix_storage(b), traits::leading_dimension(b),
                 info );

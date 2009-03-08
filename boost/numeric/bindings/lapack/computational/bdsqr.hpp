@@ -108,9 +108,9 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::matrix_num_columns(c) >= 0 );
         assert( traits::leading_dimension(u) >= std::max(1,
                 traits::matrix_num_rows(u)) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n, traits::matrix_num_columns(vt), traits::matrix_num_rows(u),
-                traits::matrix_num_columns(c) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n, traits::matrix_num_columns(vt),
+                traits::matrix_num_rows(u), traits::matrix_num_columns(c) ));
 #endif
         detail::bdsqr( uplo, n, traits::matrix_num_columns(vt),
                 traits::matrix_num_rows(u), traits::matrix_num_columns(c),
@@ -181,9 +181,9 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::matrix_num_columns(c) >= 0 );
         assert( traits::leading_dimension(u) >= std::max(1,
                 traits::matrix_num_rows(u)) );
-        assert( traits::vector_size(work.select(real_type()) >=
+        assert( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( n, traits::matrix_num_columns(vt),
-                traits::matrix_num_rows(u), traits::matrix_num_columns(c) )));
+                traits::matrix_num_rows(u), traits::matrix_num_columns(c) ));
 #endif
         detail::bdsqr( uplo, n, traits::matrix_num_columns(vt),
                 traits::matrix_num_rows(u), traits::matrix_num_columns(c),

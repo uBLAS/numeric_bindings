@@ -142,10 +142,11 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::vector_size(wi) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(rconde) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(rcondv) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                sense, jobvl, jobvr, traits::matrix_num_columns(a) )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( sense, traits::matrix_num_columns(a) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( sense, jobvl, jobvr,
+                traits::matrix_num_columns(a) ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( sense, traits::matrix_num_columns(a) ));
 #endif
         detail::geevx( balanc, jobvl, jobvr, sense,
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
@@ -273,10 +274,10 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::vector_size(w) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(rconde) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(rcondv) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( sense, traits::matrix_num_columns(a) )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_num_columns(a) )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( sense, traits::matrix_num_columns(a) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( traits::matrix_num_columns(a) ));
 #endif
         detail::geevx( balanc, jobvl, jobvr, sense,
                 traits::matrix_num_columns(a), traits::matrix_storage(a),

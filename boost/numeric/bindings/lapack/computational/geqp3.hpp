@@ -91,8 +91,8 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::vector_size(tau) >=
                 std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::geqp3( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
@@ -153,10 +153,10 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::vector_size(tau) >=
                 std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_num_columns(a) )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( traits::matrix_num_columns(a) ));
 #endif
         detail::geqp3( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),

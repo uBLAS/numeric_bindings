@@ -82,12 +82,12 @@ struct hpgvd_impl {
         assert( traits::matrix_uplo_tag(ap) == 'U' ||
                 traits::matrix_uplo_tag(ap) == 'L' );
         assert( n >= 0 );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( jobz, n )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( jobz, n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( jobz, n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( jobz, n ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( jobz, n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( jobz, n ));
 #endif
         detail::hpgvd( itype, jobz, traits::matrix_uplo_tag(ap), n,
                 traits::matrix_storage(ap), traits::matrix_storage(bp),

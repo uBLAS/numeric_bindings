@@ -101,9 +101,10 @@ struct gelsy_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::leading_dimension(b) >= std::max(1,
                 std::max(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a))) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_rows(a), traits::matrix_num_columns(a),
-                traits::matrix_num_columns(b) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a),
+                traits::matrix_num_columns(b) ));
 #endif
         detail::gelsy( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
@@ -174,12 +175,12 @@ struct gelsy_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::leading_dimension(b) >= std::max(1,
                 std::max(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a))) );
-        assert( traits::vector_size(work.select(value_type()) >=
+        assert( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a),
-                traits::matrix_num_columns(b) )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_num_columns(a) )));
+                traits::matrix_num_columns(b) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( traits::matrix_num_columns(a) ));
 #endif
         detail::gelsy( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),

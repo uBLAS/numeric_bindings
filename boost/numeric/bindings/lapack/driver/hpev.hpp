@@ -71,10 +71,10 @@ struct hpev_impl {
         assert( traits::matrix_uplo_tag(ap) == 'U' ||
                 traits::matrix_uplo_tag(ap) == 'L' );
         assert( n >= 0 );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( n )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( n ));
 #endif
         detail::hpev( jobz, traits::matrix_uplo_tag(ap), n,
                 traits::matrix_storage(ap), traits::vector_storage(w),

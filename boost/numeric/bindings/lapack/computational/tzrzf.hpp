@@ -86,8 +86,8 @@ struct tzrzf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
         assert( traits::vector_size(tau) >= traits::matrix_num_rows(a) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::tzrzf( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
@@ -144,8 +144,8 @@ struct tzrzf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
         assert( traits::vector_size(tau) >= traits::matrix_num_rows(a) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::tzrzf( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),

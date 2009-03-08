@@ -112,8 +112,8 @@ struct ggqrf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::vector_size(taub) >=
                 std::min(traits::matrix_num_rows(b),
                 traits::matrix_num_columns(b)) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::ggqrf( traits::matrix_num_rows(b),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
@@ -192,8 +192,8 @@ struct ggqrf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::vector_size(taub) >=
                 std::min(traits::matrix_num_rows(b),
                 traits::matrix_num_columns(b)) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::ggqrf( traits::matrix_num_rows(b),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),

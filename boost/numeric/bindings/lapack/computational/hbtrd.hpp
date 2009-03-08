@@ -77,8 +77,8 @@ struct hbtrd_impl {
         assert( kd >= 0 );
         assert( traits::leading_dimension(ab) >= kd+1 );
         assert( traits::vector_size(d) >= n );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( n ));
 #endif
         detail::hbtrd( vect, traits::matrix_uplo_tag(a), n, kd,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),

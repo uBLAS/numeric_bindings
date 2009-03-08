@@ -78,12 +78,12 @@ struct hbevd_impl {
         assert( n >= 0 );
         assert( kd >= 0 );
         assert( traits::leading_dimension(ab) >= kd );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( jobz, n )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( jobz, n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( jobz, n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( jobz, n ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( jobz, n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( jobz, n ));
 #endif
         detail::hbevd( jobz, traits::matrix_uplo_tag(ab), n, kd,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),

@@ -84,10 +84,10 @@ struct sbgvd_impl {
         assert( kb >= 0 );
         assert( traits::leading_dimension(ab) >= ka+1 );
         assert( traits::leading_dimension(bb) >= kb+1 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                jobz, n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( jobz, n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( jobz, n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( jobz, n ));
 #endif
         detail::sbgvd( jobz, traits::matrix_uplo_tag(ab), n, ka, kb,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),

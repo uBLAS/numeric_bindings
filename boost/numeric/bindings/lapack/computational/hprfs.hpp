@@ -93,10 +93,10 @@ struct hprfs_impl {
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
         assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( n )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( n ));
 #endif
         detail::hprfs( traits::matrix_uplo_tag(a), n,
                 traits::matrix_num_columns(x), traits::matrix_storage(ap),

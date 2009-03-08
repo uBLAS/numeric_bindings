@@ -75,8 +75,8 @@ struct hesv_impl {
                 traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work(  )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work(  ));
 #endif
         detail::hesv( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),

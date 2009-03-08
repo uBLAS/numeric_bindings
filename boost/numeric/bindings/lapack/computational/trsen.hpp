@@ -81,8 +81,8 @@ struct trsen_impl {
         assert( traits::leading_dimension(t) >= std::max(1,
                 traits::matrix_num_columns(t)) );
         assert( traits::vector_size(w) >= traits::matrix_num_columns(t) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::trsen( job, compq, traits::vector_storage(select),
                 traits::matrix_num_columns(t), traits::matrix_storage(t),

@@ -93,10 +93,10 @@ struct sygvx_impl {
         assert( traits::leading_dimension(a) >= std::max(1,n) );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::vector_size(w) >= n );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( n ));
 #endif
         detail::sygvx( itype, jobz, range, traits::matrix_uplo_tag(a), n,
                 traits::matrix_storage(a), traits::leading_dimension(a),

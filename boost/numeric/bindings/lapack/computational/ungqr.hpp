@@ -72,8 +72,8 @@ struct ungqr_impl {
         assert( k >= k );
         assert( traits::leading_dimension(a) >= std::max(1,m) );
         assert( traits::vector_size(tau) >= k );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( n ));
 #endif
         detail::ungqr( m, n, k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),

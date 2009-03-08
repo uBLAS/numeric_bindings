@@ -102,8 +102,8 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( job == 'E' || job == 'S' );
         assert( compz == 'N' || compz == 'I' || compz == 'V' );
         assert( traits::vector_size(wr) >= traits::matrix_num_columns(h) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::hseqr( job, compz, traits::matrix_num_columns(h), ilo, ihi,
                 traits::matrix_storage(h), traits::leading_dimension(h),
@@ -164,8 +164,8 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 #ifndef NDEBUG
         assert( job == 'E' || job == 'S' );
         assert( compz == 'N' || compz == 'I' || compz == 'V' );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::hseqr( job, compz, traits::matrix_num_columns(h), ilo, ihi,
                 traits::matrix_storage(h), traits::leading_dimension(h),

@@ -105,9 +105,10 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::matrix_num_columns(a))) );
         assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_rows(a), traits::matrix_num_columns(a),
-                traits::matrix_num_columns(b) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a),
+                traits::matrix_num_columns(b) ));
 #endif
         detail::gelss( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
@@ -183,12 +184,12 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_columns(a))) );
         assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(value_type()) >=
+        assert( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
-                minmn )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( minmn )));
+                minmn ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( minmn ));
 #endif
         detail::gelss( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),

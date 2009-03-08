@@ -128,8 +128,8 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::matrix_num_columns(h) >= 0 );
         assert( traits::vector_size(alphar) >= traits::matrix_num_columns(h) );
         assert( traits::vector_size(beta) >= traits::matrix_num_columns(h) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_columns(h) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_columns(h) ));
 #endif
         detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h), ilo,
                 traits::matrix_num_columns(h), traits::matrix_storage(h),
@@ -221,10 +221,10 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::matrix_num_columns(h) >= 0 );
         assert( traits::vector_size(alpha) >= traits::matrix_num_columns(h) );
         assert( traits::vector_size(beta) >= traits::matrix_num_columns(h) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_num_columns(h) )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_num_columns(h) )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( traits::matrix_num_columns(h) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( traits::matrix_num_columns(h) ));
 #endif
         detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h), ilo,
                 traits::matrix_num_columns(h), traits::matrix_storage(h),

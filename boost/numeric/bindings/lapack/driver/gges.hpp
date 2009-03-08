@@ -141,10 +141,10 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
                 traits::matrix_num_columns(a)) );
         assert( traits::vector_size(alphar) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(alphai) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_columns(a) )));
-        assert( traits::vector_size(work.select(bool()) >= min_size_bwork(
-                traits::matrix_num_columns(a), sort )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_columns(a) ));
+        assert( traits::vector_size(work.select(bool())) >= min_size_bwork(
+                traits::matrix_num_columns(a), sort ));
 #endif
         detail::gges( jobvsl, jobvsr, sort, selctg,
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
@@ -257,12 +257,12 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
                 traits::matrix_num_columns(a)) );
         assert( traits::vector_size(alpha) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(beta) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_num_columns(a) )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_num_columns(a) )));
-        assert( traits::vector_size(work.select(bool()) >= min_size_bwork(
-                traits::matrix_num_columns(a), sort )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( traits::matrix_num_columns(a) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( traits::matrix_num_columns(a) ));
+        assert( traits::vector_size(work.select(bool())) >= min_size_bwork(
+                traits::matrix_num_columns(a), sort ));
 #endif
         detail::gges( jobvsl, jobvsr, sort, selctg,
                 traits::matrix_num_columns(a), traits::matrix_storage(a),

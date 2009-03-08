@@ -73,8 +73,8 @@ struct spgv_impl {
         assert( traits::matrix_uplo_tag(ap) == 'U' ||
                 traits::matrix_uplo_tag(ap) == 'L' );
         assert( n >= 0 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
 #endif
         detail::spgv( itype, jobz, traits::matrix_uplo_tag(ap), n,
                 traits::matrix_storage(ap), traits::matrix_storage(bp),

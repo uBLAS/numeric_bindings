@@ -134,13 +134,13 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::matrix_num_rows(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_rows(b)) );
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_num_columns(b) )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_tau( traits::matrix_num_columns(b) )));
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_columns(b), traits::matrix_num_rows(a),
-                traits::matrix_num_rows(b) )));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( traits::matrix_num_columns(b) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_tau( traits::matrix_num_columns(b) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_columns(b),
+                traits::matrix_num_rows(a), traits::matrix_num_rows(b) ));
 #endif
         detail::ggsvp( jobu, jobv, jobq, traits::matrix_num_rows(a),
                 traits::matrix_num_rows(b), traits::matrix_num_columns(b),
@@ -237,15 +237,15 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_rows(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_rows(b)) );
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_num_columns(b) )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_num_columns(b) )));
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_tau( traits::matrix_num_columns(b) )));
-        assert( traits::vector_size(work.select(value_type()) >=
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( traits::matrix_num_columns(b) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( traits::matrix_num_columns(b) ));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_tau( traits::matrix_num_columns(b) ));
+        assert( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(b),
-                traits::matrix_num_rows(a), traits::matrix_num_rows(b) )));
+                traits::matrix_num_rows(a), traits::matrix_num_rows(b) ));
 #endif
         detail::ggsvp( jobu, jobv, jobq, traits::matrix_num_rows(a),
                 traits::matrix_num_rows(b), traits::matrix_num_columns(b),

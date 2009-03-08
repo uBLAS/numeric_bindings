@@ -82,8 +82,8 @@ struct sytrf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::sytrf( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
@@ -138,8 +138,8 @@ struct sytrf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::sytrf( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),

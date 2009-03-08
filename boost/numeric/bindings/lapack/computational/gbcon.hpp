@@ -93,10 +93,10 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( ku >= 0 );
         assert( traits::leading_dimension(ab) >= 2 );
         assert( traits::vector_size(ipiv) >= n );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( n ));
 #endif
         detail::gbcon( norm, n, kl, ku, traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::vector_storage(ipiv),
@@ -158,10 +158,10 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( ku >= 0 );
         assert( traits::leading_dimension(ab) >= 2 );
         assert( traits::vector_size(ipiv) >= n );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( n )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( n ));
 #endif
         detail::gbcon( norm, n, kl, ku, traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::vector_storage(ipiv),

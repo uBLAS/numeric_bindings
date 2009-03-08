@@ -85,10 +85,10 @@ struct pocon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_columns(a) )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_num_columns(a) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_columns(a) ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( traits::matrix_num_columns(a) ));
 #endif
         detail::pocon( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
@@ -142,10 +142,10 @@ struct pocon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_num_columns(a) )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_num_columns(a) )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( traits::matrix_num_columns(a) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( traits::matrix_num_columns(a) ));
 #endif
         detail::pocon( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),

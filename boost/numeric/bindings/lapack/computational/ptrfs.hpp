@@ -123,8 +123,8 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
         assert( traits::vector_size(berr) >= traits::matrix_num_columns(b) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
 #endif
         detail::ptrfs( n, traits::matrix_num_columns(b),
                 traits::vector_storage(d), traits::vector_storage(e),
@@ -210,10 +210,10 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
         assert( traits::vector_size(berr) >= traits::matrix_num_columns(b) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( n )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( n ));
 #endif
         detail::ptrfs( uplo, n, traits::matrix_num_columns(b),
                 traits::vector_storage(d), traits::vector_storage(e),

@@ -65,8 +65,8 @@ struct orgbr_impl {
         assert( m >= 0 );
         assert( k >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,m) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                m, n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( m, n ));
 #endif
         detail::orgbr( vect, m, n, k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),

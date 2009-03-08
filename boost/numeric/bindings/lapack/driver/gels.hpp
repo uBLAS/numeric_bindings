@@ -96,9 +96,10 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
         assert( traits::leading_dimension(b) >= std::max(1,
                 std::max(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a))) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_rows(a), traits::matrix_num_columns(a),
-                traits::matrix_num_columns(b) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a),
+                traits::matrix_num_columns(b) ));
 #endif
         detail::gels( trans, traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
@@ -164,10 +165,10 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
         assert( traits::leading_dimension(b) >= std::max(1,
                 std::max(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a))) );
-        assert( traits::vector_size(work.select(value_type()) >=
+        assert( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a),
-                traits::matrix_num_columns(b) )));
+                traits::matrix_num_columns(b) ));
 #endif
         detail::gels( trans, traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),

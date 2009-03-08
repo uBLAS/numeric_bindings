@@ -66,8 +66,8 @@ struct syev_impl {
         assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_columns(a) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_columns(a) ));
 #endif
         detail::syev( jobz, traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),

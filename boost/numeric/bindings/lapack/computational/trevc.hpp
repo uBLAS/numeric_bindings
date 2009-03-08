@@ -102,8 +102,8 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::leading_dimension(t) >= std::max(1,
                 traits::matrix_num_columns(t)) );
         assert( mm >= m );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_columns(t) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_columns(t) ));
 #endif
         detail::trevc( side, howmny, traits::vector_storage(select),
                 traits::matrix_num_columns(t), traits::matrix_storage(t),
@@ -169,10 +169,10 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::leading_dimension(t) >= std::max(1,
                 traits::matrix_num_columns(t)) );
         assert( mm >= m );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_num_columns(t) )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_num_columns(t) )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( traits::matrix_num_columns(t) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( traits::matrix_num_columns(t) ));
 #endif
         detail::trevc( side, howmny, traits::vector_storage(select),
                 traits::matrix_num_columns(t), traits::matrix_storage(t),

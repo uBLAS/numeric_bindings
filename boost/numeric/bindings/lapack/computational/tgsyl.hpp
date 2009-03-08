@@ -125,10 +125,10 @@ struct tgsyl_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixF >::value_type >::value) );
 #ifndef NDEBUG
         assert( trans == 'N' || trans == 'T' );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( m, n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( m, n ));
 #endif
         detail::tgsyl( trans, ijob, m, n, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
@@ -221,10 +221,10 @@ struct tgsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixF >::value_type >::value) );
 #ifndef NDEBUG
         assert( trans == 'N' || trans == 'C' );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( m, n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( m, n ));
 #endif
         detail::tgsyl( trans, ijob, m, n, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),

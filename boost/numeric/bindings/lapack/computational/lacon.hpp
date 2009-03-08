@@ -73,10 +73,10 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         
 #ifndef NDEBUG
         assert( n >= 1 );
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_v( n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_isgn( n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_v( n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_isgn( n ));
 #endif
         detail::lacon( n, traits::vector_storage(work.select(real_type())),
                 traits::vector_storage(x),
@@ -122,8 +122,8 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         
 #ifndef NDEBUG
         assert( n >= 1 );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_v( n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_v( n ));
 #endif
         detail::lacon( n, traits::vector_storage(work.select(value_type())),
                 traits::vector_storage(x), est, kase );

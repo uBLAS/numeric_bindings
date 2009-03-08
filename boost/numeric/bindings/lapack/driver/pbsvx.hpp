@@ -132,10 +132,10 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
         assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( n ));
 #endif
         detail::pbsvx( fact, traits::matrix_uplo_tag(ab), n, kd,
                 traits::matrix_num_columns(x), traits::matrix_storage(ab),
@@ -230,10 +230,10 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
         assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( n )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( n ));
 #endif
         detail::pbsvx( fact, traits::matrix_uplo_tag(ab), n, kd,
                 traits::matrix_num_columns(x), traits::matrix_storage(ab),

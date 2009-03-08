@@ -86,8 +86,8 @@ struct steqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( compz == 'N' || compz == 'V' || compz == 'I' );
         assert( n >= 0 );
         assert( traits::vector_size(e) >= n-1 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::steqr( compz, n, traits::vector_storage(d),
                 traits::vector_storage(e), traits::matrix_storage(z),
@@ -136,8 +136,8 @@ struct steqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( compz == 'N' || compz == 'V' || compz == 'I' );
         assert( n >= 0 );
         assert( traits::vector_size(e) >= n-1 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::steqr( compz, n, traits::vector_storage(d),
                 traits::vector_storage(e), traits::matrix_storage(z),

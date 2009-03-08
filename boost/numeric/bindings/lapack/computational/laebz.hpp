@@ -91,10 +91,10 @@ struct laebz_impl {
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n );
         assert( traits::vector_size(e2) >= n );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::leading_dimension(ab) )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::leading_dimension(ab) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::leading_dimension(ab) ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( traits::leading_dimension(ab) ));
 #endif
         detail::laebz( ijob, nitmax, n, traits::leading_dimension(ab), minp,
                 nbmin, abstol, reltol, pivmin, traits::vector_storage(d),

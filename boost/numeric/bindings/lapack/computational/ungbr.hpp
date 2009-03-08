@@ -71,8 +71,8 @@ struct ungbr_impl {
         assert( m >= 0 );
         assert( k >= 0 );
         assert( traits::leading_dimension(a) >= m );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( m, n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( m, n ));
 #endif
         detail::ungbr( vect, m, n, k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),

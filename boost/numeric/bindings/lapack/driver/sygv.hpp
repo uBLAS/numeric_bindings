@@ -75,8 +75,8 @@ struct sygv_impl {
         assert( n >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,n) );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
 #endif
         detail::sygv( itype, jobz, traits::matrix_uplo_tag(a), n,
                 traits::matrix_storage(a), traits::leading_dimension(a),

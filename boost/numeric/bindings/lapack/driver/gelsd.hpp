@@ -115,10 +115,11 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::matrix_num_columns(a))) );
         assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                minmn, smlsiz, nlvl, traits::matrix_num_columns(b) )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( minmn, nlvl )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( minmn, smlsiz, nlvl,
+                traits::matrix_num_columns(b) ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( minmn, nlvl ));
 #endif
         detail::gelsd( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
@@ -216,13 +217,13 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_columns(a))) );
         assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( minmn, traits::matrix_num_columns(b) )));
-        assert( traits::vector_size(work.select(real_type()) >=
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( minmn, traits::matrix_num_columns(b) ));
+        assert( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( minmn, smlsiz, nlvl,
-                traits::matrix_num_columns(b) )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( minmn, nlvl )));
+                traits::matrix_num_columns(b) ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( minmn, nlvl ));
 #endif
         detail::gelsd( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),

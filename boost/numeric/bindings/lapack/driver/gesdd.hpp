@@ -109,11 +109,11 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::matrix_num_rows(a)) );
         assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_rows(a), traits::matrix_num_columns(a),
-                jobz, minmn )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( minmn )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_rows(a),
+                traits::matrix_num_columns(a), jobz, minmn ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( minmn ));
 #endif
         detail::gesdd( jobz, traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
@@ -192,13 +192,13 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_rows(a)) );
         assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(value_type()) >=
+        assert( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
-                traits::matrix_num_columns(a), jobz, minmn )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( minmn, jobz )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( minmn )));
+                traits::matrix_num_columns(a), jobz, minmn ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( minmn, jobz ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( minmn ));
 #endif
         detail::gesdd( jobz, traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),

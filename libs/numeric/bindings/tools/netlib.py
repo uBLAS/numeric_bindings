@@ -277,8 +277,8 @@ def level1_assert( name, properties, arg_map ):
     min_workspace_call = min_workspace_call_type( name, properties, arg_map )
     if min_workspace_call == None:
       min_workspace_call = '$CALL_MIN_SIZE'
-    result = 'assert( traits::vector_size(work.select(' + workspace_type( name, properties ) + '()) >= ' + \
-             'min_size_' + name.lower() + '( ' + min_workspace_call + ' )));'
+    result = 'assert( traits::vector_size(work.select(' + workspace_type( name, properties ) + '())) >= ' + \
+             'min_size_' + name.lower() + '( ' + min_workspace_call + ' ));'
 
   # assert_size is vector-type specific
   elif properties.has_key( 'assert_size' ):

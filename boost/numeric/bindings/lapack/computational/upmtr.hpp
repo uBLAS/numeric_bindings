@@ -77,8 +77,8 @@ struct upmtr_impl {
         assert( traits::matrix_num_columns(c) >= 0 );
         assert( traits::leading_dimension(c) >= std::max(1,
                 traits::matrix_num_rows(c)) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::upmtr( side, uplo, trans, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c), traits::vector_storage(ap),

@@ -99,8 +99,8 @@ struct ggbal_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( n >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,n) );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::ggbal( job, n, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
@@ -162,8 +162,8 @@ struct ggbal_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( n >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,n) );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::ggbal( job, n, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),

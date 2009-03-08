@@ -64,8 +64,8 @@ struct orghr_impl {
         assert( n >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,n) );
         assert( traits::vector_size(tau) >= n-1 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::orghr( n, ilo, ihi, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),

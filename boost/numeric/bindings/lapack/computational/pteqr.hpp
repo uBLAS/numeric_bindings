@@ -87,8 +87,8 @@ struct pteqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( n >= 0 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n-1 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
 #endif
         detail::pteqr( compz, n, traits::vector_storage(d),
                 traits::vector_storage(e), traits::matrix_storage(z),
@@ -137,8 +137,8 @@ struct pteqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( n >= 0 );
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n-1 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
 #endif
         detail::pteqr( compz, n, traits::vector_storage(d),
                 traits::vector_storage(e), traits::matrix_storage(z),

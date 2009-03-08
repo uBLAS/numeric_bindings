@@ -73,11 +73,11 @@ struct cgesv_impl {
                 traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(x) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(value_type()) >=
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(value_type())) >=
                 min_size_swork( traits::matrix_num_columns(a),
-                traits::matrix_num_columns(b) )));
+                traits::matrix_num_columns(b) ));
 #endif
         detail::cgesv( traits::matrix_num_columns(a),
                 traits::matrix_num_columns(b), traits::matrix_storage(a),

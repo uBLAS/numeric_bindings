@@ -86,10 +86,10 @@ struct stevr_impl {
         assert( traits::vector_size(e) >= std::max(1,n-1) );
         assert( traits::vector_size(w) >= n );
         assert( traits::vector_size(isuppz) >= 2*std::max(1,m) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( n ));
 #endif
         detail::stevr( jobz, range, n, traits::vector_storage(d),
                 traits::vector_storage(e), vl, vu, il, iu, abstol, m,

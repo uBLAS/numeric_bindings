@@ -69,8 +69,8 @@ struct ungtr_impl {
         assert( n >= 0 );
         assert( traits::leading_dimension(a) >= n );
         assert( traits::vector_size(tau) >= n-1 );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( side, m, n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( side, m, n ));
 #endif
         detail::ungtr( traits::matrix_uplo_tag(a), n,
                 traits::matrix_storage(a), traits::leading_dimension(a),

@@ -73,9 +73,9 @@ struct opmtr_impl {
         assert( traits::matrix_num_columns(c) >= 0 );
         assert( traits::leading_dimension(c) >= std::max(1,
                 traits::matrix_num_rows(c)) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                side, traits::matrix_num_rows(c),
-                traits::matrix_num_columns(c) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( side, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c) ));
 #endif
         detail::opmtr( side, uplo, trans, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c), traits::vector_storage(ap),

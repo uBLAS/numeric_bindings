@@ -114,10 +114,10 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::leading_dimension(t) >= std::max(1,
                 traits::matrix_num_columns(t)) );
         assert( mm >= m );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( $CALL_MIN_SIZE ));
 #endif
         detail::trsna( job, howmny, traits::vector_storage(select),
                 traits::matrix_num_columns(t), traits::matrix_storage(t),
@@ -195,10 +195,10 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::leading_dimension(t) >= std::max(1,
                 traits::matrix_num_columns(t)) );
         assert( mm >= m );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( $CALL_MIN_SIZE ));
 #endif
         detail::trsna( job, howmny, traits::vector_storage(select),
                 traits::matrix_num_columns(t), traits::matrix_storage(t),

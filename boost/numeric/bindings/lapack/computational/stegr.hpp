@@ -113,10 +113,10 @@ struct stegr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n );
         assert( traits::vector_size(w) >= n );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( $CALL_MIN_SIZE ));
 #endif
         detail::stegr( jobz, range, n, traits::vector_storage(d),
                 traits::vector_storage(e), vl, vu, il, iu, abstol, m,
@@ -204,10 +204,10 @@ struct stegr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::vector_size(d) >= n );
         assert( traits::vector_size(e) >= n );
         assert( traits::vector_size(w) >= n );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( $CALL_MIN_SIZE ));
 #endif
         detail::stegr( jobz, range, n, traits::vector_storage(d),
                 traits::vector_storage(e), vl, vu, il, iu, abstol, m,

@@ -74,8 +74,8 @@ struct sytrd_impl {
                 traits::matrix_num_columns(a)) );
         assert( traits::vector_size(d) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(tau) >= traits::matrix_num_columns(a)-1 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::sytrd( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),

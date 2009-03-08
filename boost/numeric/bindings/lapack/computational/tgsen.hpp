@@ -144,10 +144,10 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::vector_size(alphar) >= n );
         assert( traits::vector_size(alphai) >= n );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( $CALL_MIN_SIZE ));
 #endif
         detail::tgsen( ijob, wantq, wantz, traits::vector_storage(select), n,
                 traits::matrix_storage(a), traits::leading_dimension(a),
@@ -257,10 +257,10 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::leading_dimension(a) >= std::max(1,n) );
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::vector_size(alpha) >= n );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( $CALL_MIN_SIZE ));
 #endif
         detail::tgsen( ijob, wantq, wantz, traits::vector_storage(select), n,
                 traits::matrix_storage(a), traits::leading_dimension(a),

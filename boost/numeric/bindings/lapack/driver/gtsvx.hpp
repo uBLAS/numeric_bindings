@@ -151,10 +151,10 @@ struct gtsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
         assert( traits::vector_size(berr) >= traits::matrix_num_columns(b) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( n ));
 #endif
         detail::gtsvx( fact, trans, n, traits::matrix_num_columns(b),
                 traits::vector_storage(dl), traits::vector_storage(d),
@@ -265,10 +265,10 @@ struct gtsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::leading_dimension(b) >= std::max(1,n) );
         assert( traits::leading_dimension(x) >= std::max(1,n) );
         assert( traits::vector_size(berr) >= traits::matrix_num_columns(b) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( n )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( n ));
 #endif
         detail::gtsvx( fact, trans, n, traits::matrix_num_columns(b),
                 traits::vector_storage(dl), traits::vector_storage(d),

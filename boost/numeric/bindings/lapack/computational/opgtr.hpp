@@ -71,8 +71,8 @@ struct opgtr_impl {
         assert( traits::vector_size(tau) >= traits::matrix_num_columns(q)-1 );
         assert( traits::leading_dimension(q) >= std::max(1,
                 traits::matrix_num_columns(q)) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_columns(q) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_columns(q) ));
 #endif
         detail::opgtr( uplo, traits::matrix_num_columns(q),
                 traits::vector_storage(ap), traits::vector_storage(tau),

@@ -90,12 +90,12 @@ struct heevr_impl {
                 traits::matrix_num_columns(a)) );
         assert( traits::vector_size(w) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(isuppz) >= 2*std::max(1,m) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_num_columns(a) )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_num_columns(a) )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_num_columns(a) )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( traits::matrix_num_columns(a) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( traits::matrix_num_columns(a) ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( traits::matrix_num_columns(a) ));
 #endif
         detail::heevr( jobz, range, traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),

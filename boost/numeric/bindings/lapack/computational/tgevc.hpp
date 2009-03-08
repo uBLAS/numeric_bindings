@@ -109,8 +109,8 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::leading_dimension(s) >= std::max(1,n) );
         assert( traits::leading_dimension(p) >= std::max(1,n) );
         assert( mm >= m );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
 #endif
         detail::tgevc( side, howmny, traits::vector_storage(select), n,
                 traits::matrix_storage(s), traits::leading_dimension(s),
@@ -179,10 +179,10 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::leading_dimension(s) >= std::max(1,n) );
         assert( traits::leading_dimension(p) >= std::max(1,n) );
         assert( mm >= m );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( n )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( n ));
 #endif
         detail::tgevc( side, howmny, traits::vector_storage(select), n,
                 traits::matrix_storage(s), traits::leading_dimension(s),

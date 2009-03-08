@@ -139,11 +139,11 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_rows(b)) );
         assert( traits::vector_size(alpha) >= traits::matrix_num_columns(b) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_columns(b), traits::matrix_num_rows(a),
-                traits::matrix_num_rows(b) )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_num_columns(b) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_columns(b),
+                traits::matrix_num_rows(a), traits::matrix_num_rows(b) ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( traits::matrix_num_columns(b) ));
 #endif
         detail::ggsvd( jobu, jobv, jobq, traits::matrix_num_rows(a),
                 traits::matrix_num_columns(b), traits::matrix_num_rows(b), k,
@@ -239,13 +239,13 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_rows(b)) );
         assert( traits::vector_size(alpha) >= traits::matrix_num_columns(b) );
-        assert( traits::vector_size(work.select(value_type()) >=
+        assert( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(b),
-                traits::matrix_num_rows(a), traits::matrix_num_rows(b) )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_num_columns(b) )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( traits::matrix_num_columns(b) )));
+                traits::matrix_num_rows(a), traits::matrix_num_rows(b) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( traits::matrix_num_columns(b) ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( traits::matrix_num_columns(b) ));
 #endif
         detail::ggsvd( jobu, jobv, jobq, traits::matrix_num_rows(a),
                 traits::matrix_num_columns(b), traits::matrix_num_rows(b), k,

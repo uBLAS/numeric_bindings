@@ -119,8 +119,8 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::leading_dimension(ab) >= kl+ku+1 );
         assert( traits::vector_size(d) >= std::min(m,n) );
         assert( traits::vector_size(e) >= std::min(m,n)-1 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                m, n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( m, n ));
 #endif
         detail::gbbrd( vect, m, n, traits::matrix_num_columns(c), kl, ku,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
@@ -197,10 +197,10 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::leading_dimension(ab) >= kl+ku+1 );
         assert( traits::vector_size(d) >= std::min(m,n) );
         assert( traits::vector_size(e) >= std::min(m,n)-1 );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( m, n )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( m, n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( m, n ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( m, n ));
 #endif
         detail::gbbrd( vect, m, n, traits::matrix_num_columns(c), kl, ku,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),

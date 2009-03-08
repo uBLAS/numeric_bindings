@@ -64,8 +64,8 @@ struct hetri_impl {
         assert( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
         assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_num_columns(a) )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( traits::matrix_num_columns(a) ));
 #endif
         detail::hetri( uplo, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),

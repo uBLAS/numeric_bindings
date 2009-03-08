@@ -97,10 +97,10 @@ struct stedc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( compz == 'N' || compz == 'I' || compz == 'V' );
         assert( n >= 0 );
         assert( traits::vector_size(e) >= n-1 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( compz, n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( compz, n ));
 #endif
         detail::stedc( compz, n, traits::vector_storage(d),
                 traits::vector_storage(e), traits::matrix_storage(z),
@@ -167,12 +167,12 @@ struct stedc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( compz == 'N' || compz == 'I' || compz == 'V' );
         assert( n >= 0 );
         assert( traits::vector_size(e) >= n-1 );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( $CALL_MIN_SIZE )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( compz, n )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( $CALL_MIN_SIZE ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( compz, n ));
 #endif
         detail::stedc( compz, n, traits::vector_storage(d),
                 traits::vector_storage(e), traits::matrix_storage(z),

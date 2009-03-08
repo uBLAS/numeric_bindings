@@ -81,8 +81,8 @@ struct unmrz_impl {
         assert( traits::vector_size(tau) >= k );
         assert( traits::leading_dimension(c) >= std::max(1,
                 traits::matrix_num_rows(c)) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( $CALL_MIN_SIZE )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( $CALL_MIN_SIZE ));
 #endif
         detail::unmrz( side, trans, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c), k,

@@ -80,10 +80,10 @@ struct bdsdc_impl {
         assert( compq == 'N' || compq == 'P' || compq == 'I' );
         assert( n >= 0 );
         assert( traits::vector_size(e) >= n-1 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                compq, n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( compq, n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( n ));
 #endif
         detail::bdsdc( uplo, compq, n, traits::vector_storage(d),
                 traits::vector_storage(e), traits::matrix_storage(u),

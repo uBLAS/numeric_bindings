@@ -79,10 +79,10 @@ struct spevx_impl {
         assert( traits::matrix_uplo_tag(ap) == 'U' ||
                 traits::matrix_uplo_tag(ap) == 'L' );
         assert( n >= 0 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( n ));
 #endif
         detail::spevx( jobz, range, traits::matrix_uplo_tag(ap), n,
                 traits::matrix_storage(ap), vl, vu, il, iu, abstol, m,

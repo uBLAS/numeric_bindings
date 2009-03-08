@@ -71,10 +71,10 @@ struct stevd_impl {
         assert( jobz == 'N' || jobz == 'V' );
         assert( n >= 0 );
         assert( traits::vector_size(e) >= n-1 );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                jobz, n )));
-        assert( traits::vector_size(work.select(integer_t()) >=
-                min_size_iwork( jobz, n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( jobz, n ));
+        assert( traits::vector_size(work.select(integer_t())) >=
+                min_size_iwork( jobz, n ));
 #endif
         detail::stevd( jobz, n, traits::vector_storage(d),
                 traits::vector_storage(e), traits::matrix_storage(z),

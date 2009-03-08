@@ -96,8 +96,8 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
                 traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_work(  )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work(  ));
 #endif
         detail::sysv( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
@@ -160,8 +160,8 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
                 traits::matrix_num_columns(a)) );
         assert( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work(  )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work(  ));
 #endif
         detail::sysv( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),

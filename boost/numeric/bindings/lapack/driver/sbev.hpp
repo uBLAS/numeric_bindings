@@ -72,8 +72,8 @@ struct sbev_impl {
         assert( n >= 0 );
         assert( kd >= 0 );
         assert( traits::leading_dimension(ab) >= kd );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                n )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( n ));
 #endif
         detail::sbev( jobz, traits::matrix_uplo_tag(ab), n, kd,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),

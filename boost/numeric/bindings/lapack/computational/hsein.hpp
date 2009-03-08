@@ -127,8 +127,8 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::vector_size(wr) >= traits::matrix_num_columns(h) );
         assert( traits::vector_size(wi) >= traits::matrix_num_columns(h) );
         assert( mm >= m );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_columns(h), ?2 )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_columns(h), ?2 ));
 #endif
         detail::hsein( side, eigsrc, initv, traits::vector_storage(select),
                 traits::matrix_num_columns(h), traits::matrix_storage(h),
@@ -212,10 +212,10 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_columns(h)) );
         assert( traits::vector_size(w) >= traits::matrix_num_columns(h) );
         assert( mm >= m );
-        assert( traits::vector_size(work.select(value_type()) >=
-                min_size_work( traits::matrix_num_columns(h) )));
-        assert( traits::vector_size(work.select(real_type()) >=
-                min_size_rwork( traits::matrix_num_columns(h) )));
+        assert( traits::vector_size(work.select(value_type())) >=
+                min_size_work( traits::matrix_num_columns(h) ));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_rwork( traits::matrix_num_columns(h) ));
 #endif
         detail::hsein( side, eigsrc, initv, traits::vector_storage(select),
                 traits::matrix_num_columns(h), traits::matrix_storage(h),

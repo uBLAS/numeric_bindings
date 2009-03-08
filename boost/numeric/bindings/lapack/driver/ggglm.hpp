@@ -111,9 +111,9 @@ struct ggglm_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         assert( traits::vector_size(d) >= traits::matrix_num_rows(b) );
         assert( traits::vector_size(x) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(y) >= traits::matrix_num_columns(b) );
-        assert( traits::vector_size(work.select(real_type()) >= min_size_work(
-                traits::matrix_num_columns(a), traits::matrix_num_rows(b),
-                traits::matrix_num_columns(b) )));
+        assert( traits::vector_size(work.select(real_type())) >=
+                min_size_work( traits::matrix_num_columns(a),
+                traits::matrix_num_rows(b), traits::matrix_num_columns(b) ));
 #endif
         detail::ggglm( traits::matrix_num_rows(b),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
@@ -194,9 +194,9 @@ struct ggglm_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         assert( traits::vector_size(d) >= traits::matrix_num_rows(b) );
         assert( traits::vector_size(x) >= traits::matrix_num_columns(a) );
         assert( traits::vector_size(y) >= traits::matrix_num_columns(b) );
-        assert( traits::vector_size(work.select(value_type()) >=
+        assert( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(a),
-                traits::matrix_num_rows(b), traits::matrix_num_columns(b) )));
+                traits::matrix_num_rows(b), traits::matrix_num_columns(b) ));
 #endif
         detail::ggglm( traits::matrix_num_rows(b),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),

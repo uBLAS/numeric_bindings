@@ -17,7 +17,7 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -65,9 +65,9 @@ struct tbmv_impl {
     template< typename MatrixA, typename VectorX >
     static return_type compute( char const trans, char const diag,
             integer_t const k, MatrixA& a, VectorX& x ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorX >::value_type > );
+                VectorX >::value_type >::value) );
         detail::tbmv( traits::matrix_uplo_tag(a), trans, diag,
                 traits::matrix_size2(a), k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(x),

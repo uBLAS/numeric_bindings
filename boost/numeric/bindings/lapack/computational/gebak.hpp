@@ -19,7 +19,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -79,9 +79,9 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( char const job, char const side, integer_t const ilo,
             integer_t const ihi, VectorSCALE& scale, MatrixV& v,
             integer_t& info ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorSCALE >::value_type, typename traits::matrix_traits<
-                MatrixV >::value_type > );
+                MatrixV >::value_type >::value) );
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         assert( side == 'R' || side == 'L' );

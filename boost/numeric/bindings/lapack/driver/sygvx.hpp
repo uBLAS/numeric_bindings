@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -75,15 +75,15 @@ struct sygvx_impl {
             integer_t const iu, real_type const abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixB >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorW >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorW >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type > );
+                MatrixZ >::value_type >::value) );
 #ifndef NDEBUG
         assert( jobz == 'N' || jobz == 'V' );
         assert( range == 'A' || range == 'V' || range == 'I' );

@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -56,9 +56,9 @@ struct syev_impl {
     template< typename MatrixA, typename VectorW, typename WORK >
     static void compute( char const jobz, MatrixA& a, VectorW& w,
             integer_t& info, detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorW >::value_type > );
+                VectorW >::value_type >::value) );
 #ifndef NDEBUG
         assert( jobz == 'N' || jobz == 'V' );
         assert( traits::matrix_uplo_tag(a) == 'U' ||

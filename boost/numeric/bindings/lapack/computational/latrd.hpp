@@ -19,7 +19,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -75,15 +75,15 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename MatrixW >
     static void compute( integer_t const nb, MatrixA& a, VectorE& e,
             VectorTAU& tau, MatrixW& w ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorE >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorE >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAU >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorTAU >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixW >::value_type > );
+                MatrixW >::value_type >::value) );
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
@@ -110,12 +110,12 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename MatrixW >
     static void compute( integer_t const nb, MatrixA& a, VectorE& e,
             VectorTAU& tau, MatrixW& w ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAU >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorTAU >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixW >::value_type > );
+                MatrixW >::value_type >::value) );
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(h) == 'U' ||
                 traits::matrix_uplo_tag(h) == 'L' );

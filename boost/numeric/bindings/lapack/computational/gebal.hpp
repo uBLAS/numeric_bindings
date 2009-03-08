@@ -19,7 +19,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -72,9 +72,9 @@ struct gebal_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename VectorSCALE >
     static void compute( char const job, MatrixA& a, integer_t& ilo,
             integer_t& ihi, VectorSCALE& scale, integer_t& info ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorSCALE >::value_type > );
+                VectorSCALE >::value_type >::value) );
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         assert( traits::matrix_size2(a) >= 0 );

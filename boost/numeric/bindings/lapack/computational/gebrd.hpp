@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -84,18 +84,18 @@ struct gebrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
             VectorTAUP& taup, integer_t& info, detail::workspace1<
             WORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorD >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorD >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorE >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorE >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUQ >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorTAUQ >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUP >::value_type > );
+                VectorTAUP >::value_type >::value) );
 #ifndef NDEBUG
         assert( traits::matrix_size1(a) >= 0 );
         assert( traits::matrix_size2(a) >= 0 );
@@ -162,15 +162,15 @@ struct gebrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
             VectorTAUP& taup, integer_t& info, detail::workspace1<
             WORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
-                VectorE >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorE >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUQ >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorTAUQ >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUP >::value_type > );
+                VectorTAUP >::value_type >::value) );
 #ifndef NDEBUG
         assert( traits::matrix_size1(a) >= 0 );
         assert( traits::matrix_size2(a) >= 0 );

@@ -19,7 +19,7 @@
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -62,12 +62,12 @@ struct sbgst_impl {
             integer_t const ka, integer_t const kb, MatrixAB& ab,
             MatrixBB& bb, MatrixX& x, integer_t& info, detail::workspace1<
             WORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
-                MatrixBB >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixBB >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
-                MatrixX >::value_type > );
+                MatrixX >::value_type >::value) );
 #ifndef NDEBUG
         assert( vect == 'N' || vect == 'V' );
         assert( traits::matrix_uplo_tag(a) == 'U' ||

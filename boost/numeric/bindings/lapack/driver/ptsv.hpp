@@ -19,7 +19,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -70,12 +70,12 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     template< typename VectorD, typename VectorE, typename MatrixB >
     static void compute( integer_t const n, VectorD& d, VectorE& e,
             MatrixB& b, integer_t& info ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
-                VectorE >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorE >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type > );
+                MatrixB >::value_type >::value) );
 #ifndef NDEBUG
         assert( n >= 0 );
         assert( traits::matrix_size2(b) >= 0 );
@@ -100,9 +100,9 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     template< typename VectorD, typename VectorE, typename MatrixB >
     static void compute( integer_t const n, VectorD& d, VectorE& e,
             MatrixB& b, integer_t& info ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorE >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type > );
+                MatrixB >::value_type >::value) );
 #ifndef NDEBUG
         assert( n >= 0 );
         assert( traits::matrix_size2(b) >= 0 );

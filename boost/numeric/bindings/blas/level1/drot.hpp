@@ -17,7 +17,7 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -49,9 +49,9 @@ struct drot_impl {
     template< typename VectorCX, typename VectorCY >
     static return_type compute( integer_t const n, VectorCX& cx, VectorCY& cy,
             real_type const c, real_type const s ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorCX >::value_type, typename traits::vector_traits<
-                VectorCY >::value_type > );
+                VectorCY >::value_type >::value) );
         detail::drot( n, traits::vector_storage(cx),
                 traits::vector_stride(cx), traits::vector_storage(cy),
                 traits::vector_stride(cy), c, s );

@@ -60,7 +60,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
       '#include <boost/numeric/bindings/lapack/lapack.h>',
       '#include <boost/type_traits/is_same.hpp>',
-      '#include <boost/static_assert.hpp' ]
+      '#include <boost/static_assert.hpp>' ]
 
     if template_map.has_key( group_name.lower() + '.includes' ):
       includes += template_map[ group_name.lower() + '.includes' ].splitlines()
@@ -146,10 +146,10 @@ def write_functions( info_map, group, template_map, base_dir ):
           arg_A = static_asserts[0]
           for arg_B in static_asserts[1:]:
             print "Adding static assert for argA", arg_A, " argb", arg_B
-            assert_line = 'BOOST_STATIC_ASSERT( boost::is_same< ' + \
+            assert_line = 'BOOST_STATIC_ASSERT( (boost::is_same< ' + \
                 info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ', ' + \
                 info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + \
-                ' > );'
+                ' >::value) );'
             level1_static_assert_list += [ assert_line ]
 
       # import the code, by argument

@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -103,24 +103,24 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& info, detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixT >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixT >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::vector_traits<
-                VectorALPHAR >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorALPHAR >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::vector_traits<
-                VectorALPHAI >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorALPHAI >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::vector_traits<
-                VectorBETA >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorBETA >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixQ >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixQ >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type > );
+                MatrixZ >::value_type >::value) );
 #ifndef NDEBUG
         assert( job == 'E' || job == 'S' );
         assert( compq == 'N' || compq == 'I' || compq == 'V' );
@@ -199,21 +199,21 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
             VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixT >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixT >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::vector_traits<
-                VectorALPHA >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorALPHA >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::vector_traits<
-                VectorBETA >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorBETA >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixQ >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixQ >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type > );
+                MatrixZ >::value_type >::value) );
 #ifndef NDEBUG
         assert( job == 'E' || job == 'S' );
         assert( compq == 'N' || compq == 'I' || compq == 'V' );

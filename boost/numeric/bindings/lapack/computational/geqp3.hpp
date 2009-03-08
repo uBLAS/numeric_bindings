@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -80,9 +80,9 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename WORK >
     static void compute( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
             integer_t& info, detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAU >::value_type > );
+                VectorTAU >::value_type >::value) );
 #ifndef NDEBUG
         assert( traits::matrix_size1(a) >= 0 );
         assert( traits::matrix_size2(a) >= 0 );
@@ -140,9 +140,9 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename WORK, typename RWORK >
     static void compute( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAU >::value_type > );
+                VectorTAU >::value_type >::value) );
 #ifndef NDEBUG
         assert( traits::matrix_size1(a) >= 0 );
         assert( traits::matrix_size2(a) >= 0 );

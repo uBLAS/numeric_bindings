@@ -17,7 +17,7 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -59,12 +59,12 @@ struct hpr2_impl {
     template< typename VectorX, typename VectorY, typename MatrixAP >
     static return_type compute( value_type const alpha, VectorX& x,
             VectorY& y, MatrixAP& ap ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
-                VectorY >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorY >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::matrix_traits<
-                MatrixAP >::value_type > );
+                MatrixAP >::value_type >::value) );
         detail::hpr2( traits::matrix_uplo_tag(ap),
                 traits::matrix_size2(ap), alpha, traits::vector_storage(x),
                 traits::vector_stride(x), traits::vector_storage(y),

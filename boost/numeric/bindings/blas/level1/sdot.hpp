@@ -17,7 +17,7 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -47,9 +47,9 @@ struct sdot_impl {
     template< typename VectorSX, typename VectorSY >
     static return_type compute( integer_t const n, VectorSX& sx,
             integer_t const incx, VectorSY& sy, integer_t const incy ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorSX >::value_type, typename traits::vector_traits<
-                VectorSY >::value_type > );
+                VectorSY >::value_type >::value) );
         return detail::sdot( n, traits::vector_storage(sx), incx,
                 traits::vector_storage(sy), incy );
     }

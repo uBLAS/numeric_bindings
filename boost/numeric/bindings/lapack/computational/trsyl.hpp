@@ -19,7 +19,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -84,12 +84,12 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t const isgn, integer_t const m, integer_t const n,
             MatrixA& a, MatrixB& b, MatrixC& c, real_type& scale,
             integer_t& info ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixB >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixC >::value_type > );
+                MatrixC >::value_type >::value) );
 #ifndef NDEBUG
         assert( trana == 'N' || trana == 'T' || trana == 'C' );
         assert( tranb == 'N' || tranb == 'T' || tranb == 'C' );
@@ -119,12 +119,12 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t const isgn, integer_t const m, integer_t const n,
             MatrixA& a, MatrixB& b, MatrixC& c, real_type& scale,
             integer_t& info ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixB >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixC >::value_type > );
+                MatrixC >::value_type >::value) );
 #ifndef NDEBUG
         assert( trana == 'N' || trana == 'C' );
         assert( tranb == 'N' || tranb == 'C' );

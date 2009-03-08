@@ -17,7 +17,7 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -78,12 +78,12 @@ struct gbmv_impl {
     static return_type compute( char const trans, integer_t const kl,
             integer_t const ku, value_type const alpha, MatrixA& a,
             VectorX& x, value_type const beta, VectorY& y ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorX >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorX >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorY >::value_type > );
+                VectorY >::value_type >::value) );
         detail::gbmv( trans, traits::matrix_size1(a),
                 traits::matrix_size2(a), kl, ku, alpha,
                 traits::matrix_storage(a), traits::leading_dimension(a),

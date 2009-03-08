@@ -17,7 +17,7 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -50,9 +50,9 @@ struct dot_impl {
     // templated specialization
     template< typename VectorX, typename VectorY >
     static return_type compute( VectorX& x, VectorY& y ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
-                VectorY >::value_type > );
+                VectorY >::value_type >::value) );
         return detail::dot( traits::vector_size(x),
                 traits::vector_storage(x), traits::vector_stride(x),
                 traits::vector_storage(y), traits::vector_stride(y) );

@@ -19,7 +19,7 @@
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -69,15 +69,15 @@ struct stebz_impl {
             VectorD& d, VectorE& e, integer_t& m, integer_t& nsplit,
             VectorW& w, VectorIBLOCK& iblock, VectorISPLIT& isplit,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
-                VectorE >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorE >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
-                VectorW >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorW >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorIBLOCK >::value_type, typename traits::vector_traits<
-                VectorISPLIT >::value_type > );
+                VectorISPLIT >::value_type >::value) );
 #ifndef NDEBUG
         assert( range == 'A' || range == 'V' || range == 'I' );
         assert( order == 'B' || order == 'E' );

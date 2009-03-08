@@ -17,7 +17,7 @@
 #include <boost/numeric/bindings/blas/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -52,12 +52,12 @@ struct rotm_impl {
     static return_type compute( integer_t const n, VectorX& x,
             integer_t const incx, VectorY& y, integer_t const incy,
             VectorPARAM& param ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
-                VectorY >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorY >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
-                VectorPARAM >::value_type > );
+                VectorPARAM >::value_type >::value) );
         detail::rotm( n, traits::vector_storage(x), incx,
                 traits::vector_storage(y), incy,
                 traits::vector_storage(param) );

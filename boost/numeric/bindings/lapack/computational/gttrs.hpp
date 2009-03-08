@@ -17,7 +17,7 @@
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -76,18 +76,18 @@ struct gttrs_impl {
     static void compute( char const trans, integer_t const n, VectorDL& dl,
             VectorD& d, VectorDU& du, VectorDU2& du2, VectorIPIV& ipiv,
             MatrixB& b, integer_t& info ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorDL >::value_type, typename traits::vector_traits<
-                VectorD >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorD >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorDL >::value_type, typename traits::vector_traits<
-                VectorDU >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorDU >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorDL >::value_type, typename traits::vector_traits<
-                VectorDU2 >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorDU2 >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorDL >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type > );
+                MatrixB >::value_type >::value) );
 #ifndef NDEBUG
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
         assert( traits::matrix_size2(b) >= 0 );

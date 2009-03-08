@@ -22,7 +22,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -94,15 +94,15 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
             MatrixA& a, integer_t& sdim, VectorWR& wr, VectorWI& wi,
             MatrixVS& vs, integer_t& info, detail::workspace2< WORK,
             BWORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorWR >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorWR >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorWI >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorWI >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixVS >::value_type > );
+                MatrixVS >::value_type >::value) );
 #ifndef NDEBUG
         assert( jobvs == 'N' || jobvs == 'V' );
         assert( sort == 'N' || sort == 'S' );
@@ -184,12 +184,12 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     static void compute( char const jobvs, char const sort, logical_t* select,
             MatrixA& a, integer_t& sdim, VectorW& w, MatrixVS& vs,
             integer_t& info, detail::workspace3< WORK, RWORK, BWORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorW >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorW >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixVS >::value_type > );
+                MatrixVS >::value_type >::value) );
 #ifndef NDEBUG
         assert( jobvs == 'N' || jobvs == 'V' );
         assert( sort == 'N' || sort == 'S' );

@@ -20,7 +20,7 @@
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <cassert>
 
@@ -67,12 +67,12 @@ struct trsen_impl {
             VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             integer_t& m, real_type& s, real_type& sep, integer_t& info,
             detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixT >::value_type, typename traits::matrix_traits<
-                MatrixQ >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixQ >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixT >::value_type, typename traits::vector_traits<
-                VectorW >::value_type > );
+                VectorW >::value_type >::value) );
 #ifndef NDEBUG
         assert( job == 'N' || job == 'E' || job == 'V' || job == 'B' );
         assert( compq == 'V' || compq == 'N' );

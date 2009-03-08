@@ -19,7 +19,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -72,12 +72,12 @@ struct largv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( integer_t const n, VectorX& x, integer_t const incx,
             VectorY& y, integer_t const incy, VectorC& c,
             integer_t const incc ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
-                VectorY >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+                VectorY >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
-                VectorC >::value_type > );
+                VectorC >::value_type >::value) );
 #ifndef NDEBUG
         assert( traits::vector_size(x) >= 1+(n-1)*incx );
         assert( traits::vector_size(y) >= 1+(n-1)*incy );
@@ -101,9 +101,9 @@ struct largv_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( integer_t const n, VectorX& x, integer_t const incx,
             VectorY& y, integer_t const incy, VectorC& c,
             integer_t const incc ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::vector_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
-                VectorY >::value_type > );
+                VectorY >::value_type >::value) );
 #ifndef NDEBUG
         assert( traits::vector_size(x) >= 1+(n-1)*incx );
         assert( traits::vector_size(y) >= 1+(n-1)*incy );

@@ -21,7 +21,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -93,15 +93,15 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             VectorSELECT& select, integer_t const n, MatrixS& s, MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             integer_t& info, detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixS >::value_type, typename traits::matrix_traits<
-                MatrixP >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixP >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixS >::value_type, typename traits::matrix_traits<
-                MatrixVL >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixVL >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixS >::value_type, typename traits::matrix_traits<
-                MatrixVR >::value_type > );
+                MatrixVR >::value_type >::value) );
 #ifndef NDEBUG
         assert( side == 'R' || side == 'L' || side == 'B' );
         assert( howmny == 'A' || howmny == 'B' || howmny == 'S' );
@@ -163,15 +163,15 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             VectorSELECT& select, integer_t const n, MatrixS& s, MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixS >::value_type, typename traits::matrix_traits<
-                MatrixP >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixP >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixS >::value_type, typename traits::matrix_traits<
-                MatrixVL >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                MatrixVL >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixS >::value_type, typename traits::matrix_traits<
-                MatrixVR >::value_type > );
+                MatrixVR >::value_type >::value) );
 #ifndef NDEBUG
         assert( side == 'R' || side == 'L' || side == 'B' );
         assert( howmny == 'A' || howmny == 'B' || howmny == 'S' );

@@ -19,7 +19,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -70,9 +70,9 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename VectorS >
     static void compute( MatrixA& a, VectorS& s, real_type& scond,
             real_type& amax, integer_t& info ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorS >::value_type > );
+                VectorS >::value_type >::value) );
 #ifndef NDEBUG
         assert( traits::matrix_size2(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,

@@ -19,7 +19,7 @@
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/static_assert.hpp
+#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <cassert>
@@ -81,12 +81,12 @@ struct latrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( char const uplo, char const trans, char const diag,
             char const normin, MatrixA& a, VectorX& x, real_type& scale,
             VectorCNORM& cnorm, integer_t& info ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorX >::value_type > );
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+                VectorX >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorCNORM >::value_type > );
+                VectorCNORM >::value_type >::value) );
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( trans == 'N' || trans == 'T' || trans == 'C' );
@@ -115,9 +115,9 @@ struct latrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( char const uplo, char const trans, char const diag,
             char const normin, MatrixA& a, VectorX& x, real_type& scale,
             VectorCNORM& cnorm, integer_t& info ) {
-        BOOST_STATIC_ASSERT( boost::is_same< typename traits::matrix_traits<
+        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
-                VectorX >::value_type > );
+                VectorX >::value_type >::value) );
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( trans == 'N' || trans == 'T' || trans == 'C' );

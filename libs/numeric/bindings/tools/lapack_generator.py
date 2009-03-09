@@ -187,8 +187,11 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = level1_template.replace( "$LEVEL1", ", ".join( level1_arg_list ) )
       level1_template = level1_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
       level1_template = level1_template.replace( "$ASSERTS", "\n        ".join( level1_assert_list ) )
-      level1_template = level1_template.replace( "$STATIC_ASSERTS", "\n        ".join( level1_static_assert_list ) )
-
+      
+      if len( level1_static_assert_list ) > 0:
+        level1_template = level1_template.replace( "$STATIC_ASSERTS", "\n        ".join( level1_static_assert_list ) )
+      else:
+        level1_template = level1_template.replace( "\n        $STATIC_ASSERTS", "" )
 
       if len( user_defined_arg_list ) > 0:
         level1_template = level1_template.replace( "$INIT_USER_DEFINED_VARIABLES", indent_lines( "\n".join(user_defined_arg_list), 8 ) )

@@ -153,15 +153,19 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = level1_template.replace( "$LEVEL1", ", ".join( level1_arg_list ) )
       level1_template = level1_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
       level1_template = level1_template.replace( "$ASSERTS", "\n        ".join( level1_assert_list ) )
-      level1_template = level1_template.replace( "$STATIC_ASSERTS", "\n        ".join( level1_static_assert_list ) )
       level1_template = level1_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'level1_return_type' ] )
       level1_template = level1_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
+
+      if len( level1_static_assert_list ) > 0:
+        level1_template = level1_template.replace( "$STATIC_ASSERTS", "\n        ".join( level1_static_assert_list ) )
+      else:
+        level1_template = level1_template.replace( "\n        $STATIC_ASSERTS", "" )
 
       # Level 2 replacements
       # some special stuff is done here, such as replacing real_type with a 
       # type-traits deduction, etc..
       level2_template = level2_template.replace( "$LEVEL2", ", ".join( level2_arg_list ) )
-      
+
       if len(level1_type_arg_list)>0:
         first_typename = level1_type_arg_list[0].split(" ")[-1]
         first_typename_datatype = first_typename[0:6].lower() # 'matrix' or 'vector'

@@ -80,7 +80,6 @@ struct pbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t const kd, MatrixAB& ab, real_type const anorm,
             real_type& rcond, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
-        
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( n >= 0 );
@@ -138,7 +137,6 @@ struct pbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t const kd, MatrixAB& ab, real_type const anorm,
             real_type& rcond, integer_t& info, detail::workspace2< WORK,
             RWORK > work ) {
-        
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( n >= 0 );

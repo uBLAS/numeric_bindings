@@ -51,7 +51,6 @@ struct rotmg_impl {
     template< typename VectorDPARAM >
     static return_type compute( real_type& d1, real_type& d2, real_type& x1,
             real_type const y1, VectorDPARAM& dparam ) {
-        
         detail::rotmg( d1, d2, x1, y1, traits::vector_storage(dparam) );
     }
 };

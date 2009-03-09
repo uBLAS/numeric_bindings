@@ -51,7 +51,6 @@ struct lacgv_impl {
     template< typename VectorX >
     static void compute( integer_t const n, VectorX& x,
             integer_t const incx ) {
-        
 #ifndef NDEBUG
         assert( n >= 0 );
 #endif

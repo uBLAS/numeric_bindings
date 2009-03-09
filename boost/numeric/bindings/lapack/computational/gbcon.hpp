@@ -85,7 +85,6 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t const kl, integer_t const ku, MatrixAB& ab,
             VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
-        
 #ifndef NDEBUG
         assert( norm == '1' || norm == 'O' || norm == 'I' );
         assert( n >= 0 );
@@ -150,7 +149,6 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t const kl, integer_t const ku, MatrixAB& ab,
             VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
-        
 #ifndef NDEBUG
         assert( norm == '1' || norm == 'O' || norm == 'I' );
         assert( n >= 0 );

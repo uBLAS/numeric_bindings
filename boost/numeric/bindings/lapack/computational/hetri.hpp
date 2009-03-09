@@ -57,7 +57,6 @@ struct hetri_impl {
     template< typename MatrixA, typename VectorIPIV, typename WORK >
     static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             integer_t& info, detail::workspace1< WORK > work ) {
-        
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( traits::matrix_num_columns(a) >= 0 );

@@ -98,7 +98,6 @@ struct gebal_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename VectorSCALE >
     static void compute( char const job, MatrixA& a, integer_t& ilo,
             integer_t& ihi, VectorSCALE& scale, integer_t& info ) {
-        
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         assert( traits::matrix_num_columns(a) >= 0 );

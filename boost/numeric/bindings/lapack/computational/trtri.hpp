@@ -59,7 +59,6 @@ struct trtri_impl {
     template< typename MatrixA >
     static void compute( char const uplo, char const diag, MatrixA& a,
             integer_t& info ) {
-        
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( diag == 'N' || diag == 'U' );

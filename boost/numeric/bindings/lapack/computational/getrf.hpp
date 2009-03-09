@@ -60,7 +60,6 @@ struct getrf_impl {
     // templated specialization
     template< typename MatrixA, typename VectorIPIV >
     static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info ) {
-        
 #ifndef NDEBUG
         assert( traits::matrix_num_rows(a) >= 0 );
         assert( traits::matrix_num_columns(a) >= 0 );

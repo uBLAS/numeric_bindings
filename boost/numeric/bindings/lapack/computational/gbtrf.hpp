@@ -66,7 +66,6 @@ struct gbtrf_impl {
     static void compute( integer_t const m, integer_t const n,
             integer_t const kl, integer_t const ku, MatrixAB& ab,
             VectorIPIV& ipiv, integer_t& info ) {
-        
 #ifndef NDEBUG
         assert( m >= 0 );
         assert( n >= 0 );

@@ -79,7 +79,6 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( char const norm, char const uplo, char const diag,
             MatrixA& a, real_type& rcond, integer_t& info, detail::workspace2<
             WORK, IWORK > work ) {
-        
 #ifndef NDEBUG
         assert( norm == '1' || norm == 'O' || norm == 'I' );
         assert( uplo == 'U' || uplo == 'L' );
@@ -140,7 +139,6 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( char const norm, char const uplo, char const diag,
             MatrixA& a, real_type& rcond, integer_t& info, detail::workspace2<
             WORK, RWORK > work ) {
-        
 #ifndef NDEBUG
         assert( norm == '1' || norm == 'O' || norm == 'I' );
         assert( uplo == 'U' || uplo == 'L' );

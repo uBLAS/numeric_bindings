@@ -58,7 +58,6 @@ struct potrf_impl {
     // templated specialization
     template< typename MatrixA >
     static void compute( MatrixA& a, integer_t& info ) {
-        
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );

@@ -60,7 +60,6 @@ struct scal_impl {
     // templated specialization
     template< typename VectorX >
     static return_type compute( value_type const a, VectorX& x ) {
-        
         detail::scal( traits::vector_size(x), a,
                 traits::vector_storage(x), traits::vector_stride(x) );
     }

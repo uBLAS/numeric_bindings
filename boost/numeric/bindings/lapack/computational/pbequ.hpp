@@ -99,7 +99,6 @@ struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAB, typename VectorS >
     static void compute( integer_t const n, integer_t const kd, MatrixAB& ab,
             VectorS& s, real_type& scond, real_type& amax, integer_t& info ) {
-        
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );

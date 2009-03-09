@@ -78,7 +78,6 @@ struct pocon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename WORK, typename IWORK >
     static void compute( MatrixA& a, real_type const anorm, real_type& rcond,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
-        
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
@@ -135,7 +134,6 @@ struct pocon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename WORK, typename RWORK >
     static void compute( MatrixA& a, real_type const anorm, real_type& rcond,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
-        
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );

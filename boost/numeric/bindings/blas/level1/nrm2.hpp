@@ -48,7 +48,6 @@ struct nrm2_impl {
     // templated specialization
     template< typename VectorX >
     static return_type compute( VectorX& x ) {
-        
         return detail::nrm2( traits::vector_size(x),
                 traits::vector_storage(x), traits::vector_stride(x) );
     }

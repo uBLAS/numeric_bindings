@@ -92,7 +92,7 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( traits::matrix_num_columns(a) ));
 #endif
         detail::geqp3( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
@@ -107,7 +107,7 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+                traits::matrix_num_columns(a) ) );
         compute( a, jpvt, tau, info, workspace( tmp_work ) );
     }
 
@@ -125,8 +125,8 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         compute( a, jpvt, tau, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_work( integer_t const n ) {
+        return 3*n+1;
     }
 };
 
@@ -154,7 +154,7 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         assert( traits::vector_size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( traits::matrix_num_columns(a) ));
         assert( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( traits::matrix_num_columns(a) ));
 #endif
@@ -172,7 +172,7 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+                traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(a) ) );
         compute( a, jpvt, tau, info, workspace( tmp_work, tmp_rwork ) );
@@ -195,8 +195,8 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         compute( a, jpvt, tau, info, workspace( tmp_work, tmp_rwork ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_work( integer_t const n ) {
+        return n+1;
     }
 
     static integer_t min_size_rwork( integer_t const n ) {

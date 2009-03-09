@@ -70,7 +70,6 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorX, typename V, typename ISGN >
     static void compute( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, detail::workspace2< V, ISGN > work ) {
-        
 #ifndef NDEBUG
         assert( n >= 1 );
         assert( traits::vector_size(work.select(real_type())) >=
@@ -119,7 +118,6 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorX, typename V >
     static void compute( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, detail::workspace1< V > work ) {
-        
 #ifndef NDEBUG
         assert( n >= 1 );
         assert( traits::vector_size(work.select(value_type())) >=

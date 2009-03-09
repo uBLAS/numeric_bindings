@@ -110,7 +110,6 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( char const job, char const side, integer_t const ilo,
             integer_t const ihi, VectorSCALE& scale, MatrixV& v,
             integer_t& info ) {
-        
 #ifndef NDEBUG
         assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         assert( side == 'R' || side == 'L' );

@@ -80,7 +80,6 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
-        
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( traits::matrix_num_columns(a) >= 0 );
@@ -141,7 +140,6 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             detail::workspace1< WORK > work ) {
-        
 #ifndef NDEBUG
         assert( uplo == 'U' || uplo == 'L' );
         assert( traits::matrix_num_columns(a) >= 0 );

@@ -65,7 +65,6 @@ struct heevd_impl {
             typename RWORK, typename IWORK >
     static void compute( char const jobz, MatrixA& a, VectorW& w,
             integer_t& info, detail::workspace3< WORK, RWORK, IWORK > work ) {
-        
 #ifndef NDEBUG
         assert( jobz == 'N' || jobz == 'V' );
         assert( traits::matrix_uplo_tag(a) == 'U' ||

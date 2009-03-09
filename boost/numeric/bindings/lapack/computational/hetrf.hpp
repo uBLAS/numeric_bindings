@@ -57,7 +57,6 @@ struct hetrf_impl {
     template< typename MatrixA, typename VectorIPIV, typename WORK >
     static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info,
             detail::workspace1< WORK > work ) {
-        
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );

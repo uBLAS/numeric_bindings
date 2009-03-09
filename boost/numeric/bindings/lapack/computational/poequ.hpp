@@ -95,7 +95,6 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename VectorS >
     static void compute( MatrixA& a, VectorS& s, real_type& scond,
             real_type& amax, integer_t& info ) {
-        
 #ifndef NDEBUG
         assert( traits::matrix_num_columns(a) >= 0 );
         assert( traits::leading_dimension(a) >= std::max(1,

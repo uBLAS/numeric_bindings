@@ -59,7 +59,6 @@ struct rotg_impl {
     template<  >
     static return_type compute( value_type& a, value_type& b, real_type& c,
             value_type& s ) {
-        
         detail::rotg( a, b, c, s );
     }
 };

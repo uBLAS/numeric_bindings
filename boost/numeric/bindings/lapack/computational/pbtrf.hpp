@@ -59,7 +59,6 @@ struct pbtrf_impl {
     template< typename MatrixAB >
     static void compute( integer_t const n, integer_t const kd, MatrixAB& ab,
             integer_t& info ) {
-        
 #ifndef NDEBUG
         assert( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );

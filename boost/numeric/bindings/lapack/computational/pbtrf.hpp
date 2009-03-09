@@ -14,12 +14,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_PBTRF_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_PBTRF_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -59,13 +59,11 @@ struct pbtrf_impl {
     template< typename MatrixAB >
     static void compute( integer_t const n, integer_t const kd, MatrixAB& ab,
             integer_t& info ) {
-#ifndef NDEBUG
-        assert( traits::matrix_uplo_tag(a) == 'U' ||
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( n >= 0 );
-        assert( kd >= 0 );
-        assert( traits::leading_dimension(ab) >= kd+1 );
-#endif
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kd >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kd+1 );
         detail::pbtrf( traits::matrix_uplo_tag(a), n, kd,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 info );

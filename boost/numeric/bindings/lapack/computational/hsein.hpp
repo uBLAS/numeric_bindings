@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_HSEIN_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_HSEIN_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -116,20 +116,21 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorIFAILL >::value_type, typename traits::vector_traits<
                 VectorIFAILR >::value_type >::value) );
-#ifndef NDEBUG
-        assert( side == 'R' || side == 'L' || side == 'B' );
-        assert( eigsrc == 'Q' || eigsrc == 'N' );
-        assert( initv == 'N' || initv == 'U' );
-        assert( traits::vector_size(select) >= traits::matrix_num_columns(h) );
-        assert( traits::matrix_num_columns(h) >= 0 );
-        assert( traits::leading_dimension(h) >= std::max(1,
+        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
+        BOOST_ASSERT( eigsrc == 'Q' || eigsrc == 'N' );
+        BOOST_ASSERT( initv == 'N' || initv == 'U' );
+        BOOST_ASSERT( traits::vector_size(select) >=
+                traits::matrix_num_columns(h) );
+        BOOST_ASSERT( traits::matrix_num_columns(h) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(h) >= std::max(1,
                 traits::matrix_num_columns(h)) );
-        assert( traits::vector_size(wr) >= traits::matrix_num_columns(h) );
-        assert( traits::vector_size(wi) >= traits::matrix_num_columns(h) );
-        assert( mm >= m );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(wr) >=
+                traits::matrix_num_columns(h) );
+        BOOST_ASSERT( traits::vector_size(wi) >=
+                traits::matrix_num_columns(h) );
+        BOOST_ASSERT( mm >= m );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(h), ?2 ));
-#endif
         detail::hsein( side, eigsrc, initv, traits::vector_storage(select),
                 traits::matrix_num_columns(h), traits::matrix_storage(h),
                 traits::leading_dimension(h), traits::vector_storage(wr),
@@ -202,21 +203,21 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::matrix_traits<
                 MatrixVR >::value_type >::value) );
-#ifndef NDEBUG
-        assert( side == 'R' || side == 'L' || side == 'B' );
-        assert( eigsrc == 'Q' || eigsrc == 'N' );
-        assert( initv == 'N' || initv == 'U' );
-        assert( traits::vector_size(select) >= traits::matrix_num_columns(h) );
-        assert( traits::matrix_num_columns(h) >= 0 );
-        assert( traits::leading_dimension(h) >= std::max(1,
+        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
+        BOOST_ASSERT( eigsrc == 'Q' || eigsrc == 'N' );
+        BOOST_ASSERT( initv == 'N' || initv == 'U' );
+        BOOST_ASSERT( traits::vector_size(select) >=
+                traits::matrix_num_columns(h) );
+        BOOST_ASSERT( traits::matrix_num_columns(h) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(h) >= std::max(1,
                 traits::matrix_num_columns(h)) );
-        assert( traits::vector_size(w) >= traits::matrix_num_columns(h) );
-        assert( mm >= m );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( traits::vector_size(w) >=
+                traits::matrix_num_columns(h) );
+        BOOST_ASSERT( mm >= m );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(h) ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( traits::matrix_num_columns(h) ));
-#endif
         detail::hsein( side, eigsrc, initv, traits::vector_storage(select),
                 traits::matrix_num_columns(h), traits::matrix_storage(h),
                 traits::leading_dimension(h), traits::vector_storage(w),

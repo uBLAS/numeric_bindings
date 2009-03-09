@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GEBAL_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GEBAL_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
@@ -22,7 +23,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -75,12 +75,10 @@ struct gebal_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorSCALE >::value_type >::value) );
-#ifndef NDEBUG
-        assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-#endif
         detail::gebal( job, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a), ilo,
                 ihi, traits::vector_storage(scale), info );
@@ -98,12 +96,10 @@ struct gebal_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename VectorSCALE >
     static void compute( char const job, MatrixA& a, integer_t& ilo,
             integer_t& ihi, VectorSCALE& scale, integer_t& info ) {
-#ifndef NDEBUG
-        assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-#endif
         detail::gebal( job, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a), ilo,
                 ihi, traits::vector_storage(scale), info );

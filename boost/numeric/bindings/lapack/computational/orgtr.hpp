@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_ORGTR_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_ORGTR_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -22,7 +23,6 @@
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -59,15 +59,13 @@ struct orgtr_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_uplo_tag(a) == 'U' ||
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( n >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,n) );
-        assert( traits::vector_size(tau) >= n-1 );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
+        BOOST_ASSERT( traits::vector_size(tau) >= n-1 );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));
-#endif
         detail::orgtr( traits::matrix_uplo_tag(a), n,
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(tau),

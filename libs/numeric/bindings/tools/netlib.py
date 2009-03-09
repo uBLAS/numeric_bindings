@@ -263,7 +263,7 @@ def level1_assert( name, properties, arg_map ):
   result = None
   
   if properties.has_key( 'assert_char' ):
-    result = "assert( "
+    result = "BOOST_ASSERT( "
     result_array = []
     for char in properties[ 'assert_char' ]:
       result_array += [ call_level0_type( name, properties, arg_map ) + ' == \'' + char + '\'' ]
@@ -271,18 +271,18 @@ def level1_assert( name, properties, arg_map ):
     result += " );"
     
   if properties.has_key( 'assert_ge' ) and not properties.has_key( 'workspace_query_for' ):
-    result = "assert( " + call_level0_type( name, properties, arg_map ) + " >= " + expand_nested_list( properties[ 'assert_ge' ], arg_map ) + ' );'
+    result = "BOOST_ASSERT( " + call_level0_type( name, properties, arg_map ) + " >= " + expand_nested_list( properties[ 'assert_ge' ], arg_map ) + ' );'
       
   if 'workspace' in properties[ 'io' ]:
     min_workspace_call = min_workspace_call_type( name, properties, arg_map )
     if min_workspace_call == None:
       min_workspace_call = '$CALL_MIN_SIZE'
-    result = 'assert( traits::vector_size(work.select(' + workspace_type( name, properties ) + '())) >= ' + \
+    result = 'BOOST_ASSERT( traits::vector_size(work.select(' + workspace_type( name, properties ) + '())) >= ' + \
              'min_size_' + name.lower() + '( ' + min_workspace_call + ' ));'
 
   # assert_size is vector-type specific
   elif properties.has_key( 'assert_size' ):
-    result = "assert( traits::vector_size(" + call_level1_type( name, properties ) + ") >= " + \
+    result = "BOOST_ASSERT( traits::vector_size(" + call_level1_type( name, properties ) + ") >= " + \
       expand_nested_list( properties[ 'assert_size' ], arg_map ) + ' );'
 
   return result

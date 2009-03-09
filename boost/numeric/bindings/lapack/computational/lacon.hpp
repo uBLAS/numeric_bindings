@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_LACON_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_LACON_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -70,13 +70,11 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorX, typename V, typename ISGN >
     static void compute( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, detail::workspace2< V, ISGN > work ) {
-#ifndef NDEBUG
-        assert( n >= 1 );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( n >= 1 );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_v( n ));
-        assert( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_isgn( n ));
-#endif
         detail::lacon( n, traits::vector_storage(work.select(real_type())),
                 traits::vector_storage(x),
                 traits::vector_storage(work.select(integer_t())), est, kase );
@@ -118,11 +116,9 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorX, typename V >
     static void compute( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, detail::workspace1< V > work ) {
-#ifndef NDEBUG
-        assert( n >= 1 );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( n >= 1 );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_v( n ));
-#endif
         detail::lacon( n, traits::vector_storage(work.select(value_type())),
                 traits::vector_storage(x), est, kase );
     }

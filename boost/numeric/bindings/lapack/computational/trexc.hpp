@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_TREXC_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_TREXC_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -81,16 +81,14 @@ struct trexc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixT >::value_type, typename traits::matrix_traits<
                 MatrixQ >::value_type >::value) );
-#ifndef NDEBUG
-        assert( compq == 'V' || compq == 'N' );
-        assert( traits::matrix_num_columns(t) >= 0 );
-        assert( traits::leading_dimension(t) >= std::max(1,
+        BOOST_ASSERT( compq == 'V' || compq == 'N' );
+        BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(t) >= std::max(1,
                 traits::matrix_num_columns(t)) );
-        assert( traits::leading_dimension(q) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(q) >= std::max(1,
                 traits::matrix_num_columns(t)) );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(t) ));
-#endif
         detail::trexc( compq, traits::matrix_num_columns(t),
                 traits::matrix_storage(t), traits::leading_dimension(t),
                 traits::matrix_storage(q), traits::leading_dimension(q), ifst,
@@ -113,14 +111,12 @@ struct trexc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixT >::value_type, typename traits::matrix_traits<
                 MatrixQ >::value_type >::value) );
-#ifndef NDEBUG
-        assert( compq == 'V' || compq == 'N' );
-        assert( traits::matrix_num_columns(t) >= 0 );
-        assert( traits::leading_dimension(t) >= std::max(1,
+        BOOST_ASSERT( compq == 'V' || compq == 'N' );
+        BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(t) >= std::max(1,
                 traits::matrix_num_columns(t)) );
-        assert( traits::leading_dimension(q) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(q) >= std::max(1,
                 traits::matrix_num_columns(t)) );
-#endif
         detail::trexc( compq, traits::matrix_num_columns(t),
                 traits::matrix_storage(t), traits::leading_dimension(t),
                 traits::matrix_storage(q), traits::leading_dimension(q), ifst,

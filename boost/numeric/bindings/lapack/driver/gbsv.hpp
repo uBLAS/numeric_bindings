@@ -14,12 +14,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GBSV_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GBSV_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -72,16 +72,15 @@ struct gbsv_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_num_columns(ab) >= 0 );
-        assert( kl >= 0 );
-        assert( ku >= 0 );
-        assert( traits::matrix_num_columns(b) >= 0 );
-        assert( traits::leading_dimension(ab) >= 2 );
-        assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(ab) );
-        assert( traits::leading_dimension(b) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_columns(ab) >= 0 );
+        BOOST_ASSERT( kl >= 0 );
+        BOOST_ASSERT( ku >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= 2 );
+        BOOST_ASSERT( traits::vector_size(ipiv) >=
+                traits::matrix_num_columns(ab) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_columns(ab)) );
-#endif
         detail::gbsv( traits::matrix_num_columns(ab), kl, ku,
                 traits::matrix_num_columns(b), traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::vector_storage(ipiv),

@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GBCON_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GBCON_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -85,18 +85,16 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t const kl, integer_t const ku, MatrixAB& ab,
             VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
-#ifndef NDEBUG
-        assert( norm == '1' || norm == 'O' || norm == 'I' );
-        assert( n >= 0 );
-        assert( kl >= 0 );
-        assert( ku >= 0 );
-        assert( traits::leading_dimension(ab) >= 2 );
-        assert( traits::vector_size(ipiv) >= n );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kl >= 0 );
+        BOOST_ASSERT( ku >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= 2 );
+        BOOST_ASSERT( traits::vector_size(ipiv) >= n );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));
-        assert( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( n ));
-#endif
         detail::gbcon( norm, n, kl, ku, traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::vector_storage(ipiv),
                 anorm, rcond,
@@ -149,18 +147,16 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t const kl, integer_t const ku, MatrixAB& ab,
             VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
-#ifndef NDEBUG
-        assert( norm == '1' || norm == 'O' || norm == 'I' );
-        assert( n >= 0 );
-        assert( kl >= 0 );
-        assert( ku >= 0 );
-        assert( traits::leading_dimension(ab) >= 2 );
-        assert( traits::vector_size(ipiv) >= n );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kl >= 0 );
+        BOOST_ASSERT( ku >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= 2 );
+        BOOST_ASSERT( traits::vector_size(ipiv) >= n );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( n ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( n ));
-#endif
         detail::gbcon( norm, n, kl, ku, traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::vector_storage(ipiv),
                 anorm, rcond,

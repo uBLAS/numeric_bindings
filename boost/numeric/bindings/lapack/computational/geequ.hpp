@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GEEQU_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GEEQU_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
@@ -22,7 +23,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -79,12 +79,10 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorC >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_num_rows(a) >= 0 );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-#endif
         detail::geequ( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(r),
@@ -107,12 +105,10 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorR >::value_type, typename traits::vector_traits<
                 VectorC >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_num_rows(a) >= 0 );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-#endif
         detail::geequ( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(r),

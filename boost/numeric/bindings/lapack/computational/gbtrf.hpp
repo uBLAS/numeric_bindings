@@ -14,12 +14,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GBTRF_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GBTRF_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -66,14 +66,12 @@ struct gbtrf_impl {
     static void compute( integer_t const m, integer_t const n,
             integer_t const kl, integer_t const ku, MatrixAB& ab,
             VectorIPIV& ipiv, integer_t& info ) {
-#ifndef NDEBUG
-        assert( m >= 0 );
-        assert( n >= 0 );
-        assert( kl >= 0 );
-        assert( ku >= 0 );
-        assert( traits::leading_dimension(ab) >= 2 );
-        assert( traits::vector_size(ipiv) >= std::min(m,n) );
-#endif
+        BOOST_ASSERT( m >= 0 );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kl >= 0 );
+        BOOST_ASSERT( ku >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= 2 );
+        BOOST_ASSERT( traits::vector_size(ipiv) >= std::min(m,n) );
         detail::gbtrf( m, n, kl, ku, traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::vector_storage(ipiv),
                 info );

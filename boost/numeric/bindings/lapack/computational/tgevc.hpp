@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_TGEVC_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_TGEVC_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -102,16 +102,14 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixS >::value_type, typename traits::matrix_traits<
                 MatrixVR >::value_type >::value) );
-#ifndef NDEBUG
-        assert( side == 'R' || side == 'L' || side == 'B' );
-        assert( howmny == 'A' || howmny == 'B' || howmny == 'S' );
-        assert( n >= 0 );
-        assert( traits::leading_dimension(s) >= std::max(1,n) );
-        assert( traits::leading_dimension(p) >= std::max(1,n) );
-        assert( mm >= m );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
+        BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(s) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(p) >= std::max(1,n) );
+        BOOST_ASSERT( mm >= m );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));
-#endif
         detail::tgevc( side, howmny, traits::vector_storage(select), n,
                 traits::matrix_storage(s), traits::leading_dimension(s),
                 traits::matrix_storage(p), traits::leading_dimension(p),
@@ -172,18 +170,16 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixS >::value_type, typename traits::matrix_traits<
                 MatrixVR >::value_type >::value) );
-#ifndef NDEBUG
-        assert( side == 'R' || side == 'L' || side == 'B' );
-        assert( howmny == 'A' || howmny == 'B' || howmny == 'S' );
-        assert( n >= 0 );
-        assert( traits::leading_dimension(s) >= std::max(1,n) );
-        assert( traits::leading_dimension(p) >= std::max(1,n) );
-        assert( mm >= m );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
+        BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(s) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(p) >= std::max(1,n) );
+        BOOST_ASSERT( mm >= m );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( n ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( n ));
-#endif
         detail::tgevc( side, howmny, traits::vector_storage(select), n,
                 traits::matrix_storage(s), traits::leading_dimension(s),
                 traits::matrix_storage(p), traits::leading_dimension(p),

@@ -14,12 +14,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_STERF_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_STERF_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -54,10 +54,8 @@ struct sterf_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
                 VectorE >::value_type >::value) );
-#ifndef NDEBUG
-        assert( n >= 0 );
-        assert( traits::vector_size(e) >= n-1 );
-#endif
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::vector_size(e) >= n-1 );
         detail::sterf( n, traits::vector_storage(d),
                 traits::vector_storage(e), info );
     }

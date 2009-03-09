@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_TZRZF_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_TZRZF_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -25,7 +26,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -80,15 +80,14 @@ struct tzrzf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_num_rows(a) >= 0 );
-        assert( traits::matrix_num_columns(a) >= traits::matrix_num_rows(a) );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >=
+                traits::matrix_num_rows(a) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-        assert( traits::vector_size(tau) >= traits::matrix_num_rows(a) );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(tau) >= traits::matrix_num_rows(a) );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
-#endif
         detail::tzrzf( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),
@@ -138,15 +137,14 @@ struct tzrzf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_num_rows(a) >= 0 );
-        assert( traits::matrix_num_columns(a) >= traits::matrix_num_rows(a) );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >=
+                traits::matrix_num_rows(a) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-        assert( traits::vector_size(tau) >= traits::matrix_num_rows(a) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( traits::vector_size(tau) >= traits::matrix_num_rows(a) );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
-#endif
         detail::tzrzf( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),

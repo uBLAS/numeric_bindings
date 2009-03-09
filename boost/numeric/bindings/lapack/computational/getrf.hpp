@@ -14,12 +14,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GETRF_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GETRF_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -60,15 +60,13 @@ struct getrf_impl {
     // templated specialization
     template< typename MatrixA, typename VectorIPIV >
     static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info ) {
-#ifndef NDEBUG
-        assert( traits::matrix_num_rows(a) >= 0 );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-        assert( traits::vector_size(ipiv) >=
+        BOOST_ASSERT( traits::vector_size(ipiv) >=
                 std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-#endif
         detail::getrf( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(ipiv),

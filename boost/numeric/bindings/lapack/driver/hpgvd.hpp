@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_HPGVD_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_HPGVD_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -22,7 +23,6 @@
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -77,18 +77,16 @@ struct hpgvd_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAP >::value_type, typename traits::matrix_traits<
                 MatrixZ >::value_type >::value) );
-#ifndef NDEBUG
-        assert( jobz == 'N' || jobz == 'V' );
-        assert( traits::matrix_uplo_tag(ap) == 'U' ||
+        BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
+        BOOST_ASSERT( traits::matrix_uplo_tag(ap) == 'U' ||
                 traits::matrix_uplo_tag(ap) == 'L' );
-        assert( n >= 0 );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( jobz, n ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( jobz, n ));
-        assert( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( jobz, n ));
-#endif
         detail::hpgvd( itype, jobz, traits::matrix_uplo_tag(ap), n,
                 traits::matrix_storage(ap), traits::matrix_storage(bp),
                 traits::vector_storage(w), traits::matrix_storage(z),

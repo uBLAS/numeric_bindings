@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_HBTRD_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_HBTRD_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -21,7 +22,6 @@
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -69,17 +69,15 @@ struct hbtrd_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixQ >::value_type >::value) );
-#ifndef NDEBUG
-        assert( vect == 'N' || vect == 'V' || vect == 'U' );
-        assert( traits::matrix_uplo_tag(a) == 'U' ||
+        BOOST_ASSERT( vect == 'N' || vect == 'V' || vect == 'U' );
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( n >= 0 );
-        assert( kd >= 0 );
-        assert( traits::leading_dimension(ab) >= kd+1 );
-        assert( traits::vector_size(d) >= n );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kd >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kd+1 );
+        BOOST_ASSERT( traits::vector_size(d) >= n );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( n ));
-#endif
         detail::hbtrd( vect, traits::matrix_uplo_tag(a), n, kd,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 traits::vector_storage(d), traits::vector_storage(e),

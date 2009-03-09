@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_SYCON_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_SYCON_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -80,17 +80,16 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
-#ifndef NDEBUG
-        assert( uplo == 'U' || uplo == 'L' );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(ipiv) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
-        assert( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( traits::matrix_num_columns(a) ));
-#endif
         detail::sycon( uplo, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(ipiv), anorm, rcond,
@@ -140,15 +139,14 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             detail::workspace1< WORK > work ) {
-#ifndef NDEBUG
-        assert( uplo == 'U' || uplo == 'L' );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(ipiv) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( traits::vector_size(ipiv) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
-#endif
         detail::sycon( uplo, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(ipiv), anorm, rcond,

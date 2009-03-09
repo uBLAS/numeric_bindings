@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_LARGV_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_LARGV_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
@@ -22,7 +23,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -78,11 +78,9 @@ struct largv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorC >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::vector_size(x) >= 1+(n-1)*incx );
-        assert( traits::vector_size(y) >= 1+(n-1)*incy );
-        assert( traits::vector_size(c) >= 1+(n-1)*incc );
-#endif
+        BOOST_ASSERT( traits::vector_size(x) >= 1+(n-1)*incx );
+        BOOST_ASSERT( traits::vector_size(y) >= 1+(n-1)*incy );
+        BOOST_ASSERT( traits::vector_size(c) >= 1+(n-1)*incc );
         detail::largv( n, traits::vector_storage(x), incx,
                 traits::vector_storage(y), incy, traits::vector_storage(c),
                 incc );
@@ -104,11 +102,9 @@ struct largv_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::vector_size(x) >= 1+(n-1)*incx );
-        assert( traits::vector_size(y) >= 1+(n-1)*incy );
-        assert( traits::vector_size(c) >= 1+(n-1)*incc );
-#endif
+        BOOST_ASSERT( traits::vector_size(x) >= 1+(n-1)*incx );
+        BOOST_ASSERT( traits::vector_size(y) >= 1+(n-1)*incy );
+        BOOST_ASSERT( traits::vector_size(c) >= 1+(n-1)*incc );
         detail::largv( n, traits::vector_storage(x), incx,
                 traits::vector_storage(y), incy, traits::vector_storage(c),
                 incc );

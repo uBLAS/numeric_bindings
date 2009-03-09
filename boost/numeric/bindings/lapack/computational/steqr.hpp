@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_STEQR_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_STEQR_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -82,13 +82,11 @@ struct steqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::matrix_traits<
                 MatrixZ >::value_type >::value) );
-#ifndef NDEBUG
-        assert( compz == 'N' || compz == 'V' || compz == 'I' );
-        assert( n >= 0 );
-        assert( traits::vector_size(e) >= n-1 );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( compz == 'N' || compz == 'V' || compz == 'I' );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::vector_size(e) >= n-1 );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
-#endif
         detail::steqr( compz, n, traits::vector_storage(d),
                 traits::vector_storage(e), traits::matrix_storage(z),
                 traits::leading_dimension(z),
@@ -132,13 +130,11 @@ struct steqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
                 VectorE >::value_type >::value) );
-#ifndef NDEBUG
-        assert( compz == 'N' || compz == 'V' || compz == 'I' );
-        assert( n >= 0 );
-        assert( traits::vector_size(e) >= n-1 );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( compz == 'N' || compz == 'V' || compz == 'I' );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::vector_size(e) >= n-1 );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
-#endif
         detail::steqr( compz, n, traits::vector_storage(d),
                 traits::vector_storage(e), traits::matrix_storage(z),
                 traits::leading_dimension(z),

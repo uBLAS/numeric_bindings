@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_SBGST_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_SBGST_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -21,7 +22,6 @@
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -68,18 +68,16 @@ struct sbgst_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixX >::value_type >::value) );
-#ifndef NDEBUG
-        assert( vect == 'N' || vect == 'V' );
-        assert( traits::matrix_uplo_tag(a) == 'U' ||
+        BOOST_ASSERT( vect == 'N' || vect == 'V' );
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( n >= 0 );
-        assert( ka >= 0 );
-        assert( kb >= kb );
-        assert( traits::leading_dimension(ab) >= ka+1 );
-        assert( traits::leading_dimension(bb) >= kb+1 );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( ka >= 0 );
+        BOOST_ASSERT( kb >= kb );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= ka+1 );
+        BOOST_ASSERT( traits::leading_dimension(bb) >= kb+1 );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));
-#endif
         detail::sbgst( vect, traits::matrix_uplo_tag(a), n, ka, kb,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 traits::matrix_storage(bb), traits::leading_dimension(bb),

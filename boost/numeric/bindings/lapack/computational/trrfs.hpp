@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_TRRFS_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_TRRFS_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -106,24 +106,23 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorBERR >::value_type >::value) );
-#ifndef NDEBUG
-        assert( uplo == 'U' || uplo == 'L' );
-        assert( trans == 'N' || trans == 'T' || trans == 'C' );
-        assert( diag == 'N' || diag == 'U' );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::matrix_num_columns(x) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
+        BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
+        BOOST_ASSERT( diag == 'N' || diag == 'U' );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::leading_dimension(b) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::leading_dimension(x) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(berr) >=
+                traits::matrix_num_columns(x) );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
-        assert( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( traits::matrix_num_columns(a) ));
-#endif
         detail::trrfs( uplo, trans, diag, traits::matrix_num_columns(a),
                 traits::matrix_num_columns(x), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
@@ -191,24 +190,23 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixX >::value_type >::value) );
-#ifndef NDEBUG
-        assert( uplo == 'U' || uplo == 'L' );
-        assert( trans == 'N' || trans == 'T' || trans == 'C' );
-        assert( diag == 'N' || diag == 'U' );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::matrix_num_columns(x) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
+        BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
+        BOOST_ASSERT( diag == 'N' || diag == 'U' );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::leading_dimension(b) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::leading_dimension(x) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( traits::vector_size(berr) >=
+                traits::matrix_num_columns(x) );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( traits::matrix_num_columns(a) ));
-#endif
         detail::trrfs( uplo, trans, diag, traits::matrix_num_columns(a),
                 traits::matrix_num_columns(x), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),

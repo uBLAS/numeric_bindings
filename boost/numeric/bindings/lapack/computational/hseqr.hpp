@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_HSEQR_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_HSEQR_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -98,13 +98,12 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::matrix_traits<
                 MatrixZ >::value_type >::value) );
-#ifndef NDEBUG
-        assert( job == 'E' || job == 'S' );
-        assert( compz == 'N' || compz == 'I' || compz == 'V' );
-        assert( traits::vector_size(wr) >= traits::matrix_num_columns(h) );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( job == 'E' || job == 'S' );
+        BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
+        BOOST_ASSERT( traits::vector_size(wr) >=
+                traits::matrix_num_columns(h) );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
-#endif
         detail::hseqr( job, compz, traits::matrix_num_columns(h), ilo, ihi,
                 traits::matrix_storage(h), traits::leading_dimension(h),
                 traits::vector_storage(wr), traits::vector_storage(wi),
@@ -161,12 +160,10 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::matrix_traits<
                 MatrixZ >::value_type >::value) );
-#ifndef NDEBUG
-        assert( job == 'E' || job == 'S' );
-        assert( compz == 'N' || compz == 'I' || compz == 'V' );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( job == 'E' || job == 'S' );
+        BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
-#endif
         detail::hseqr( job, compz, traits::matrix_num_columns(h), ilo, ihi,
                 traits::matrix_storage(h), traits::leading_dimension(h),
                 traits::vector_storage(w), traits::matrix_storage(z),

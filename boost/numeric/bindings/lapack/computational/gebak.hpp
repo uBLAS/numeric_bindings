@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GEBAK_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GEBAK_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
@@ -22,7 +23,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -82,15 +82,14 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorSCALE >::value_type, typename traits::matrix_traits<
                 MatrixV >::value_type >::value) );
-#ifndef NDEBUG
-        assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        assert( side == 'R' || side == 'L' );
-        assert( traits::matrix_num_rows(v) >= 0 );
-        assert( traits::vector_size(scale) >= traits::matrix_num_rows(v) );
-        assert( traits::matrix_num_columns(v) >= 0 );
-        assert( traits::leading_dimension(v) >= std::max(1,
+        BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
+        BOOST_ASSERT( side == 'R' || side == 'L' );
+        BOOST_ASSERT( traits::matrix_num_rows(v) >= 0 );
+        BOOST_ASSERT( traits::vector_size(scale) >=
+                traits::matrix_num_rows(v) );
+        BOOST_ASSERT( traits::matrix_num_columns(v) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(v) >= std::max(1,
                 traits::matrix_num_rows(v)) );
-#endif
         detail::gebak( job, side, traits::matrix_num_rows(v), ilo, ihi,
                 traits::vector_storage(scale), traits::matrix_num_columns(v),
                 traits::matrix_storage(v), traits::leading_dimension(v),
@@ -110,15 +109,14 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void compute( char const job, char const side, integer_t const ilo,
             integer_t const ihi, VectorSCALE& scale, MatrixV& v,
             integer_t& info ) {
-#ifndef NDEBUG
-        assert( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
-        assert( side == 'R' || side == 'L' );
-        assert( traits::matrix_num_rows(v) >= 0 );
-        assert( traits::vector_size(scale) >= traits::matrix_num_rows(v) );
-        assert( traits::matrix_num_columns(v) >= 0 );
-        assert( traits::leading_dimension(v) >= std::max(1,
+        BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
+        BOOST_ASSERT( side == 'R' || side == 'L' );
+        BOOST_ASSERT( traits::matrix_num_rows(v) >= 0 );
+        BOOST_ASSERT( traits::vector_size(scale) >=
+                traits::matrix_num_rows(v) );
+        BOOST_ASSERT( traits::matrix_num_columns(v) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(v) >= std::max(1,
                 traits::matrix_num_rows(v)) );
-#endif
         detail::gebak( job, side, traits::matrix_num_rows(v), ilo, ihi,
                 traits::vector_storage(scale), traits::matrix_num_columns(v),
                 traits::matrix_storage(v), traits::leading_dimension(v),

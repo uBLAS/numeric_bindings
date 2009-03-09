@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_PTSV_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_PTSV_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
@@ -22,7 +23,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -76,13 +76,11 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
-#ifndef NDEBUG
-        assert( n >= 0 );
-        assert( traits::matrix_num_columns(b) >= 0 );
-        assert( traits::vector_size(d) >= n );
-        assert( traits::vector_size(e) >= n-1 );
-        assert( traits::leading_dimension(b) >= std::max(1,n) );
-#endif
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
+        BOOST_ASSERT( traits::vector_size(d) >= n );
+        BOOST_ASSERT( traits::vector_size(e) >= n-1 );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
         detail::ptsv( n, traits::matrix_num_columns(b),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::matrix_storage(b), traits::leading_dimension(b),
@@ -104,13 +102,11 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorE >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
-#ifndef NDEBUG
-        assert( n >= 0 );
-        assert( traits::matrix_num_columns(b) >= 0 );
-        assert( traits::vector_size(d) >= n );
-        assert( traits::vector_size(e) >= n-1 );
-        assert( traits::leading_dimension(b) >= std::max(1,n) );
-#endif
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
+        BOOST_ASSERT( traits::vector_size(d) >= n );
+        BOOST_ASSERT( traits::vector_size(e) >= n-1 );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
         detail::ptsv( n, traits::matrix_num_columns(b),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::matrix_storage(b), traits::leading_dimension(b),

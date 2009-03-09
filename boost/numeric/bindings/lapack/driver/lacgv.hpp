@@ -14,12 +14,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_LACGV_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_LACGV_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -51,9 +51,7 @@ struct lacgv_impl {
     template< typename VectorX >
     static void compute( integer_t const n, VectorX& x,
             integer_t const incx ) {
-#ifndef NDEBUG
-        assert( n >= 0 );
-#endif
+        BOOST_ASSERT( n >= 0 );
         detail::lacgv( n, traits::vector_storage(x), incx );
     }
 };

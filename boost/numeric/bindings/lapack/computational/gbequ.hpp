@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GBEQU_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GBEQU_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
@@ -22,7 +23,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -86,13 +86,11 @@ struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::vector_traits<
                 VectorC >::value_type >::value) );
-#ifndef NDEBUG
-        assert( m >= 0 );
-        assert( n >= 0 );
-        assert( kl >= 0 );
-        assert( ku >= 0 );
-        assert( traits::leading_dimension(ab) >= kl+ku+1 );
-#endif
+        BOOST_ASSERT( m >= 0 );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kl >= 0 );
+        BOOST_ASSERT( ku >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
         detail::gbequ( m, n, kl, ku, traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::vector_storage(r),
                 traits::vector_storage(c), rowcnd, colcnd, amax, info );
@@ -115,13 +113,11 @@ struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorR >::value_type, typename traits::vector_traits<
                 VectorC >::value_type >::value) );
-#ifndef NDEBUG
-        assert( m >= 0 );
-        assert( n >= 0 );
-        assert( kl >= 0 );
-        assert( ku >= 0 );
-        assert( traits::leading_dimension(ab) >= kl+ku+1 );
-#endif
+        BOOST_ASSERT( m >= 0 );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kl >= 0 );
+        BOOST_ASSERT( ku >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
         detail::gbequ( m, n, kl, ku, traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::vector_storage(r),
                 traits::vector_storage(c), rowcnd, colcnd, amax, info );

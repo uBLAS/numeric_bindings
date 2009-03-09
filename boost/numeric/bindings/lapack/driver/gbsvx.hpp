@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GBSVX_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GBSVX_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -130,24 +130,24 @@ struct gbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::vector_traits<
                 VectorBERR >::value_type >::value) );
-#ifndef NDEBUG
-        assert( fact == 'F' || fact == 'N' || fact == 'E' );
-        assert( trans == 'N' || trans == 'T' || trans == 'C' );
-        assert( n >= 0 );
-        assert( kl >= 0 );
-        assert( ku >= 0 );
-        assert( traits::matrix_num_columns(x) >= 0 );
-        assert( traits::leading_dimension(ab) >= kl+ku+1 );
-        assert( traits::leading_dimension(afb) >= 2 );
-        assert( equed == 'N' || equed == 'R' || equed == 'C' || equed == 'B' );
-        assert( traits::leading_dimension(b) >= std::max(1,n) );
-        assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( fact == 'F' || fact == 'N' || fact == 'E' );
+        BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kl >= 0 );
+        BOOST_ASSERT( ku >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
+        BOOST_ASSERT( traits::leading_dimension(afb) >= 2 );
+        BOOST_ASSERT( equed == 'N' || equed == 'R' || equed == 'C' ||
+                equed == 'B' );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::vector_size(berr) >=
+                traits::matrix_num_columns(x) );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));
-        assert( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( n ));
-#endif
         detail::gbsvx( fact, trans, n, kl, ku, traits::matrix_num_columns(x),
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 traits::matrix_storage(afb), traits::leading_dimension(afb),
@@ -236,24 +236,24 @@ struct gbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixX >::value_type >::value) );
-#ifndef NDEBUG
-        assert( fact == 'F' || fact == 'N' || fact == 'E' );
-        assert( trans == 'N' || trans == 'T' || trans == 'C' );
-        assert( n >= 0 );
-        assert( kl >= 0 );
-        assert( ku >= 0 );
-        assert( traits::matrix_num_columns(x) >= 0 );
-        assert( traits::leading_dimension(ab) >= kl+ku+1 );
-        assert( traits::leading_dimension(afb) >= 2 );
-        assert( equed == 'N' || equed == 'R' || equed == 'C' || equed == 'B' );
-        assert( traits::leading_dimension(b) >= std::max(1,n) );
-        assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( fact == 'F' || fact == 'N' || fact == 'E' );
+        BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kl >= 0 );
+        BOOST_ASSERT( ku >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
+        BOOST_ASSERT( traits::leading_dimension(afb) >= 2 );
+        BOOST_ASSERT( equed == 'N' || equed == 'R' || equed == 'C' ||
+                equed == 'B' );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::vector_size(berr) >=
+                traits::matrix_num_columns(x) );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( n ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( n ));
-#endif
         detail::gbsvx( fact, trans, n, kl, ku, traits::matrix_num_columns(x),
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 traits::matrix_storage(afb), traits::leading_dimension(afb),

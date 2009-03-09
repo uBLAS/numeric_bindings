@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GELSY_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GELSY_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -25,7 +26,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -92,20 +92,18 @@ struct gelsy_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_num_rows(a) >= 0 );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::matrix_num_columns(b) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-        assert( traits::leading_dimension(b) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
                 std::max(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a))) );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a),
                 traits::matrix_num_columns(b) ));
-#endif
         detail::gelsy( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),
@@ -166,22 +164,20 @@ struct gelsy_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_num_rows(a) >= 0 );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::matrix_num_columns(b) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-        assert( traits::leading_dimension(b) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
                 std::max(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a))) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a),
                 traits::matrix_num_columns(b) ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( traits::matrix_num_columns(a) ));
-#endif
         detail::gelsy( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),

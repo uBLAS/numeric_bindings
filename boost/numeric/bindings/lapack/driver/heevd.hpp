@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_HEEVD_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_HEEVD_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -22,7 +23,6 @@
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -65,20 +65,18 @@ struct heevd_impl {
             typename RWORK, typename IWORK >
     static void compute( char const jobz, MatrixA& a, VectorW& w,
             integer_t& info, detail::workspace3< WORK, RWORK, IWORK > work ) {
-#ifndef NDEBUG
-        assert( jobz == 'N' || jobz == 'V' );
-        assert( traits::matrix_uplo_tag(a) == 'U' ||
+        BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( jobz, traits::matrix_num_columns(a) ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( jobz, traits::matrix_num_columns(a) ));
-        assert( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( jobz, traits::matrix_num_columns(a) ));
-#endif
         detail::heevd( jobz, traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(w),

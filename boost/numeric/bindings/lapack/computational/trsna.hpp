@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_TRSNA_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_TRSNA_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -107,18 +107,16 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixT >::value_type, typename traits::vector_traits<
                 VectorSEP >::value_type >::value) );
-#ifndef NDEBUG
-        assert( job == 'E' || job == 'V' || job == 'B' );
-        assert( howmny == 'A' || howmny == 'S' );
-        assert( traits::matrix_num_columns(t) >= 0 );
-        assert( traits::leading_dimension(t) >= std::max(1,
+        BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
+        BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
+        BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(t) >= std::max(1,
                 traits::matrix_num_columns(t)) );
-        assert( mm >= m );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( mm >= m );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
-        assert( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( $CALL_MIN_SIZE ));
-#endif
         detail::trsna( job, howmny, traits::vector_storage(select),
                 traits::matrix_num_columns(t), traits::matrix_storage(t),
                 traits::leading_dimension(t), traits::matrix_storage(vl),
@@ -188,18 +186,16 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixT >::value_type, typename traits::matrix_traits<
                 MatrixVR >::value_type >::value) );
-#ifndef NDEBUG
-        assert( job == 'E' || job == 'V' || job == 'B' );
-        assert( howmny == 'A' || howmny == 'S' );
-        assert( traits::matrix_num_columns(t) >= 0 );
-        assert( traits::leading_dimension(t) >= std::max(1,
+        BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
+        BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
+        BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(t) >= std::max(1,
                 traits::matrix_num_columns(t)) );
-        assert( mm >= m );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( mm >= m );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( $CALL_MIN_SIZE ));
-#endif
         detail::trsna( job, howmny, traits::vector_storage(select),
                 traits::matrix_num_columns(t), traits::matrix_storage(t),
                 traits::leading_dimension(t), traits::matrix_storage(vl),

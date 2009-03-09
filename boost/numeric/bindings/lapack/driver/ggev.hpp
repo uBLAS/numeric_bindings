@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GGEV_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GGEV_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -25,7 +26,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -117,19 +117,19 @@ struct ggev_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixVR >::value_type >::value) );
-#ifndef NDEBUG
-        assert( jobvl == 'N' || jobvl == 'V' );
-        assert( jobvr == 'N' || jobvr == 'V' );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( jobvl == 'N' || jobvl == 'V' );
+        BOOST_ASSERT( jobvr == 'N' || jobvr == 'V' );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::leading_dimension(b) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(alphar) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(alphai) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(alphar) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::vector_size(alphai) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
-#endif
         detail::ggev( jobvl, jobvr, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),
@@ -213,21 +213,21 @@ struct ggev_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixVR >::value_type >::value) );
-#ifndef NDEBUG
-        assert( jobvl == 'N' || jobvl == 'V' );
-        assert( jobvr == 'N' || jobvr == 'V' );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( jobvl == 'N' || jobvl == 'V' );
+        BOOST_ASSERT( jobvr == 'N' || jobvr == 'V' );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::leading_dimension(b) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(alpha) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(beta) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( traits::vector_size(alpha) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::vector_size(beta) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( traits::matrix_num_columns(a) ));
-#endif
         detail::ggev( jobvl, jobvr, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),

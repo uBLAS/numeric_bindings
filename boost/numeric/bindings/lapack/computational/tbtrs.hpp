@@ -14,12 +14,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_TBTRS_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_TBTRS_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -77,16 +77,14 @@ struct tbtrs_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
-#ifndef NDEBUG
-        assert( uplo == 'U' || uplo == 'L' );
-        assert( trans == 'N' || trans == 'T' || trans == 'C' );
-        assert( diag == 'N' || diag == 'U' );
-        assert( n >= 0 );
-        assert( kd >= 0 );
-        assert( traits::matrix_num_columns(b) >= 0 );
-        assert( traits::leading_dimension(ab) >= kd+1 );
-        assert( traits::leading_dimension(b) >= std::max(1,n) );
-#endif
+        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
+        BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
+        BOOST_ASSERT( diag == 'N' || diag == 'U' );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kd >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kd+1 );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
         detail::tbtrs( uplo, trans, diag, n, kd,
                 traits::matrix_num_columns(b), traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::matrix_storage(b),

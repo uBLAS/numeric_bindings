@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_HGEQZ_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_HGEQZ_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -25,7 +26,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -121,16 +121,16 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::matrix_traits<
                 MatrixZ >::value_type >::value) );
-#ifndef NDEBUG
-        assert( job == 'E' || job == 'S' );
-        assert( compq == 'N' || compq == 'I' || compq == 'V' );
-        assert( compz == 'N' || compz == 'I' || compz == 'V' );
-        assert( traits::matrix_num_columns(h) >= 0 );
-        assert( traits::vector_size(alphar) >= traits::matrix_num_columns(h) );
-        assert( traits::vector_size(beta) >= traits::matrix_num_columns(h) );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( job == 'E' || job == 'S' );
+        BOOST_ASSERT( compq == 'N' || compq == 'I' || compq == 'V' );
+        BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
+        BOOST_ASSERT( traits::matrix_num_columns(h) >= 0 );
+        BOOST_ASSERT( traits::vector_size(alphar) >=
+                traits::matrix_num_columns(h) );
+        BOOST_ASSERT( traits::vector_size(beta) >=
+                traits::matrix_num_columns(h) );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(h) ));
-#endif
         detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h), ilo,
                 traits::matrix_num_columns(h), traits::matrix_storage(h),
                 traits::leading_dimension(h), traits::matrix_storage(t),
@@ -214,18 +214,18 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::matrix_traits<
                 MatrixZ >::value_type >::value) );
-#ifndef NDEBUG
-        assert( job == 'E' || job == 'S' );
-        assert( compq == 'N' || compq == 'I' || compq == 'V' );
-        assert( compz == 'N' || compz == 'I' || compz == 'V' );
-        assert( traits::matrix_num_columns(h) >= 0 );
-        assert( traits::vector_size(alpha) >= traits::matrix_num_columns(h) );
-        assert( traits::vector_size(beta) >= traits::matrix_num_columns(h) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( job == 'E' || job == 'S' );
+        BOOST_ASSERT( compq == 'N' || compq == 'I' || compq == 'V' );
+        BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
+        BOOST_ASSERT( traits::matrix_num_columns(h) >= 0 );
+        BOOST_ASSERT( traits::vector_size(alpha) >=
+                traits::matrix_num_columns(h) );
+        BOOST_ASSERT( traits::vector_size(beta) >=
+                traits::matrix_num_columns(h) );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(h) ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( traits::matrix_num_columns(h) ));
-#endif
         detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h), ilo,
                 traits::matrix_num_columns(h), traits::matrix_storage(h),
                 traits::leading_dimension(h), traits::matrix_storage(t),

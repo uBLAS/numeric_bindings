@@ -14,12 +14,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GTTRS_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GTTRS_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -88,16 +88,14 @@ struct gttrs_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorDL >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
-#ifndef NDEBUG
-        assert( trans == 'N' || trans == 'T' || trans == 'C' );
-        assert( traits::matrix_num_columns(b) >= 0 );
-        assert( traits::vector_size(dl) >= n-1 );
-        assert( traits::vector_size(d) >= n );
-        assert( traits::vector_size(du) >= n-1 );
-        assert( traits::vector_size(du2) >= n-2 );
-        assert( traits::vector_size(ipiv) >= n );
-        assert( traits::leading_dimension(b) >= std::max(1,n) );
-#endif
+        BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
+        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
+        BOOST_ASSERT( traits::vector_size(dl) >= n-1 );
+        BOOST_ASSERT( traits::vector_size(d) >= n );
+        BOOST_ASSERT( traits::vector_size(du) >= n-1 );
+        BOOST_ASSERT( traits::vector_size(du2) >= n-2 );
+        BOOST_ASSERT( traits::vector_size(ipiv) >= n );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
         detail::gttrs( trans, n, traits::matrix_num_columns(b),
                 traits::vector_storage(dl), traits::vector_storage(d),
                 traits::vector_storage(du), traits::vector_storage(du2),

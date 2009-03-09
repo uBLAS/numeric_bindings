@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_BDSDC_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_BDSDC_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -21,7 +22,6 @@
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -75,16 +75,14 @@ struct bdsdc_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
                 VectorQ >::value_type >::value) );
-#ifndef NDEBUG
-        assert( uplo == 'U' || uplo == 'L' );
-        assert( compq == 'N' || compq == 'P' || compq == 'I' );
-        assert( n >= 0 );
-        assert( traits::vector_size(e) >= n-1 );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
+        BOOST_ASSERT( compq == 'N' || compq == 'P' || compq == 'I' );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::vector_size(e) >= n-1 );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( compq, n ));
-        assert( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( n ));
-#endif
         detail::bdsdc( uplo, compq, n, traits::vector_storage(d),
                 traits::vector_storage(e), traits::matrix_storage(u),
                 traits::leading_dimension(u), traits::matrix_storage(vt),

@@ -61,9 +61,7 @@ $TEMPLATE[level1_workspace]
     static void compute( $LEVEL1, detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
         $STATIC_ASSERTS
         $INIT_USER_DEFINED_VARIABLES
-#ifndef NDEBUG
         $ASSERTS
-#endif
         detail::$groupname( $CALL_LEVEL0 );
     }
 
@@ -118,9 +116,7 @@ $TEMPLATE[level1_noworkspace]
     template< $TYPES >
     static void compute( $LEVEL1 ) {
         $STATIC_ASSERTS
-#ifndef NDEBUG
         $ASSERTS
-#endif
         detail::$groupname( $CALL_LEVEL0 );
     }
 };

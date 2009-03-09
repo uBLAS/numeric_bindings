@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_UPGTR_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_UPGTR_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -21,7 +22,6 @@
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -68,18 +68,17 @@ struct upgtr_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorAP >::value_type, typename traits::matrix_traits<
                 MatrixQ >::value_type >::value) );
-#ifndef NDEBUG
-        assert( uplo == 'U' || uplo == 'L' );
-        assert( traits::matrix_num_columns(q) >= 0 );
-        assert( traits::vector_size(ap) >=
+        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
+        BOOST_ASSERT( traits::matrix_num_columns(q) >= 0 );
+        BOOST_ASSERT( traits::vector_size(ap) >=
                 traits::matrix_num_columns(q)*(traits::matrix_num_columns(q)+
                 1)/2 );
-        assert( traits::vector_size(tau) >= traits::matrix_num_columns(q)-1 );
-        assert( traits::leading_dimension(q) >= std::max(1,
+        BOOST_ASSERT( traits::vector_size(tau) >=
+                traits::matrix_num_columns(q)-1 );
+        BOOST_ASSERT( traits::leading_dimension(q) >= std::max(1,
                 traits::matrix_num_columns(q)) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(q) ));
-#endif
         detail::upgtr( uplo, traits::matrix_num_columns(q),
                 traits::vector_storage(ap), traits::vector_storage(tau),
                 traits::matrix_storage(q), traits::leading_dimension(q),

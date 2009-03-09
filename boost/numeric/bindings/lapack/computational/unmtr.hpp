@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_UNMTR_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_UNMTR_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -22,7 +23,6 @@
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -72,19 +72,17 @@ struct unmtr_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
-#ifndef NDEBUG
-        assert( side == 'L' || side == 'R' );
-        assert( traits::matrix_uplo_tag(a) == 'U' ||
+        BOOST_ASSERT( side == 'L' || side == 'R' );
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( trans == 'N' || trans == 'C' );
-        assert( traits::matrix_num_rows(c) >= 0 );
-        assert( traits::matrix_num_columns(c) >= 0 );
-        assert( traits::leading_dimension(c) >= std::max(1,
+        BOOST_ASSERT( trans == 'N' || trans == 'C' );
+        BOOST_ASSERT( traits::matrix_num_rows(c) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,
                 traits::matrix_num_rows(c)) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( side, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c) ));
-#endif
         detail::unmtr( side, traits::matrix_uplo_tag(a), trans,
                 traits::matrix_num_rows(c), traits::matrix_num_columns(c),
                 traits::matrix_storage(a), traits::leading_dimension(a),

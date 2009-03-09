@@ -14,12 +14,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_PBSV_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_PBSV_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -68,16 +68,14 @@ struct pbsv_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_uplo_tag(ab) == 'U' ||
+        BOOST_ASSERT( traits::matrix_uplo_tag(ab) == 'U' ||
                 traits::matrix_uplo_tag(ab) == 'L' );
-        assert( traits::matrix_num_columns(ab) >= 0 );
-        assert( kd >= 0 );
-        assert( traits::matrix_num_columns(b) >= 0 );
-        assert( traits::leading_dimension(ab) >= kd+1 );
-        assert( traits::leading_dimension(b) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_columns(ab) >= 0 );
+        BOOST_ASSERT( kd >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kd+1 );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_columns(ab)) );
-#endif
         detail::pbsv( traits::matrix_uplo_tag(ab),
                 traits::matrix_num_columns(ab), kd,
                 traits::matrix_num_columns(b), traits::matrix_storage(ab),

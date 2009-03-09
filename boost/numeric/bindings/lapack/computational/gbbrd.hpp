@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GBBRD_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GBBRD_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -109,19 +109,18 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
-#ifndef NDEBUG
-        assert( vect == 'N' || vect == 'Q' || vect == 'P' || vect == 'B' );
-        assert( m >= 0 );
-        assert( n >= 0 );
-        assert( traits::matrix_num_columns(c) >= 0 );
-        assert( kl >= 0 );
-        assert( ku >= 0 );
-        assert( traits::leading_dimension(ab) >= kl+ku+1 );
-        assert( traits::vector_size(d) >= std::min(m,n) );
-        assert( traits::vector_size(e) >= std::min(m,n)-1 );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( vect == 'N' || vect == 'Q' || vect == 'P' ||
+                vect == 'B' );
+        BOOST_ASSERT( m >= 0 );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
+        BOOST_ASSERT( kl >= 0 );
+        BOOST_ASSERT( ku >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
+        BOOST_ASSERT( traits::vector_size(d) >= std::min(m,n) );
+        BOOST_ASSERT( traits::vector_size(e) >= std::min(m,n)-1 );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( m, n ));
-#endif
         detail::gbbrd( vect, m, n, traits::matrix_num_columns(c), kl, ku,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 traits::vector_storage(d), traits::vector_storage(e),
@@ -187,21 +186,20 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
-#ifndef NDEBUG
-        assert( vect == 'N' || vect == 'Q' || vect == 'P' || vect == 'B' );
-        assert( m >= 0 );
-        assert( n >= 0 );
-        assert( traits::matrix_num_columns(c) >= 0 );
-        assert( kl >= 0 );
-        assert( ku >= 0 );
-        assert( traits::leading_dimension(ab) >= kl+ku+1 );
-        assert( traits::vector_size(d) >= std::min(m,n) );
-        assert( traits::vector_size(e) >= std::min(m,n)-1 );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( vect == 'N' || vect == 'Q' || vect == 'P' ||
+                vect == 'B' );
+        BOOST_ASSERT( m >= 0 );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
+        BOOST_ASSERT( kl >= 0 );
+        BOOST_ASSERT( ku >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
+        BOOST_ASSERT( traits::vector_size(d) >= std::min(m,n) );
+        BOOST_ASSERT( traits::vector_size(e) >= std::min(m,n)-1 );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( m, n ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( m, n ));
-#endif
         detail::gbbrd( vect, m, n, traits::matrix_num_columns(c), kl, ku,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 traits::vector_storage(d), traits::vector_storage(e),

@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_SPSVX_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_SPSVX_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -24,7 +25,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -109,22 +109,21 @@ struct spsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAP >::value_type, typename traits::vector_traits<
                 VectorBERR >::value_type >::value) );
-#ifndef NDEBUG
-        assert( fact == 'F' || fact == 'N' );
-        assert( traits::matrix_uplo_tag(ap) == 'U' ||
+        BOOST_ASSERT( fact == 'F' || fact == 'N' );
+        BOOST_ASSERT( traits::matrix_uplo_tag(ap) == 'U' ||
                 traits::matrix_uplo_tag(ap) == 'L' );
-        assert( traits::matrix_num_columns(ap) >= 0 );
-        assert( traits::matrix_num_columns(x) >= 0 );
-        assert( traits::leading_dimension(b) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_columns(ap) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_columns(ap)) );
-        assert( traits::leading_dimension(x) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
                 traits::matrix_num_columns(ap)) );
-        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(berr) >=
+                traits::matrix_num_columns(x) );
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(ap) ));
-        assert( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( traits::matrix_num_columns(ap) ));
-#endif
         detail::spsvx( fact, traits::matrix_uplo_tag(ap),
                 traits::matrix_num_columns(ap), traits::matrix_num_columns(x),
                 traits::matrix_storage(ap), traits::matrix_storage(afp),
@@ -200,22 +199,21 @@ struct spsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAP >::value_type, typename traits::matrix_traits<
                 MatrixX >::value_type >::value) );
-#ifndef NDEBUG
-        assert( fact == 'F' || fact == 'N' );
-        assert( traits::matrix_uplo_tag(ap) == 'U' ||
+        BOOST_ASSERT( fact == 'F' || fact == 'N' );
+        BOOST_ASSERT( traits::matrix_uplo_tag(ap) == 'U' ||
                 traits::matrix_uplo_tag(ap) == 'L' );
-        assert( traits::matrix_num_columns(ap) >= 0 );
-        assert( traits::matrix_num_columns(x) >= 0 );
-        assert( traits::leading_dimension(b) >= std::max(1,
+        BOOST_ASSERT( traits::matrix_num_columns(ap) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
                 traits::matrix_num_columns(ap)) );
-        assert( traits::leading_dimension(x) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
                 traits::matrix_num_columns(ap)) );
-        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( traits::vector_size(berr) >=
+                traits::matrix_num_columns(x) );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(ap) ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( traits::matrix_num_columns(ap) ));
-#endif
         detail::spsvx( fact, traits::matrix_uplo_tag(ap),
                 traits::matrix_num_columns(ap), traits::matrix_num_columns(x),
                 traits::matrix_storage(ap), traits::matrix_storage(afp),

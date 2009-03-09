@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_GESVD_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_GESVD_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -25,7 +26,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -98,19 +98,20 @@ struct gesvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixVT >::value_type >::value) );
-#ifndef NDEBUG
-        assert( jobu == 'A' || jobu == 'S' || jobu == 'O' || jobu == 'N' );
-        assert( jobvt == 'A' || jobvt == 'S' || jobvt == 'O' || jobvt == 'N' );
-        assert( traits::matrix_num_rows(a) >= 0 );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( jobu == 'A' || jobu == 'S' || jobu == 'O' ||
+                jobu == 'N' );
+        BOOST_ASSERT( jobvt == 'A' || jobvt == 'S' || jobvt == 'O' ||
+                jobvt == 'N' );
+        BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-        assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::vector_size(s) >=
+                std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a) ));
-#endif
         detail::gesvd( jobu, jobvt, traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(s),
@@ -176,21 +177,22 @@ struct gesvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixVT >::value_type >::value) );
         integer_t minmn = std::min( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a) );
-#ifndef NDEBUG
-        assert( jobu == 'A' || jobu == 'S' || jobu == 'O' || jobu == 'N' );
-        assert( jobvt == 'A' || jobvt == 'S' || jobvt == 'O' || jobvt == 'N' );
-        assert( traits::matrix_num_rows(a) >= 0 );
-        assert( traits::matrix_num_columns(a) >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( jobu == 'A' || jobu == 'S' || jobu == 'O' ||
+                jobu == 'N' );
+        BOOST_ASSERT( jobvt == 'A' || jobvt == 'S' || jobvt == 'O' ||
+                jobvt == 'N' );
+        BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-        assert( traits::vector_size(s) >= std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::vector_size(s) >=
+                std::min(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), minmn ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( minmn ));
-#endif
         detail::gesvd( jobu, jobvt, traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(s),

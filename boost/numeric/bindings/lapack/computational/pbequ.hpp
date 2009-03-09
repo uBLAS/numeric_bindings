@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_PBEQU_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_PBEQU_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
@@ -22,7 +23,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -75,13 +75,11 @@ struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::vector_traits<
                 VectorS >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_uplo_tag(a) == 'U' ||
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( n >= 0 );
-        assert( kd >= 0 );
-        assert( traits::leading_dimension(ab) >= kd+1 );
-#endif
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kd >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kd+1 );
         detail::pbequ( traits::matrix_uplo_tag(a), n, kd,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 traits::vector_storage(s), scond, amax, info );
@@ -99,13 +97,11 @@ struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAB, typename VectorS >
     static void compute( integer_t const n, integer_t const kd, MatrixAB& ab,
             VectorS& s, real_type& scond, real_type& amax, integer_t& info ) {
-#ifndef NDEBUG
-        assert( traits::matrix_uplo_tag(a) == 'U' ||
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( n >= 0 );
-        assert( kd >= 0 );
-        assert( traits::leading_dimension(ab) >= kd+1 );
-#endif
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( kd >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(ab) >= kd+1 );
         detail::pbequ( traits::matrix_uplo_tag(a), n, kd,
                 traits::matrix_storage(ab), traits::leading_dimension(ab),
                 traits::vector_storage(s), scond, amax, info );

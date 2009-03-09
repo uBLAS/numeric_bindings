@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_UNGBR_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_UNGBR_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -22,7 +23,6 @@
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -66,14 +66,12 @@ struct ungbr_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
-#ifndef NDEBUG
-        assert( vect == 'Q' || vect == 'P' );
-        assert( m >= 0 );
-        assert( k >= 0 );
-        assert( traits::leading_dimension(a) >= m );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( vect == 'Q' || vect == 'P' );
+        BOOST_ASSERT( m >= 0 );
+        BOOST_ASSERT( k >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= m );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( m, n ));
-#endif
         detail::ungbr( vect, m, n, k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),
                 traits::vector_storage(work.select(value_type())),

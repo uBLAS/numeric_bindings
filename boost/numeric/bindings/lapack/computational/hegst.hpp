@@ -14,12 +14,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_HEGST_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_HEGST_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -58,13 +58,11 @@ struct hegst_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_uplo_tag(a) == 'U' ||
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( n >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,n) );
-        assert( traits::leading_dimension(b) >= std::max(1,n) );
-#endif
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
         detail::hegst( itype, traits::matrix_uplo_tag(a), n,
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),

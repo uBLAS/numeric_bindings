@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_LABRD_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_LABRD_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
@@ -22,7 +23,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -102,17 +102,20 @@ struct labrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixY >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-        assert( traits::vector_size(d) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(e) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(tauq) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(taup) >= traits::matrix_num_columns(a) );
-        assert( traits::leading_dimension(x) >= traits::matrix_num_rows(a) );
-        assert( traits::leading_dimension(y) >=
+        BOOST_ASSERT( traits::vector_size(d) >=
                 traits::matrix_num_columns(a) );
-#endif
+        BOOST_ASSERT( traits::vector_size(e) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::vector_size(tauq) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::vector_size(taup) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::leading_dimension(x) >=
+                traits::matrix_num_rows(a) );
+        BOOST_ASSERT( traits::leading_dimension(y) >=
+                traits::matrix_num_columns(a) );
         detail::labrd( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
@@ -151,18 +154,20 @@ struct labrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixY >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-        assert( traits::vector_size(d) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(e) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(tauq) >= traits::matrix_num_columns(a) );
-        assert( traits::vector_size(taup) >= traits::matrix_num_columns(a) );
-        assert( traits::leading_dimension(x) >= std::max(1,
+        BOOST_ASSERT( traits::vector_size(d) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::vector_size(e) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::vector_size(tauq) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::vector_size(taup) >=
+                traits::matrix_num_columns(a) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
                 traits::matrix_num_rows(a)) );
-        assert( traits::leading_dimension(y) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(y) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-#endif
         detail::labrd( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),

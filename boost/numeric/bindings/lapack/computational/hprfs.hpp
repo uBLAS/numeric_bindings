@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_HPRFS_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_HPRFS_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -21,7 +22,6 @@
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -83,21 +83,20 @@ struct hprfs_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAP >::value_type, typename traits::matrix_traits<
                 MatrixX >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_uplo_tag(a) == 'U' ||
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( n >= 0 );
-        assert( traits::matrix_num_columns(x) >= 0 );
-        assert( traits::vector_size(afp) >= n*(n+1)/2 );
-        assert( traits::vector_size(ipiv) >= n );
-        assert( traits::leading_dimension(b) >= std::max(1,n) );
-        assert( traits::leading_dimension(x) >= std::max(1,n) );
-        assert( traits::vector_size(berr) >= traits::matrix_num_columns(x) );
-        assert( traits::vector_size(work.select(value_type())) >=
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
+        BOOST_ASSERT( traits::vector_size(afp) >= n*(n+1)/2 );
+        BOOST_ASSERT( traits::vector_size(ipiv) >= n );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::vector_size(berr) >=
+                traits::matrix_num_columns(x) );
+        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( n ));
-        assert( traits::vector_size(work.select(real_type())) >=
+        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( n ));
-#endif
         detail::hprfs( traits::matrix_uplo_tag(a), n,
                 traits::matrix_num_columns(x), traits::matrix_storage(ap),
                 traits::matrix_storage(afp), traits::vector_storage(ipiv),

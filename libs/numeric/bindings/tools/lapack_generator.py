@@ -55,7 +55,7 @@ def write_functions( info_map, group, template_map, base_dir ):
   for group_name, subroutines in group.iteritems():
     
     filename = group_name.lower() + '.hpp'
-    includes = [ '#include <cassert>',
+    includes = [ '#include <boost/assert.hpp>',
       '#include <boost/numeric/bindings/traits/traits.hpp>',
       '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
       '#include <boost/numeric/bindings/lapack/lapack.h>',

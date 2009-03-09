@@ -14,12 +14,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_HPTRS_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_HPTRS_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -58,14 +58,12 @@ struct hptrs_impl {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAP >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
-#ifndef NDEBUG
-        assert( uplo == 'U' || uplo == 'L' );
-        assert( n >= 0 );
-        assert( traits::matrix_num_columns(b) >= 0 );
-        assert( traits::vector_size(ap) >= n*(n+1)/2 );
-        assert( traits::vector_size(ipiv) >= n );
-        assert( traits::leading_dimension(b) >= std::max(1,n) );
-#endif
+        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
+        BOOST_ASSERT( traits::vector_size(ap) >= n*(n+1)/2 );
+        BOOST_ASSERT( traits::vector_size(ipiv) >= n );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
         detail::hptrs( uplo, n, traits::matrix_num_columns(b),
                 traits::matrix_storage(ap), traits::vector_storage(ipiv),
                 traits::matrix_storage(b), traits::leading_dimension(b),

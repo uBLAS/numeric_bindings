@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_TRSYL_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_TRSYL_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
@@ -22,7 +23,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -90,15 +90,13 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
-#ifndef NDEBUG
-        assert( trana == 'N' || trana == 'T' || trana == 'C' );
-        assert( tranb == 'N' || tranb == 'T' || tranb == 'C' );
-        assert( m >= 0 );
-        assert( n >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,m) );
-        assert( traits::leading_dimension(b) >= std::max(1,n) );
-        assert( traits::leading_dimension(c) >= std::max(1,m) );
-#endif
+        BOOST_ASSERT( trana == 'N' || trana == 'T' || trana == 'C' );
+        BOOST_ASSERT( tranb == 'N' || tranb == 'T' || tranb == 'C' );
+        BOOST_ASSERT( m >= 0 );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,m) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,m) );
         detail::trsyl( trana, tranb, isgn, m, n, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), traits::matrix_storage(c),
@@ -125,15 +123,13 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
-#ifndef NDEBUG
-        assert( trana == 'N' || trana == 'C' );
-        assert( tranb == 'N' || tranb == 'C' );
-        assert( m >= 0 );
-        assert( n >= 0 );
-        assert( traits::leading_dimension(a) >= std::max(1,m) );
-        assert( traits::leading_dimension(b) >= std::max(1,n) );
-        assert( traits::leading_dimension(c) >= std::max(1,m) );
-#endif
+        BOOST_ASSERT( trana == 'N' || trana == 'C' );
+        BOOST_ASSERT( tranb == 'N' || tranb == 'C' );
+        BOOST_ASSERT( m >= 0 );
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,m) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,m) );
         detail::trsyl( trana, tranb, isgn, m, n, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), traits::matrix_storage(c),

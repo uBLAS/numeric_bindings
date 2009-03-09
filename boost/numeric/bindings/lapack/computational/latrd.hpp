@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_LATRD_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_LATRD_HPP
 
+#include <boost/assert.hpp>
 #include <boost/numeric/bindings/lapack/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
@@ -22,7 +23,6 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <cassert>
 
 namespace boost {
 namespace numeric {
@@ -84,13 +84,11 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixW >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_uplo_tag(a) == 'U' ||
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
-        assert( traits::leading_dimension(a) >= (ERROR) );
-        assert( traits::leading_dimension(w) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(a) >= (ERROR) );
+        BOOST_ASSERT( traits::leading_dimension(w) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-#endif
         detail::latrd( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), nb, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(e),
@@ -117,14 +115,12 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixW >::value_type >::value) );
-#ifndef NDEBUG
-        assert( traits::matrix_uplo_tag(h) == 'U' ||
+        BOOST_ASSERT( traits::matrix_uplo_tag(h) == 'U' ||
                 traits::matrix_uplo_tag(h) == 'L' );
-        assert( traits::leading_dimension(a) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        assert( traits::leading_dimension(w) >= std::max(1,
+        BOOST_ASSERT( traits::leading_dimension(w) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-#endif
         detail::latrd( traits::matrix_uplo_tag(h),
                 traits::matrix_num_columns(a), nb, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(e),

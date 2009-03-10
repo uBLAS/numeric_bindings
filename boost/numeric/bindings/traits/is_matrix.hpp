@@ -6,8 +6,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_TRAITS_IS_REAL_HPP
-#define BOOST_NUMERIC_BINDINGS_TRAITS_IS_REAL_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_TRAITS_IS_MATRIX_HPP
+#define BOOST_NUMERIC_BINDINGS_TRAITS_IS_MATRIX_HPP
 
 #include <boost/mpl/bool.hpp>
 
@@ -17,16 +17,7 @@ namespace bindings {
 namespace traits {
 
 template< typename T >
-struct is_real: boost::mpl::bool_<false> {};
-
-template<>
-struct is_real< float >: boost::mpl::bool_<true> {};
-
-template<>
-struct is_real< double >: boost::mpl::bool_<true> {};
-
-template<>
-struct is_real< long double >: boost::mpl::bool_<true> {};
+struct is_matrix: boost::mpl::bool_<false> {};
 
 }}}}
 

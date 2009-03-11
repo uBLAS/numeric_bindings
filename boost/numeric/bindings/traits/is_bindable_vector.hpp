@@ -6,8 +6,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_TRAITS_IS_MATRIX_HPP
-#define BOOST_NUMERIC_BINDINGS_TRAITS_IS_MATRIX_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_TRAITS_IS_BINDABLE_VECTOR_HPP
+#define BOOST_NUMERIC_BINDINGS_TRAITS_IS_BINDABLE_VECTOR_HPP
 
 #include <boost/mpl/bool.hpp>
 
@@ -17,7 +17,7 @@ namespace bindings {
 namespace traits {
 
 template< typename T >
-struct is_matrix: boost::mpl::bool_<false> {};
+struct is_bindable_vector: boost::mpl::bool_<false> {};
 
 }}}}
 

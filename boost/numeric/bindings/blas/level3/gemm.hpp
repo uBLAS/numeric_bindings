@@ -11,10 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_GEMM_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_GEMM_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_GEMM_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_GEMM_HPP
 
-#include <boost/numeric/bindings/blas/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -24,8 +24,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
@@ -91,7 +90,7 @@ struct gemm_impl {
     }
 };
 
-// template function to call gemm
+// low-level template function for direct calls to level3::gemm
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename gemm_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -104,6 +103,6 @@ gemm( char const transa, char const transb, integer_t const k,
             beta, c );
 }
 
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::level3
 
 #endif

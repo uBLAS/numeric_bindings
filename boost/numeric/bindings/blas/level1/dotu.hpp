@@ -11,10 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_DOTU_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_DOTU_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_DOTU_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_DOTU_HPP
 
-#include <boost/numeric/bindings/blas/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -24,8 +24,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
@@ -62,7 +61,7 @@ struct dotu_impl {
     }
 };
 
-// template function to call dotu
+// low-level template function for direct calls to level1::dotu
 template< typename VectorX, typename VectorY >
 inline typename dotu_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -71,6 +70,6 @@ dotu( VectorX& x, VectorY& y ) {
     return dotu_impl< value_type >::compute( x, y );
 }
 
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::level1
 
 #endif

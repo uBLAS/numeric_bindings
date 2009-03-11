@@ -11,10 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_SPR_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_SPR_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_SPR_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_SPR_HPP
 
-#include <boost/numeric/bindings/blas/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -24,8 +24,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
@@ -60,7 +59,7 @@ struct spr_impl {
     }
 };
 
-// template function to call spr
+// low-level template function for direct calls to level2::spr
 template< typename VectorX, typename MatrixAP >
 inline typename spr_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -70,6 +69,6 @@ spr( typename traits::vector_traits< VectorX >::value_type const alpha,
     spr_impl< value_type >::compute( alpha, x, ap );
 }
 
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::level2
 
 #endif

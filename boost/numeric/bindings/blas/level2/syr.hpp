@@ -11,10 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_SYR_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_SYR_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_SYR_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_SYR_HPP
 
-#include <boost/numeric/bindings/blas/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -24,8 +24,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
@@ -60,7 +59,7 @@ struct syr_impl {
     }
 };
 
-// template function to call syr
+// low-level template function for direct calls to level2::syr
 template< typename VectorX, typename MatrixA >
 inline typename syr_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -70,6 +69,6 @@ syr( typename traits::vector_traits< VectorX >::value_type const alpha,
     syr_impl< value_type >::compute( alpha, x, a );
 }
 
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::level2
 
 #endif

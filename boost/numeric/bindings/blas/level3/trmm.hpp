@@ -11,10 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_TRMM_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_TRMM_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_TRMM_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_TRMM_HPP
 
-#include <boost/numeric/bindings/blas/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -24,8 +24,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
@@ -83,7 +82,7 @@ struct trmm_impl {
     }
 };
 
-// template function to call trmm
+// low-level template function for direct calls to level3::trmm
 template< typename MatrixA, typename MatrixB >
 inline typename trmm_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -94,6 +93,6 @@ trmm( char const side, char const transa, char const diag,
     trmm_impl< value_type >::compute( side, transa, diag, alpha, a, b );
 }
 
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::level3
 
 #endif

@@ -11,10 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_TPMV_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_TPMV_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_TPMV_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_TPMV_HPP
 
-#include <boost/numeric/bindings/blas/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -24,8 +24,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
@@ -71,7 +70,7 @@ struct tpmv_impl {
     }
 };
 
-// template function to call tpmv
+// low-level template function for direct calls to level2::tpmv
 template< typename MatrixAP, typename VectorX >
 inline typename tpmv_impl< typename traits::matrix_traits<
         MatrixAP >::value_type >::return_type
@@ -80,6 +79,6 @@ tpmv( char const trans, char const diag, MatrixAP& ap, VectorX& x ) {
     tpmv_impl< value_type >::compute( trans, diag, ap, x );
 }
 
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::level2
 
 #endif

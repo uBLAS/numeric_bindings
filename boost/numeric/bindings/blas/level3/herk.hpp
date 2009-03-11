@@ -11,10 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_HERK_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_HERK_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_HERK_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_HERK_HPP
 
-#include <boost/numeric/bindings/blas/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -24,8 +24,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
@@ -67,7 +66,7 @@ struct herk_impl {
     }
 };
 
-// template function to call herk
+// low-level template function for direct calls to level3::herk
 template< typename MatrixA, typename MatrixC >
 inline typename herk_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -79,6 +78,6 @@ herk( char const trans, integer_t const k,
     herk_impl< value_type >::compute( trans, k, alpha, a, beta, c );
 }
 
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::level3
 
 #endif

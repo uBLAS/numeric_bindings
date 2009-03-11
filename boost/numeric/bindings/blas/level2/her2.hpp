@@ -11,10 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_HER2_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_HER2_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_HER2_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_HER2_HPP
 
-#include <boost/numeric/bindings/blas/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -24,8 +24,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
@@ -72,7 +71,7 @@ struct her2_impl {
     }
 };
 
-// template function to call her2
+// low-level template function for direct calls to level2::her2
 template< typename VectorX, typename VectorY, typename MatrixA >
 inline typename her2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -82,6 +81,6 @@ her2( typename traits::vector_traits< VectorX >::value_type const alpha,
     her2_impl< value_type >::compute( alpha, x, y, a );
 }
 
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::level2
 
 #endif

@@ -11,10 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_AXPY_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_AXPY_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_AXPY_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_AXPY_HPP
 
-#include <boost/numeric/bindings/blas/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -24,8 +24,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
@@ -70,7 +69,7 @@ struct axpy_impl {
     }
 };
 
-// template function to call axpy
+// low-level template function for direct calls to level1::axpy
 template< typename VectorX, typename VectorY >
 inline typename axpy_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -80,6 +79,6 @@ axpy( typename traits::vector_traits< VectorX >::value_type const a,
     axpy_impl< value_type >::compute( a, x, y );
 }
 
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::level1
 
 #endif

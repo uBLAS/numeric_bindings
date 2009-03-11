@@ -11,10 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_ROTG_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_ROTG_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_ROTG_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_ROTG_HPP
 
-#include <boost/numeric/bindings/blas/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -24,8 +24,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
@@ -62,7 +61,7 @@ struct rotg_impl {
     }
 };
 
-// template function to call rotg
+// low-level template function for direct calls to level1::rotg
 template<  >
 inline typename rotg_impl< typename traits::TODO_traits<
         TODO >::value_type >::return_type
@@ -74,6 +73,6 @@ rotg( typename traits::TODO_traits< TODO >::value_type& a,
     rotg_impl< value_type >::compute( a, b, c, s );
 }
 
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::level1
 
 #endif

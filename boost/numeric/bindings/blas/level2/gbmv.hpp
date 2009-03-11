@@ -11,10 +11,10 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_GBMV_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_GBMV_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_GBMV_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_GBMV_HPP
 
-#include <boost/numeric/bindings/blas/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -24,8 +24,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
@@ -91,7 +90,7 @@ struct gbmv_impl {
     }
 };
 
-// template function to call gbmv
+// low-level template function for direct calls to level2::gbmv
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename gbmv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -104,6 +103,6 @@ gbmv( char const trans, integer_t const kl, integer_t const ku,
             y );
 }
 
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::level2
 
 #endif

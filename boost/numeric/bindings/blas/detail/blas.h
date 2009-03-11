@@ -11,11 +11,11 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_BLAS_H
-#define BOOST_NUMERIC_BINDINGS_BLAS_BLAS_H
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_BLAS_H
+#define BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_BLAS_H
 
 #include <boost/numeric/bindings/traits/type.h>
-#include <boost/numeric/bindings/blas/blas_names.h>
+#include <boost/numeric/bindings/blas/detail/blas_names.h>
 
 extern "C" {
 
@@ -115,8 +115,8 @@ double BLAS_DSDOT( integer_t const* n, float const* sx, integer_t const* incx,
         float const* sy, integer_t const* incy );
 
 // Value-type variants of srot
-void BLAS_CSROT( integer_t const* n, fcomplex_t const* cx,
-        integer_t const* incx, fcomplex_t const* cy, integer_t const* incy,
+void BLAS_CSROT( integer_t const* n, fcomplex_t const* x,
+        integer_t const* incx, fcomplex_t const* y, integer_t const* incy,
         float const* c, float const* s );
 
 // Value-type variants of swap

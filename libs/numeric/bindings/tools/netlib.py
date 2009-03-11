@@ -951,13 +951,21 @@ def parse_file( filename, template_map ):
             argument_properties[ 'trait_type' ] = 'num_columns'
             argument_properties[ 'trait_of' ] = match_matrix_traits[0][3].strip()
 
-
+        # if we're not dealing with order
         else:
           references = match_matrix_traits[0][3].split( 'and' )
           for matrix_name in references:
             if matrix_name.strip() in grouped_arguments[ 'by_type' ][ 'matrix' ]:
               argument_properties[ 'trait_type' ] = 'num_' + match_matrix_traits[0][0]
               argument_properties[ 'trait_of' ] = matrix_name.strip()
+
+      # if we have found no matches .. perhaps there's something in the templating system
+      else:
+        traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait'
+        if my_has_key( traits_key, template_map ):
+          data = template_map[ my_has_key( traits_key, template_map ) ].split(",")
+          argument_properties[ 'trait_type' ] = data[0].strip()
+          argument_properties[ 'trait_of' ] = data[1].strip()
 
       #
       # Fetch array traits, such as "the length of the array WORK"

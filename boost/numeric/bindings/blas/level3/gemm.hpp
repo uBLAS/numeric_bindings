@@ -75,19 +75,19 @@ struct gemm_impl {
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
     static return_type compute( char const transa, char const transb,
-            integer_t const m, integer_t const k, value_type const alpha,
-            MatrixA& a, MatrixB& b, value_type const beta, MatrixC& c ) {
+            integer_t const k, value_type const alpha, MatrixA& a, MatrixB& b,
+            value_type const beta, MatrixC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
-        detail::gemm( transa, transb, m, traits::matrix_num_columns(c),
-                k, alpha, traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b), beta, traits::matrix_storage(c),
-                traits::leading_dimension(c) );
+        detail::gemm( transa, transb, traits::matrix_num_rows(c),
+                traits::matrix_num_columns(c), k, alpha,
+                traits::matrix_storage(a), traits::leading_dimension(a),
+                traits::matrix_storage(b), traits::leading_dimension(b), beta,
+                traits::matrix_storage(c), traits::leading_dimension(c) );
     }
 };
 
@@ -95,13 +95,12 @@ struct gemm_impl {
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename gemm_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-gemm( char const transa, char const transb, integer_t const m,
-        integer_t const k, typename traits::matrix_traits<
-        MatrixA >::value_type const alpha, MatrixA& a, MatrixB& b,
-        typename traits::matrix_traits< MatrixA >::value_type const beta,
-        MatrixC& c ) {
+gemm( char const transa, char const transb, integer_t const k,
+        typename traits::matrix_traits< MatrixA >::value_type const alpha,
+        MatrixA& a, MatrixB& b, typename traits::matrix_traits<
+        MatrixA >::value_type const beta, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    gemm_impl< value_type >::compute( transa, transb, m, k, alpha, a, b,
+    gemm_impl< value_type >::compute( transa, transb, k, alpha, a, b,
             beta, c );
 }
 

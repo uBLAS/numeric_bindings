@@ -50,7 +50,7 @@ def write_functions( info_map, group, template_map, base_dir ):
     includes = [
       '#include <boost/numeric/bindings/traits/traits.hpp>',
       '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
-      '#include <boost/numeric/bindings/blas/blas.h>',
+      '#include <boost/numeric/bindings/blas/detail/blas.h>',
       '#include <boost/type_traits/is_same.hpp>',
       '#include <boost/static_assert.hpp>' ]
       
@@ -220,6 +220,8 @@ def write_functions( info_map, group, template_map, base_dir ):
     result = result.replace( '$LEVEL2', level2 )
     result = result.replace( '$GROUPNAME', group_name )
     result = result.replace( '$groupname', group_name.lower() )
+    result = result.replace( '$DIRNAME', base_dir.split("/")[-1].upper() )
+    result = result.replace( '$dirname', base_dir.split("/")[-1].lower() )
 
     # replace the global variables as last (this is convenient)
     #result = result.replace( '$INDENT', '    ' )
@@ -327,8 +329,8 @@ for name in value_type_groups.keys():
 print routines 
 
 
-bindings.write_names_header( function_info_map, routines, templates, bindings_target_path + 'blas_names.h' )
-bindings.write_header( function_info_map, routines, templates, bindings_target_path + 'blas.h' )
+bindings.write_names_header( function_info_map, routines, templates, bindings_target_path + 'detail/blas_names.h' )
+bindings.write_header( function_info_map, routines, templates, bindings_target_path + 'detail/blas.h' )
 
 for level, level_properties in routines.iteritems():
   target_path = bindings_target_path + level

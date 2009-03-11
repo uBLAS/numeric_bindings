@@ -12,11 +12,11 @@ $TEMPLATE[blas.h]
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_BLAS_H
-#define BOOST_NUMERIC_BINDINGS_BLAS_BLAS_H
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_BLAS_H
+#define BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_BLAS_H
 
 #include <boost/numeric/bindings/traits/type.h>
-#include <boost/numeric/bindings/blas/blas_names.h>
+#include <boost/numeric/bindings/blas/detail/blas_names.h>
 
 extern "C" {
 
@@ -40,8 +40,8 @@ $TEMPLATE[blas_names.h]
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_BLAS_NAMES_H
-#define BOOST_NUMERIC_BINDINGS_BLAS_BLAS_NAMES_H
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_BLAS_NAMES_H
+#define BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_BLAS_NAMES_H
 
 #include <boost/numeric/bindings/traits/fortran.h>
 

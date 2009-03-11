@@ -12,8 +12,8 @@ $TEMPLATE[blas.hpp]
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_BLAS_$GROUPNAME_HPP
-#define BOOST_NUMERIC_BINDINGS_BLAS_$GROUPNAME_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_BLAS_$DIRNAME_$GROUPNAME_HPP
+#define BOOST_NUMERIC_BINDINGS_BLAS_$DIRNAME_$GROUPNAME_HPP
 
 $INCLUDES
 
@@ -21,8 +21,7 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-
-//$DESCRIPTION
+namespace $dirname {
 
 // overloaded functions to call blas
 namespace detail {
@@ -30,7 +29,7 @@ $OVERLOADS}
 
 $LEVEL1
 $LEVEL2
-}}}} // namespace boost::numeric::bindings::blas
+}}}}} // namespace boost::numeric::bindings::blas::$dirname
 
 #endif
 $TEMPLATE[blas_overloads]
@@ -53,7 +52,7 @@ struct $groupname_impl {
     }
 };
 $TEMPLATE[blas_level2]
-// template function to call $groupname
+// low-level template function for direct calls to $dirname::$groupname
 template< $TYPES >
 inline typename $groupname_impl< typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type >::return_type
 $groupname( $LEVEL2 ) {

@@ -1,0 +1,681 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>BLAS Bindings</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="../index.html" title="Boost.Numeric_Bindings alpha">
+<link rel="up" href="../index.html" title="Boost.Numeric_Bindings alpha">
+<link rel="prev" href="tutorial.html" title="Tutorial">
+<link rel="next" href="lapack.html" title="LAPACK Bindings">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../boost.png"></td>
+<td align="center"><a href="../../../index.html">Home</a></td>
+<td align="center"><a href="../libraries.html">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="tutorial.html"><img src="../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="lapack.html"><img src="../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+<div class="section" lang="en">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="boost_numeric_bindings.blas"></a><a class="link" href="blas.html" title="BLAS Bindings"> BLAS Bindings</a>
+</h2></div></div></div>
+<div class="table">
+<a name="id386121"></a><p class="title"><b>Table 1. Level 1 BLAS</b></p>
+<div class="table-contents"><table class="table" summary="Level 1 BLAS">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+          <p>
+            BLAS
+          </p>
+          </th>
+<th>
+          <p>
+            Boost.Numeric_Bindings Equivalent
+          </p>
+          </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+          <p>
+            xROTG
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::create_rotation</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xROTMG
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::create_rotation</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xROT
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::apply_rotation</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xROTM
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::apply_rotation</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xSWAP
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::swap</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xSCAL
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::scale</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xCOPY
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::copy</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xAXPY
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::add</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xDOT
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::dot</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xDOTU
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::dot</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xDOTC
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::dot</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xxDOT
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::prec_dot</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xNRM2
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::norm_2</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xASUM
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::norm_1</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            IxAMAX
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::norm_inf</code>, <code class="computeroutput">blas::index_norm_inf</code>
+          </p>
+          </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><div class="table">
+<a name="id426412"></a><p class="title"><b>Table 2. Level 2 BLAS</b></p>
+<div class="table-contents"><table class="table" summary="Level 2 BLAS">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+          <p>
+            BLAS
+          </p>
+          </th>
+<th>
+          <p>
+            Boost.Numeric_Bindings Equivalent
+          </p>
+          </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+          <p>
+            xGEMV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xGBMV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xHEMV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xHPMV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xSYMV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xSBMV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xTRMV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xTBMV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xTPMV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xTRSV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::forward_solve</code>,
+            <code class="computeroutput">blas::back_solve</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xTBSV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::forward_solve</code>,
+            <code class="computeroutput">blas::back_solve</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xTPSV
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::forward_solve</code>,
+            <code class="computeroutput">blas::back_solve</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xGER
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_1_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xGERU
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_1_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xGERC
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_1_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xHER
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_1_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xHPR
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_1_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xHER2
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_2_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xHPR2
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_2_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xSYR
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_1_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xSPR
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_1_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xSYR
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_2_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xSPR
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_2_update</code>
+          </p>
+          </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break"><div class="table">
+<a name="id426926"></a><p class="title"><b>Table 3. Level 3 BLAS</b></p>
+<div class="table-contents"><table class="table" summary="Level 3 BLAS">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead><tr>
+<th>
+          <p>
+            BLAS
+          </p>
+          </th>
+<th>
+          <p>
+            Boost.Numeric_Bindings Equivalent
+          </p>
+          </th>
+</tr></thead>
+<tbody>
+<tr>
+<td>
+          <p>
+            xGEMM
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xSYMM
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xHEMM
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xSYRK
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_k_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xHERK
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_k_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xSYR2K
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_2k_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xHER2K
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::rank_2k_update</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xTRMM
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::transform</code>
+          </p>
+          </td>
+</tr>
+<tr>
+<td>
+          <p>
+            xTRSM
+          </p>
+          </td>
+<td>
+          <p>
+            <code class="computeroutput">blas::forward_solve</code>,
+            <code class="computeroutput">blas::back_solve</code>
+          </p>
+          </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break">
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright © 2008 author1 author2<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="tutorial.html"><img src="../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="lapack.html"><img src="../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

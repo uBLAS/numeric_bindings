@@ -1,0 +1,67 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Synopsis</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="../index.html" title="Boost.Numeric_Bindings alpha">
+<link rel="up" href="../index.html" title="Boost.Numeric_Bindings alpha">
+<link rel="prev" href="../index.html" title="Boost.Numeric_Bindings alpha">
+<link rel="next" href="introduction.html" title="Introduction">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="Boost C++ Libraries" width="277" height="86" src="../../../boost.png"></td>
+<td align="center"><a href="../../../index.html">Home</a></td>
+<td align="center"><a href="../libraries.html">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../index.html"><img src="../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="introduction.html"><img src="../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+<div class="section" lang="en">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="boost_numeric_bindings.synopsis"></a><a class="link" href="synopsis.html" title="Synopsis"> Synopsis</a>
+</h2></div></div></div>
+<p>
+      Boost.Numeric_Bindings is a library for high-performance numeric computing.
+    </p>
+<p>
+      The Bindings Library contains bindings to popular non-boost (numeric) libraries,
+      usually written in Fortran or C. These non-boost libraries generally use data
+      structures in their API for which there might be boostified equivalents or
+      other popular non-boost equivalents. The Bindings Library offers a generic
+      thin layer API on top of the original API of the external library. This generic
+      API accepts a whole range of data structures from different origins and usually
+      hides or reduces the complexity of the original API.
+    </p>
+<p>
+      For instance, <a href="http://math-atlas.sourceforge.net/" target="_top">ATLAS</a>
+      a C library implementing BLAS (and few LAPACK routines), represents matrices
+      by means of a pointer and the dimensions. Now boost also contains matrix classes
+      <a href="http://www.boost.org/libs/numeric/ublas/doc/index.htm" target="_top">uBLAS</a>
+      and there are also other matrix libraries in widespread use.
+    </p>
+<p>
+      Therefore the Bindings library features a generic interface for ATLAS which
+      provides the possibility to call e.g. the matrix-multiplication routine of
+      ATLAS using matrices defined in uBLAS, TNT, etc.
+    </p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright © 2008 author1 author2<p>
+        Distributed under the Boost Software License, Version 1.0. (See accompanying
+        file LICENSE_1_0.txt or copy at <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt</a>)
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../index.html"><img src="../../../doc/html/images/prev.png" alt="Prev"></a><a accesskey="u" href="../index.html"><img src="../../../doc/html/images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../../../doc/html/images/home.png" alt="Home"></a><a accesskey="n" href="introduction.html"><img src="../../../doc/html/images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

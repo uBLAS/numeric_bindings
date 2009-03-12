@@ -63,23 +63,26 @@ namespace boost { namespace numeric { namespace bindings { namespace traits {
   }; 
 
   // matrix structure tags:
-  struct general_t {}; 
-  struct symmetric_t {}; 
-  struct symmetric_packed_t {}; 
-  struct hermitian_t {}; 
-  struct hermitian_packed_t {}; 
-  struct banded_t {}; 
-  // TO DO: add triangular, etc. 
+  struct general_t {};
+  struct symmetric_t {};
+  struct symmetric_packed_t {};
+  struct hermitian_t {};
+  struct hermitian_packed_t {};
+  struct banded_t {};
+  struct triangular_t {};
+  struct triangular_packed_t {};
+  // If all else fails...
   struct unknown_structure_t {}; 
 
   // storage ordering tags: 
   struct row_major_t {};
   struct column_major_t {};
 
-  // upper/lower triangular part tags:
+  // upper/lower non-unit/unit triangular type tags
   struct upper_t {};
   struct lower_t {};
-
+  struct unit_upper_t {};
+  struct unit_lower_t {};
 
   ///////////////////////////
   //

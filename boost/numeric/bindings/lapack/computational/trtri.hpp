@@ -57,26 +57,26 @@ struct trtri_impl {
 
     // templated specialization
     template< typename MatrixA >
-    static void compute( char const uplo, char const diag, MatrixA& a,
-            integer_t& info ) {
-        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
+    static void compute( char const diag, MatrixA& a, integer_t& info ) {
+        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
+                traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
                 traits::matrix_num_columns(a)) );
-        detail::trtri( uplo, diag, traits::matrix_num_columns(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                info );
+        detail::trtri( traits::matrix_uplo_tag(a), diag,
+                traits::matrix_num_columns(a), traits::matrix_storage(a),
+                traits::leading_dimension(a), info );
     }
 };
 
 
 // template function to call trtri
 template< typename MatrixA >
-inline integer_t trtri( char const uplo, char const diag, MatrixA& a ) {
+inline integer_t trtri( char const diag, MatrixA& a ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    trtri_impl< value_type >::compute( uplo, diag, a, info );
+    trtri_impl< value_type >::compute( diag, a, info );
     return info;
 }
 

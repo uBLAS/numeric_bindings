@@ -1565,6 +1565,16 @@ void LAPACK_ZTPRFS( char const* uplo, char const* trans, char const* diag,
         integer_t const* ldx, double* ferr, double* berr, dcomplex_t* work,
         double* rwork, integer_t* info );
 
+// Value-type variants of tptri
+void LAPACK_STPTRI( char const* uplo, char const* diag, integer_t const* n,
+        float* ap, integer_t* info );
+void LAPACK_DTPTRI( char const* uplo, char const* diag, integer_t const* n,
+        double* ap, integer_t* info );
+void LAPACK_CTPTRI( char const* uplo, char const* diag, integer_t const* n,
+        fcomplex_t* ap, integer_t* info );
+void LAPACK_ZTPTRI( char const* uplo, char const* diag, integer_t const* n,
+        dcomplex_t* ap, integer_t* info );
+
 // Value-type variants of tptrs
 void LAPACK_STPTRS( char const* uplo, char const* trans, char const* diag,
         integer_t const* n, integer_t const* nrhs, float const* ap, float* b,

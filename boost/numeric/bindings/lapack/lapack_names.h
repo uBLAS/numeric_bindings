@@ -570,6 +570,12 @@
 #define LAPACK_CTPRFS FORTRAN_ID( ctprfs )
 #define LAPACK_ZTPRFS FORTRAN_ID( ztprfs )
 
+// Value-type variants of tptri
+#define LAPACK_STPTRI FORTRAN_ID( stptri )
+#define LAPACK_DTPTRI FORTRAN_ID( dtptri )
+#define LAPACK_CTPTRI FORTRAN_ID( ctptri )
+#define LAPACK_ZTPTRI FORTRAN_ID( ztptri )
+
 // Value-type variants of tptrs
 #define LAPACK_STPTRS FORTRAN_ID( stptrs )
 #define LAPACK_DTPTRS FORTRAN_ID( dtptrs )

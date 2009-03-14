@@ -11,11 +11,11 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_TPTRI_HPP
-#define BOOST_NUMERIC_BINDINGS_LAPACK_TPTRI_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TPTRI_HPP
+#define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TPTRI_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>

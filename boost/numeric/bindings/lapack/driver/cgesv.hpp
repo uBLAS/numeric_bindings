@@ -11,11 +11,11 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_CGESV_HPP
-#define BOOST_NUMERIC_BINDINGS_LAPACK_CGESV_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_CGESV_HPP
+#define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_CGESV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>

@@ -11,11 +11,11 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_PTSV_HPP
-#define BOOST_NUMERIC_BINDINGS_LAPACK_PTSV_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_PTSV_HPP
+#define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_PTSV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>

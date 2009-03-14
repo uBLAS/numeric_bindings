@@ -11,11 +11,11 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_SBGST_HPP
-#define BOOST_NUMERIC_BINDINGS_LAPACK_SBGST_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_SBGST_HPP
+#define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_SBGST_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>

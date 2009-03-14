@@ -11,11 +11,11 @@
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_POEQU_HPP
-#define BOOST_NUMERIC_BINDINGS_LAPACK_POEQU_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_POEQU_HPP
+#define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_POEQU_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>

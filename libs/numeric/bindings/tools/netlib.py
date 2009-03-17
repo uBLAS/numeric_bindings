@@ -179,10 +179,16 @@ def keyword_typename( name, properties ):
       if properties.has_key( 'packed' ):
         if name == 'AP':
           result = namespace + 'A'
+        if name == 'BP':
+          result = namespace + 'B'
+      if properties.has_key( 'banded' ):
+        if name == 'AB':
+          result = namespace + 'A'
+        if name == 'BB':
+          result = namespace + 'B'
     if properties[ 'type' ] == 'vector':
       if name == 'IPIV':
         result = namespace + 'pivot'
-
   return result
 
 
@@ -1112,6 +1118,17 @@ def parse_file( filename, template_map ):
         #
         argument_properties[ 'type' ] = 'matrix'
         argument_properties[ 'packed' ] = True
+
+    #
+    # Matrix related detection code
+    #
+    if argument_properties[ 'type' ] == 'matrix':
+      #
+      # try to detect whether the matrix in question is a band matrix
+      #
+      banded_keywords = re.compile( '(/s|band|matrix)+', re.M ).findall( comment_block )
+      if 'matrix' in banded_keywords and 'band' in banded_keywords:
+        argument_properties[ 'banded' ] = True
 
   #
   # Add user-defined arguments to the argument_map

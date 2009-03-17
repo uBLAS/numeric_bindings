@@ -12,8 +12,8 @@ $TEMPLATE[lapack.hpp]
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_$GROUPNAME_HPP
-#define BOOST_NUMERIC_BINDINGS_LAPACK_$GROUPNAME_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_$DIRNAME_$GROUPNAME_HPP
+#define BOOST_NUMERIC_BINDINGS_LAPACK_$DIRNAME_$GROUPNAME_HPP
 
 $INCLUDES
 
@@ -55,6 +55,7 @@ struct $groupname_impl< ValueType, typename boost::enable_if< traits::is_$SPECIA
 $TEMPLATE[level1_workspace]
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< $KEYWORDS > valid_keywords;
 
     // user-defined workspace specialization
     template< $TYPES, $WORKSPACE_TYPENAMES >
@@ -111,6 +112,7 @@ $TEMPLATE[min_size_func]
 $TEMPLATE[level1_noworkspace]
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< $KEYWORDS > valid_keywords;
 
     // templated specialization
     template< $TYPES >

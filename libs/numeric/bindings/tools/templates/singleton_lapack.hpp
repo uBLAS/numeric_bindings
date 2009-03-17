@@ -12,11 +12,11 @@ $TEMPLATE[lapack.h]
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_LAPACK_H
-#define BOOST_NUMERIC_BINDINGS_LAPACK_LAPACK_H
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_DETAIL_LAPACK_H
+#define BOOST_NUMERIC_BINDINGS_LAPACK_DETAIL_LAPACK_H
 
 #include <boost/numeric/bindings/traits/type.h>
-#include <boost/numeric/bindings/lapack/lapack_names.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_names.h>
 
 #ifndef BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK 
 #  define BOOST_NUMERIC_BINDINGS_FORTRAN
@@ -51,8 +51,8 @@ $TEMPLATE[lapack_names.h]
 // PLEASE DO NOT EDIT!
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_LAPACK_NAMES_H
-#define BOOST_NUMERIC_BINDINGS_LAPACK_LAPACK_NAMES_H
+#ifndef BOOST_NUMERIC_BINDINGS_LAPACK_DETAIL_LAPACK_NAMES_H
+#define BOOST_NUMERIC_BINDINGS_LAPACK_DETAIL_LAPACK_NAMES_H
 
 #ifndef BOOST_NUMERIC_BINDINGS_USE_CLAPACK
 #  include <boost/numeric/bindings/traits/fortran.h>

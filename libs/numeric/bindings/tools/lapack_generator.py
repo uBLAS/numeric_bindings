@@ -58,9 +58,13 @@ def write_functions( info_map, group, template_map, base_dir ):
     includes = [ '#include <boost/assert.hpp>',
       '#include <boost/numeric/bindings/traits/traits.hpp>',
       '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
-      '#include <boost/numeric/bindings/lapack/lapack.h>',
+      '#include <boost/numeric/bindings/lapack/detail/lapack.h>',
       '#include <boost/type_traits/is_same.hpp>',
       '#include <boost/static_assert.hpp>' ]
+
+    # add support for the mpl keyword vector
+    includes += [ '#include <boost/mpl/vector.hpp>',
+                  '#include <boost/numeric/bindings/lapack/keywords.hpp>' ]
 
     if template_map.has_key( group_name.lower() + '.includes' ):
       includes += template_map[ group_name.lower() + '.includes' ].splitlines()
@@ -132,6 +136,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       workspace_query_arg_list = []
       user_defined_arg_list = []
       user_defined_opt_arg_list = []
+      keyword_type_list = []
 
       #
       # Create static assertions, first by value type
@@ -168,6 +173,8 @@ def write_functions( info_map, group, template_map, base_dir ):
           call_level1_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_level_1' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'opt_workspace_query' ] != None:
           workspace_query_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'opt_workspace_query' ] ]
+        if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'keyword_type' ] != None:
+          keyword_type_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'keyword_type' ] ]
 
       if info_map[ subroutine ][ 'user_defined_variables' ] != None:
         for arg in info_map[ subroutine ][ 'user_defined_variables' ]:
@@ -187,6 +194,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = level1_template.replace( "$LEVEL1", ", ".join( level1_arg_list ) )
       level1_template = level1_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
       level1_template = level1_template.replace( "$ASSERTS", "\n        ".join( level1_assert_list ) )
+      level1_template = level1_template.replace( "$KEYWORDS", ", ".join( keyword_type_list ) )
       
       if len( level1_static_assert_list ) > 0:
         level1_template = level1_template.replace( "$STATIC_ASSERTS", "\n        ".join( level1_static_assert_list ) )
@@ -360,6 +368,8 @@ def write_functions( info_map, group, template_map, base_dir ):
     result = result.replace( '$LEVEL2', level2 )
     result = result.replace( '$GROUPNAME', group_name )
     result = result.replace( '$groupname', group_name.lower() )
+    result = result.replace( '$DIRNAME', base_dir.split("/")[-1].upper() )
+    result = result.replace( '$dirname', base_dir.split("/")[-1].lower() )
 
     # replace the global variables as last (this is convenient)
     #result = result.replace( '$INDENT', '    ' )
@@ -514,8 +524,8 @@ for name in value_type_groups.keys():
 print routines 
 
 
-bindings.write_names_header( function_info_map, routines, templates, bindings_target_path + 'lapack_names.h' )
-bindings.write_header( function_info_map, routines, templates, bindings_target_path + 'lapack.h' )
+bindings.write_names_header( function_info_map, routines, templates, bindings_target_path + 'detail/lapack_names.h' )
+bindings.write_header( function_info_map, routines, templates, bindings_target_path + 'detail/lapack.h' )
 
 for level, level_properties in routines.iteritems():
   target_path = bindings_target_path + level

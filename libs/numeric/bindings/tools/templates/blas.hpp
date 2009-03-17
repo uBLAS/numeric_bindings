@@ -42,6 +42,7 @@ template< typename ValueType >
 struct $groupname_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef $RETURN_TYPE return_type;
 
     // templated specialization

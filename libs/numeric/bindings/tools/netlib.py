@@ -168,6 +168,23 @@ def level1_typename( name, properties ):
       result = "typename Vector" + name
   return result
 
+def keyword_typename( name, properties ):
+  result = None
+  namespace = 'keywords::tag::'
+
+  if 'workspace' not in properties[ 'io' ]:
+    if properties[ 'type' ] == 'matrix':
+      if name == 'A' or name == 'B':
+        result = namespace + name
+      if properties.has_key( 'packed' ):
+        if name == 'AP':
+          result = namespace + 'A'
+    if properties[ 'type' ] == 'vector':
+      if name == 'IPIV':
+        result = namespace + 'pivot'
+
+  return result
+
 
 def level1_static_assert( name, properties ):
   result = None
@@ -1094,6 +1111,7 @@ def parse_file( filename, template_map ):
         # Overrule my type :-)
         #
         argument_properties[ 'type' ] = 'matrix'
+        argument_properties[ 'packed' ] = True
 
   #
   # Add user-defined arguments to the argument_map
@@ -1132,7 +1150,8 @@ def parse_file( filename, template_map ):
     argument_properties[ 'code' ][ 'call_level_1' ] = call_level1_type( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'level_2' ] = level2_type( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'workspace_type' ] = workspace_type( argument_name, argument_properties )
-    
+    argument_properties[ 'code' ][ 'keyword_type' ] = keyword_typename( argument_name, argument_properties )
+
   # Pass 2
   # A second pass is needed, because the asserts may cross-reference other 
   # variables which have been assigned their code in pass 1.

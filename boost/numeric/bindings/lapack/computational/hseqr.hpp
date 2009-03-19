@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_HSEQR_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -81,6 +83,7 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixH, typename VectorWR, typename VectorWI,
@@ -147,6 +150,7 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixH, typename VectorW, typename MatrixZ,
@@ -201,11 +205,24 @@ template< typename MatrixH, typename VectorWR, typename VectorWI,
         typename MatrixZ, typename Workspace >
 inline integer_t hseqr( char const job, char const compz,
         integer_t const ilo, integer_t const ihi, MatrixH& h, VectorWR& wr,
-        VectorWI& wi, MatrixZ& z, Workspace work = optimal_workspace() ) {
+        VectorWI& wi, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
     hseqr_impl< value_type >::compute( job, compz, ilo, ihi, h, wr, wi,
             z, info, work );
+    return info;
+}
+
+// template function to call hseqr, default workspace type
+template< typename MatrixH, typename VectorWR, typename VectorWI,
+        typename MatrixZ >
+inline integer_t hseqr( char const job, char const compz,
+        integer_t const ilo, integer_t const ihi, MatrixH& h, VectorWR& wr,
+        VectorWI& wi, MatrixZ& z ) {
+    typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
+    integer_t info(0);
+    hseqr_impl< value_type >::compute( job, compz, ilo, ihi, h, wr, wi,
+            z, info, optimal_workspace() );
     return info;
 }
 // template function to call hseqr
@@ -213,11 +230,23 @@ template< typename MatrixH, typename VectorW, typename MatrixZ,
         typename Workspace >
 inline integer_t hseqr( char const job, char const compz,
         integer_t const ilo, integer_t const ihi, MatrixH& h, VectorW& w,
-        MatrixZ& z, Workspace work = optimal_workspace() ) {
+        MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
     hseqr_impl< value_type >::compute( job, compz, ilo, ihi, h, w, z,
             info, work );
+    return info;
+}
+
+// template function to call hseqr, default workspace type
+template< typename MatrixH, typename VectorW, typename MatrixZ >
+inline integer_t hseqr( char const job, char const compz,
+        integer_t const ilo, integer_t const ihi, MatrixH& h, VectorW& w,
+        MatrixZ& z ) {
+    typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
+    integer_t info(0);
+    hseqr_impl< value_type >::compute( job, compz, ilo, ihi, h, w, z,
+            info, optimal_workspace() );
     return info;
 }
 

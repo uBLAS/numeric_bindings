@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TREVC_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -81,6 +83,7 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -146,6 +149,7 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -220,13 +224,26 @@ template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename Workspace >
 inline integer_t trevc( char const side, char const howmny,
         VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-        integer_t const mm, integer_t& m,
-        Workspace work = optimal_workspace() ) {
+        integer_t const mm, integer_t& m, Workspace work ) {
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
     trevc_impl< value_type >::compute( side, howmny, select, t, vl, vr,
             mm, m, info, work );
+    return info;
+}
+
+// template function to call trevc, default workspace type
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline integer_t trevc( char const side, char const howmny,
+        VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        integer_t const mm, integer_t& m ) {
+    typedef typename traits::vector_traits<
+            VectorSELECT >::value_type value_type;
+    integer_t info(0);
+    trevc_impl< value_type >::compute( side, howmny, select, t, vl, vr,
+            mm, m, info, optimal_workspace() );
     return info;
 }
 

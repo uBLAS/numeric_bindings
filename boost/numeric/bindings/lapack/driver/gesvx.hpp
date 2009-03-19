@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GESVX_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -91,6 +93,8 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
@@ -201,6 +205,8 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
@@ -312,11 +318,26 @@ inline integer_t gesvx( char const fact, char const trans, MatrixA& a,
         MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, MatrixX& x, typename traits::matrix_traits<
         MatrixA >::value_type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gesvx_impl< value_type >::compute( fact, trans, a, af, ipiv, equed,
             r, c, b, x, rcond, ferr, berr, info, work );
+    return info;
+}
+
+// template function to call gesvx, default workspace type
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename VectorR, typename VectorC, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline integer_t gesvx( char const fact, char const trans, MatrixA& a,
+        MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
+        MatrixB& b, MatrixX& x, typename traits::matrix_traits<
+        MatrixA >::value_type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    gesvx_impl< value_type >::compute( fact, trans, a, af, ipiv, equed,
+            r, c, b, x, rcond, ferr, berr, info, optimal_workspace() );
     return info;
 }
 

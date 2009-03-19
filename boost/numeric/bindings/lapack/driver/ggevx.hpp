@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GGEVX_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -111,6 +113,8 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
@@ -286,6 +290,8 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
@@ -476,13 +482,33 @@ inline integer_t ggevx( char const balanc, char const jobvl,
         VectorLSCALE& lscale, VectorRSCALE& rscale,
         typename traits::matrix_traits< MatrixA >::value_type& abnrm,
         typename traits::matrix_traits< MatrixA >::value_type& bbnrm,
-        VectorRCONDE& rconde, VectorRCONDV& rcondv,
-        Workspace work = optimal_workspace() ) {
+        VectorRCONDE& rconde, VectorRCONDV& rcondv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ggevx_impl< value_type >::compute( balanc, jobvl, jobvr, sense, a, b,
             alphar, alphai, beta, vl, vr, ilo, ihi, lscale, rscale, abnrm,
             bbnrm, rconde, rcondv, info, work );
+    return info;
+}
+
+// template function to call ggevx, default workspace type
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVL,
+        typename MatrixVR, typename VectorLSCALE, typename VectorRSCALE,
+        typename VectorRCONDE, typename VectorRCONDV >
+inline integer_t ggevx( char const balanc, char const jobvl,
+        char const jobvr, char const sense, MatrixA& a, MatrixB& b,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
+        VectorLSCALE& lscale, VectorRSCALE& rscale,
+        typename traits::matrix_traits< MatrixA >::value_type& abnrm,
+        typename traits::matrix_traits< MatrixA >::value_type& bbnrm,
+        VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    ggevx_impl< value_type >::compute( balanc, jobvl, jobvr, sense, a, b,
+            alphar, alphai, beta, vl, vr, ilo, ihi, lscale, rscale, abnrm,
+            bbnrm, rconde, rcondv, info, optimal_workspace() );
     return info;
 }
 // template function to call ggevx
@@ -497,12 +523,33 @@ inline integer_t ggevx( char const balanc, char const jobvl,
         VectorRSCALE& rscale, typename traits::matrix_traits<
         MatrixA >::value_type& abnrm, typename traits::matrix_traits<
         MatrixA >::value_type& bbnrm, VectorRCONDE& rconde,
-        VectorRCONDV& rcondv, Workspace work = optimal_workspace() ) {
+        VectorRCONDV& rcondv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ggevx_impl< value_type >::compute( balanc, jobvl, jobvr, sense, a, b,
             alpha, beta, vl, vr, ilo, ihi, lscale, rscale, abnrm, bbnrm,
             rconde, rcondv, info, work );
+    return info;
+}
+
+// template function to call ggevx, default workspace type
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVL, typename MatrixVR,
+        typename VectorLSCALE, typename VectorRSCALE, typename VectorRCONDE,
+        typename VectorRCONDV >
+inline integer_t ggevx( char const balanc, char const jobvl,
+        char const jobvr, char const sense, MatrixA& a, MatrixB& b,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
+        integer_t& ilo, integer_t& ihi, VectorLSCALE& lscale,
+        VectorRSCALE& rscale, typename traits::matrix_traits<
+        MatrixA >::value_type& abnrm, typename traits::matrix_traits<
+        MatrixA >::value_type& bbnrm, VectorRCONDE& rconde,
+        VectorRCONDV& rcondv ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    ggevx_impl< value_type >::compute( balanc, jobvl, jobvr, sense, a, b,
+            alpha, beta, vl, vr, ilo, ihi, lscale, rscale, abnrm, bbnrm,
+            rconde, rcondv, info, optimal_workspace() );
     return info;
 }
 

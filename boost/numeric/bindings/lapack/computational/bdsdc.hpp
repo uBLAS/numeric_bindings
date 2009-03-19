@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_BDSDC_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -54,6 +56,7 @@ struct bdsdc_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixU,
@@ -135,11 +138,24 @@ template< typename VectorD, typename VectorE, typename MatrixU,
         typename Workspace >
 inline integer_t bdsdc( char const uplo, char const compq,
         integer_t const n, VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
-        VectorQ& q, VectorIQ& iq, Workspace work = optimal_workspace() ) {
+        VectorQ& q, VectorIQ& iq, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     bdsdc_impl< value_type >::compute( uplo, compq, n, d, e, u, vt, q,
             iq, info, work );
+    return info;
+}
+
+// template function to call bdsdc, default workspace type
+template< typename VectorD, typename VectorE, typename MatrixU,
+        typename MatrixVT, typename VectorQ, typename VectorIQ >
+inline integer_t bdsdc( char const uplo, char const compq,
+        integer_t const n, VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
+        VectorQ& q, VectorIQ& iq ) {
+    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    integer_t info(0);
+    bdsdc_impl< value_type >::compute( uplo, compq, n, d, e, u, vt, q,
+            iq, info, optimal_workspace() );
     return info;
 }
 

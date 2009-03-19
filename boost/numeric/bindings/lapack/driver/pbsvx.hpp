@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_PBSVX_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -91,6 +93,8 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
@@ -192,6 +196,8 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
@@ -293,11 +299,26 @@ inline integer_t pbsvx( char const fact, integer_t const n,
         integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
         VectorS& s, MatrixB& b, MatrixX& x, typename traits::matrix_traits<
         MatrixAB >::value_type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     pbsvx_impl< value_type >::compute( fact, n, kd, ab, afb, equed, s, b,
             x, rcond, ferr, berr, info, work );
+    return info;
+}
+
+// template function to call pbsvx, default workspace type
+template< typename MatrixAB, typename MatrixAFB, typename VectorS,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline integer_t pbsvx( char const fact, integer_t const n,
+        integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
+        VectorS& s, MatrixB& b, MatrixX& x, typename traits::matrix_traits<
+        MatrixAB >::value_type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+    typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
+    integer_t info(0);
+    pbsvx_impl< value_type >::compute( fact, n, kd, ab, afb, equed, s, b,
+            x, rcond, ferr, berr, info, optimal_workspace() );
     return info;
 }
 

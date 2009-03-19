@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TGSNA_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -90,6 +92,8 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
@@ -193,6 +197,8 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
@@ -283,13 +289,28 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
 inline integer_t tgsna( char const job, char const howmny,
         VectorSELECT& select, integer_t const n, MatrixA& a, MatrixB& b,
         MatrixVL& vl, MatrixVR& vr, VectorS& s, VectorDIF& dif,
-        integer_t const mm, integer_t& m,
-        Workspace work = optimal_workspace() ) {
+        integer_t const mm, integer_t& m, Workspace work ) {
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
     tgsna_impl< value_type >::compute( job, howmny, select, n, a, b, vl,
             vr, s, dif, mm, m, info, work );
+    return info;
+}
+
+// template function to call tgsna, default workspace type
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF >
+inline integer_t tgsna( char const job, char const howmny,
+        VectorSELECT& select, integer_t const n, MatrixA& a, MatrixB& b,
+        MatrixVL& vl, MatrixVR& vr, VectorS& s, VectorDIF& dif,
+        integer_t const mm, integer_t& m ) {
+    typedef typename traits::vector_traits<
+            VectorSELECT >::value_type value_type;
+    integer_t info(0);
+    tgsna_impl< value_type >::compute( job, howmny, select, n, a, b, vl,
+            vr, s, dif, mm, m, info, optimal_workspace() );
     return info;
 }
 

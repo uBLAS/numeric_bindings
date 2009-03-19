@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_HESVX_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -65,6 +67,8 @@ struct hesvx_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
@@ -177,12 +181,26 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
 inline integer_t hesvx( char const fact, MatrixA& a, MatrixAF& af,
         VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
         typename traits::matrix_traits< MatrixA >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr,
-        Workspace work = optimal_workspace() ) {
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     hesvx_impl< value_type >::compute( fact, a, af, ipiv, b, x, rcond,
             ferr, berr, info, work );
+    return info;
+}
+
+// template function to call hesvx, default workspace type
+template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline integer_t hesvx( char const fact, MatrixA& a, MatrixAF& af,
+        VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
+        typename traits::matrix_traits< MatrixA >::value_type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    hesvx_impl< value_type >::compute( fact, a, af, ipiv, b, x, rcond,
+            ferr, berr, info, optimal_workspace() );
     return info;
 }
 

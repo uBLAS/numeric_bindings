@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_BDSQR_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -81,6 +83,7 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
@@ -155,6 +158,7 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
@@ -225,12 +229,23 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
 inline integer_t bdsqr( char const uplo, integer_t const n, VectorD& d,
-        VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c,
-        Workspace work = optimal_workspace() ) {
+        VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     bdsqr_impl< value_type >::compute( uplo, n, d, e, vt, u, c, info,
             work );
+    return info;
+}
+
+// template function to call bdsqr, default workspace type
+template< typename VectorD, typename VectorE, typename MatrixVT,
+        typename MatrixU, typename MatrixC >
+inline integer_t bdsqr( char const uplo, integer_t const n, VectorD& d,
+        VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
+    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    integer_t info(0);
+    bdsqr_impl< value_type >::compute( uplo, n, d, e, vt, u, c, info,
+            optimal_workspace() );
     return info;
 }
 

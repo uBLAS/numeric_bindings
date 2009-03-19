@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GGSVP_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -101,6 +103,8 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixU,
@@ -202,6 +206,8 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixU,
@@ -315,11 +321,26 @@ inline integer_t ggsvp( char const jobu, char const jobv,
         typename traits::matrix_traits< MatrixA >::value_type const tola,
         typename traits::matrix_traits< MatrixA >::value_type const tolb,
         integer_t& k, integer_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ggsvp_impl< value_type >::compute( jobu, jobv, jobq, a, b, tola,
             tolb, k, l, u, v, q, info, work );
+    return info;
+}
+
+// template function to call ggsvp, default workspace type
+template< typename MatrixA, typename MatrixB, typename MatrixU,
+        typename MatrixV, typename MatrixQ >
+inline integer_t ggsvp( char const jobu, char const jobv,
+        char const jobq, MatrixA& a, MatrixB& b,
+        typename traits::matrix_traits< MatrixA >::value_type const tola,
+        typename traits::matrix_traits< MatrixA >::value_type const tolb,
+        integer_t& k, integer_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    ggsvp_impl< value_type >::compute( jobu, jobv, jobq, a, b, tola,
+            tolb, k, l, u, v, q, info, optimal_workspace() );
     return info;
 }
 

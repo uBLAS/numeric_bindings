@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_SPGVD_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -57,6 +59,8 @@ struct spgvd_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
@@ -151,11 +155,24 @@ template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename Workspace >
 inline integer_t spgvd( integer_t const itype, char const jobz,
         integer_t const n, MatrixAP& ap, MatrixBP& bp, VectorW& w, MatrixZ& z,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     spgvd_impl< value_type >::compute( itype, jobz, n, ap, bp, w, z,
             info, work );
+    return info;
+}
+
+// template function to call spgvd, default workspace type
+template< typename MatrixAP, typename MatrixBP, typename VectorW,
+        typename MatrixZ >
+inline integer_t spgvd( integer_t const itype, char const jobz,
+        integer_t const n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
+        MatrixZ& z ) {
+    typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
+    integer_t info(0);
+    spgvd_impl< value_type >::compute( itype, jobz, n, ap, bp, w, z,
+            info, optimal_workspace() );
     return info;
 }
 

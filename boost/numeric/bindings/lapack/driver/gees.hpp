@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GEES_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -86,6 +88,7 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
@@ -178,6 +181,7 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVS,
@@ -273,11 +277,24 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
 inline integer_t gees( char const jobvs, char const sort,
         logical_t* select, MatrixA& a, integer_t& sdim, VectorWR& wr,
-        VectorWI& wi, MatrixVS& vs, Workspace work = optimal_workspace() ) {
+        VectorWI& wi, MatrixVS& vs, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gees_impl< value_type >::compute( jobvs, sort, select, a, sdim, wr,
             wi, vs, info, work );
+    return info;
+}
+
+// template function to call gees, default workspace type
+template< typename MatrixA, typename VectorWR, typename VectorWI,
+        typename MatrixVS >
+inline integer_t gees( char const jobvs, char const sort,
+        logical_t* select, MatrixA& a, integer_t& sdim, VectorWR& wr,
+        VectorWI& wi, MatrixVS& vs ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    gees_impl< value_type >::compute( jobvs, sort, select, a, sdim, wr,
+            wi, vs, info, optimal_workspace() );
     return info;
 }
 // template function to call gees
@@ -285,11 +302,23 @@ template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
 inline integer_t gees( char const jobvs, char const sort,
         logical_t* select, MatrixA& a, integer_t& sdim, VectorW& w,
-        MatrixVS& vs, Workspace work = optimal_workspace() ) {
+        MatrixVS& vs, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gees_impl< value_type >::compute( jobvs, sort, select, a, sdim, w,
             vs, info, work );
+    return info;
+}
+
+// template function to call gees, default workspace type
+template< typename MatrixA, typename VectorW, typename MatrixVS >
+inline integer_t gees( char const jobvs, char const sort,
+        logical_t* select, MatrixA& a, integer_t& sdim, VectorW& w,
+        MatrixVS& vs ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    gees_impl< value_type >::compute( jobvs, sort, select, a, sdim, w,
+            vs, info, optimal_workspace() );
     return info;
 }
 

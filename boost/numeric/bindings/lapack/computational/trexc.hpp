@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TREXC_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -73,6 +75,7 @@ struct trexc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // templated specialization
     template< typename MatrixT, typename MatrixQ >
@@ -102,6 +105,7 @@ struct trexc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixT, typename MatrixQ, $WORKSPACE_TYPENAMES >
@@ -156,12 +160,22 @@ inline integer_t trexc( char const compq, MatrixT& t, MatrixQ& q,
 // template function to call trexc
 template< typename MatrixT, typename MatrixQ, typename Workspace >
 inline integer_t trexc( char const compq, MatrixT& t, MatrixQ& q,
-        integer_t const ifst, integer_t const ilst,
-        Workspace work = optimal_workspace() ) {
+        integer_t const ifst, integer_t const ilst, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
     integer_t info(0);
     trexc_impl< value_type >::compute( compq, t, q, ifst, ilst, info,
             work );
+    return info;
+}
+
+// template function to call trexc, default workspace type
+template< typename MatrixT, typename MatrixQ >
+inline integer_t trexc( char const compq, MatrixT& t, MatrixQ& q,
+        integer_t const ifst, integer_t const ilst ) {
+    typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
+    integer_t info(0);
+    trexc_impl< value_type >::compute( compq, t, q, ifst, ilst, info,
+            optimal_workspace() );
     return info;
 }
 

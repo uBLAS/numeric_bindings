@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_STEBZ_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -58,6 +60,7 @@ struct stebz_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename VectorW,
@@ -146,11 +149,30 @@ inline integer_t stebz( char const range, char const order,
         integer_t const iu, typename traits::vector_traits<
         VectorD >::value_type const abstol, VectorD& d, VectorE& e,
         integer_t& m, integer_t& nsplit, VectorW& w, VectorIBLOCK& iblock,
-        VectorISPLIT& isplit, Workspace work = optimal_workspace() ) {
+        VectorISPLIT& isplit, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     stebz_impl< value_type >::compute( range, order, n, vl, vu, il, iu,
             abstol, d, e, m, nsplit, w, iblock, isplit, info, work );
+    return info;
+}
+
+// template function to call stebz, default workspace type
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename VectorIBLOCK, typename VectorISPLIT >
+inline integer_t stebz( char const range, char const order,
+        integer_t const n, typename traits::vector_traits<
+        VectorD >::value_type const vl, typename traits::vector_traits<
+        VectorD >::value_type const vu, integer_t const il,
+        integer_t const iu, typename traits::vector_traits<
+        VectorD >::value_type const abstol, VectorD& d, VectorE& e,
+        integer_t& m, integer_t& nsplit, VectorW& w, VectorIBLOCK& iblock,
+        VectorISPLIT& isplit ) {
+    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    integer_t info(0);
+    stebz_impl< value_type >::compute( range, order, n, vl, vu, il, iu,
+            abstol, d, e, m, nsplit, w, iblock, isplit, info,
+            optimal_workspace() );
     return info;
 }
 

@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_HEEV_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -55,6 +57,7 @@ struct heev_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorW, typename WORK,
@@ -119,10 +122,20 @@ struct heev_impl {
 // template function to call heev
 template< typename MatrixA, typename VectorW, typename Workspace >
 inline integer_t heev( char const jobz, MatrixA& a, VectorW& w,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     heev_impl< value_type >::compute( jobz, a, w, info, work );
+    return info;
+}
+
+// template function to call heev, default workspace type
+template< typename MatrixA, typename VectorW >
+inline integer_t heev( char const jobz, MatrixA& a, VectorW& w ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    heev_impl< value_type >::compute( jobz, a, w, info,
+            optimal_workspace() );
     return info;
 }
 

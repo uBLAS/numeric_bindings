@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GEHRD_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -74,6 +76,7 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
@@ -130,6 +133,7 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
@@ -184,10 +188,21 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call gehrd
 template< typename MatrixA, typename VectorTAU, typename Workspace >
 inline integer_t gehrd( integer_t const ilo, integer_t const ihi,
-        MatrixA& a, VectorTAU& tau, Workspace work = optimal_workspace() ) {
+        MatrixA& a, VectorTAU& tau, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gehrd_impl< value_type >::compute( ilo, ihi, a, tau, info, work );
+    return info;
+}
+
+// template function to call gehrd, default workspace type
+template< typename MatrixA, typename VectorTAU >
+inline integer_t gehrd( integer_t const ilo, integer_t const ihi,
+        MatrixA& a, VectorTAU& tau ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    gehrd_impl< value_type >::compute( ilo, ihi, a, tau, info,
+            optimal_workspace() );
     return info;
 }
 

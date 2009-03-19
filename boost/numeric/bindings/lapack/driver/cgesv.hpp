@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_CGESV_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -50,6 +52,8 @@ struct cgesv_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -124,10 +128,22 @@ struct cgesv_impl {
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename Workspace >
 inline integer_t cgesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-        MatrixX& x, integer_t& iter, Workspace work = optimal_workspace() ) {
+        MatrixX& x, integer_t& iter, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     cgesv_impl< value_type >::compute( a, ipiv, b, x, iter, info, work );
+    return info;
+}
+
+// template function to call cgesv, default workspace type
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename MatrixX >
+inline integer_t cgesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+        MatrixX& x, integer_t& iter ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    cgesv_impl< value_type >::compute( a, ipiv, b, x, iter, info,
+            optimal_workspace() );
     return info;
 }
 

@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_HBEVX_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -66,6 +68,7 @@ struct hbevx_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixQ, typename VectorW,
@@ -160,11 +163,28 @@ inline integer_t hbevx( char const jobz, char const range,
         integer_t const il, integer_t const iu,
         typename traits::matrix_traits< MatrixAB >::value_type const abstol,
         integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     hbevx_impl< value_type >::compute( jobz, range, n, kd, ab, q, vl, vu,
             il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+// template function to call hbevx, default workspace type
+template< typename MatrixAB, typename MatrixQ, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL >
+inline integer_t hbevx( char const jobz, char const range,
+        integer_t const n, integer_t const kd, MatrixAB& ab, MatrixQ& q,
+        typename traits::matrix_traits< MatrixAB >::value_type const vl,
+        typename traits::matrix_traits< MatrixAB >::value_type const vu,
+        integer_t const il, integer_t const iu,
+        typename traits::matrix_traits< MatrixAB >::value_type const abstol,
+        integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
+    integer_t info(0);
+    hbevx_impl< value_type >::compute( jobz, range, n, kd, ab, q, vl, vu,
+            il, iu, abstol, m, w, z, ifail, info, optimal_workspace() );
     return info;
 }
 

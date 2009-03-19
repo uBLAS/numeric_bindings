@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GGESX_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -108,6 +110,8 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
@@ -265,6 +269,8 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
@@ -427,12 +433,29 @@ inline integer_t ggesx( char const jobvsl, char const jobvsr,
         MatrixB& b, integer_t& sdim, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ggesx_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg,
             sense, a, b, sdim, alphar, alphai, beta, vsl, vsr, rconde, rcondv,
             info, work );
+    return info;
+}
+
+// template function to call ggesx, default workspace type
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR, typename VectorRCONDE, typename VectorRCONDV >
+inline integer_t ggesx( char const jobvsl, char const jobvsr,
+        char const sort, logical_t* selctg, char const sense, MatrixA& a,
+        MatrixB& b, integer_t& sdim, VectorALPHAR& alphar,
+        VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    ggesx_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg,
+            sense, a, b, sdim, alphar, alphai, beta, vsl, vsr, rconde, rcondv,
+            info, optimal_workspace() );
     return info;
 }
 // template function to call ggesx
@@ -443,12 +466,29 @@ inline integer_t ggesx( char const jobvsl, char const jobvsr,
         char const sort, logical_t* selctg, char const sense, MatrixA& a,
         MatrixB& b, integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
-        VectorRCONDV& rcondv, Workspace work = optimal_workspace() ) {
+        VectorRCONDV& rcondv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ggesx_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg,
             sense, a, b, sdim, alpha, beta, vsl, vsr, rconde, rcondv, info,
             work );
+    return info;
+}
+
+// template function to call ggesx, default workspace type
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
+        typename VectorRCONDE, typename VectorRCONDV >
+inline integer_t ggesx( char const jobvsl, char const jobvsr,
+        char const sort, logical_t* selctg, char const sense, MatrixA& a,
+        MatrixB& b, integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
+        VectorRCONDV& rcondv ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    ggesx_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg,
+            sense, a, b, sdim, alpha, beta, vsl, vsr, rconde, rcondv, info,
+            optimal_workspace() );
     return info;
 }
 

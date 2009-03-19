@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TPRFS_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -81,6 +83,8 @@ struct tprfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAP, typename MatrixB, typename MatrixX,
@@ -163,6 +167,8 @@ struct tprfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAP, typename MatrixB, typename MatrixX,
@@ -242,12 +248,24 @@ template< typename MatrixAP, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
 inline integer_t tprfs( char const uplo, char const trans,
         char const diag, integer_t const n, MatrixAP& ap, MatrixB& b,
-        MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work = optimal_workspace() ) {
+        MatrixX& x, VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     tprfs_impl< value_type >::compute( uplo, trans, diag, n, ap, b, x,
             ferr, berr, info, work );
+    return info;
+}
+
+// template function to call tprfs, default workspace type
+template< typename MatrixAP, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline integer_t tprfs( char const uplo, char const trans,
+        char const diag, integer_t const n, MatrixAP& ap, MatrixB& b,
+        MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
+    typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
+    integer_t info(0);
+    tprfs_impl< value_type >::compute( uplo, trans, diag, n, ap, b, x,
+            ferr, berr, info, optimal_workspace() );
     return info;
 }
 

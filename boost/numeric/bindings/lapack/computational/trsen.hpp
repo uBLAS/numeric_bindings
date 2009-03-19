@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TRSEN_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -59,6 +61,7 @@ struct trsen_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -137,13 +140,28 @@ inline integer_t trsen( char const job, char const compq,
         VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
         integer_t& m, typename traits::vector_traits<
         VectorSELECT >::value_type& s, typename traits::vector_traits<
-        VectorSELECT >::value_type& sep,
-        Workspace work = optimal_workspace() ) {
+        VectorSELECT >::value_type& sep, Workspace work ) {
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
     trsen_impl< value_type >::compute( job, compq, select, t, q, w, m, s,
             sep, info, work );
+    return info;
+}
+
+// template function to call trsen, default workspace type
+template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
+        typename VectorW >
+inline integer_t trsen( char const job, char const compq,
+        VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
+        integer_t& m, typename traits::vector_traits<
+        VectorSELECT >::value_type& s, typename traits::vector_traits<
+        VectorSELECT >::value_type& sep ) {
+    typedef typename traits::vector_traits<
+            VectorSELECT >::value_type value_type;
+    integer_t info(0);
+    trsen_impl< value_type >::compute( job, compq, select, t, q, w, m, s,
+            sep, info, optimal_workspace() );
     return info;
 }
 

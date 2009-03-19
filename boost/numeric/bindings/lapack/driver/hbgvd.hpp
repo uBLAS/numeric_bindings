@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_HBGVD_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -65,6 +67,8 @@ struct hbgvd_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixBB, typename VectorW,
@@ -184,11 +188,24 @@ template< typename MatrixAB, typename MatrixBB, typename VectorW,
         typename MatrixZ, typename Workspace >
 inline integer_t hbgvd( char const jobz, integer_t const n,
         integer_t const ka, integer_t const kb, MatrixAB& ab, MatrixBB& bb,
-        VectorW& w, MatrixZ& z, Workspace work = optimal_workspace() ) {
+        VectorW& w, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     hbgvd_impl< value_type >::compute( jobz, n, ka, kb, ab, bb, w, z,
             info, work );
+    return info;
+}
+
+// template function to call hbgvd, default workspace type
+template< typename MatrixAB, typename MatrixBB, typename VectorW,
+        typename MatrixZ >
+inline integer_t hbgvd( char const jobz, integer_t const n,
+        integer_t const ka, integer_t const kb, MatrixAB& ab, MatrixBB& bb,
+        VectorW& w, MatrixZ& z ) {
+    typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
+    integer_t info(0);
+    hbgvd_impl< value_type >::compute( jobz, n, ka, kb, ab, bb, w, z,
+            info, optimal_workspace() );
     return info;
 }
 

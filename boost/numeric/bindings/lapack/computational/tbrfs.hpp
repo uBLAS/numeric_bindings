@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TBRFS_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -85,6 +87,8 @@ struct tbrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixB, typename MatrixX,
@@ -170,6 +174,8 @@ struct tbrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixB, typename MatrixX,
@@ -253,11 +259,24 @@ template< typename MatrixAB, typename MatrixB, typename MatrixX,
 inline integer_t tbrfs( char const uplo, char const trans,
         char const diag, integer_t const n, integer_t const kd, MatrixAB& ab,
         MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     tbrfs_impl< value_type >::compute( uplo, trans, diag, n, kd, ab, b,
             x, ferr, berr, info, work );
+    return info;
+}
+
+// template function to call tbrfs, default workspace type
+template< typename MatrixAB, typename MatrixB, typename MatrixX,
+        typename VectorFERR, typename VectorBERR >
+inline integer_t tbrfs( char const uplo, char const trans,
+        char const diag, integer_t const n, integer_t const kd, MatrixAB& ab,
+        MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
+    typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
+    integer_t info(0);
+    tbrfs_impl< value_type >::compute( uplo, trans, diag, n, kd, ab, b,
+            x, ferr, berr, info, optimal_workspace() );
     return info;
 }
 

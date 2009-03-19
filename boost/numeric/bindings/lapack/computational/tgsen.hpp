@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TGSEN_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -104,6 +106,8 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
@@ -222,6 +226,8 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
@@ -338,12 +344,32 @@ inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& m,
         typename traits::vector_traits< VectorSELECT >::value_type& pl,
         typename traits::vector_traits< VectorSELECT >::value_type& pr,
-        VectorDIF& dif, Workspace work = optimal_workspace() ) {
+        VectorDIF& dif, Workspace work ) {
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
     tgsen_impl< value_type >::compute( ijob, wantq, wantz, select, n, a,
             b, alphar, alphai, beta, q, z, m, pl, pr, dif, info, work );
+    return info;
+}
+
+// template function to call tgsen, default workspace type
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
+        typename MatrixQ, typename MatrixZ, typename VectorDIF >
+inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
+        logical_t const wantz, VectorSELECT& select, integer_t const n,
+        MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& m,
+        typename traits::vector_traits< VectorSELECT >::value_type& pl,
+        typename traits::vector_traits< VectorSELECT >::value_type& pr,
+        VectorDIF& dif ) {
+    typedef typename traits::vector_traits<
+            VectorSELECT >::value_type value_type;
+    integer_t info(0);
+    tgsen_impl< value_type >::compute( ijob, wantq, wantz, select, n, a,
+            b, alphar, alphai, beta, q, z, m, pl, pr, dif, info,
+            optimal_workspace() );
     return info;
 }
 // template function to call tgsen
@@ -355,13 +381,30 @@ inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, integer_t& m, typename traits::vector_traits<
         VectorSELECT >::value_type& pl, typename traits::vector_traits<
-        VectorSELECT >::value_type& pr, VectorDIF& dif,
-        Workspace work = optimal_workspace() ) {
+        VectorSELECT >::value_type& pr, VectorDIF& dif, Workspace work ) {
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
     tgsen_impl< value_type >::compute( ijob, wantq, wantz, select, n, a,
             b, alpha, beta, q, z, m, pl, pr, dif, info, work );
+    return info;
+}
+
+// template function to call tgsen, default workspace type
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename VectorALPHA, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename VectorDIF >
+inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
+        logical_t const wantz, VectorSELECT& select, integer_t const n,
+        MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, integer_t& m, typename traits::vector_traits<
+        VectorSELECT >::value_type& pl, typename traits::vector_traits<
+        VectorSELECT >::value_type& pr, VectorDIF& dif ) {
+    typedef typename traits::vector_traits<
+            VectorSELECT >::value_type value_type;
+    integer_t info(0);
+    tgsen_impl< value_type >::compute( ijob, wantq, wantz, select, n, a,
+            b, alpha, beta, q, z, m, pl, pr, dif, info, optimal_workspace() );
     return info;
 }
 

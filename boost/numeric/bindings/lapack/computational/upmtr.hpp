@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_UPMTR_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -56,6 +58,7 @@ struct upmtr_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixC,
@@ -114,11 +117,22 @@ template< typename VectorAP, typename VectorTAU, typename MatrixC,
         typename Workspace >
 inline integer_t upmtr( char const side, char const uplo,
         char const trans, VectorAP& ap, VectorTAU& tau, MatrixC& c,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
     upmtr_impl< value_type >::compute( side, uplo, trans, ap, tau, c,
             info, work );
+    return info;
+}
+
+// template function to call upmtr, default workspace type
+template< typename VectorAP, typename VectorTAU, typename MatrixC >
+inline integer_t upmtr( char const side, char const uplo,
+        char const trans, VectorAP& ap, VectorTAU& tau, MatrixC& c ) {
+    typedef typename traits::vector_traits< VectorAP >::value_type value_type;
+    integer_t info(0);
+    upmtr_impl< value_type >::compute( side, uplo, trans, ap, tau, c,
+            info, optimal_workspace() );
     return info;
 }
 

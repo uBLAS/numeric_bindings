@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_SPEV_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -50,6 +52,7 @@ struct spev_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAP, typename VectorW, typename MatrixZ,
@@ -100,10 +103,21 @@ struct spev_impl {
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename Workspace >
 inline integer_t spev( char const jobz, integer_t const n, MatrixAP& ap,
-        VectorW& w, MatrixZ& z, Workspace work = optimal_workspace() ) {
+        VectorW& w, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     spev_impl< value_type >::compute( jobz, n, ap, w, z, info, work );
+    return info;
+}
+
+// template function to call spev, default workspace type
+template< typename MatrixAP, typename VectorW, typename MatrixZ >
+inline integer_t spev( char const jobz, integer_t const n, MatrixAP& ap,
+        VectorW& w, MatrixZ& z ) {
+    typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
+    integer_t info(0);
+    spev_impl< value_type >::compute( jobz, n, ap, w, z, info,
+            optimal_workspace() );
     return info;
 }
 

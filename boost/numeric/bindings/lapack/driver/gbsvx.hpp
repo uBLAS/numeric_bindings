@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GBSVX_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -97,6 +99,8 @@ struct gbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
@@ -206,6 +210,8 @@ struct gbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
@@ -317,12 +323,29 @@ inline integer_t gbsvx( char const fact, char const trans,
         MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv, char& equed,
         VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
         typename traits::matrix_traits< MatrixAB >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr,
-        Workspace work = optimal_workspace() ) {
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     gbsvx_impl< value_type >::compute( fact, trans, n, kl, ku, ab, afb,
             ipiv, equed, r, c, b, x, rcond, ferr, berr, info, work );
+    return info;
+}
+
+// template function to call gbsvx, default workspace type
+template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
+        typename VectorR, typename VectorC, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline integer_t gbsvx( char const fact, char const trans,
+        integer_t const n, integer_t const kl, integer_t const ku,
+        MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv, char& equed,
+        VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
+        typename traits::matrix_traits< MatrixAB >::value_type& rcond,
+        VectorFERR& ferr, VectorBERR& berr ) {
+    typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
+    integer_t info(0);
+    gbsvx_impl< value_type >::compute( fact, trans, n, kl, ku, ab, afb,
+            ipiv, equed, r, c, b, x, rcond, ferr, berr, info,
+            optimal_workspace() );
     return info;
 }
 

@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_HPRFS_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -62,6 +64,8 @@ struct hprfs_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
@@ -147,11 +151,25 @@ template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename VectorBERR, typename Workspace >
 inline integer_t hprfs( integer_t const n, MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work = optimal_workspace() ) {
+        VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     hprfs_impl< value_type >::compute( n, ap, afp, ipiv, b, x, ferr,
             berr, info, work );
+    return info;
+}
+
+// template function to call hprfs, default workspace type
+template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
+        typename MatrixB, typename MatrixX, typename VectorFERR,
+        typename VectorBERR >
+inline integer_t hprfs( integer_t const n, MatrixAP& ap, MatrixAFP& afp,
+        VectorIPIV& ipiv, MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        VectorBERR& berr ) {
+    typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
+    integer_t info(0);
+    hprfs_impl< value_type >::compute( n, ap, afp, ipiv, b, x, ferr,
+            berr, info, optimal_workspace() );
     return info;
 }
 

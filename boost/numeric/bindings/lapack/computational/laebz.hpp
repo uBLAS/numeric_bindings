@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_LAEBZ_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -60,6 +62,7 @@ struct laebz_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename VectorE2,
@@ -156,13 +159,31 @@ inline integer_t laebz( integer_t const ijob, integer_t const nitmax,
         typename traits::vector_traits< VectorD >::value_type const reltol,
         typename traits::vector_traits< VectorD >::value_type const pivmin,
         VectorD& d, VectorE& e, VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
-        VectorC& c, integer_t& mout, MatrixNAB& nab,
-        Workspace work = optimal_workspace() ) {
+        VectorC& c, integer_t& mout, MatrixNAB& nab, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     laebz_impl< value_type >::compute( ijob, nitmax, n, minp, nbmin,
             abstol, reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, info,
             work );
+    return info;
+}
+
+// template function to call laebz, default workspace type
+template< typename VectorD, typename VectorE, typename VectorE2,
+        typename VectorNVAL, typename MatrixAB, typename VectorC,
+        typename MatrixNAB >
+inline integer_t laebz( integer_t const ijob, integer_t const nitmax,
+        integer_t const n, integer_t const minp, integer_t const nbmin,
+        typename traits::vector_traits< VectorD >::value_type const abstol,
+        typename traits::vector_traits< VectorD >::value_type const reltol,
+        typename traits::vector_traits< VectorD >::value_type const pivmin,
+        VectorD& d, VectorE& e, VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
+        VectorC& c, integer_t& mout, MatrixNAB& nab ) {
+    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    integer_t info(0);
+    laebz_impl< value_type >::compute( ijob, nitmax, n, minp, nbmin,
+            abstol, reltol, pivmin, d, e, e2, nval, ab, c, mout, nab, info,
+            optimal_workspace() );
     return info;
 }
 

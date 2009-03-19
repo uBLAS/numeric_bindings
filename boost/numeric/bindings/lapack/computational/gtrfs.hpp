@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GTRFS_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -94,6 +96,8 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::pivot,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorDL, typename VectorD, typename VectorDU,
@@ -212,6 +216,8 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::pivot,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorDL, typename VectorD, typename VectorDU,
@@ -331,12 +337,27 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
 inline integer_t gtrfs( char const trans, integer_t const n,
         VectorDL& dl, VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
         VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
-        MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work = optimal_workspace() ) {
+        MatrixX& x, VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::vector_traits< VectorDL >::value_type value_type;
     integer_t info(0);
     gtrfs_impl< value_type >::compute( trans, n, dl, d, du, dlf, df, duf,
             du2, ipiv, b, x, ferr, berr, info, work );
+    return info;
+}
+
+// template function to call gtrfs, default workspace type
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline integer_t gtrfs( char const trans, integer_t const n,
+        VectorDL& dl, VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
+        VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
+        MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
+    typedef typename traits::vector_traits< VectorDL >::value_type value_type;
+    integer_t info(0);
+    gtrfs_impl< value_type >::compute( trans, n, dl, d, du, dlf, df, duf,
+            du2, ipiv, b, x, ferr, berr, info, optimal_workspace() );
     return info;
 }
 

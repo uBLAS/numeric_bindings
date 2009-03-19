@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_SYSV_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -78,6 +80,8 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -140,6 +144,8 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -201,10 +207,20 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
 inline integer_t sysv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     sysv_impl< value_type >::compute( a, ipiv, b, info, work );
+    return info;
+}
+
+// template function to call sysv, default workspace type
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline integer_t sysv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    sysv_impl< value_type >::compute( a, ipiv, b, info,
+            optimal_workspace() );
     return info;
 }
 

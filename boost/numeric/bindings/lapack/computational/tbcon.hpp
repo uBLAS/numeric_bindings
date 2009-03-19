@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TBCON_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -75,6 +77,7 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename WORK, typename IWORK >
@@ -133,6 +136,7 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename WORK, typename RWORK >
@@ -191,11 +195,23 @@ template< typename MatrixAB, typename Workspace >
 inline integer_t tbcon( char const norm, char const uplo,
         char const diag, integer_t const n, integer_t const kd, MatrixAB& ab,
         typename traits::matrix_traits< MatrixAB >::value_type& rcond,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     tbcon_impl< value_type >::compute( norm, uplo, diag, n, kd, ab,
             rcond, info, work );
+    return info;
+}
+
+// template function to call tbcon, default workspace type
+template< typename MatrixAB >
+inline integer_t tbcon( char const norm, char const uplo,
+        char const diag, integer_t const n, integer_t const kd, MatrixAB& ab,
+        typename traits::matrix_traits< MatrixAB >::value_type& rcond ) {
+    typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
+    integer_t info(0);
+    tbcon_impl< value_type >::compute( norm, uplo, diag, n, kd, ab,
+            rcond, info, optimal_workspace() );
     return info;
 }
 

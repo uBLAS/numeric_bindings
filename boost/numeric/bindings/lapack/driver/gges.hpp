@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GGES_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -102,6 +104,8 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
@@ -221,6 +225,8 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector< keywords::tag::A,
+            keywords::tag::B > valid_keywords;
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
@@ -347,12 +353,27 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
 inline integer_t gges( char const jobvsl, char const jobvsr,
         char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
         integer_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-        VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
-        Workspace work = optimal_workspace() ) {
+        VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gges_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg, a,
             b, sdim, alphar, alphai, beta, vsl, vsr, info, work );
+    return info;
+}
+
+// template function to call gges, default workspace type
+template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
+        typename MatrixVSR >
+inline integer_t gges( char const jobvsl, char const jobvsr,
+        char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+        integer_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    gges_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg, a,
+            b, sdim, alphar, alphai, beta, vsl, vsr, info,
+            optimal_workspace() );
     return info;
 }
 // template function to call gges
@@ -362,11 +383,25 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
 inline integer_t gges( char const jobvsl, char const jobvsr,
         char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
         integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
-        MatrixVSR& vsr, Workspace work = optimal_workspace() ) {
+        MatrixVSR& vsr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gges_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg, a,
             b, sdim, alpha, beta, vsl, vsr, info, work );
+    return info;
+}
+
+// template function to call gges, default workspace type
+template< typename MatrixA, typename MatrixB, typename VectorALPHA,
+        typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
+inline integer_t gges( char const jobvsl, char const jobvsr,
+        char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+        integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
+        MatrixVSR& vsr ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
+    integer_t info(0);
+    gges_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg, a,
+            b, sdim, alpha, beta, vsl, vsr, info, optimal_workspace() );
     return info;
 }
 

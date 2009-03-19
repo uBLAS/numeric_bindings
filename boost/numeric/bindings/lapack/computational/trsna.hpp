@@ -15,7 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TRSNA_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -86,6 +88,7 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -168,6 +171,7 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename mpl::vector<  > valid_keywords;
 
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -249,12 +253,26 @@ template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
 inline integer_t trsna( char const job, char const howmny,
         VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
         VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
-        Workspace work = optimal_workspace() ) {
+        Workspace work ) {
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
     trsna_impl< value_type >::compute( job, howmny, select, t, vl, vr, s,
             sep, mm, m, info, work );
+    return info;
+}
+
+// template function to call trsna, default workspace type
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename VectorS, typename VectorSEP >
+inline integer_t trsna( char const job, char const howmny,
+        VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m ) {
+    typedef typename traits::vector_traits<
+            VectorSELECT >::value_type value_type;
+    integer_t info(0);
+    trsna_impl< value_type >::compute( job, howmny, select, t, vl, vr, s,
+            sep, mm, m, info, optimal_workspace() );
     return info;
 }
 

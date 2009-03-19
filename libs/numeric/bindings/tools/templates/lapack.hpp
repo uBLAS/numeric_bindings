@@ -94,10 +94,19 @@ $TEMPLATE[level1_opt_workspace_is_min]
 $TEMPLATE[level2_workspace]
 // template function to call $groupname
 template< $TYPES, typename Workspace >
-inline integer_t $groupname( $LEVEL2, Workspace work = optimal_workspace() ) {
+inline integer_t $groupname( $LEVEL2, Workspace work ) {
     typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
     integer_t info(0);
     $groupname_impl< value_type >::compute( $CALL_LEVEL1, work );
+    return info;
+}
+
+// template function to call $groupname, default workspace type
+template< $TYPES >
+inline integer_t $groupname( $LEVEL2 ) {
+    typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
+    integer_t info(0);
+    $groupname_impl< value_type >::compute( $CALL_LEVEL1, optimal_workspace() );
     return info;
 }
 $TEMPLATE[setup_min_workspace]

@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_LATRZ_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -71,11 +69,11 @@ struct latrz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void compute( MatrixA& a, VectorTAU& tau, detail::workspace1<
+    static void invoke( MatrixA& a, VectorTAU& tau, detail::workspace1<
             WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -97,16 +95,16 @@ struct latrz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( MatrixA& a, VectorTAU& tau, minimal_workspace work ) {
+    static void invoke( MatrixA& a, VectorTAU& tau, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_rows(a) ) );
-        compute( a, tau, workspace( tmp_work ) );
+        invoke( a, tau, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( MatrixA& a, VectorTAU& tau, optimal_workspace work ) {
-        compute( a, tau, minimal_workspace() );
+    static void invoke( MatrixA& a, VectorTAU& tau, optimal_workspace work ) {
+        invoke( a, tau, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const m ) {
@@ -120,11 +118,11 @@ struct latrz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void compute( MatrixA& a, VectorTAU& tau, detail::workspace1<
+    static void invoke( MatrixA& a, VectorTAU& tau, detail::workspace1<
             WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -146,16 +144,16 @@ struct latrz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( MatrixA& a, VectorTAU& tau, minimal_workspace work ) {
+    static void invoke( MatrixA& a, VectorTAU& tau, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_rows(a) ) );
-        compute( a, tau, workspace( tmp_work ) );
+        invoke( a, tau, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( MatrixA& a, VectorTAU& tau, optimal_workspace work ) {
-        compute( a, tau, minimal_workspace() );
+    static void invoke( MatrixA& a, VectorTAU& tau, optimal_workspace work ) {
+        invoke( a, tau, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const m ) {
@@ -169,7 +167,7 @@ template< typename MatrixA, typename VectorTAU, typename Workspace >
 inline integer_t latrz( MatrixA& a, VectorTAU& tau, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    latrz_impl< value_type >::compute( a, tau, work );
+    latrz_impl< value_type >::invoke( a, tau, work );
     return info;
 }
 
@@ -178,7 +176,7 @@ template< typename MatrixA, typename VectorTAU >
 inline integer_t latrz( MatrixA& a, VectorTAU& tau ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    latrz_impl< value_type >::compute( a, tau, optimal_workspace() );
+    latrz_impl< value_type >::invoke( a, tau, optimal_workspace() );
     return info;
 }
 

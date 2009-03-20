@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_SYEVX_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -62,12 +60,12 @@ struct syevx_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorIFAIL, typename WORK, typename IWORK >
-    static void compute( char const jobz, char const range, MatrixA& a,
+    static void invoke( char const jobz, char const range, MatrixA& a,
             real_type const vl, real_type const vu, integer_t const il,
             integer_t const iu, real_type const abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
@@ -105,7 +103,7 @@ struct syevx_impl {
     // minimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorIFAIL >
-    static void compute( char const jobz, char const range, MatrixA& a,
+    static void invoke( char const jobz, char const range, MatrixA& a,
             real_type const vl, real_type const vu, integer_t const il,
             integer_t const iu, real_type const abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
@@ -114,14 +112,14 @@ struct syevx_impl {
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 traits::matrix_num_columns(a) ) );
-        compute( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+        invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorIFAIL >
-    static void compute( char const jobz, char const range, MatrixA& a,
+    static void invoke( char const jobz, char const range, MatrixA& a,
             real_type const vl, real_type const vu, integer_t const il,
             integer_t const iu, real_type const abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
@@ -138,7 +136,7 @@ struct syevx_impl {
                 traits::vector_storage(ifail), info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+        invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -167,7 +165,7 @@ inline integer_t syevx( char const jobz, char const range, MatrixA& a,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    syevx_impl< value_type >::compute( jobz, range, a, vl, vu, il, iu,
+    syevx_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,
             abstol, m, w, z, ifail, info, work );
     return info;
 }
@@ -183,7 +181,7 @@ inline integer_t syevx( char const jobz, char const range, MatrixA& a,
         integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    syevx_impl< value_type >::compute( jobz, range, a, vl, vu, il, iu,
+    syevx_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,
             abstol, m, w, z, ifail, info, optimal_workspace() );
     return info;
 }

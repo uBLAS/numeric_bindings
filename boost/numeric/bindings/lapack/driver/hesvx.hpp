@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_HESVX_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -67,14 +65,13 @@ struct hesvx_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void compute( char const fact, MatrixA& a, MatrixAF& af,
+    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
             VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
@@ -126,7 +123,7 @@ struct hesvx_impl {
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void compute( char const fact, MatrixA& a, MatrixAF& af,
+    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
             VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
@@ -134,7 +131,7 @@ struct hesvx_impl {
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(a) ) );
-        compute( fact, a, af, ipiv, b, x, rcond, ferr, berr, info,
+        invoke( fact, a, af, ipiv, b, x, rcond, ferr, berr, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -142,7 +139,7 @@ struct hesvx_impl {
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void compute( char const fact, MatrixA& a, MatrixAF& af,
+    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
             VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
@@ -160,7 +157,7 @@ struct hesvx_impl {
                 &opt_size_work, -1, traits::vector_storage(tmp_rwork), info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( fact, a, af, ipiv, b, x, rcond, ferr, berr, info,
+        invoke( fact, a, af, ipiv, b, x, rcond, ferr, berr, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -184,7 +181,7 @@ inline integer_t hesvx( char const fact, MatrixA& a, MatrixAF& af,
         VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    hesvx_impl< value_type >::compute( fact, a, af, ipiv, b, x, rcond,
+    hesvx_impl< value_type >::invoke( fact, a, af, ipiv, b, x, rcond,
             ferr, berr, info, work );
     return info;
 }
@@ -199,7 +196,7 @@ inline integer_t hesvx( char const fact, MatrixA& a, MatrixAF& af,
         VectorFERR& ferr, VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    hesvx_impl< value_type >::compute( fact, a, af, ipiv, b, x, rcond,
+    hesvx_impl< value_type >::invoke( fact, a, af, ipiv, b, x, rcond,
             ferr, berr, info, optimal_workspace() );
     return info;
 }

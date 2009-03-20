@@ -15,10 +15,8 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GELSD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/ilaenv.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -87,13 +85,12 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorS,
             typename WORK, typename IWORK >
-    static void compute( MatrixA& a, MatrixB& b, VectorS& s,
+    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
             real_type const rcond, integer_t& rank, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -136,7 +133,7 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorS >
-    static void compute( MatrixA& a, MatrixB& b, VectorS& s,
+    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
             real_type const rcond, integer_t& rank, integer_t& info,
             minimal_workspace work ) {
         integer_t minmn = std::min( traits::matrix_num_rows(a),
@@ -149,13 +146,12 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 smlsiz, nlvl, traits::matrix_num_columns(b) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( minmn,
                 nlvl ) );
-        compute( a, b, s, rcond, rank, info, workspace( tmp_work,
-                tmp_iwork ) );
+        invoke( a, b, s, rcond, rank, info, workspace( tmp_work, tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorS >
-    static void compute( MatrixA& a, MatrixB& b, VectorS& s,
+    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
             real_type const rcond, integer_t& rank, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
@@ -169,8 +165,7 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         traits::detail::array< integer_t > tmp_iwork( opt_size_iwork );
-        compute( a, b, s, rcond, rank, info, workspace( tmp_work,
-                tmp_iwork ) );
+        invoke( a, b, s, rcond, rank, info, workspace( tmp_work, tmp_iwork ) );
     }
 
     static integer_t min_size_work( integer_t const minmn,
@@ -193,13 +188,12 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorS,
             typename WORK, typename RWORK, typename IWORK >
-    static void compute( MatrixA& a, MatrixB& b, VectorS& s,
+    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
             real_type const rcond, integer_t& rank, integer_t& info,
             detail::workspace3< WORK, RWORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -242,7 +236,7 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorS >
-    static void compute( MatrixA& a, MatrixB& b, VectorS& s,
+    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
             real_type const rcond, integer_t& rank, integer_t& info,
             minimal_workspace work ) {
         integer_t minmn = std::min( traits::matrix_num_rows(a),
@@ -257,13 +251,13 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 smlsiz, nlvl, traits::matrix_num_columns(b) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( minmn,
                 nlvl ) );
-        compute( a, b, s, rcond, rank, info, workspace( tmp_work, tmp_rwork,
+        invoke( a, b, s, rcond, rank, info, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorS >
-    static void compute( MatrixA& a, MatrixB& b, VectorS& s,
+    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
             real_type const rcond, integer_t& rank, integer_t& info,
             optimal_workspace work ) {
         value_type opt_size_work;
@@ -280,7 +274,7 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         traits::detail::array< real_type > tmp_rwork(
                 traits::detail::to_int( opt_size_rwork ) );
         traits::detail::array< integer_t > tmp_iwork( opt_size_iwork );
-        compute( a, b, s, rcond, rank, info, workspace( tmp_work, tmp_rwork,
+        invoke( a, b, s, rcond, rank, info, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
@@ -312,7 +306,7 @@ inline integer_t gelsd( MatrixA& a, MatrixB& b, VectorS& s,
         integer_t& rank, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    gelsd_impl< value_type >::compute( a, b, s, rcond, rank, info, work );
+    gelsd_impl< value_type >::invoke( a, b, s, rcond, rank, info, work );
     return info;
 }
 
@@ -323,7 +317,7 @@ inline integer_t gelsd( MatrixA& a, MatrixB& b, VectorS& s,
         integer_t& rank ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    gelsd_impl< value_type >::compute( a, b, s, rcond, rank, info,
+    gelsd_impl< value_type >::invoke( a, b, s, rcond, rank, info,
             optimal_workspace() );
     return info;
 }

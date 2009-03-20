@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GBTRF_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -62,12 +60,11 @@ struct gbtrf_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::pivot > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixAB, typename VectorIPIV >
-    static void compute( integer_t const m, integer_t const n,
+    static void invoke( integer_t const m, integer_t const n,
             integer_t const kl, integer_t const ku, MatrixAB& ab,
             VectorIPIV& ipiv, integer_t& info ) {
         BOOST_ASSERT( m >= 0 );
@@ -90,7 +87,7 @@ inline integer_t gbtrf( integer_t const m, integer_t const n,
         VectorIPIV& ipiv ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    gbtrf_impl< value_type >::compute( m, n, kl, ku, ab, ipiv, info );
+    gbtrf_impl< value_type >::invoke( m, n, kl, ku, ab, ipiv, info );
     return info;
 }
 

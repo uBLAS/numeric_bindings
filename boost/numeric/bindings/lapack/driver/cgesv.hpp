@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_CGESV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -52,13 +50,12 @@ struct cgesv_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename WORK, typename SWORK >
-    static void compute( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
             integer_t& iter, integer_t& info, detail::workspace2< WORK,
             SWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -95,22 +92,22 @@ struct cgesv_impl {
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX >
-    static void compute( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
             integer_t& iter, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         traits::detail::array< value_type > tmp_swork( min_size_swork(
                 traits::matrix_num_columns(a),
                 traits::matrix_num_columns(b) ) );
-        compute( a, ipiv, b, x, iter, info, workspace( tmp_work, tmp_swork ) );
+        invoke( a, ipiv, b, x, iter, info, workspace( tmp_work, tmp_swork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX >
-    static void compute( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
             integer_t& iter, integer_t& info, optimal_workspace work ) {
-        compute( a, ipiv, b, x, iter, info, minimal_workspace() );
+        invoke( a, ipiv, b, x, iter, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( $ARGUMENTS ) {
@@ -131,7 +128,7 @@ inline integer_t cgesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
         MatrixX& x, integer_t& iter, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    cgesv_impl< value_type >::compute( a, ipiv, b, x, iter, info, work );
+    cgesv_impl< value_type >::invoke( a, ipiv, b, x, iter, info, work );
     return info;
 }
 
@@ -142,7 +139,7 @@ inline integer_t cgesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
         MatrixX& x, integer_t& iter ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    cgesv_impl< value_type >::compute( a, ipiv, b, x, iter, info,
+    cgesv_impl< value_type >::invoke( a, ipiv, b, x, iter, info,
             optimal_workspace() );
     return info;
 }

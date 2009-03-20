@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PBEQU_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -69,11 +67,11 @@ struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixAB, typename VectorS >
-    static void compute( integer_t const n, integer_t const kd, MatrixAB& ab,
+    static void invoke( integer_t const n, integer_t const kd, MatrixAB& ab,
             VectorS& s, real_type& scond, real_type& amax, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::vector_traits<
@@ -95,11 +93,11 @@ struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixAB, typename VectorS >
-    static void compute( integer_t const n, integer_t const kd, MatrixAB& ab,
+    static void invoke( integer_t const n, integer_t const kd, MatrixAB& ab,
             VectorS& s, real_type& scond, real_type& amax, integer_t& info ) {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
@@ -121,7 +119,7 @@ inline integer_t pbequ( integer_t const n, integer_t const kd,
         MatrixAB >::value_type& amax ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    pbequ_impl< value_type >::compute( n, kd, ab, s, scond, amax, info );
+    pbequ_impl< value_type >::invoke( n, kd, ab, s, scond, amax, info );
     return info;
 }
 

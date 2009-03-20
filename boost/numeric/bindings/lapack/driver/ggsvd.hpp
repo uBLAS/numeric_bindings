@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GGSVD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -101,14 +99,13 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ, typename WORK, typename IWORK >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, detail::workspace2< WORK,
@@ -164,7 +161,7 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, minimal_workspace work ) {
@@ -173,7 +170,7 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::matrix_num_rows(b) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 traits::matrix_num_columns(b) ) );
-        compute( jobu, jobv, jobq, k, l, a, b, alpha, beta, u, v, q, info,
+        invoke( jobu, jobv, jobq, k, l, a, b, alpha, beta, u, v, q, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -181,11 +178,11 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, optimal_workspace work ) {
-        compute( jobu, jobv, jobq, k, l, a, b, alpha, beta, u, v, q, info,
+        invoke( jobu, jobv, jobq, k, l, a, b, alpha, beta, u, v, q, info,
                 minimal_workspace() );
     }
 
@@ -205,14 +202,13 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ, typename WORK, typename RWORK, typename IWORK >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, detail::workspace3< WORK, RWORK,
@@ -268,7 +264,7 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, minimal_workspace work ) {
@@ -279,7 +275,7 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_columns(b) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 traits::matrix_num_columns(b) ) );
-        compute( jobu, jobv, jobq, k, l, a, b, alpha, beta, u, v, q, info,
+        invoke( jobu, jobv, jobq, k, l, a, b, alpha, beta, u, v, q, info,
                 workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
@@ -287,11 +283,11 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, optimal_workspace work ) {
-        compute( jobu, jobv, jobq, k, l, a, b, alpha, beta, u, v, q, info,
+        invoke( jobu, jobv, jobq, k, l, a, b, alpha, beta, u, v, q, info,
                 minimal_workspace() );
     }
 
@@ -320,7 +316,7 @@ inline integer_t ggsvd( char const jobu, char const jobv,
         MatrixQ& q, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    ggsvd_impl< value_type >::compute( jobu, jobv, jobq, k, l, a, b,
+    ggsvd_impl< value_type >::invoke( jobu, jobv, jobq, k, l, a, b,
             alpha, beta, u, v, q, info, work );
     return info;
 }
@@ -335,7 +331,7 @@ inline integer_t ggsvd( char const jobu, char const jobv,
         MatrixQ& q ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    ggsvd_impl< value_type >::compute( jobu, jobv, jobq, k, l, a, b,
+    ggsvd_impl< value_type >::invoke( jobu, jobv, jobq, k, l, a, b,
             alpha, beta, u, v, q, info, optimal_workspace() );
     return info;
 }

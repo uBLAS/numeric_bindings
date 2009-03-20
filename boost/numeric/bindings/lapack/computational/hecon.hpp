@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_HECON_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -56,12 +54,11 @@ struct hecon_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::pivot > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename WORK >
-    static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
@@ -80,20 +77,20 @@ struct hecon_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
-        compute( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work ) );
+        invoke( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             optimal_workspace work ) {
-        compute( uplo, a, ipiv, anorm, rcond, info, minimal_workspace() );
+        invoke( uplo, a, ipiv, anorm, rcond, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -110,7 +107,7 @@ inline integer_t hecon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    hecon_impl< value_type >::compute( uplo, a, ipiv, anorm, rcond, info,
+    hecon_impl< value_type >::invoke( uplo, a, ipiv, anorm, rcond, info,
             work );
     return info;
 }
@@ -122,7 +119,7 @@ inline integer_t hecon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
         typename traits::matrix_traits< MatrixA >::value_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    hecon_impl< value_type >::compute( uplo, a, ipiv, anorm, rcond, info,
+    hecon_impl< value_type >::invoke( uplo, a, ipiv, anorm, rcond, info,
             optimal_workspace() );
     return info;
 }

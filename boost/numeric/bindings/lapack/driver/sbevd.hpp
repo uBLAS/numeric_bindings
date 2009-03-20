@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_SBEVD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -58,12 +56,12 @@ struct sbevd_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAB, typename VectorW, typename MatrixZ,
             typename WORK, typename IWORK >
-    static void compute( char const jobz, integer_t const n,
+    static void invoke( char const jobz, integer_t const n,
             integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
             integer_t const liwork, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
@@ -95,20 +93,20 @@ struct sbevd_impl {
 
     // minimal workspace specialization
     template< typename MatrixAB, typename VectorW, typename MatrixZ >
-    static void compute( char const jobz, integer_t const n,
+    static void invoke( char const jobz, integer_t const n,
             integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
             integer_t const liwork, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( jobz,
                 n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( jobz,
                 n ) );
-        compute( jobz, n, kd, ab, w, z, liwork, info, workspace( tmp_work,
+        invoke( jobz, n, kd, ab, w, z, liwork, info, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixAB, typename VectorW, typename MatrixZ >
-    static void compute( char const jobz, integer_t const n,
+    static void invoke( char const jobz, integer_t const n,
             integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
             integer_t const liwork, integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
@@ -121,7 +119,7 @@ struct sbevd_impl {
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         traits::detail::array< integer_t > tmp_iwork( opt_size_iwork );
-        compute( jobz, n, kd, ab, w, z, liwork, info, workspace( tmp_work,
+        invoke( jobz, n, kd, ab, w, z, liwork, info, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
@@ -153,7 +151,7 @@ inline integer_t sbevd( char const jobz, integer_t const n,
         integer_t const liwork, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    sbevd_impl< value_type >::compute( jobz, n, kd, ab, w, z, liwork,
+    sbevd_impl< value_type >::invoke( jobz, n, kd, ab, w, z, liwork,
             info, work );
     return info;
 }
@@ -165,7 +163,7 @@ inline integer_t sbevd( char const jobz, integer_t const n,
         integer_t const liwork ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    sbevd_impl< value_type >::compute( jobz, n, kd, ab, w, z, liwork,
+    sbevd_impl< value_type >::invoke( jobz, n, kd, ab, w, z, liwork,
             info, optimal_workspace() );
     return info;
 }

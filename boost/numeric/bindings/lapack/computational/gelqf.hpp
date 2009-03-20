@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GELQF_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -74,11 +72,11 @@ struct gelqf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void compute( MatrixA& a, VectorTAU& tau, integer_t& info,
+    static void invoke( MatrixA& a, VectorTAU& tau, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -101,16 +99,16 @@ struct gelqf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( MatrixA& a, VectorTAU& tau, integer_t& info,
+    static void invoke( MatrixA& a, VectorTAU& tau, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_rows(a) ) );
-        compute( a, tau, info, workspace( tmp_work ) );
+        invoke( a, tau, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( MatrixA& a, VectorTAU& tau, integer_t& info,
+    static void invoke( MatrixA& a, VectorTAU& tau, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
         detail::gelqf( traits::matrix_num_rows(a),
@@ -119,7 +117,7 @@ struct gelqf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( a, tau, info, workspace( tmp_work ) );
+        invoke( a, tau, info, workspace( tmp_work ) );
     }
 
     static integer_t min_size_work( integer_t const m ) {
@@ -133,11 +131,11 @@ struct gelqf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void compute( MatrixA& a, VectorTAU& tau, integer_t& info,
+    static void invoke( MatrixA& a, VectorTAU& tau, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -160,16 +158,16 @@ struct gelqf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( MatrixA& a, VectorTAU& tau, integer_t& info,
+    static void invoke( MatrixA& a, VectorTAU& tau, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_rows(a) ) );
-        compute( a, tau, info, workspace( tmp_work ) );
+        invoke( a, tau, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( MatrixA& a, VectorTAU& tau, integer_t& info,
+    static void invoke( MatrixA& a, VectorTAU& tau, integer_t& info,
             optimal_workspace work ) {
         value_type opt_size_work;
         detail::gelqf( traits::matrix_num_rows(a),
@@ -178,7 +176,7 @@ struct gelqf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 &opt_size_work, -1, info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( a, tau, info, workspace( tmp_work ) );
+        invoke( a, tau, info, workspace( tmp_work ) );
     }
 
     static integer_t min_size_work( integer_t const m ) {
@@ -192,7 +190,7 @@ template< typename MatrixA, typename VectorTAU, typename Workspace >
 inline integer_t gelqf( MatrixA& a, VectorTAU& tau, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    gelqf_impl< value_type >::compute( a, tau, info, work );
+    gelqf_impl< value_type >::invoke( a, tau, info, work );
     return info;
 }
 
@@ -201,8 +199,7 @@ template< typename MatrixA, typename VectorTAU >
 inline integer_t gelqf( MatrixA& a, VectorTAU& tau ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    gelqf_impl< value_type >::compute( a, tau, info,
-            optimal_workspace() );
+    gelqf_impl< value_type >::invoke( a, tau, info, optimal_workspace() );
     return info;
 }
 

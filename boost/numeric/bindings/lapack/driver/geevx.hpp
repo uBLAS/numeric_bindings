@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GEEVX_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -98,19 +96,19 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVL, typename MatrixVR, typename VectorSCALE,
             typename VectorRCONDE, typename VectorRCONDV, typename WORK,
             typename IWORK >
-    static void compute( char const balanc, char const jobvl,
-            char const jobvr, char const sense, MatrixA& a, VectorWR& wr,
-            VectorWI& wi, MatrixVL& vl, MatrixVR& vr, integer_t& ilo,
-            integer_t& ihi, VectorSCALE& scale, real_type& abnrm,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv, integer_t& info,
-            detail::workspace2< WORK, IWORK > work ) {
+    static void invoke( char const balanc, char const jobvl, char const jobvr,
+            char const sense, MatrixA& a, VectorWR& wr, VectorWI& wi,
+            MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
+            VectorSCALE& scale, real_type& abnrm, VectorRCONDE& rconde,
+            VectorRCONDV& rcondv, integer_t& info, detail::workspace2< WORK,
+            IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorWR >::value_type >::value) );
@@ -174,17 +172,16 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVL, typename MatrixVR, typename VectorSCALE,
             typename VectorRCONDE, typename VectorRCONDV >
-    static void compute( char const balanc, char const jobvl,
-            char const jobvr, char const sense, MatrixA& a, VectorWR& wr,
-            VectorWI& wi, MatrixVL& vl, MatrixVR& vr, integer_t& ilo,
-            integer_t& ihi, VectorSCALE& scale, real_type& abnrm,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( char const balanc, char const jobvl, char const jobvr,
+            char const sense, MatrixA& a, VectorWR& wr, VectorWI& wi,
+            MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
+            VectorSCALE& scale, real_type& abnrm, VectorRCONDE& rconde,
+            VectorRCONDV& rcondv, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( sense,
                 jobvl, jobvr, traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( sense,
                 traits::matrix_num_columns(a) ) );
-        compute( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi,
+        invoke( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi,
                 scale, abnrm, rconde, rcondv, info, workspace( tmp_work,
                 tmp_iwork ) );
     }
@@ -193,12 +190,11 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVL, typename MatrixVR, typename VectorSCALE,
             typename VectorRCONDE, typename VectorRCONDV >
-    static void compute( char const balanc, char const jobvl,
-            char const jobvr, char const sense, MatrixA& a, VectorWR& wr,
-            VectorWI& wi, MatrixVL& vl, MatrixVR& vr, integer_t& ilo,
-            integer_t& ihi, VectorSCALE& scale, real_type& abnrm,
-            VectorRCONDE& rconde, VectorRCONDV& rcondv, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( char const balanc, char const jobvl, char const jobvr,
+            char const sense, MatrixA& a, VectorWR& wr, VectorWI& wi,
+            MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
+            VectorSCALE& scale, real_type& abnrm, VectorRCONDE& rconde,
+            VectorRCONDV& rcondv, integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( sense,
                 traits::matrix_num_columns(a) ) );
@@ -214,7 +210,7 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::vector_storage(tmp_iwork), info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi,
+        invoke( balanc, jobvl, jobvr, sense, a, wr, wi, vl, vr, ilo, ihi,
                 scale, abnrm, rconde, rcondv, info, workspace( tmp_work,
                 tmp_iwork ) );
     }
@@ -244,18 +240,17 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVL,
             typename MatrixVR, typename VectorSCALE, typename VectorRCONDE,
             typename VectorRCONDV, typename WORK, typename RWORK >
-    static void compute( char const balanc, char const jobvl,
-            char const jobvr, char const sense, MatrixA& a, VectorW& w,
-            MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
-            VectorSCALE& scale, real_type& abnrm, VectorRCONDE& rconde,
-            VectorRCONDV& rcondv, integer_t& info, detail::workspace2< WORK,
-            RWORK > work ) {
+    static void invoke( char const balanc, char const jobvl, char const jobvr,
+            char const sense, MatrixA& a, VectorW& w, MatrixVL& vl,
+            MatrixVR& vr, integer_t& ilo, integer_t& ihi, VectorSCALE& scale,
+            real_type& abnrm, VectorRCONDE& rconde, VectorRCONDV& rcondv,
+            integer_t& info, detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorSCALE >::value_type, typename traits::vector_traits<
                 VectorRCONDE >::value_type >::value) );
@@ -309,16 +304,16 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename VectorW, typename MatrixVL,
             typename MatrixVR, typename VectorSCALE, typename VectorRCONDE,
             typename VectorRCONDV >
-    static void compute( char const balanc, char const jobvl,
-            char const jobvr, char const sense, MatrixA& a, VectorW& w,
-            MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
-            VectorSCALE& scale, real_type& abnrm, VectorRCONDE& rconde,
-            VectorRCONDV& rcondv, integer_t& info, minimal_workspace work ) {
+    static void invoke( char const balanc, char const jobvl, char const jobvr,
+            char const sense, MatrixA& a, VectorW& w, MatrixVL& vl,
+            MatrixVR& vr, integer_t& ilo, integer_t& ihi, VectorSCALE& scale,
+            real_type& abnrm, VectorRCONDE& rconde, VectorRCONDV& rcondv,
+            integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( sense,
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(a) ) );
-        compute( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale,
+        invoke( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale,
                 abnrm, rconde, rcondv, info, workspace( tmp_work,
                 tmp_rwork ) );
     }
@@ -327,11 +322,11 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename VectorW, typename MatrixVL,
             typename MatrixVR, typename VectorSCALE, typename VectorRCONDE,
             typename VectorRCONDV >
-    static void compute( char const balanc, char const jobvl,
-            char const jobvr, char const sense, MatrixA& a, VectorW& w,
-            MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
-            VectorSCALE& scale, real_type& abnrm, VectorRCONDE& rconde,
-            VectorRCONDV& rcondv, integer_t& info, optimal_workspace work ) {
+    static void invoke( char const balanc, char const jobvl, char const jobvr,
+            char const sense, MatrixA& a, VectorW& w, MatrixVL& vl,
+            MatrixVR& vr, integer_t& ilo, integer_t& ihi, VectorSCALE& scale,
+            real_type& abnrm, VectorRCONDE& rconde, VectorRCONDV& rcondv,
+            integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(a) ) );
@@ -346,7 +341,7 @@ struct geevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::vector_storage(tmp_rwork), info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale,
+        invoke( balanc, jobvl, jobvr, sense, a, w, vl, vr, ilo, ihi, scale,
                 abnrm, rconde, rcondv, info, workspace( tmp_work,
                 tmp_rwork ) );
     }
@@ -376,9 +371,8 @@ inline integer_t geevx( char const balanc, char const jobvl,
         VectorRCONDV& rcondv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    geevx_impl< value_type >::compute( balanc, jobvl, jobvr, sense, a,
-            wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde, rcondv, info,
-            work );
+    geevx_impl< value_type >::invoke( balanc, jobvl, jobvr, sense, a, wr,
+            wi, vl, vr, ilo, ihi, scale, abnrm, rconde, rcondv, info, work );
     return info;
 }
 
@@ -394,8 +388,8 @@ inline integer_t geevx( char const balanc, char const jobvl,
         VectorRCONDV& rcondv ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    geevx_impl< value_type >::compute( balanc, jobvl, jobvr, sense, a,
-            wr, wi, vl, vr, ilo, ihi, scale, abnrm, rconde, rcondv, info,
+    geevx_impl< value_type >::invoke( balanc, jobvl, jobvr, sense, a, wr,
+            wi, vl, vr, ilo, ihi, scale, abnrm, rconde, rcondv, info,
             optimal_workspace() );
     return info;
 }
@@ -411,7 +405,7 @@ inline integer_t geevx( char const balanc, char const jobvl,
         VectorRCONDV& rcondv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    geevx_impl< value_type >::compute( balanc, jobvl, jobvr, sense, a, w,
+    geevx_impl< value_type >::invoke( balanc, jobvl, jobvr, sense, a, w,
             vl, vr, ilo, ihi, scale, abnrm, rconde, rcondv, info, work );
     return info;
 }
@@ -428,7 +422,7 @@ inline integer_t geevx( char const balanc, char const jobvl,
         VectorRCONDV& rcondv ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    geevx_impl< value_type >::compute( balanc, jobvl, jobvr, sense, a, w,
+    geevx_impl< value_type >::invoke( balanc, jobvl, jobvr, sense, a, w,
             vl, vr, ilo, ihi, scale, abnrm, rconde, rcondv, info,
             optimal_workspace() );
     return info;

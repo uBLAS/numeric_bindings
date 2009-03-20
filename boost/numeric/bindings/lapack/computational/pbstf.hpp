@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PBSTF_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -56,11 +54,11 @@ struct pbstf_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixAB >
-    static void compute( integer_t const n, integer_t const kd, MatrixAB& ab,
+    static void invoke( integer_t const n, integer_t const kd, MatrixAB& ab,
             integer_t& info ) {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
@@ -80,7 +78,7 @@ inline integer_t pbstf( integer_t const n, integer_t const kd,
         MatrixAB& ab ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    pbstf_impl< value_type >::compute( n, kd, ab, info );
+    pbstf_impl< value_type >::invoke( n, kd, ab, info );
     return info;
 }
 

@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GBEQU_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -75,11 +73,11 @@ struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixAB, typename VectorR, typename VectorC >
-    static void compute( integer_t const m, integer_t const n,
+    static void invoke( integer_t const m, integer_t const n,
             integer_t const kl, integer_t const ku, MatrixAB& ab, VectorR& r,
             VectorC& c, real_type& rowcnd, real_type& colcnd, real_type& amax,
             integer_t& info ) {
@@ -106,11 +104,11 @@ struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixAB, typename VectorR, typename VectorC >
-    static void compute( integer_t const m, integer_t const n,
+    static void invoke( integer_t const m, integer_t const n,
             integer_t const kl, integer_t const ku, MatrixAB& ab, VectorR& r,
             VectorC& c, real_type& rowcnd, real_type& colcnd, real_type& amax,
             integer_t& info ) {
@@ -139,7 +137,7 @@ inline integer_t gbequ( integer_t const m, integer_t const n,
         MatrixAB >::value_type& amax ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    gbequ_impl< value_type >::compute( m, n, kl, ku, ab, r, c, rowcnd,
+    gbequ_impl< value_type >::invoke( m, n, kl, ku, ab, r, c, rowcnd,
             colcnd, amax, info );
     return info;
 }

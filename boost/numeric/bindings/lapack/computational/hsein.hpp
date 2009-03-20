@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_HSEIN_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -93,13 +91,13 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixH, typename VectorWR,
             typename VectorWI, typename MatrixVL, typename MatrixVR,
             typename VectorIFAILL, typename VectorIFAILR, typename WORK >
-    static void compute( char const side, char const eigsrc, char const initv,
+    static void invoke( char const side, char const eigsrc, char const initv,
             VectorSELECT& select, MatrixH& h, VectorWR& wr, VectorWI& wi,
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, integer_t& info,
@@ -149,28 +147,28 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorSELECT, typename MatrixH, typename VectorWR,
             typename VectorWI, typename MatrixVL, typename MatrixVR,
             typename VectorIFAILL, typename VectorIFAILR >
-    static void compute( char const side, char const eigsrc, char const initv,
+    static void invoke( char const side, char const eigsrc, char const initv,
             VectorSELECT& select, MatrixH& h, VectorWR& wr, VectorWI& wi,
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(h), ?2 ) );
-        compute( side, eigsrc, initv, select, h, wr, wi, vl, vr, mm, m,
-                ifaill, ifailr, info, workspace( tmp_work ) );
+        invoke( side, eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill,
+                ifailr, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename VectorSELECT, typename MatrixH, typename VectorWR,
             typename VectorWI, typename MatrixVL, typename MatrixVR,
             typename VectorIFAILL, typename VectorIFAILR >
-    static void compute( char const side, char const eigsrc, char const initv,
+    static void invoke( char const side, char const eigsrc, char const initv,
             VectorSELECT& select, MatrixH& h, VectorWR& wr, VectorWI& wi,
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, integer_t& info,
             optimal_workspace work ) {
-        compute( side, eigsrc, initv, select, h, wr, wi, vl, vr, mm, m,
-                ifaill, ifailr, info, minimal_workspace() );
+        invoke( side, eigsrc, initv, select, h, wr, wi, vl, vr, mm, m, ifaill,
+                ifailr, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n, ?? ) {
@@ -184,13 +182,13 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixH, typename VectorW,
             typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
             typename VectorIFAILR, typename WORK, typename RWORK >
-    static void compute( char const side, char const eigsrc, char const initv,
+    static void invoke( char const side, char const eigsrc, char const initv,
             VectorSELECT& select, MatrixH& h, VectorW& w, MatrixVL& vl,
             MatrixVR& vr, integer_t const mm, integer_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, integer_t& info,
@@ -237,7 +235,7 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorSELECT, typename MatrixH, typename VectorW,
             typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
             typename VectorIFAILR >
-    static void compute( char const side, char const eigsrc, char const initv,
+    static void invoke( char const side, char const eigsrc, char const initv,
             VectorSELECT& select, MatrixH& h, VectorW& w, MatrixVL& vl,
             MatrixVR& vr, integer_t const mm, integer_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, integer_t& info,
@@ -246,7 +244,7 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_columns(h) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(h) ) );
-        compute( side, eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill,
+        invoke( side, eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill,
                 ifailr, info, workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -254,12 +252,12 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorSELECT, typename MatrixH, typename VectorW,
             typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
             typename VectorIFAILR >
-    static void compute( char const side, char const eigsrc, char const initv,
+    static void invoke( char const side, char const eigsrc, char const initv,
             VectorSELECT& select, MatrixH& h, VectorW& w, MatrixVL& vl,
             MatrixVR& vr, integer_t const mm, integer_t& m,
             VectorIFAILL& ifaill, VectorIFAILR& ifailr, integer_t& info,
             optimal_workspace work ) {
-        compute( side, eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill,
+        invoke( side, eigsrc, initv, select, h, w, vl, vr, mm, m, ifaill,
                 ifailr, info, minimal_workspace() );
     }
 
@@ -285,8 +283,8 @@ inline integer_t hsein( char const side, char const eigsrc,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    hsein_impl< value_type >::compute( side, eigsrc, initv, select, h,
-            wr, wi, vl, vr, mm, m, ifaill, ifailr, info, work );
+    hsein_impl< value_type >::invoke( side, eigsrc, initv, select, h, wr,
+            wi, vl, vr, mm, m, ifaill, ifailr, info, work );
     return info;
 }
 
@@ -301,8 +299,8 @@ inline integer_t hsein( char const side, char const eigsrc,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    hsein_impl< value_type >::compute( side, eigsrc, initv, select, h,
-            wr, wi, vl, vr, mm, m, ifaill, ifailr, info, optimal_workspace() );
+    hsein_impl< value_type >::invoke( side, eigsrc, initv, select, h, wr,
+            wi, vl, vr, mm, m, ifaill, ifailr, info, optimal_workspace() );
     return info;
 }
 // template function to call hsein
@@ -316,7 +314,7 @@ inline integer_t hsein( char const side, char const eigsrc,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    hsein_impl< value_type >::compute( side, eigsrc, initv, select, h, w,
+    hsein_impl< value_type >::invoke( side, eigsrc, initv, select, h, w,
             vl, vr, mm, m, ifaill, ifailr, info, work );
     return info;
 }
@@ -332,7 +330,7 @@ inline integer_t hsein( char const side, char const eigsrc,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    hsein_impl< value_type >::compute( side, eigsrc, initv, select, h, w,
+    hsein_impl< value_type >::invoke( side, eigsrc, initv, select, h, w,
             vl, vr, mm, m, ifaill, ifailr, info, optimal_workspace() );
     return info;
 }

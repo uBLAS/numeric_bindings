@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TGSNA_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -92,14 +90,13 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF, typename WORK, typename IWORK >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixA& a, MatrixB& b,
             MatrixVL& vl, MatrixVR& vr, VectorS& s, VectorDIF& dif,
             integer_t const mm, integer_t& m, integer_t& info,
@@ -144,7 +141,7 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixA& a, MatrixB& b,
             MatrixVL& vl, MatrixVR& vr, VectorS& s, VectorDIF& dif,
             integer_t const mm, integer_t& m, integer_t& info,
@@ -153,7 +150,7 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 $CALL_MIN_SIZE ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 $CALL_MIN_SIZE ) );
-        compute( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
+        invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -161,7 +158,7 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixA& a, MatrixB& b,
             MatrixVL& vl, MatrixVR& vr, VectorS& s, VectorDIF& dif,
             integer_t const mm, integer_t& m, integer_t& info,
@@ -178,7 +175,7 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 &opt_size_work, -1, traits::vector_storage(tmp_iwork), info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
+        invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -197,14 +194,13 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF, typename WORK, typename IWORK >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixA& a, MatrixB& b,
             MatrixVL& vl, MatrixVR& vr, VectorS& s, VectorDIF& dif,
             integer_t const mm, integer_t& m, integer_t& info,
@@ -246,7 +242,7 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixA& a, MatrixB& b,
             MatrixVL& vl, MatrixVR& vr, VectorS& s, VectorDIF& dif,
             integer_t const mm, integer_t& m, integer_t& info,
@@ -255,7 +251,7 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 $CALL_MIN_SIZE ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 $CALL_MIN_SIZE ) );
-        compute( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
+        invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -263,12 +259,12 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixA& a, MatrixB& b,
             MatrixVL& vl, MatrixVR& vr, VectorS& s, VectorDIF& dif,
             integer_t const mm, integer_t& m, integer_t& info,
             optimal_workspace work ) {
-        compute( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
+        invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
                 minimal_workspace() );
     }
 
@@ -293,7 +289,7 @@ inline integer_t tgsna( char const job, char const howmny,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    tgsna_impl< value_type >::compute( job, howmny, select, n, a, b, vl,
+    tgsna_impl< value_type >::invoke( job, howmny, select, n, a, b, vl,
             vr, s, dif, mm, m, info, work );
     return info;
 }
@@ -309,7 +305,7 @@ inline integer_t tgsna( char const job, char const howmny,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    tgsna_impl< value_type >::compute( job, howmny, select, n, a, b, vl,
+    tgsna_impl< value_type >::invoke( job, howmny, select, n, a, b, vl,
             vr, s, dif, mm, m, info, optimal_workspace() );
     return info;
 }

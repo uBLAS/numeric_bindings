@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_OPMTR_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -54,12 +52,12 @@ struct opmtr_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static void compute( char const side, char const uplo, char const trans,
+    static void invoke( char const side, char const uplo, char const trans,
             VectorAP& ap, VectorTAU& tau, MatrixC& c, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -87,20 +85,20 @@ struct opmtr_impl {
 
     // minimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static void compute( char const side, char const uplo, char const trans,
+    static void invoke( char const side, char const uplo, char const trans,
             VectorAP& ap, VectorTAU& tau, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( side,
                 traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
-        compute( side, uplo, trans, ap, tau, c, info, workspace( tmp_work ) );
+        invoke( side, uplo, trans, ap, tau, c, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static void compute( char const side, char const uplo, char const trans,
+    static void invoke( char const side, char const uplo, char const trans,
             VectorAP& ap, VectorTAU& tau, MatrixC& c, integer_t& info,
             optimal_workspace work ) {
-        compute( side, uplo, trans, ap, tau, c, info, minimal_workspace() );
+        invoke( side, uplo, trans, ap, tau, c, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( char const side, integer_t const m,
@@ -121,7 +119,7 @@ inline integer_t opmtr( char const side, char const uplo,
         Workspace work ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
-    opmtr_impl< value_type >::compute( side, uplo, trans, ap, tau, c,
+    opmtr_impl< value_type >::invoke( side, uplo, trans, ap, tau, c,
             info, work );
     return info;
 }
@@ -132,7 +130,7 @@ inline integer_t opmtr( char const side, char const uplo,
         char const trans, VectorAP& ap, VectorTAU& tau, MatrixC& c ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
-    opmtr_impl< value_type >::compute( side, uplo, trans, ap, tau, c,
+    opmtr_impl< value_type >::invoke( side, uplo, trans, ap, tau, c,
             info, optimal_workspace() );
     return info;
 }

@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TBCON_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -77,11 +75,11 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAB, typename WORK, typename IWORK >
-    static void compute( char const norm, char const uplo, char const diag,
+    static void invoke( char const norm, char const uplo, char const diag,
             integer_t const n, integer_t const kd, MatrixAB& ab,
             real_type& rcond, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
@@ -103,21 +101,21 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixAB >
-    static void compute( char const norm, char const uplo, char const diag,
+    static void invoke( char const norm, char const uplo, char const diag,
             integer_t const n, integer_t const kd, MatrixAB& ab,
             real_type& rcond, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
-        compute( norm, uplo, diag, n, kd, ab, rcond, info,
-                workspace( tmp_work, tmp_iwork ) );
+        invoke( norm, uplo, diag, n, kd, ab, rcond, info, workspace( tmp_work,
+                tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixAB >
-    static void compute( char const norm, char const uplo, char const diag,
+    static void invoke( char const norm, char const uplo, char const diag,
             integer_t const n, integer_t const kd, MatrixAB& ab,
             real_type& rcond, integer_t& info, optimal_workspace work ) {
-        compute( norm, uplo, diag, n, kd, ab, rcond, info,
+        invoke( norm, uplo, diag, n, kd, ab, rcond, info,
                 minimal_workspace() );
     }
 
@@ -136,11 +134,11 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAB, typename WORK, typename RWORK >
-    static void compute( char const norm, char const uplo, char const diag,
+    static void invoke( char const norm, char const uplo, char const diag,
             integer_t const n, integer_t const kd, MatrixAB& ab,
             real_type& rcond, integer_t& info, detail::workspace2< WORK,
             RWORK > work ) {
@@ -162,21 +160,21 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixAB >
-    static void compute( char const norm, char const uplo, char const diag,
+    static void invoke( char const norm, char const uplo, char const diag,
             integer_t const n, integer_t const kd, MatrixAB& ab,
             real_type& rcond, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        compute( norm, uplo, diag, n, kd, ab, rcond, info,
-                workspace( tmp_work, tmp_rwork ) );
+        invoke( norm, uplo, diag, n, kd, ab, rcond, info, workspace( tmp_work,
+                tmp_rwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixAB >
-    static void compute( char const norm, char const uplo, char const diag,
+    static void invoke( char const norm, char const uplo, char const diag,
             integer_t const n, integer_t const kd, MatrixAB& ab,
             real_type& rcond, integer_t& info, optimal_workspace work ) {
-        compute( norm, uplo, diag, n, kd, ab, rcond, info,
+        invoke( norm, uplo, diag, n, kd, ab, rcond, info,
                 minimal_workspace() );
     }
 
@@ -198,8 +196,8 @@ inline integer_t tbcon( char const norm, char const uplo,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    tbcon_impl< value_type >::compute( norm, uplo, diag, n, kd, ab,
-            rcond, info, work );
+    tbcon_impl< value_type >::invoke( norm, uplo, diag, n, kd, ab, rcond,
+            info, work );
     return info;
 }
 
@@ -210,8 +208,8 @@ inline integer_t tbcon( char const norm, char const uplo,
         typename traits::matrix_traits< MatrixAB >::value_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    tbcon_impl< value_type >::compute( norm, uplo, diag, n, kd, ab,
-            rcond, info, optimal_workspace() );
+    tbcon_impl< value_type >::invoke( norm, uplo, diag, n, kd, ab, rcond,
+            info, optimal_workspace() );
     return info;
 }
 

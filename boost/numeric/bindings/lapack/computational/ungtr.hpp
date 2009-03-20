@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_UNGTR_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -57,11 +55,11 @@ struct ungtr_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void compute( integer_t const n, MatrixA& a, VectorTAU& tau,
+    static void invoke( integer_t const n, MatrixA& a, VectorTAU& tau,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -82,16 +80,16 @@ struct ungtr_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( integer_t const n, MatrixA& a, VectorTAU& tau,
+    static void invoke( integer_t const n, MatrixA& a, VectorTAU& tau,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( side, m,
                 n ) );
-        compute( n, a, tau, info, workspace( tmp_work ) );
+        invoke( n, a, tau, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( integer_t const n, MatrixA& a, VectorTAU& tau,
+    static void invoke( integer_t const n, MatrixA& a, VectorTAU& tau,
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         detail::ungtr( traits::matrix_uplo_tag(a), n,
@@ -99,7 +97,7 @@ struct ungtr_impl {
                 traits::vector_storage(tau), &opt_size_work, -1, info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( n, a, tau, info, workspace( tmp_work ) );
+        invoke( n, a, tau, info, workspace( tmp_work ) );
     }
 
     static integer_t min_size_work( integer_t const side, integer_t const m,
@@ -118,7 +116,7 @@ inline integer_t ungtr( integer_t const n, MatrixA& a, VectorTAU& tau,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    ungtr_impl< value_type >::compute( n, a, tau, info, work );
+    ungtr_impl< value_type >::invoke( n, a, tau, info, work );
     return info;
 }
 
@@ -127,7 +125,7 @@ template< typename MatrixA, typename VectorTAU >
 inline integer_t ungtr( integer_t const n, MatrixA& a, VectorTAU& tau ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    ungtr_impl< value_type >::compute( n, a, tau, info,
+    ungtr_impl< value_type >::invoke( n, a, tau, info,
             optimal_workspace() );
     return info;
 }

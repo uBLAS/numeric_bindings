@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_SYCON_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -75,13 +73,12 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::pivot > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename WORK,
             typename IWORK >
-    static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
@@ -103,23 +100,23 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 traits::matrix_num_columns(a) ) );
-        compute( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work,
+        invoke( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             optimal_workspace work ) {
-        compute( uplo, a, ipiv, anorm, rcond, info, minimal_workspace() );
+        invoke( uplo, a, ipiv, anorm, rcond, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -137,12 +134,11 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::pivot > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename WORK >
-    static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
@@ -161,20 +157,20 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
-        compute( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work ) );
+        invoke( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void compute( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
             real_type const anorm, real_type& rcond, integer_t& info,
             optimal_workspace work ) {
-        compute( uplo, a, ipiv, anorm, rcond, info, minimal_workspace() );
+        invoke( uplo, a, ipiv, anorm, rcond, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -191,7 +187,7 @@ inline integer_t sycon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    sycon_impl< value_type >::compute( uplo, a, ipiv, anorm, rcond, info,
+    sycon_impl< value_type >::invoke( uplo, a, ipiv, anorm, rcond, info,
             work );
     return info;
 }
@@ -203,7 +199,7 @@ inline integer_t sycon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
         typename traits::matrix_traits< MatrixA >::value_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    sycon_impl< value_type >::compute( uplo, a, ipiv, anorm, rcond, info,
+    sycon_impl< value_type >::invoke( uplo, a, ipiv, anorm, rcond, info,
             optimal_workspace() );
     return info;
 }

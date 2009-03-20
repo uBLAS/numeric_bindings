@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_HEGVX_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -72,14 +70,13 @@ struct hegvx_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename MatrixZ, typename VectorIFAIL, typename WORK,
             typename RWORK, typename IWORK >
-    static void compute( integer_t const itype, char const jobz,
+    static void invoke( integer_t const itype, char const jobz,
             char const range, integer_t const n, MatrixA& a, MatrixB& b,
             real_type const vl, real_type const vu, integer_t const il,
             integer_t const iu, real_type const abstol, integer_t& m,
@@ -120,7 +117,7 @@ struct hegvx_impl {
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
-    static void compute( integer_t const itype, char const jobz,
+    static void invoke( integer_t const itype, char const jobz,
             char const range, integer_t const n, MatrixA& a, MatrixB& b,
             real_type const vl, real_type const vu, integer_t const il,
             integer_t const iu, real_type const abstol, integer_t& m,
@@ -129,14 +126,14 @@ struct hegvx_impl {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
-        compute( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z,
+        invoke( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z,
                 ifail, info, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
-    static void compute( integer_t const itype, char const jobz,
+    static void invoke( integer_t const itype, char const jobz,
             char const range, integer_t const n, MatrixA& a, MatrixB& b,
             real_type const vl, real_type const vu, integer_t const il,
             integer_t const iu, real_type const abstol, integer_t& m,
@@ -155,7 +152,7 @@ struct hegvx_impl {
                 traits::vector_storage(ifail), info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z,
+        invoke( itype, jobz, range, n, a, b, vl, vu, il, iu, abstol, m, w, z,
                 ifail, info, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
@@ -186,7 +183,7 @@ inline integer_t hegvx( integer_t const itype, char const jobz,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    hegvx_impl< value_type >::compute( itype, jobz, range, n, a, b, vl,
+    hegvx_impl< value_type >::invoke( itype, jobz, range, n, a, b, vl,
             vu, il, iu, abstol, m, w, z, ifail, info, work );
     return info;
 }
@@ -203,7 +200,7 @@ inline integer_t hegvx( integer_t const itype, char const jobz,
         integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    hegvx_impl< value_type >::compute( itype, jobz, range, n, a, b, vl,
+    hegvx_impl< value_type >::invoke( itype, jobz, range, n, a, b, vl,
             vu, il, iu, abstol, m, w, z, ifail, info, optimal_workspace() );
     return info;
 }

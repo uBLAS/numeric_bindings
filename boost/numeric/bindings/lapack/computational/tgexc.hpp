@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TGEXC_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -84,13 +82,12 @@ struct tgexc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixQ,
             typename MatrixZ >
-    static void compute( logical_t const wantq, logical_t const wantz,
+    static void invoke( logical_t const wantq, logical_t const wantz,
             integer_t const n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
             integer_t& ifst, integer_t& ilst, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -123,13 +120,12 @@ struct tgexc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixQ,
             typename MatrixZ, $WORKSPACE_TYPENAMES >
-    static void compute( logical_t const wantq, logical_t const wantz,
+    static void invoke( logical_t const wantq, logical_t const wantz,
             integer_t const n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
             integer_t const ifst, integer_t& ilst, integer_t& info,
             detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
@@ -155,19 +151,19 @@ struct tgexc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixQ,
             typename MatrixZ >
-    static void compute( logical_t const wantq, logical_t const wantz,
+    static void invoke( logical_t const wantq, logical_t const wantz,
             integer_t const n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
             integer_t const ifst, integer_t& ilst, integer_t& info,
             minimal_workspace work ) {
 $SETUP_MIN_WORKARRAYS_POST
-        compute( wantq, wantz, n, a, b, q, z, ifst, ilst, info,
+        invoke( wantq, wantz, n, a, b, q, z, ifst, ilst, info,
                 workspace( $TMP_WORKARRAYS ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixQ,
             typename MatrixZ >
-    static void compute( logical_t const wantq, logical_t const wantz,
+    static void invoke( logical_t const wantq, logical_t const wantz,
             integer_t const n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
             integer_t const ifst, integer_t& ilst, integer_t& info,
             optimal_workspace work ) {
@@ -186,7 +182,7 @@ inline integer_t tgexc( logical_t const wantq, logical_t const wantz,
         integer_t& ifst, integer_t& ilst ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    tgexc_impl< value_type >::compute( wantq, wantz, n, a, b, q, z, ifst,
+    tgexc_impl< value_type >::invoke( wantq, wantz, n, a, b, q, z, ifst,
             ilst, info );
     return info;
 }
@@ -198,7 +194,7 @@ inline integer_t tgexc( logical_t const wantq, logical_t const wantz,
         integer_t const ifst, integer_t& ilst, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    tgexc_impl< value_type >::compute( wantq, wantz, n, a, b, q, z, ifst,
+    tgexc_impl< value_type >::invoke( wantq, wantz, n, a, b, q, z, ifst,
             ilst, info, work );
     return info;
 }
@@ -211,7 +207,7 @@ inline integer_t tgexc( logical_t const wantq, logical_t const wantz,
         integer_t const ifst, integer_t& ilst ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    tgexc_impl< value_type >::compute( wantq, wantz, n, a, b, q, z, ifst,
+    tgexc_impl< value_type >::invoke( wantq, wantz, n, a, b, q, z, ifst,
             ilst, info, optimal_workspace() );
     return info;
 }

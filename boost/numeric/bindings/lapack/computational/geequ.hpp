@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GEEQU_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -69,13 +67,12 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename VectorR, typename VectorC >
-    static void compute( MatrixA& a, VectorR& r, VectorC& c,
-            real_type& rowcnd, real_type& colcnd, real_type& amax,
-            integer_t& info ) {
+    static void invoke( MatrixA& a, VectorR& r, VectorC& c, real_type& rowcnd,
+            real_type& colcnd, real_type& amax, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorR >::value_type >::value) );
@@ -99,13 +96,12 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename VectorR, typename VectorC >
-    static void compute( MatrixA& a, VectorR& r, VectorC& c,
-            real_type& rowcnd, real_type& colcnd, real_type& amax,
-            integer_t& info ) {
+    static void invoke( MatrixA& a, VectorR& r, VectorC& c, real_type& rowcnd,
+            real_type& colcnd, real_type& amax, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorR >::value_type, typename traits::vector_traits<
                 VectorC >::value_type >::value) );
@@ -129,7 +125,7 @@ inline integer_t geequ( MatrixA& a, VectorR& r, VectorC& c,
         typename traits::matrix_traits< MatrixA >::value_type& amax ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    geequ_impl< value_type >::compute( a, r, c, rowcnd, colcnd, amax,
+    geequ_impl< value_type >::invoke( a, r, c, rowcnd, colcnd, amax,
             info );
     return info;
 }

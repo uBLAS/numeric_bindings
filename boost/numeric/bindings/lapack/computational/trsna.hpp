@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TRSNA_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -88,13 +86,13 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP,
             typename WORK, typename IWORK >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
             VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
@@ -133,7 +131,7 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
             VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
             integer_t& info, minimal_workspace work ) {
@@ -141,18 +139,18 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 $CALL_MIN_SIZE ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 $CALL_MIN_SIZE ) );
-        compute( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
+        invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
             VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
             integer_t& info, optimal_workspace work ) {
-        compute( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
+        invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
                 minimal_workspace() );
     }
 
@@ -171,13 +169,13 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP,
             typename WORK, typename RWORK >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
             VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
@@ -213,7 +211,7 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
             VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
             integer_t& info, minimal_workspace work ) {
@@ -221,18 +219,18 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 $CALL_MIN_SIZE ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 $CALL_MIN_SIZE ) );
-        compute( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
+        invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
     // optimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void compute( char const job, char const howmny,
+    static void invoke( char const job, char const howmny,
             VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
             VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
             integer_t& info, optimal_workspace work ) {
-        compute( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
+        invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
                 minimal_workspace() );
     }
 
@@ -257,7 +255,7 @@ inline integer_t trsna( char const job, char const howmny,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    trsna_impl< value_type >::compute( job, howmny, select, t, vl, vr, s,
+    trsna_impl< value_type >::invoke( job, howmny, select, t, vl, vr, s,
             sep, mm, m, info, work );
     return info;
 }
@@ -271,7 +269,7 @@ inline integer_t trsna( char const job, char const howmny,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    trsna_impl< value_type >::compute( job, howmny, select, t, vl, vr, s,
+    trsna_impl< value_type >::invoke( job, howmny, select, t, vl, vr, s,
             sep, mm, m, info, optimal_workspace() );
     return info;
 }

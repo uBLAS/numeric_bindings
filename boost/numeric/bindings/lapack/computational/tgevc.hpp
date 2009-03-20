@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TGEVC_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -87,12 +85,12 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR, typename WORK >
-    static void compute( char const side, char const howmny,
+    static void invoke( char const side, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixS& s, MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             integer_t& info, detail::workspace1< WORK > work ) {
@@ -124,23 +122,23 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR >
-    static void compute( char const side, char const howmny,
+    static void invoke( char const side, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixS& s, MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
-        compute( side, howmny, select, n, s, p, vl, vr, mm, m, info,
+        invoke( side, howmny, select, n, s, p, vl, vr, mm, m, info,
                 workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR >
-    static void compute( char const side, char const howmny,
+    static void invoke( char const side, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixS& s, MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             integer_t& info, optimal_workspace work ) {
-        compute( side, howmny, select, n, s, p, vl, vr, mm, m, info,
+        invoke( side, howmny, select, n, s, p, vl, vr, mm, m, info,
                 minimal_workspace() );
     }
 
@@ -155,13 +153,13 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR, typename WORK,
             typename RWORK >
-    static void compute( char const side, char const howmny,
+    static void invoke( char const side, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixS& s, MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
@@ -196,24 +194,24 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR >
-    static void compute( char const side, char const howmny,
+    static void invoke( char const side, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixS& s, MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        compute( side, howmny, select, n, s, p, vl, vr, mm, m, info,
+        invoke( side, howmny, select, n, s, p, vl, vr, mm, m, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
     // optimal workspace specialization
     template< typename VectorSELECT, typename MatrixS, typename MatrixP,
             typename MatrixVL, typename MatrixVR >
-    static void compute( char const side, char const howmny,
+    static void invoke( char const side, char const howmny,
             VectorSELECT& select, integer_t const n, MatrixS& s, MatrixP& p,
             MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
             integer_t& info, optimal_workspace work ) {
-        compute( side, howmny, select, n, s, p, vl, vr, mm, m, info,
+        invoke( side, howmny, select, n, s, p, vl, vr, mm, m, info,
                 minimal_workspace() );
     }
 
@@ -237,7 +235,7 @@ inline integer_t tgevc( char const side, char const howmny,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    tgevc_impl< value_type >::compute( side, howmny, select, n, s, p, vl,
+    tgevc_impl< value_type >::invoke( side, howmny, select, n, s, p, vl,
             vr, mm, m, info, work );
     return info;
 }
@@ -251,7 +249,7 @@ inline integer_t tgevc( char const side, char const howmny,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    tgevc_impl< value_type >::compute( side, howmny, select, n, s, p, vl,
+    tgevc_impl< value_type >::invoke( side, howmny, select, n, s, p, vl,
             vr, mm, m, info, optimal_workspace() );
     return info;
 }

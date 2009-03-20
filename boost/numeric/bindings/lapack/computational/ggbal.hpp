@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GGBAL_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -79,13 +77,12 @@ struct ggbal_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE, typename WORK >
-    static void compute( char const job, integer_t const n, MatrixA& a,
+    static void invoke( char const job, integer_t const n, MatrixA& a,
             MatrixB& b, integer_t& ilo, integer_t& ihi, VectorLSCALE& lscale,
             VectorRSCALE& rscale, integer_t& info, detail::workspace1<
             WORK > work ) {
@@ -115,22 +112,22 @@ struct ggbal_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE >
-    static void compute( char const job, integer_t const n, MatrixA& a,
+    static void invoke( char const job, integer_t const n, MatrixA& a,
             MatrixB& b, integer_t& ilo, integer_t& ihi, VectorLSCALE& lscale,
             VectorRSCALE& rscale, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        compute( job, n, a, b, ilo, ihi, lscale, rscale, info,
+        invoke( job, n, a, b, ilo, ihi, lscale, rscale, info,
                 workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE >
-    static void compute( char const job, integer_t const n, MatrixA& a,
+    static void invoke( char const job, integer_t const n, MatrixA& a,
             MatrixB& b, integer_t& ilo, integer_t& ihi, VectorLSCALE& lscale,
             VectorRSCALE& rscale, integer_t& info, optimal_workspace work ) {
-        compute( job, n, a, b, ilo, ihi, lscale, rscale, info,
+        invoke( job, n, a, b, ilo, ihi, lscale, rscale, info,
                 minimal_workspace() );
     }
 
@@ -145,13 +142,12 @@ struct ggbal_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE, typename WORK >
-    static void compute( char const job, integer_t const n, MatrixA& a,
+    static void invoke( char const job, integer_t const n, MatrixA& a,
             MatrixB& b, integer_t& ilo, integer_t& ihi, VectorLSCALE& lscale,
             VectorRSCALE& rscale, integer_t& info, detail::workspace1<
             WORK > work ) {
@@ -178,22 +174,22 @@ struct ggbal_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE >
-    static void compute( char const job, integer_t const n, MatrixA& a,
+    static void invoke( char const job, integer_t const n, MatrixA& a,
             MatrixB& b, integer_t& ilo, integer_t& ihi, VectorLSCALE& lscale,
             VectorRSCALE& rscale, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        compute( job, n, a, b, ilo, ihi, lscale, rscale, info,
+        invoke( job, n, a, b, ilo, ihi, lscale, rscale, info,
                 workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorLSCALE,
             typename VectorRSCALE >
-    static void compute( char const job, integer_t const n, MatrixA& a,
+    static void invoke( char const job, integer_t const n, MatrixA& a,
             MatrixB& b, integer_t& ilo, integer_t& ihi, VectorLSCALE& lscale,
             VectorRSCALE& rscale, integer_t& info, optimal_workspace work ) {
-        compute( job, n, a, b, ilo, ihi, lscale, rscale, info,
+        invoke( job, n, a, b, ilo, ihi, lscale, rscale, info,
                 minimal_workspace() );
     }
 
@@ -211,7 +207,7 @@ inline integer_t ggbal( char const job, integer_t const n, MatrixA& a,
         VectorRSCALE& rscale, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    ggbal_impl< value_type >::compute( job, n, a, b, ilo, ihi, lscale,
+    ggbal_impl< value_type >::invoke( job, n, a, b, ilo, ihi, lscale,
             rscale, info, work );
     return info;
 }
@@ -224,7 +220,7 @@ inline integer_t ggbal( char const job, integer_t const n, MatrixA& a,
         VectorRSCALE& rscale ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    ggbal_impl< value_type >::compute( job, n, a, b, ilo, ihi, lscale,
+    ggbal_impl< value_type >::invoke( job, n, a, b, ilo, ihi, lscale,
             rscale, info, optimal_workspace() );
     return info;
 }

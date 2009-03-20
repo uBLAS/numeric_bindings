@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_ORGHR_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -53,11 +51,11 @@ struct orghr_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void compute( integer_t const n, integer_t const ilo,
+    static void invoke( integer_t const n, integer_t const ilo,
             integer_t const ihi, MatrixA& a, VectorTAU& tau, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -76,17 +74,17 @@ struct orghr_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( integer_t const n, integer_t const ilo,
+    static void invoke( integer_t const n, integer_t const ilo,
             integer_t const ihi, MatrixA& a, VectorTAU& tau, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        compute( n, ilo, ihi, a, tau, info, workspace( tmp_work ) );
+        invoke( n, ilo, ihi, a, tau, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( integer_t const n, integer_t const ilo,
+    static void invoke( integer_t const n, integer_t const ilo,
             integer_t const ihi, MatrixA& a, VectorTAU& tau, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
@@ -95,7 +93,7 @@ struct orghr_impl {
                 &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( n, ilo, ihi, a, tau, info, workspace( tmp_work ) );
+        invoke( n, ilo, ihi, a, tau, info, workspace( tmp_work ) );
     }
 
     static integer_t min_size_work( $ARGUMENTS ) {
@@ -110,7 +108,7 @@ inline integer_t orghr( integer_t const n, integer_t const ilo,
         integer_t const ihi, MatrixA& a, VectorTAU& tau, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    orghr_impl< value_type >::compute( n, ilo, ihi, a, tau, info, work );
+    orghr_impl< value_type >::invoke( n, ilo, ihi, a, tau, info, work );
     return info;
 }
 
@@ -120,7 +118,7 @@ inline integer_t orghr( integer_t const n, integer_t const ilo,
         integer_t const ihi, MatrixA& a, VectorTAU& tau ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    orghr_impl< value_type >::compute( n, ilo, ihi, a, tau, info,
+    orghr_impl< value_type >::invoke( n, ilo, ihi, a, tau, info,
             optimal_workspace() );
     return info;
 }

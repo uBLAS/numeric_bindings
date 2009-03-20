@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PBTRS_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -62,12 +60,11 @@ struct pbtrs_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixAB, typename MatrixB >
-    static void compute( char const uplo, integer_t const n,
+    static void invoke( char const uplo, integer_t const n,
             integer_t const kd, MatrixAB& ab, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
@@ -92,7 +89,7 @@ inline integer_t pbtrs( char const uplo, integer_t const n,
         integer_t const kd, MatrixAB& ab, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    pbtrs_impl< value_type >::compute( uplo, n, kd, ab, b, info );
+    pbtrs_impl< value_type >::invoke( uplo, n, kd, ab, b, info );
     return info;
 }
 

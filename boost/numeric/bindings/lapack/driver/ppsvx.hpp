@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_PPSVX_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -87,14 +85,13 @@ struct ppsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename IWORK >
-    static void compute( char const fact, MatrixAP& ap, VectorAFP& afp,
+    static void invoke( char const fact, MatrixAP& ap, VectorAFP& afp,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
@@ -148,7 +145,7 @@ struct ppsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void compute( char const fact, MatrixAP& ap, VectorAFP& afp,
+    static void invoke( char const fact, MatrixAP& ap, VectorAFP& afp,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
@@ -156,7 +153,7 @@ struct ppsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::matrix_num_columns(ap) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 traits::matrix_num_columns(ap) ) );
-        compute( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
+        invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -164,11 +161,11 @@ struct ppsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void compute( char const fact, MatrixAP& ap, VectorAFP& afp,
+    static void invoke( char const fact, MatrixAP& ap, VectorAFP& afp,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
-        compute( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
+        invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
                 minimal_workspace() );
     }
 
@@ -187,14 +184,13 @@ struct ppsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void compute( char const fact, MatrixAP& ap, VectorAFP& afp,
+    static void invoke( char const fact, MatrixAP& ap, VectorAFP& afp,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
@@ -245,7 +241,7 @@ struct ppsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void compute( char const fact, MatrixAP& ap, VectorAFP& afp,
+    static void invoke( char const fact, MatrixAP& ap, VectorAFP& afp,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
@@ -253,7 +249,7 @@ struct ppsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_columns(ap) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(ap) ) );
-        compute( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
+        invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -261,11 +257,11 @@ struct ppsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAP, typename VectorAFP, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void compute( char const fact, MatrixAP& ap, VectorAFP& afp,
+    static void invoke( char const fact, MatrixAP& ap, VectorAFP& afp,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
-        compute( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
+        invoke( fact, ap, afp, equed, s, b, x, rcond, ferr, berr, info,
                 minimal_workspace() );
     }
 
@@ -289,7 +285,7 @@ inline integer_t ppsvx( char const fact, MatrixAP& ap, VectorAFP& afp,
         VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
-    ppsvx_impl< value_type >::compute( fact, ap, afp, equed, s, b, x,
+    ppsvx_impl< value_type >::invoke( fact, ap, afp, equed, s, b, x,
             rcond, ferr, berr, info, work );
     return info;
 }
@@ -304,7 +300,7 @@ inline integer_t ppsvx( char const fact, MatrixAP& ap, VectorAFP& afp,
         VectorFERR& ferr, VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
-    ppsvx_impl< value_type >::compute( fact, ap, afp, equed, s, b, x,
+    ppsvx_impl< value_type >::invoke( fact, ap, afp, equed, s, b, x,
             rcond, ferr, berr, info, optimal_workspace() );
     return info;
 }

@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GTTRS_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -71,13 +69,12 @@ struct gttrs_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::pivot,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDU2, typename VectorIPIV, typename MatrixB >
-    static void compute( char const trans, integer_t const n, VectorDL& dl,
+    static void invoke( char const trans, integer_t const n, VectorDL& dl,
             VectorD& d, VectorDU& du, VectorDU2& du2, VectorIPIV& ipiv,
             MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -117,7 +114,7 @@ inline integer_t gttrs( char const trans, integer_t const n,
         VectorIPIV& ipiv, MatrixB& b ) {
     typedef typename traits::vector_traits< VectorDL >::value_type value_type;
     integer_t info(0);
-    gttrs_impl< value_type >::compute( trans, n, dl, d, du, du2, ipiv, b,
+    gttrs_impl< value_type >::invoke( trans, n, dl, d, du, du2, ipiv, b,
             info );
     return info;
 }

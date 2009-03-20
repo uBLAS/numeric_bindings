@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TPTRI_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -56,11 +54,11 @@ struct tptri_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixAP >
-    static void compute( char const diag, MatrixAP& ap, integer_t& info ) {
+    static void invoke( char const diag, MatrixAP& ap, integer_t& info ) {
         BOOST_ASSERT( traits::matrix_uplo_tag(ap) == 'U' ||
                 traits::matrix_uplo_tag(ap) == 'L' );
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
@@ -77,7 +75,7 @@ template< typename MatrixAP >
 inline integer_t tptri( char const diag, MatrixAP& ap ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
-    tptri_impl< value_type >::compute( diag, ap, info );
+    tptri_impl< value_type >::invoke( diag, ap, info );
     return info;
 }
 

@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_POEQU_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -67,11 +65,11 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename VectorS >
-    static void compute( MatrixA& a, VectorS& s, real_type& scond,
+    static void invoke( MatrixA& a, VectorS& s, real_type& scond,
             real_type& amax, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -91,11 +89,11 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename VectorS >
-    static void compute( MatrixA& a, VectorS& s, real_type& scond,
+    static void invoke( MatrixA& a, VectorS& s, real_type& scond,
             real_type& amax, integer_t& info ) {
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
@@ -114,7 +112,7 @@ inline integer_t poequ( MatrixA& a, VectorS& s,
         typename traits::matrix_traits< MatrixA >::value_type& amax ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    poequ_impl< value_type >::compute( a, s, scond, amax, info );
+    poequ_impl< value_type >::invoke( a, s, scond, amax, info );
     return info;
 }
 

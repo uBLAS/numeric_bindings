@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_PBSVX_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -93,14 +91,13 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename IWORK >
-    static void compute( char const fact, integer_t const n,
+    static void invoke( char const fact, integer_t const n,
             integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
@@ -157,28 +154,28 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void compute( char const fact, integer_t const n,
+    static void invoke( char const fact, integer_t const n,
             integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
-        compute( fact, n, kd, ab, afb, equed, s, b, x, rcond, ferr, berr,
-                info, workspace( tmp_work, tmp_iwork ) );
+        invoke( fact, n, kd, ab, afb, equed, s, b, x, rcond, ferr, berr, info,
+                workspace( tmp_work, tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void compute( char const fact, integer_t const n,
+    static void invoke( char const fact, integer_t const n,
             integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
-        compute( fact, n, kd, ab, afb, equed, s, b, x, rcond, ferr, berr,
-                info, minimal_workspace() );
+        invoke( fact, n, kd, ab, afb, equed, s, b, x, rcond, ferr, berr, info,
+                minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -196,14 +193,13 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void compute( char const fact, integer_t const n,
+    static void invoke( char const fact, integer_t const n,
             integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
@@ -257,28 +253,28 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void compute( char const fact, integer_t const n,
+    static void invoke( char const fact, integer_t const n,
             integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        compute( fact, n, kd, ab, afb, equed, s, b, x, rcond, ferr, berr,
-                info, workspace( tmp_work, tmp_rwork ) );
+        invoke( fact, n, kd, ab, afb, equed, s, b, x, rcond, ferr, berr, info,
+                workspace( tmp_work, tmp_rwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void compute( char const fact, integer_t const n,
+    static void invoke( char const fact, integer_t const n,
             integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
-        compute( fact, n, kd, ab, afb, equed, s, b, x, rcond, ferr, berr,
-                info, minimal_workspace() );
+        invoke( fact, n, kd, ab, afb, equed, s, b, x, rcond, ferr, berr, info,
+                minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -302,7 +298,7 @@ inline integer_t pbsvx( char const fact, integer_t const n,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    pbsvx_impl< value_type >::compute( fact, n, kd, ab, afb, equed, s, b,
+    pbsvx_impl< value_type >::invoke( fact, n, kd, ab, afb, equed, s, b,
             x, rcond, ferr, berr, info, work );
     return info;
 }
@@ -317,7 +313,7 @@ inline integer_t pbsvx( char const fact, integer_t const n,
         MatrixAB >::value_type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    pbsvx_impl< value_type >::compute( fact, n, kd, ab, afb, equed, s, b,
+    pbsvx_impl< value_type >::invoke( fact, n, kd, ab, afb, equed, s, b,
             x, rcond, ferr, berr, info, optimal_workspace() );
     return info;
 }

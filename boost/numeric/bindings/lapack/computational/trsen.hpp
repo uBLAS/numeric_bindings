@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TRSEN_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -61,12 +59,12 @@ struct trsen_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
             typename VectorW, typename WORK >
-    static void compute( char const job, char const compq,
+    static void invoke( char const job, char const compq,
             VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             integer_t& m, real_type& s, real_type& sep, integer_t& info,
             detail::workspace1< WORK > work ) {
@@ -98,20 +96,20 @@ struct trsen_impl {
     // minimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
             typename VectorW >
-    static void compute( char const job, char const compq,
+    static void invoke( char const job, char const compq,
             VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             integer_t& m, real_type& s, real_type& sep, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        compute( job, compq, select, t, q, w, m, s, sep, info,
+        invoke( job, compq, select, t, q, w, m, s, sep, info,
                 workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
             typename VectorW >
-    static void compute( char const job, char const compq,
+    static void invoke( char const job, char const compq,
             VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             integer_t& m, real_type& s, real_type& sep, integer_t& info,
             optimal_workspace work ) {
@@ -123,7 +121,7 @@ struct trsen_impl {
                 sep, &opt_size_work, -1, info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( job, compq, select, t, q, w, m, s, sep, info,
+        invoke( job, compq, select, t, q, w, m, s, sep, info,
                 workspace( tmp_work ) );
     }
 
@@ -144,7 +142,7 @@ inline integer_t trsen( char const job, char const compq,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    trsen_impl< value_type >::compute( job, compq, select, t, q, w, m, s,
+    trsen_impl< value_type >::invoke( job, compq, select, t, q, w, m, s,
             sep, info, work );
     return info;
 }
@@ -160,7 +158,7 @@ inline integer_t trsen( char const job, char const compq,
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
-    trsen_impl< value_type >::compute( job, compq, select, t, q, w, m, s,
+    trsen_impl< value_type >::invoke( job, compq, select, t, q, w, m, s,
             sep, info, optimal_workspace() );
     return info;
 }

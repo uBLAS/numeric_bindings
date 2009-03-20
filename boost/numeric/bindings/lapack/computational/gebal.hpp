@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GEBAL_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -69,11 +67,11 @@ struct gebal_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename VectorSCALE >
-    static void compute( char const job, MatrixA& a, integer_t& ilo,
+    static void invoke( char const job, MatrixA& a, integer_t& ilo,
             integer_t& ihi, VectorSCALE& scale, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -94,11 +92,11 @@ struct gebal_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename VectorSCALE >
-    static void compute( char const job, MatrixA& a, integer_t& ilo,
+    static void invoke( char const job, MatrixA& a, integer_t& ilo,
             integer_t& ihi, VectorSCALE& scale, integer_t& info ) {
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
@@ -117,7 +115,7 @@ inline integer_t gebal( char const job, MatrixA& a, integer_t& ilo,
         integer_t& ihi, VectorSCALE& scale ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    gebal_impl< value_type >::compute( job, a, ilo, ihi, scale, info );
+    gebal_impl< value_type >::invoke( job, a, ilo, ihi, scale, info );
     return info;
 }
 

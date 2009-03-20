@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_SYGVD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -59,13 +57,12 @@ struct sygvd_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename WORK, typename IWORK >
-    static void compute( integer_t const itype, char const jobz,
+    static void invoke( integer_t const itype, char const jobz,
             integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -96,20 +93,20 @@ struct sygvd_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW >
-    static void compute( integer_t const itype, char const jobz,
+    static void invoke( integer_t const itype, char const jobz,
             integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( jobz,
                 n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( jobz,
                 n ) );
-        compute( itype, jobz, n, a, b, w, info, workspace( tmp_work,
+        invoke( itype, jobz, n, a, b, w, info, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW >
-    static void compute( integer_t const itype, char const jobz,
+    static void invoke( integer_t const itype, char const jobz,
             integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
@@ -122,7 +119,7 @@ struct sygvd_impl {
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         traits::detail::array< integer_t > tmp_iwork( opt_size_iwork );
-        compute( itype, jobz, n, a, b, w, info, workspace( tmp_work,
+        invoke( itype, jobz, n, a, b, w, info, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
@@ -154,7 +151,7 @@ inline integer_t sygvd( integer_t const itype, char const jobz,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    sygvd_impl< value_type >::compute( itype, jobz, n, a, b, w, info,
+    sygvd_impl< value_type >::invoke( itype, jobz, n, a, b, w, info,
             work );
     return info;
 }
@@ -165,7 +162,7 @@ inline integer_t sygvd( integer_t const itype, char const jobz,
         integer_t const n, MatrixA& a, MatrixB& b, VectorW& w ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    sygvd_impl< value_type >::compute( itype, jobz, n, a, b, w, info,
+    sygvd_impl< value_type >::invoke( itype, jobz, n, a, b, w, info,
             optimal_workspace() );
     return info;
 }

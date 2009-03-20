@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GGBAK_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -75,11 +73,11 @@ struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
-    static void compute( char const job, char const side, integer_t const ilo,
+    static void invoke( char const job, char const side, integer_t const ilo,
             integer_t const ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
             MatrixV& v, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -112,11 +110,11 @@ struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
-    static void compute( char const job, char const side, integer_t const ilo,
+    static void invoke( char const job, char const side, integer_t const ilo,
             integer_t const ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
             MatrixV& v, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -149,7 +147,7 @@ inline integer_t ggbak( char const job, char const side,
     typedef typename traits::vector_traits<
             VectorLSCALE >::value_type value_type;
     integer_t info(0);
-    ggbak_impl< value_type >::compute( job, side, ilo, ihi, lscale,
+    ggbak_impl< value_type >::invoke( job, side, ilo, ihi, lscale,
             rscale, v, info );
     return info;
 }

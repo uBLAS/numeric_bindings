@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_SPGV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -54,13 +52,12 @@ struct spgv_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ, typename WORK >
-    static void compute( integer_t const itype, char const jobz,
+    static void invoke( integer_t const itype, char const jobz,
             integer_t const n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
             MatrixZ& z, integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -88,20 +85,20 @@ struct spgv_impl {
     // minimal workspace specialization
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ >
-    static void compute( integer_t const itype, char const jobz,
+    static void invoke( integer_t const itype, char const jobz,
             integer_t const n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
             MatrixZ& z, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
-        compute( itype, jobz, n, ap, bp, w, z, info, workspace( tmp_work ) );
+        invoke( itype, jobz, n, ap, bp, w, z, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ >
-    static void compute( integer_t const itype, char const jobz,
+    static void invoke( integer_t const itype, char const jobz,
             integer_t const n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
             MatrixZ& z, integer_t& info, optimal_workspace work ) {
-        compute( itype, jobz, n, ap, bp, w, z, info, minimal_workspace() );
+        invoke( itype, jobz, n, ap, bp, w, z, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -118,8 +115,8 @@ inline integer_t spgv( integer_t const itype, char const jobz,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
-    spgv_impl< value_type >::compute( itype, jobz, n, ap, bp, w, z,
-            info, work );
+    spgv_impl< value_type >::invoke( itype, jobz, n, ap, bp, w, z, info,
+            work );
     return info;
 }
 
@@ -131,8 +128,8 @@ inline integer_t spgv( integer_t const itype, char const jobz,
         MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
-    spgv_impl< value_type >::compute( itype, jobz, n, ap, bp, w, z,
-            info, optimal_workspace() );
+    spgv_impl< value_type >::invoke( itype, jobz, n, ap, bp, w, z, info,
+            optimal_workspace() );
     return info;
 }
 

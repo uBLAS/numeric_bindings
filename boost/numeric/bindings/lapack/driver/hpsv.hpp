@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_HPSV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -52,12 +50,17 @@ struct hpsv_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
-            keywords::tag::B > valid_keywords;
+
+    // uniform high-level dispatching-function
+    template< typename MatrixA, typename MatrixB, typename VectorP >
+    static void solve( MatrixA& A, MatrixB& B, VectorP& pivot,
+            integer_t& info ) {
+        invoke( A, pivot, B, info );
+    }
 
     // templated specialization
     template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
-    static void compute( MatrixAP& ap, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( MatrixAP& ap, VectorIPIV& ipiv, MatrixB& b,
             integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAP >::value_type, typename traits::matrix_traits<
@@ -82,7 +85,7 @@ template< typename MatrixAP, typename VectorIPIV, typename MatrixB >
 inline integer_t hpsv( MatrixAP& ap, VectorIPIV& ipiv, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
-    hpsv_impl< value_type >::compute( ap, ipiv, b, info );
+    hpsv_impl< value_type >::invoke( ap, ipiv, b, info );
     return info;
 }
 

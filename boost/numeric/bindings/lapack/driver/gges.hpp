@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GGES_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -104,17 +102,16 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR, typename WORK, typename BWORK >
-    static void compute( char const jobvsl, char const jobvsr,
-            char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-            integer_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-            VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
+    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+            logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
+            VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+            MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
             detail::workspace2< WORK, BWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -167,16 +164,16 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR >
-    static void compute( char const jobvsl, char const jobvsr,
-            char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-            integer_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-            VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
+    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+            logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
+            VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+            MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
                 traits::matrix_num_columns(a), sort ) );
-        compute( jobvsl, jobvsr, sort, selctg, a, b, sdim, alphar, alphai,
+        invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alphar, alphai,
                 beta, vsl, vsr, info, workspace( tmp_work, tmp_bwork ) );
     }
 
@@ -184,10 +181,10 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR >
-    static void compute( char const jobvsl, char const jobvsr,
-            char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-            integer_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
-            VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
+    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+            logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
+            VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+            MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
@@ -203,7 +200,7 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
                 &opt_size_work, -1, traits::vector_storage(tmp_bwork), info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( jobvsl, jobvsr, sort, selctg, a, b, sdim, alphar, alphai,
+        invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alphar, alphai,
                 beta, vsl, vsr, info, workspace( tmp_work, tmp_bwork ) );
     }
 
@@ -225,18 +222,17 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
             typename WORK, typename RWORK, typename BWORK >
-    static void compute( char const jobvsl, char const jobvsr,
-            char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-            integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-            MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
-            detail::workspace3< WORK, RWORK, BWORK > work ) {
+    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+            logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
+            VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
+            MatrixVSR& vsr, integer_t& info, detail::workspace3< WORK, RWORK,
+            BWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -286,29 +282,27 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-    static void compute( char const jobvsl, char const jobvsr,
-            char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-            integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-            MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+            logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
+            VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
+            MatrixVSR& vsr, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
                 traits::matrix_num_columns(a), sort ) );
-        compute( jobvsl, jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl,
+        invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl,
                 vsr, info, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-    static void compute( char const jobvsl, char const jobvsr,
-            char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
-            integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
-            MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+            logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
+            VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
+            MatrixVSR& vsr, integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(a) ) );
@@ -325,7 +319,7 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
                 traits::vector_storage(tmp_bwork), info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( jobvsl, jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl,
+        invoke( jobvsl, jobvsr, sort, selctg, a, b, sdim, alpha, beta, vsl,
                 vsr, info, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
     }
 
@@ -356,8 +350,8 @@ inline integer_t gges( char const jobvsl, char const jobvsr,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    gges_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg, a,
-            b, sdim, alphar, alphai, beta, vsl, vsr, info, work );
+    gges_impl< value_type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, info, work );
     return info;
 }
 
@@ -371,9 +365,8 @@ inline integer_t gges( char const jobvsl, char const jobvsr,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    gges_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg, a,
-            b, sdim, alphar, alphai, beta, vsl, vsr, info,
-            optimal_workspace() );
+    gges_impl< value_type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alphar, alphai, beta, vsl, vsr, info, optimal_workspace() );
     return info;
 }
 // template function to call gges
@@ -386,8 +379,8 @@ inline integer_t gges( char const jobvsl, char const jobvsr,
         MatrixVSR& vsr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    gges_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg, a,
-            b, sdim, alpha, beta, vsl, vsr, info, work );
+    gges_impl< value_type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, info, work );
     return info;
 }
 
@@ -400,8 +393,8 @@ inline integer_t gges( char const jobvsl, char const jobvsr,
         MatrixVSR& vsr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    gges_impl< value_type >::compute( jobvsl, jobvsr, sort, selctg, a,
-            b, sdim, alpha, beta, vsl, vsr, info, optimal_workspace() );
+    gges_impl< value_type >::invoke( jobvsl, jobvsr, sort, selctg, a, b,
+            sdim, alpha, beta, vsl, vsr, info, optimal_workspace() );
     return info;
 }
 

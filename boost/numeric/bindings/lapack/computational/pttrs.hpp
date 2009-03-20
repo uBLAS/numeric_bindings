@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PTTRS_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -67,12 +65,12 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void compute( integer_t const n, VectorD& d, VectorE& e,
-            MatrixB& b, integer_t& info ) {
+    static void invoke( integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
+            integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
                 VectorE >::value_type >::value) );
@@ -97,11 +95,11 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void compute( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( char const uplo, integer_t const n, VectorD& d,
             VectorE& e, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorE >::value_type, typename traits::matrix_traits<
@@ -125,7 +123,7 @@ inline integer_t pttrs( integer_t const n, VectorD& d, VectorE& e,
         MatrixB& b ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
-    pttrs_impl< value_type >::compute( n, d, e, b, info );
+    pttrs_impl< value_type >::invoke( n, d, e, b, info );
     return info;
 }
 // template function to call pttrs
@@ -134,7 +132,7 @@ inline integer_t pttrs( char const uplo, integer_t const n, VectorD& d,
         VectorE& e, MatrixB& b ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
-    pttrs_impl< value_type >::compute( uplo, n, d, e, b, info );
+    pttrs_impl< value_type >::invoke( uplo, n, d, e, b, info );
     return info;
 }
 

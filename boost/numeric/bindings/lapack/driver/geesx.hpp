@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GEESX_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -92,12 +90,12 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVS, typename WORK, typename IWORK, typename BWORK >
-    static void compute( char const jobvs, char const sort, logical_t* select,
+    static void invoke( char const jobvs, char const sort, logical_t* select,
             char const sense, MatrixA& a, integer_t& sdim, VectorWR& wr,
             VectorWI& wi, MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, detail::workspace3< WORK, IWORK, BWORK > work ) {
@@ -143,7 +141,7 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVS >
-    static void compute( char const jobvs, char const sort, logical_t* select,
+    static void invoke( char const jobvs, char const sort, logical_t* select,
             char const sense, MatrixA& a, integer_t& sdim, VectorWR& wr,
             VectorWI& wi, MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, minimal_workspace work ) {
@@ -153,14 +151,14 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::matrix_num_columns(a), sense ) );
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
                 traits::matrix_num_columns(a), sort ) );
-        compute( jobvs, sort, select, sense, a, sdim, wr, wi, vs, rconde,
+        invoke( jobvs, sort, select, sense, a, sdim, wr, wi, vs, rconde,
                 rcondv, info, workspace( tmp_work, tmp_iwork, tmp_bwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVS >
-    static void compute( char const jobvs, char const sort, logical_t* select,
+    static void invoke( char const jobvs, char const sort, logical_t* select,
             char const sense, MatrixA& a, integer_t& sdim, VectorWR& wr,
             VectorWI& wi, MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, optimal_workspace work ) {
@@ -178,7 +176,7 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         traits::detail::array< integer_t > tmp_iwork( opt_size_iwork );
-        compute( jobvs, sort, select, sense, a, sdim, wr, wi, vs, rconde,
+        invoke( jobvs, sort, select, sense, a, sdim, wr, wi, vs, rconde,
                 rcondv, info, workspace( tmp_work, tmp_iwork, tmp_bwork ) );
     }
 
@@ -210,12 +208,12 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVS,
             typename WORK, typename RWORK, typename BWORK >
-    static void compute( char const jobvs, char const sort, logical_t* select,
+    static void invoke( char const jobvs, char const sort, logical_t* select,
             char const sense, MatrixA& a, integer_t& sdim, VectorW& w,
             MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, detail::workspace3< WORK, RWORK, BWORK > work ) {
@@ -253,7 +251,7 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVS >
-    static void compute( char const jobvs, char const sort, logical_t* select,
+    static void invoke( char const jobvs, char const sort, logical_t* select,
             char const sense, MatrixA& a, integer_t& sdim, VectorW& w,
             MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, minimal_workspace work ) {
@@ -263,13 +261,13 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< bool > tmp_bwork( min_size_bwork(
                 traits::matrix_num_columns(a), sort ) );
-        compute( jobvs, sort, select, sense, a, sdim, w, vs, rconde, rcondv,
+        invoke( jobvs, sort, select, sense, a, sdim, w, vs, rconde, rcondv,
                 info, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVS >
-    static void compute( char const jobvs, char const sort, logical_t* select,
+    static void invoke( char const jobvs, char const sort, logical_t* select,
             char const sense, MatrixA& a, integer_t& sdim, VectorW& w,
             MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, optimal_workspace work ) {
@@ -287,7 +285,7 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::vector_storage(tmp_bwork), info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( jobvs, sort, select, sense, a, sdim, w, vs, rconde, rcondv,
+        invoke( jobvs, sort, select, sense, a, sdim, w, vs, rconde, rcondv,
                 info, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
     }
 
@@ -322,7 +320,7 @@ inline integer_t geesx( char const jobvs, char const sort,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    geesx_impl< value_type >::compute( jobvs, sort, select, sense, a,
+    geesx_impl< value_type >::invoke( jobvs, sort, select, sense, a,
             sdim, wr, wi, vs, rconde, rcondv, info, work );
     return info;
 }
@@ -337,7 +335,7 @@ inline integer_t geesx( char const jobvs, char const sort,
         typename traits::matrix_traits< MatrixA >::value_type& rcondv ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    geesx_impl< value_type >::compute( jobvs, sort, select, sense, a,
+    geesx_impl< value_type >::invoke( jobvs, sort, select, sense, a,
             sdim, wr, wi, vs, rconde, rcondv, info, optimal_workspace() );
     return info;
 }
@@ -351,7 +349,7 @@ inline integer_t geesx( char const jobvs, char const sort,
         MatrixA >::value_type& rcondv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    geesx_impl< value_type >::compute( jobvs, sort, select, sense, a,
+    geesx_impl< value_type >::invoke( jobvs, sort, select, sense, a,
             sdim, w, vs, rconde, rcondv, info, work );
     return info;
 }
@@ -365,7 +363,7 @@ inline integer_t geesx( char const jobvs, char const sort,
         MatrixA >::value_type& rcondv ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    geesx_impl< value_type >::compute( jobvs, sort, select, sense, a,
+    geesx_impl< value_type >::invoke( jobvs, sort, select, sense, a,
             sdim, w, vs, rconde, rcondv, info, optimal_workspace() );
     return info;
 }

@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GGEV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -92,14 +90,13 @@ struct ggev_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVL,
             typename MatrixVR, typename WORK >
-    static void compute( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
             MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
             VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, integer_t& info,
             detail::workspace1< WORK > work ) {
@@ -149,13 +146,13 @@ struct ggev_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVL,
             typename MatrixVR >
-    static void compute( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
             MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
             VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
-        compute( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr, info,
+        invoke( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr, info,
                 workspace( tmp_work ) );
     }
 
@@ -163,7 +160,7 @@ struct ggev_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVL,
             typename MatrixVR >
-    static void compute( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
             MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
             VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, integer_t& info,
             optimal_workspace work ) {
@@ -178,7 +175,7 @@ struct ggev_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
                 &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr, info,
+        invoke( jobvl, jobvr, a, b, alphar, alphai, beta, vl, vr, info,
                 workspace( tmp_work ) );
     }
 
@@ -193,14 +190,13 @@ struct ggev_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVL, typename MatrixVR,
             typename WORK, typename RWORK >
-    static void compute( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
             MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
             MatrixVR& vr, integer_t& info, detail::workspace2< WORK,
             RWORK > work ) {
@@ -248,21 +244,21 @@ struct ggev_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVL, typename MatrixVR >
-    static void compute( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
             MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
             MatrixVR& vr, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(a) ) );
-        compute( jobvl, jobvr, a, b, alpha, beta, vl, vr, info,
+        invoke( jobvl, jobvr, a, b, alpha, beta, vl, vr, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVL, typename MatrixVR >
-    static void compute( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
             MatrixB& b, VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl,
             MatrixVR& vr, integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
@@ -277,7 +273,7 @@ struct ggev_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
                 &opt_size_work, -1, traits::vector_storage(tmp_rwork), info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( jobvl, jobvr, a, b, alpha, beta, vl, vr, info,
+        invoke( jobvl, jobvr, a, b, alpha, beta, vl, vr, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -300,8 +296,8 @@ inline integer_t ggev( char const jobvl, char const jobvr, MatrixA& a,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    ggev_impl< value_type >::compute( jobvl, jobvr, a, b, alphar,
-            alphai, beta, vl, vr, info, work );
+    ggev_impl< value_type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, info, work );
     return info;
 }
 
@@ -314,8 +310,8 @@ inline integer_t ggev( char const jobvl, char const jobvr, MatrixA& a,
         VectorBETA& beta, MatrixVL& vl, MatrixVR& vr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    ggev_impl< value_type >::compute( jobvl, jobvr, a, b, alphar,
-            alphai, beta, vl, vr, info, optimal_workspace() );
+    ggev_impl< value_type >::invoke( jobvl, jobvr, a, b, alphar, alphai,
+            beta, vl, vr, info, optimal_workspace() );
     return info;
 }
 // template function to call ggev
@@ -327,7 +323,7 @@ inline integer_t ggev( char const jobvl, char const jobvr, MatrixA& a,
         MatrixVR& vr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    ggev_impl< value_type >::compute( jobvl, jobvr, a, b, alpha, beta,
+    ggev_impl< value_type >::invoke( jobvl, jobvr, a, b, alpha, beta,
             vl, vr, info, work );
     return info;
 }
@@ -340,7 +336,7 @@ inline integer_t ggev( char const jobvl, char const jobvr, MatrixA& a,
         MatrixVR& vr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    ggev_impl< value_type >::compute( jobvl, jobvr, a, b, alpha, beta,
+    ggev_impl< value_type >::invoke( jobvl, jobvr, a, b, alpha, beta,
             vl, vr, info, optimal_workspace() );
     return info;
 }

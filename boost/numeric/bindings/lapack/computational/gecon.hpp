@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GECON_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -75,11 +73,11 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename WORK, typename IWORK >
-    static void compute( char const norm, MatrixA& a, real_type const anorm,
+    static void invoke( char const norm, MatrixA& a, real_type const anorm,
             real_type& rcond, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
@@ -99,21 +97,21 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixA >
-    static void compute( char const norm, MatrixA& a, real_type const anorm,
+    static void invoke( char const norm, MatrixA& a, real_type const anorm,
             real_type& rcond, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 traits::matrix_num_columns(a) ) );
-        compute( norm, a, anorm, rcond, info, workspace( tmp_work,
+        invoke( norm, a, anorm, rcond, info, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA >
-    static void compute( char const norm, MatrixA& a, real_type const anorm,
+    static void invoke( char const norm, MatrixA& a, real_type const anorm,
             real_type& rcond, integer_t& info, optimal_workspace work ) {
-        compute( norm, a, anorm, rcond, info, minimal_workspace() );
+        invoke( norm, a, anorm, rcond, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -131,11 +129,11 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename WORK, typename RWORK >
-    static void compute( char const norm, MatrixA& a, real_type const anorm,
+    static void invoke( char const norm, MatrixA& a, real_type const anorm,
             real_type& rcond, integer_t& info, detail::workspace2< WORK,
             RWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
@@ -155,21 +153,21 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA >
-    static void compute( char const norm, MatrixA& a, real_type const anorm,
+    static void invoke( char const norm, MatrixA& a, real_type const anorm,
             real_type& rcond, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(a) ) );
-        compute( norm, a, anorm, rcond, info, workspace( tmp_work,
+        invoke( norm, a, anorm, rcond, info, workspace( tmp_work,
                 tmp_rwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA >
-    static void compute( char const norm, MatrixA& a, real_type const anorm,
+    static void invoke( char const norm, MatrixA& a, real_type const anorm,
             real_type& rcond, integer_t& info, optimal_workspace work ) {
-        compute( norm, a, anorm, rcond, info, minimal_workspace() );
+        invoke( norm, a, anorm, rcond, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -190,8 +188,7 @@ inline integer_t gecon( char const norm, MatrixA& a,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    gecon_impl< value_type >::compute( norm, a, anorm, rcond, info,
-            work );
+    gecon_impl< value_type >::invoke( norm, a, anorm, rcond, info, work );
     return info;
 }
 
@@ -202,7 +199,7 @@ inline integer_t gecon( char const norm, MatrixA& a,
         typename traits::matrix_traits< MatrixA >::value_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    gecon_impl< value_type >::compute( norm, a, anorm, rcond, info,
+    gecon_impl< value_type >::invoke( norm, a, anorm, rcond, info,
             optimal_workspace() );
     return info;
 }

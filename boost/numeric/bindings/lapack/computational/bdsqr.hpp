@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_BDSQR_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -83,12 +81,12 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC, typename WORK >
-    static void compute( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( char const uplo, integer_t const n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -125,22 +123,22 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void compute( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( char const uplo, integer_t const n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n,
                 traits::matrix_num_columns(vt), traits::matrix_num_rows(u),
                 traits::matrix_num_columns(c) ) );
-        compute( uplo, n, d, e, vt, u, c, info, workspace( tmp_work ) );
+        invoke( uplo, n, d, e, vt, u, c, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void compute( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( char const uplo, integer_t const n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             optimal_workspace work ) {
-        compute( uplo, n, d, e, vt, u, c, info, minimal_workspace() );
+        invoke( uplo, n, d, e, vt, u, c, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n, integer_t const ncvt,
@@ -158,12 +156,12 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC, typename RWORK >
-    static void compute( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( char const uplo, integer_t const n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             detail::workspace1< RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -197,22 +195,22 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void compute( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( char const uplo, integer_t const n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n,
                 traits::matrix_num_columns(vt), traits::matrix_num_rows(u),
                 traits::matrix_num_columns(c) ) );
-        compute( uplo, n, d, e, vt, u, c, info, workspace( tmp_rwork ) );
+        invoke( uplo, n, d, e, vt, u, c, info, workspace( tmp_rwork ) );
     }
 
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void compute( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( char const uplo, integer_t const n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             optimal_workspace work ) {
-        compute( uplo, n, d, e, vt, u, c, info, minimal_workspace() );
+        invoke( uplo, n, d, e, vt, u, c, info, minimal_workspace() );
     }
 
     static integer_t min_size_rwork( integer_t const n, integer_t const ncvt,
@@ -232,7 +230,7 @@ inline integer_t bdsqr( char const uplo, integer_t const n, VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
-    bdsqr_impl< value_type >::compute( uplo, n, d, e, vt, u, c, info,
+    bdsqr_impl< value_type >::invoke( uplo, n, d, e, vt, u, c, info,
             work );
     return info;
 }
@@ -244,7 +242,7 @@ inline integer_t bdsqr( char const uplo, integer_t const n, VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
-    bdsqr_impl< value_type >::compute( uplo, n, d, e, vt, u, c, info,
+    bdsqr_impl< value_type >::invoke( uplo, n, d, e, vt, u, c, info,
             optimal_workspace() );
     return info;
 }

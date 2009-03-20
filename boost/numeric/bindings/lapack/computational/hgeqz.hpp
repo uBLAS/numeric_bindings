@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_HGEQZ_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -96,13 +94,13 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
             typename MatrixZ, typename WORK >
-    static void compute( char const job, char const compq, char const compz,
+    static void invoke( char const job, char const compq, char const compz,
             integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& info, detail::workspace1< WORK > work ) {
@@ -149,13 +147,13 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
             typename MatrixZ >
-    static void compute( char const job, char const compq, char const compz,
+    static void invoke( char const job, char const compq, char const compz,
             integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(h) ) );
-        compute( job, compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
+        invoke( job, compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
                 info, workspace( tmp_work ) );
     }
 
@@ -163,7 +161,7 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
             typename MatrixZ >
-    static void compute( char const job, char const compq, char const compz,
+    static void invoke( char const job, char const compq, char const compz,
             integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& info, optimal_workspace work ) {
@@ -178,7 +176,7 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( job, compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
+        invoke( job, compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
                 info, workspace( tmp_work ) );
     }
 
@@ -193,13 +191,13 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixH, typename MatrixT, typename VectorALPHA,
             typename VectorBETA, typename MatrixQ, typename MatrixZ,
             typename WORK, typename RWORK >
-    static void compute( char const job, char const compq, char const compz,
+    static void invoke( char const job, char const compq, char const compz,
             integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
             VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
@@ -245,7 +243,7 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixH, typename MatrixT, typename VectorALPHA,
             typename VectorBETA, typename MatrixQ, typename MatrixZ >
-    static void compute( char const job, char const compq, char const compz,
+    static void invoke( char const job, char const compq, char const compz,
             integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
             VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& info,
             minimal_workspace work ) {
@@ -253,14 +251,14 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_columns(h) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(h) ) );
-        compute( job, compq, compz, ilo, h, t, alpha, beta, q, z, info,
+        invoke( job, compq, compz, ilo, h, t, alpha, beta, q, z, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixH, typename MatrixT, typename VectorALPHA,
             typename VectorBETA, typename MatrixQ, typename MatrixZ >
-    static void compute( char const job, char const compq, char const compz,
+    static void invoke( char const job, char const compq, char const compz,
             integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
             VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& info,
             optimal_workspace work ) {
@@ -277,7 +275,7 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::vector_storage(tmp_rwork), info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( job, compq, compz, ilo, h, t, alpha, beta, q, z, info,
+        invoke( job, compq, compz, ilo, h, t, alpha, beta, q, z, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -301,7 +299,7 @@ inline integer_t hgeqz( char const job, char const compq,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
-    hgeqz_impl< value_type >::compute( job, compq, compz, ilo, h, t,
+    hgeqz_impl< value_type >::invoke( job, compq, compz, ilo, h, t,
             alphar, alphai, beta, q, z, info, work );
     return info;
 }
@@ -316,7 +314,7 @@ inline integer_t hgeqz( char const job, char const compq,
         MatrixQ& q, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
-    hgeqz_impl< value_type >::compute( job, compq, compz, ilo, h, t,
+    hgeqz_impl< value_type >::invoke( job, compq, compz, ilo, h, t,
             alphar, alphai, beta, q, z, info, optimal_workspace() );
     return info;
 }
@@ -330,7 +328,7 @@ inline integer_t hgeqz( char const job, char const compq,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
-    hgeqz_impl< value_type >::compute( job, compq, compz, ilo, h, t,
+    hgeqz_impl< value_type >::invoke( job, compq, compz, ilo, h, t,
             alpha, beta, q, z, info, work );
     return info;
 }
@@ -343,7 +341,7 @@ inline integer_t hgeqz( char const job, char const compq,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
-    hgeqz_impl< value_type >::compute( job, compq, compz, ilo, h, t,
+    hgeqz_impl< value_type >::invoke( job, compq, compz, ilo, h, t,
             alpha, beta, q, z, info, optimal_workspace() );
     return info;
 }

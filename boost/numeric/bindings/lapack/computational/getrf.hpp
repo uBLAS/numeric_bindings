@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GETRF_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -58,12 +56,11 @@ struct getrf_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::pivot > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void compute( MatrixA& a, VectorIPIV& ipiv, integer_t& info ) {
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, integer_t& info ) {
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
@@ -84,7 +81,7 @@ template< typename MatrixA, typename VectorIPIV >
 inline integer_t getrf( MatrixA& a, VectorIPIV& ipiv ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    getrf_impl< value_type >::compute( a, ipiv, info );
+    getrf_impl< value_type >::invoke( a, ipiv, info );
     return info;
 }
 

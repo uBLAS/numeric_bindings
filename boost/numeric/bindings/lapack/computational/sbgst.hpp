@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_SBGST_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -56,12 +54,12 @@ struct sbgst_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixBB, typename MatrixX,
             typename WORK >
-    static void compute( char const vect, integer_t const n,
+    static void invoke( char const vect, integer_t const n,
             integer_t const ka, integer_t const kb, MatrixAB& ab,
             MatrixBB& bb, MatrixX& x, integer_t& info, detail::workspace1<
             WORK > work ) {
@@ -90,21 +88,21 @@ struct sbgst_impl {
 
     // minimal workspace specialization
     template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-    static void compute( char const vect, integer_t const n,
+    static void invoke( char const vect, integer_t const n,
             integer_t const ka, integer_t const kb, MatrixAB& ab,
             MatrixBB& bb, MatrixX& x, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
-        compute( vect, n, ka, kb, ab, bb, x, info, workspace( tmp_work ) );
+        invoke( vect, n, ka, kb, ab, bb, x, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixAB, typename MatrixBB, typename MatrixX >
-    static void compute( char const vect, integer_t const n,
+    static void invoke( char const vect, integer_t const n,
             integer_t const ka, integer_t const kb, MatrixAB& ab,
             MatrixBB& bb, MatrixX& x, integer_t& info,
             optimal_workspace work ) {
-        compute( vect, n, ka, kb, ab, bb, x, info, minimal_workspace() );
+        invoke( vect, n, ka, kb, ab, bb, x, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -121,7 +119,7 @@ inline integer_t sbgst( char const vect, integer_t const n,
         MatrixX& x, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    sbgst_impl< value_type >::compute( vect, n, ka, kb, ab, bb, x, info,
+    sbgst_impl< value_type >::invoke( vect, n, ka, kb, ab, bb, x, info,
             work );
     return info;
 }
@@ -133,7 +131,7 @@ inline integer_t sbgst( char const vect, integer_t const n,
         MatrixX& x ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    sbgst_impl< value_type >::compute( vect, n, ka, kb, ab, bb, x, info,
+    sbgst_impl< value_type >::invoke( vect, n, ka, kb, ab, bb, x, info,
             optimal_workspace() );
     return info;
 }

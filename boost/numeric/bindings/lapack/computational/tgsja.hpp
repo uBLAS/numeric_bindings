@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TGSJA_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -101,14 +99,13 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ, typename WORK >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
             real_type const tola, real_type const tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
@@ -163,14 +160,14 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
             real_type const tola, real_type const tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(b) ) );
-        compute( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
+        invoke( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
                 q, ncycle, info, workspace( tmp_work ) );
     }
 
@@ -178,12 +175,12 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
             real_type const tola, real_type const tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, optimal_workspace work ) {
-        compute( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
+        invoke( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
                 q, ncycle, info, minimal_workspace() );
     }
 
@@ -198,14 +195,13 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ, typename WORK >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
             real_type const tola, real_type const tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
@@ -257,14 +253,14 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
             real_type const tola, real_type const tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(b) ) );
-        compute( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
+        invoke( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
                 q, ncycle, info, workspace( tmp_work ) );
     }
 
@@ -272,12 +268,12 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void compute( char const jobu, char const jobv, char const jobq,
+    static void invoke( char const jobu, char const jobv, char const jobq,
             integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
             real_type const tola, real_type const tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, optimal_workspace work ) {
-        compute( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
+        invoke( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
                 q, ncycle, info, minimal_workspace() );
     }
 
@@ -300,8 +296,8 @@ inline integer_t tgsja( char const jobu, char const jobv,
         integer_t& ncycle, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    tgsja_impl< value_type >::compute( jobu, jobv, jobq, k, l, a, b,
-            tola, tolb, alpha, beta, u, v, q, ncycle, info, work );
+    tgsja_impl< value_type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, info, work );
     return info;
 }
 
@@ -318,9 +314,8 @@ inline integer_t tgsja( char const jobu, char const jobv,
         integer_t& ncycle ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    tgsja_impl< value_type >::compute( jobu, jobv, jobq, k, l, a, b,
-            tola, tolb, alpha, beta, u, v, q, ncycle, info,
-            optimal_workspace() );
+    tgsja_impl< value_type >::invoke( jobu, jobv, jobq, k, l, a, b, tola,
+            tolb, alpha, beta, u, v, q, ncycle, info, optimal_workspace() );
     return info;
 }
 

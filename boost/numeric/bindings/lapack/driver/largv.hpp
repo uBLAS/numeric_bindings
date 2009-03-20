@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_LARGV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -68,11 +66,11 @@ struct largv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorX, typename VectorY, typename VectorC >
-    static void compute( integer_t const n, VectorX& x, integer_t const incx,
+    static void invoke( integer_t const n, VectorX& x, integer_t const incx,
             VectorY& y, integer_t const incy, VectorC& c,
             integer_t const incc ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -96,11 +94,11 @@ struct largv_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorX, typename VectorY, typename VectorC >
-    static void compute( integer_t const n, VectorX& x, integer_t const incx,
+    static void invoke( integer_t const n, VectorX& x, integer_t const incx,
             VectorY& y, integer_t const incy, VectorC& c,
             integer_t const incc ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -123,7 +121,7 @@ inline integer_t largv( integer_t const n, VectorX& x,
         integer_t const incc ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     integer_t info(0);
-    largv_impl< value_type >::compute( n, x, incx, y, incy, c, incc );
+    largv_impl< value_type >::invoke( n, x, incx, y, incy, c, incc );
     return info;
 }
 

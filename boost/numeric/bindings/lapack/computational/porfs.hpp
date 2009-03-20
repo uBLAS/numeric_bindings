@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PORFS_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -87,14 +85,13 @@ struct porfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename IWORK >
-    static void compute( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
+    static void invoke( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -144,24 +141,24 @@ struct porfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void compute( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
+    static void invoke( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
                 traits::matrix_num_columns(a) ) );
-        compute( a, af, b, x, ferr, berr, info, workspace( tmp_work,
+        invoke( a, af, b, x, ferr, berr, info, workspace( tmp_work,
                 tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void compute( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
+    static void invoke( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
-        compute( a, af, b, x, ferr, berr, info, minimal_workspace() );
+        invoke( a, af, b, x, ferr, berr, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -179,14 +176,13 @@ struct porfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename RWORK >
-    static void compute( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
+    static void invoke( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -233,24 +229,24 @@ struct porfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void compute( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
+    static void invoke( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
                 traits::matrix_num_columns(a) ) );
-        compute( a, af, b, x, ferr, berr, info, workspace( tmp_work,
+        invoke( a, af, b, x, ferr, berr, info, workspace( tmp_work,
                 tmp_rwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixAF, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void compute( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
+    static void invoke( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
-        compute( a, af, b, x, ferr, berr, info, minimal_workspace() );
+        invoke( a, af, b, x, ferr, berr, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -271,7 +267,7 @@ inline integer_t porfs( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    porfs_impl< value_type >::compute( a, af, b, x, ferr, berr, info,
+    porfs_impl< value_type >::invoke( a, af, b, x, ferr, berr, info,
             work );
     return info;
 }
@@ -283,7 +279,7 @@ inline integer_t porfs( MatrixA& a, MatrixAF& af, MatrixB& b, MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    porfs_impl< value_type >::compute( a, af, b, x, ferr, berr, info,
+    porfs_impl< value_type >::invoke( a, af, b, x, ferr, berr, info,
             optimal_workspace() );
     return info;
 }

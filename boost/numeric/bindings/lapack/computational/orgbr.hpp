@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_ORGBR_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -53,13 +51,13 @@ struct orgbr_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void compute( char const vect, integer_t const m,
-            integer_t const n, integer_t const k, MatrixA& a, VectorTAU& tau,
-            integer_t& info, detail::workspace1< WORK > work ) {
+    static void invoke( char const vect, integer_t const m, integer_t const n,
+            integer_t const k, MatrixA& a, VectorTAU& tau, integer_t& info,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -77,25 +75,25 @@ struct orgbr_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( char const vect, integer_t const m,
-            integer_t const n, integer_t const k, MatrixA& a, VectorTAU& tau,
-            integer_t& info, minimal_workspace work ) {
+    static void invoke( char const vect, integer_t const m, integer_t const n,
+            integer_t const k, MatrixA& a, VectorTAU& tau, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( m, n ) );
-        compute( vect, m, n, k, a, tau, info, workspace( tmp_work ) );
+        invoke( vect, m, n, k, a, tau, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void compute( char const vect, integer_t const m,
-            integer_t const n, integer_t const k, MatrixA& a, VectorTAU& tau,
-            integer_t& info, optimal_workspace work ) {
+    static void invoke( char const vect, integer_t const m, integer_t const n,
+            integer_t const k, MatrixA& a, VectorTAU& tau, integer_t& info,
+            optimal_workspace work ) {
         real_type opt_size_work;
         detail::orgbr( vect, m, n, k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),
                 &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( vect, m, n, k, a, tau, info, workspace( tmp_work ) );
+        invoke( vect, m, n, k, a, tau, info, workspace( tmp_work ) );
     }
 
     static integer_t min_size_work( integer_t const m, integer_t const n ) {
@@ -111,8 +109,7 @@ inline integer_t orgbr( char const vect, integer_t const m,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    orgbr_impl< value_type >::compute( vect, m, n, k, a, tau, info,
-            work );
+    orgbr_impl< value_type >::invoke( vect, m, n, k, a, tau, info, work );
     return info;
 }
 
@@ -122,7 +119,7 @@ inline integer_t orgbr( char const vect, integer_t const m,
         integer_t const n, integer_t const k, MatrixA& a, VectorTAU& tau ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    orgbr_impl< value_type >::compute( vect, m, n, k, a, tau, info,
+    orgbr_impl< value_type >::invoke( vect, m, n, k, a, tau, info,
             optimal_workspace() );
     return info;
 }

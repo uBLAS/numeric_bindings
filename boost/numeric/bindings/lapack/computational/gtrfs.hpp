@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GTRFS_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -96,16 +94,15 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::pivot,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename IWORK >
-    static void compute( char const trans, integer_t const n, VectorDL& dl,
+    static void invoke( char const trans, integer_t const n, VectorDL& dl,
             VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
             VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
@@ -176,14 +173,14 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void compute( char const trans, integer_t const n, VectorDL& dl,
+    static void invoke( char const trans, integer_t const n, VectorDL& dl,
             VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
             VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
-        compute( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
+        invoke( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
                 berr, info, workspace( tmp_work, tmp_iwork ) );
     }
 
@@ -192,12 +189,12 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void compute( char const trans, integer_t const n, VectorDL& dl,
+    static void invoke( char const trans, integer_t const n, VectorDL& dl,
             VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
             VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
-        compute( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
+        invoke( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
                 berr, info, minimal_workspace() );
     }
 
@@ -216,16 +213,15 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::pivot,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename RWORK >
-    static void compute( char const trans, integer_t const n, VectorDL& dl,
+    static void invoke( char const trans, integer_t const n, VectorDL& dl,
             VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
             VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
@@ -293,14 +289,14 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void compute( char const trans, integer_t const n, VectorDL& dl,
+    static void invoke( char const trans, integer_t const n, VectorDL& dl,
             VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
             VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        compute( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
+        invoke( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
                 berr, info, workspace( tmp_work, tmp_rwork ) );
     }
 
@@ -309,12 +305,12 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void compute( char const trans, integer_t const n, VectorDL& dl,
+    static void invoke( char const trans, integer_t const n, VectorDL& dl,
             VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
             VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
-        compute( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
+        invoke( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
                 berr, info, minimal_workspace() );
     }
 
@@ -340,7 +336,7 @@ inline integer_t gtrfs( char const trans, integer_t const n,
         MatrixX& x, VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::vector_traits< VectorDL >::value_type value_type;
     integer_t info(0);
-    gtrfs_impl< value_type >::compute( trans, n, dl, d, du, dlf, df, duf,
+    gtrfs_impl< value_type >::invoke( trans, n, dl, d, du, dlf, df, duf,
             du2, ipiv, b, x, ferr, berr, info, work );
     return info;
 }
@@ -356,7 +352,7 @@ inline integer_t gtrfs( char const trans, integer_t const n,
         MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
     typedef typename traits::vector_traits< VectorDL >::value_type value_type;
     integer_t info(0);
-    gtrfs_impl< value_type >::compute( trans, n, dl, d, du, dlf, df, duf,
+    gtrfs_impl< value_type >::invoke( trans, n, dl, d, du, dlf, df, duf,
             du2, ipiv, b, x, ferr, berr, info, optimal_workspace() );
     return info;
 }

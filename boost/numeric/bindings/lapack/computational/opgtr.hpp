@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_OPGTR_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -52,12 +50,12 @@ struct opgtr_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixQ,
             typename WORK >
-    static void compute( char const uplo, VectorAP& ap, VectorTAU& tau,
+    static void invoke( char const uplo, VectorAP& ap, VectorTAU& tau,
             MatrixQ& q, integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorAP >::value_type, typename traits::vector_traits<
@@ -84,18 +82,18 @@ struct opgtr_impl {
 
     // minimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-    static void compute( char const uplo, VectorAP& ap, VectorTAU& tau,
+    static void invoke( char const uplo, VectorAP& ap, VectorTAU& tau,
             MatrixQ& q, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(q) ) );
-        compute( uplo, ap, tau, q, info, workspace( tmp_work ) );
+        invoke( uplo, ap, tau, q, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-    static void compute( char const uplo, VectorAP& ap, VectorTAU& tau,
+    static void invoke( char const uplo, VectorAP& ap, VectorTAU& tau,
             MatrixQ& q, integer_t& info, optimal_workspace work ) {
-        compute( uplo, ap, tau, q, info, minimal_workspace() );
+        invoke( uplo, ap, tau, q, info, minimal_workspace() );
     }
 
     static integer_t min_size_work( integer_t const n ) {
@@ -111,7 +109,7 @@ inline integer_t opgtr( char const uplo, VectorAP& ap, VectorTAU& tau,
         MatrixQ& q, Workspace work ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
-    opgtr_impl< value_type >::compute( uplo, ap, tau, q, info, work );
+    opgtr_impl< value_type >::invoke( uplo, ap, tau, q, info, work );
     return info;
 }
 
@@ -121,7 +119,7 @@ inline integer_t opgtr( char const uplo, VectorAP& ap, VectorTAU& tau,
         MatrixQ& q ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
-    opgtr_impl< value_type >::compute( uplo, ap, tau, q, info,
+    opgtr_impl< value_type >::invoke( uplo, ap, tau, q, info,
             optimal_workspace() );
     return info;
 }

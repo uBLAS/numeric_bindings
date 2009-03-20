@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TRSYL_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -79,12 +77,11 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static void compute( char const trana, char const tranb,
+    static void invoke( char const trana, char const tranb,
             integer_t const isgn, integer_t const m, integer_t const n,
             MatrixA& a, MatrixB& b, MatrixC& c, real_type& scale,
             integer_t& info ) {
@@ -114,12 +111,11 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A,
-            keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static void compute( char const trana, char const tranb,
+    static void invoke( char const trana, char const tranb,
             integer_t const isgn, integer_t const m, integer_t const n,
             MatrixA& a, MatrixB& b, MatrixC& c, real_type& scale,
             integer_t& info ) {
@@ -152,7 +148,7 @@ inline integer_t trsyl( char const trana, char const tranb,
         MatrixA >::value_type& scale ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    trsyl_impl< value_type >::compute( trana, tranb, isgn, m, n, a, b, c,
+    trsyl_impl< value_type >::invoke( trana, tranb, isgn, m, n, a, b, c,
             scale, info );
     return info;
 }

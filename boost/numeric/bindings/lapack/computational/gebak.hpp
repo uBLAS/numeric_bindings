@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GEBAK_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -75,11 +73,11 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorSCALE, typename MatrixV >
-    static void compute( char const job, char const side, integer_t const ilo,
+    static void invoke( char const job, char const side, integer_t const ilo,
             integer_t const ihi, VectorSCALE& scale, MatrixV& v,
             integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -106,11 +104,11 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorSCALE, typename MatrixV >
-    static void compute( char const job, char const side, integer_t const ilo,
+    static void invoke( char const job, char const side, integer_t const ilo,
             integer_t const ihi, VectorSCALE& scale, MatrixV& v,
             integer_t& info ) {
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
@@ -137,7 +135,7 @@ inline integer_t gebak( char const job, char const side,
     typedef typename traits::vector_traits<
             VectorSCALE >::value_type value_type;
     integer_t info(0);
-    gebak_impl< value_type >::compute( job, side, ilo, ihi, scale, v,
+    gebak_impl< value_type >::invoke( job, side, ilo, ihi, scale, v,
             info );
     return info;
 }

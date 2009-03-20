@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_SYSV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
@@ -80,13 +78,18 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
-            keywords::tag::B > valid_keywords;
+
+    // uniform high-level dispatching-function
+    template< typename MatrixA, typename MatrixB, typename VectorP >
+    static void solve( MatrixA& A, MatrixB& B, VectorP& pivot,
+            integer_t& info ) {
+        invoke( A, pivot, B, info );
+    }
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename WORK >
-    static void compute( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -112,15 +115,15 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static void compute( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(  ) );
-        compute( a, ipiv, b, info, workspace( tmp_work ) );
+        invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static void compute( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         detail::sysv( traits::matrix_uplo_tag(a),
@@ -130,7 +133,7 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
                 traits::leading_dimension(b), &opt_size_work, -1, info );
         traits::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( a, ipiv, b, info, workspace( tmp_work ) );
+        invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
     static integer_t min_size_work(  ) {
@@ -144,13 +147,18 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A, keywords::tag::pivot,
-            keywords::tag::B > valid_keywords;
+
+    // uniform high-level dispatching-function
+    template< typename MatrixA, typename MatrixB, typename VectorP >
+    static void solve( MatrixA& A, MatrixB& B, VectorP& pivot,
+            integer_t& info ) {
+        invoke( A, pivot, B, info );
+    }
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename WORK >
-    static void compute( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -176,15 +184,15 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static void compute( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(  ) );
-        compute( a, ipiv, b, info, workspace( tmp_work ) );
+        invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static void compute( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         detail::sysv( traits::matrix_uplo_tag(a),
@@ -194,7 +202,7 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
                 traits::leading_dimension(b), &opt_size_work, -1, info );
         traits::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        compute( a, ipiv, b, info, workspace( tmp_work ) );
+        invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
     static integer_t min_size_work(  ) {
@@ -210,7 +218,7 @@ inline integer_t sysv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    sysv_impl< value_type >::compute( a, ipiv, b, info, work );
+    sysv_impl< value_type >::invoke( a, ipiv, b, info, work );
     return info;
 }
 
@@ -219,7 +227,7 @@ template< typename MatrixA, typename VectorIPIV, typename MatrixB >
 inline integer_t sysv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    sysv_impl< value_type >::compute( a, ipiv, b, info,
+    sysv_impl< value_type >::invoke( a, ipiv, b, info,
             optimal_workspace() );
     return info;
 }

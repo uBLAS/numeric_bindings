@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GBBRD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -87,16 +85,16 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC,
             typename WORK >
-    static void compute( char const vect, integer_t const m,
-            integer_t const n, integer_t const kl, integer_t const ku,
-            MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
-            MatrixC& c, integer_t& info, detail::workspace1< WORK > work ) {
+    static void invoke( char const vect, integer_t const m, integer_t const n,
+            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::vector_traits<
                 VectorD >::value_type >::value) );
@@ -136,23 +134,23 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void compute( char const vect, integer_t const m,
-            integer_t const n, integer_t const kl, integer_t const ku,
-            MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
-            MatrixC& c, integer_t& info, minimal_workspace work ) {
+    static void invoke( char const vect, integer_t const m, integer_t const n,
+            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( m, n ) );
-        compute( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
+        invoke( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
                 workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void compute( char const vect, integer_t const m,
-            integer_t const n, integer_t const kl, integer_t const ku,
-            MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
-            MatrixC& c, integer_t& info, optimal_workspace work ) {
-        compute( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
+    static void invoke( char const vect, integer_t const m, integer_t const n,
+            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+            optimal_workspace work ) {
+        invoke( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
                 minimal_workspace() );
     }
 
@@ -167,17 +165,16 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC,
             typename WORK, typename RWORK >
-    static void compute( char const vect, integer_t const m,
-            integer_t const n, integer_t const kl, integer_t const ku,
-            MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
-            MatrixC& c, integer_t& info, detail::workspace2< WORK,
-            RWORK > work ) {
+    static void invoke( char const vect, integer_t const m, integer_t const n,
+            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
                 VectorE >::value_type >::value) );
@@ -217,24 +214,24 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void compute( char const vect, integer_t const m,
-            integer_t const n, integer_t const kl, integer_t const ku,
-            MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
-            MatrixC& c, integer_t& info, minimal_workspace work ) {
+    static void invoke( char const vect, integer_t const m, integer_t const n,
+            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( m, n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( m, n ) );
-        compute( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
+        invoke( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void compute( char const vect, integer_t const m,
-            integer_t const n, integer_t const kl, integer_t const ku,
-            MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
-            MatrixC& c, integer_t& info, optimal_workspace work ) {
-        compute( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
+    static void invoke( char const vect, integer_t const m, integer_t const n,
+            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+            optimal_workspace work ) {
+        invoke( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
                 minimal_workspace() );
     }
 
@@ -258,7 +255,7 @@ inline integer_t gbbrd( char const vect, integer_t const m,
         MatrixC& c, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    gbbrd_impl< value_type >::compute( vect, m, n, kl, ku, ab, d, e, q,
+    gbbrd_impl< value_type >::invoke( vect, m, n, kl, ku, ab, d, e, q,
             pt, c, info, work );
     return info;
 }
@@ -272,7 +269,7 @@ inline integer_t gbbrd( char const vect, integer_t const m,
         MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
-    gbbrd_impl< value_type >::compute( vect, m, n, kl, ku, ab, d, e, q,
+    gbbrd_impl< value_type >::invoke( vect, m, n, kl, ku, ab, d, e, q,
             pt, c, info, optimal_workspace() );
     return info;
 }

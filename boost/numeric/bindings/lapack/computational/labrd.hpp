@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_LABRD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
 #include <boost/numeric/bindings/traits/is_real.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -79,13 +77,13 @@ struct labrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
             typename MatrixY >
-    static void compute( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
+    static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
             VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -135,13 +133,13 @@ struct labrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::A > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
             typename MatrixY >
-    static void compute( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
+    static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
             VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
@@ -191,7 +189,7 @@ inline integer_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
-    labrd_impl< value_type >::compute( a, d, e, tauq, taup, x, y );
+    labrd_impl< value_type >::invoke( a, d, e, tauq, taup, x, y );
     return info;
 }
 

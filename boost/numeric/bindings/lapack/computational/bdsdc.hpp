@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_BDSDC_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
@@ -56,13 +54,13 @@ struct bdsdc_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixU,
             typename MatrixVT, typename VectorQ, typename VectorIQ,
             typename WORK, typename IWORK >
-    static void compute( char const uplo, char const compq, integer_t const n,
+    static void invoke( char const uplo, char const compq, integer_t const n,
             VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
             VectorIQ& iq, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
@@ -98,23 +96,23 @@ struct bdsdc_impl {
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixU,
             typename MatrixVT, typename VectorQ, typename VectorIQ >
-    static void compute( char const uplo, char const compq, integer_t const n,
+    static void invoke( char const uplo, char const compq, integer_t const n,
             VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
             VectorIQ& iq, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( compq,
                 n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
-        compute( uplo, compq, n, d, e, u, vt, q, iq, info,
-                workspace( tmp_work, tmp_iwork ) );
+        invoke( uplo, compq, n, d, e, u, vt, q, iq, info, workspace( tmp_work,
+                tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixU,
             typename MatrixVT, typename VectorQ, typename VectorIQ >
-    static void compute( char const uplo, char const compq, integer_t const n,
+    static void invoke( char const uplo, char const compq, integer_t const n,
             VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
             VectorIQ& iq, integer_t& info, optimal_workspace work ) {
-        compute( uplo, compq, n, d, e, u, vt, q, iq, info,
+        invoke( uplo, compq, n, d, e, u, vt, q, iq, info,
                 minimal_workspace() );
     }
 
@@ -141,8 +139,8 @@ inline integer_t bdsdc( char const uplo, char const compq,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
-    bdsdc_impl< value_type >::compute( uplo, compq, n, d, e, u, vt, q,
-            iq, info, work );
+    bdsdc_impl< value_type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            info, work );
     return info;
 }
 
@@ -154,8 +152,8 @@ inline integer_t bdsdc( char const uplo, char const compq,
         VectorQ& q, VectorIQ& iq ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
-    bdsdc_impl< value_type >::compute( uplo, compq, n, d, e, u, vt, q,
-            iq, info, optimal_workspace() );
+    bdsdc_impl< value_type >::invoke( uplo, compq, n, d, e, u, vt, q, iq,
+            info, optimal_workspace() );
     return info;
 }
 

@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_LACGV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -48,12 +46,11 @@ struct lacgv_impl {
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorX >
-    static void compute( integer_t const n, VectorX& x,
-            integer_t const incx ) {
+    static void invoke( integer_t const n, VectorX& x, integer_t const incx ) {
         BOOST_ASSERT( n >= 0 );
         detail::lacgv( n, traits::vector_storage(x), incx );
     }
@@ -66,7 +63,7 @@ inline integer_t lacgv( integer_t const n, VectorX& x,
         integer_t const incx ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     integer_t info(0);
-    lacgv_impl< value_type >::compute( n, x, incx );
+    lacgv_impl< value_type >::invoke( n, x, incx );
     return info;
 }
 

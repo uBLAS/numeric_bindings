@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_LALSD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -82,12 +80,12 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB,
             typename WORK, typename IWORK >
-    static void compute( char const uplo, integer_t const smlsiz,
+    static void invoke( char const uplo, integer_t const smlsiz,
             integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
             real_type const rcond, integer_t& rank, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
@@ -120,7 +118,7 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void compute( char const uplo, integer_t const smlsiz,
+    static void invoke( char const uplo, integer_t const smlsiz,
             integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
             real_type const rcond, integer_t& rank, integer_t& info,
             minimal_workspace work ) {
@@ -132,17 +130,17 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 nlvl, traits::matrix_num_columns(b) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n,
                 nlvl ) );
-        compute( uplo, smlsiz, n, d, e, b, rcond, rank, info,
+        invoke( uplo, smlsiz, n, d, e, b, rcond, rank, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void compute( char const uplo, integer_t const smlsiz,
+    static void invoke( char const uplo, integer_t const smlsiz,
             integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
             real_type const rcond, integer_t& rank, integer_t& info,
             optimal_workspace work ) {
-        compute( uplo, smlsiz, n, d, e, b, rcond, rank, info,
+        invoke( uplo, smlsiz, n, d, e, b, rcond, rank, info,
                 minimal_workspace() );
     }
 
@@ -165,12 +163,12 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< keywords::tag::B > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB,
             typename WORK, typename RWORK, typename IWORK >
-    static void compute( char const uplo, integer_t const smlsiz,
+    static void invoke( char const uplo, integer_t const smlsiz,
             integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
             real_type const rcond, integer_t& rank, integer_t& info,
             detail::workspace3< WORK, RWORK, IWORK > work ) {
@@ -205,7 +203,7 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void compute( char const uplo, integer_t const smlsiz,
+    static void invoke( char const uplo, integer_t const smlsiz,
             integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
             real_type const rcond, integer_t& rank, integer_t& info,
             minimal_workspace work ) {
@@ -220,17 +218,17 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 smlsiz, nlvl, traits::matrix_num_columns(b) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n,
                 nlvl ) );
-        compute( uplo, smlsiz, n, d, e, b, rcond, rank, info,
+        invoke( uplo, smlsiz, n, d, e, b, rcond, rank, info,
                 workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void compute( char const uplo, integer_t const smlsiz,
+    static void invoke( char const uplo, integer_t const smlsiz,
             integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
             real_type const rcond, integer_t& rank, integer_t& info,
             optimal_workspace work ) {
-        compute( uplo, smlsiz, n, d, e, b, rcond, rank, info,
+        invoke( uplo, smlsiz, n, d, e, b, rcond, rank, info,
                 minimal_workspace() );
     }
 
@@ -262,7 +260,7 @@ inline integer_t lalsd( char const uplo, integer_t const smlsiz,
         integer_t& rank, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
-    lalsd_impl< value_type >::compute( uplo, smlsiz, n, d, e, b, rcond,
+    lalsd_impl< value_type >::invoke( uplo, smlsiz, n, d, e, b, rcond,
             rank, info, work );
     return info;
 }
@@ -275,7 +273,7 @@ inline integer_t lalsd( char const uplo, integer_t const smlsiz,
         integer_t& rank ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
-    lalsd_impl< value_type >::compute( uplo, smlsiz, n, d, e, b, rcond,
+    lalsd_impl< value_type >::invoke( uplo, smlsiz, n, d, e, b, rcond,
             rank, info, optimal_workspace() );
     return info;
 }

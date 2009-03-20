@@ -15,9 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_LACON_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/lapack/keywords.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
 #include <boost/numeric/bindings/traits/is_complex.hpp>
@@ -67,11 +65,11 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorX, typename V, typename ISGN >
-    static void compute( integer_t const n, VectorX& x, real_type& est,
+    static void invoke( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, detail::workspace2< V, ISGN > work ) {
         BOOST_ASSERT( n >= 1 );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -85,18 +83,18 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename VectorX >
-    static void compute( integer_t const n, VectorX& x, real_type& est,
+    static void invoke( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_v( min_size_v( n ) );
         traits::detail::array< integer_t > tmp_isgn( min_size_isgn( n ) );
-        compute( n, x, est, kase, workspace( tmp_v, tmp_isgn ) );
+        invoke( n, x, est, kase, workspace( tmp_v, tmp_isgn ) );
     }
 
     // optimal workspace specialization
     template< typename VectorX >
-    static void compute( integer_t const n, VectorX& x, real_type& est,
+    static void invoke( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, optimal_workspace work ) {
-        compute( n, x, est, kase, minimal_workspace() );
+        invoke( n, x, est, kase, minimal_workspace() );
     }
 
     static integer_t min_size_v( integer_t const n ) {
@@ -114,11 +112,11 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector<  > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorX, typename V >
-    static void compute( integer_t const n, VectorX& x, real_type& est,
+    static void invoke( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, detail::workspace1< V > work ) {
         BOOST_ASSERT( n >= 1 );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
@@ -129,17 +127,17 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename VectorX >
-    static void compute( integer_t const n, VectorX& x, real_type& est,
+    static void invoke( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_v( min_size_v( n ) );
-        compute( n, x, est, kase, workspace( tmp_v ) );
+        invoke( n, x, est, kase, workspace( tmp_v ) );
     }
 
     // optimal workspace specialization
     template< typename VectorX >
-    static void compute( integer_t const n, VectorX& x, real_type& est,
+    static void invoke( integer_t const n, VectorX& x, real_type& est,
             integer_t& kase, optimal_workspace work ) {
-        compute( n, x, est, kase, minimal_workspace() );
+        invoke( n, x, est, kase, minimal_workspace() );
     }
 
     static integer_t min_size_v( integer_t const n ) {
@@ -155,7 +153,7 @@ inline integer_t lacon( integer_t const n, VectorX& x,
         integer_t& kase, Workspace work ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     integer_t info(0);
-    lacon_impl< value_type >::compute( n, x, est, kase, work );
+    lacon_impl< value_type >::invoke( n, x, est, kase, work );
     return info;
 }
 
@@ -166,7 +164,7 @@ inline integer_t lacon( integer_t const n, VectorX& x,
         integer_t& kase ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     integer_t info(0);
-    lacon_impl< value_type >::compute( n, x, est, kase,
+    lacon_impl< value_type >::invoke( n, x, est, kase,
             optimal_workspace() );
     return info;
 }

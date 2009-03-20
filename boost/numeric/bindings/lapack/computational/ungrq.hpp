@@ -58,7 +58,6 @@ struct ungrq_impl {
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
     static void invoke( integer_t const m, integer_t const n,

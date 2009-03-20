@@ -74,7 +74,6 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorV, typename MatrixC, typename WORK >
     static void invoke( char const side, integer_t const l, VectorV& v,
@@ -130,7 +129,6 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorV, typename MatrixC, typename WORK >
     static void invoke( char const side, integer_t const l, VectorV& v,

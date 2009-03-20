@@ -47,7 +47,6 @@ struct lacgv_impl {
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorX >
     static void invoke( integer_t const n, VectorX& x, integer_t const incx ) {

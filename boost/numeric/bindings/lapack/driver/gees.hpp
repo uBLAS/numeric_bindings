@@ -87,7 +87,6 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVS, typename WORK, typename BWORK >
@@ -180,7 +179,6 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVS,
             typename WORK, typename RWORK, typename BWORK >

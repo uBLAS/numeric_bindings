@@ -66,7 +66,6 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
     static void invoke( integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
@@ -96,7 +95,6 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
     static void invoke( char const uplo, integer_t const n, VectorD& d,

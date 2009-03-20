@@ -68,7 +68,6 @@ struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixAB, typename VectorS >
     static void invoke( integer_t const n, integer_t const kd, MatrixAB& ab,
@@ -94,7 +93,6 @@ struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixAB, typename VectorS >
     static void invoke( integer_t const n, integer_t const kd, MatrixAB& ab,

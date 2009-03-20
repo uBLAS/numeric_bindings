@@ -55,7 +55,6 @@ struct pbtrf_impl {
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixAB >
     static void invoke( integer_t const n, integer_t const kd, MatrixAB& ab,

@@ -88,7 +88,6 @@ struct stegr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ, typename WORK,
@@ -181,7 +180,6 @@ struct stegr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ, typename WORK,

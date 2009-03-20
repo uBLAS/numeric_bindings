@@ -71,7 +71,6 @@ struct hbgvx_impl {
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
             typename VectorW, typename MatrixZ, typename VectorIFAIL,

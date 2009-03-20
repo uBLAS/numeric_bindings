@@ -68,7 +68,6 @@ struct gebal_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename VectorSCALE >
     static void invoke( char const job, MatrixA& a, integer_t& ilo,
@@ -93,7 +92,6 @@ struct gebal_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // templated specialization
     template< typename MatrixA, typename VectorSCALE >
     static void invoke( char const job, MatrixA& a, integer_t& ilo,

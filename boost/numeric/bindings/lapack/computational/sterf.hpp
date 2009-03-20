@@ -47,7 +47,6 @@ struct sterf_impl {
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-$INCLUDE_TEMPLATES
     // templated specialization
     template< typename VectorD, typename VectorE >
     static void invoke( integer_t const n, VectorD& d, VectorE& e,

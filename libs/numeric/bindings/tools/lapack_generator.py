@@ -126,8 +126,8 @@ def write_functions( info_map, group, template_map, base_dir ):
         level1_template = level1_template.replace( '$INCLUDE_TEMPLATES', bindings.proper_indent(include_templates) )
         level2_template = level2_template.replace( '$INCLUDE_TEMPLATES', bindings.proper_indent(include_templates) )
       else:
-        level1_template = level1_template.replace( '\n    $INCLUDE_TEMPLATES', '' )
-        level2_template = level2_template.replace( '\n    $INCLUDE_TEMPLATES', '' )
+        level1_template = level1_template.replace( '\n$INCLUDE_TEMPLATES', '' )
+        level2_template = level2_template.replace( '\n$INCLUDE_TEMPLATES', '' )
 
       # continue with first replacements
       level1_template = level1_template.replace( '$groupname', group_name.lower() )

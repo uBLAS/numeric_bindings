@@ -170,25 +170,29 @@ def level1_typename( name, properties ):
 
 def keyword_typename( name, properties ):
   result = None
-  namespace = 'keywords::tag::'
+  prefix = ''
 
   if 'workspace' not in properties[ 'io' ]:
     if properties[ 'type' ] == 'matrix':
       if name == 'A' or name == 'B':
-        result = namespace + name
+        result = prefix + name
       if properties.has_key( 'packed' ):
         if name == 'AP':
-          result = namespace + 'A'
+          result = prefix + 'A'
         if name == 'BP':
-          result = namespace + 'B'
+          result = prefix + 'B'
       if properties.has_key( 'banded' ):
         if name == 'AB':
-          result = namespace + 'A'
+          result = prefix + 'A'
         if name == 'BB':
-          result = namespace + 'B'
+          result = prefix + 'B'
     if properties[ 'type' ] == 'vector':
       if name == 'IPIV':
-        result = namespace + 'pivot'
+        result = prefix + 'pivot'
+    if properties[ 'type' ] == 'scalar':
+      if name == 'INFO':
+        result = prefix + 'info'
+
   return result
 
 

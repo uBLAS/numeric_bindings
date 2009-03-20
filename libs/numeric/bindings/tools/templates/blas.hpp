@@ -47,7 +47,7 @@ struct $groupname_impl {
 
     // templated specialization
     template< $TYPES >
-    static return_type compute( $LEVEL1 ) {
+    static return_type invoke( $LEVEL1 ) {
         $STATIC_ASSERTS
         $RETURN_STATEMENTdetail::$groupname( $CALL_LEVEL0 );
     }
@@ -58,6 +58,6 @@ template< $TYPES >
 inline typename $groupname_impl< typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type >::return_type
 $groupname( $LEVEL2 ) {
     typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
-    $RETURN_STATEMENT$groupname_impl< value_type >::compute( $CALL_LEVEL1 );
+    $RETURN_STATEMENT$groupname_impl< value_type >::invoke( $CALL_LEVEL1 );
 }
 $TEMPLATE[end]

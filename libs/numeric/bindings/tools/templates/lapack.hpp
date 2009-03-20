@@ -55,11 +55,11 @@ struct $groupname_impl< ValueType, typename boost::enable_if< traits::is_$SPECIA
 $TEMPLATE[level1_workspace]
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< $KEYWORDS > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // user-defined workspace specialization
     template< $TYPES, $WORKSPACE_TYPENAMES >
-    static void compute( $LEVEL1, detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
+    static void invoke( $LEVEL1, detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
         $STATIC_ASSERTS
         $INIT_USER_DEFINED_VARIABLES
         $ASSERTS
@@ -68,15 +68,15 @@ $TEMPLATE[level1_workspace]
 
     // minimal workspace specialization
     template< $TYPES >
-    static void compute( $LEVEL1, minimal_workspace work ) {
+    static void invoke( $LEVEL1, minimal_workspace work ) {
         $INIT_USER_DEFINED_VARIABLES
 $SETUP_MIN_WORKARRAYS_POST
-        compute( $CALL_LEVEL1, workspace( $TMP_WORKARRAYS ) );
+        invoke( $CALL_LEVEL1, workspace( $TMP_WORKARRAYS ) );
     }
 
     // optimal workspace specialization
     template< $TYPES >
-    static void compute( $LEVEL1, optimal_workspace work ) {
+    static void invoke( $LEVEL1, optimal_workspace work ) {
 $OPT_WORKSPACE_FUNC
     }
 
@@ -88,16 +88,16 @@ $TEMPLATE[level1_opt_workspace]
         $SETUP_OPT_WORKARRAYS_PRE
         detail::$groupname( $WORKSPACE_QUERY );
         $SETUP_OPT_WORKARRAYS_POST
-        compute( $CALL_LEVEL1, workspace( $TMP_WORKARRAYS ) );
+        invoke( $CALL_LEVEL1, workspace( $TMP_WORKARRAYS ) );
 $TEMPLATE[level1_opt_workspace_is_min]
-        compute( $CALL_LEVEL1, minimal_workspace() );
+        invoke( $CALL_LEVEL1, minimal_workspace() );
 $TEMPLATE[level2_workspace]
 // template function to call $groupname
 template< $TYPES, typename Workspace >
 inline integer_t $groupname( $LEVEL2, Workspace work ) {
     typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
     integer_t info(0);
-    $groupname_impl< value_type >::compute( $CALL_LEVEL1, work );
+    $groupname_impl< value_type >::invoke( $CALL_LEVEL1, work );
     return info;
 }
 
@@ -106,7 +106,7 @@ template< $TYPES >
 inline integer_t $groupname( $LEVEL2 ) {
     typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
     integer_t info(0);
-    $groupname_impl< value_type >::compute( $CALL_LEVEL1, optimal_workspace() );
+    $groupname_impl< value_type >::invoke( $CALL_LEVEL1, optimal_workspace() );
     return info;
 }
 $TEMPLATE[setup_min_workspace]
@@ -121,11 +121,11 @@ $TEMPLATE[min_size_func]
 $TEMPLATE[level1_noworkspace]
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
-    typedef typename mpl::vector< $KEYWORDS > valid_keywords;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< $TYPES >
-    static void compute( $LEVEL1 ) {
+    static void invoke( $LEVEL1 ) {
         $STATIC_ASSERTS
         $ASSERTS
         detail::$groupname( $CALL_LEVEL0 );
@@ -138,7 +138,7 @@ template< $TYPES >
 inline integer_t $groupname( $LEVEL2 ) {
     typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
     integer_t info(0);
-    $groupname_impl< value_type >::compute( $CALL_LEVEL1 );
+    $groupname_impl< value_type >::invoke( $CALL_LEVEL1 );
     return info;
 }
 $TEMPLATE[end]

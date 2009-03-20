@@ -62,10 +62,6 @@ def write_functions( info_map, group, template_map, base_dir ):
       '#include <boost/type_traits/is_same.hpp>',
       '#include <boost/static_assert.hpp>' ]
 
-    # add support for the mpl keyword vector
-    includes += [ '#include <boost/mpl/vector.hpp>',
-                  '#include <boost/numeric/bindings/lapack/keywords.hpp>' ]
-
     if template_map.has_key( group_name.lower() + '.includes' ):
       includes += template_map[ group_name.lower() + '.includes' ].splitlines()
 
@@ -109,7 +105,7 @@ def write_functions( info_map, group, template_map, base_dir ):
     level1_map = {}
     level2_map = {}
     for value_type, case_map in cases.iteritems():
-      
+
       level1_template = ''
       level2_template = ''
       if info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ].has_key( 'workspace' ):
@@ -118,10 +114,25 @@ def write_functions( info_map, group, template_map, base_dir ):
       else:
         level1_template = template_map[ 'level1_noworkspace' ]
         level2_template = template_map[ 'level2_noworkspace' ]
-      
+
+      # include templates come before anything else; they can hold any
+      # $ID
+      my_include_key = group_name.lower() + '.' + value_type + '.include_templates'
+      if netlib.my_has_key( my_include_key, template_map ):
+        include_template_list = template_map[ netlib.my_has_key( my_include_key, template_map ) ].strip().replace(' ','').split(",")
+        include_templates = ''
+        for template in include_template_list:
+          include_templates += template_map[ 'template_' + template ]
+        level1_template = level1_template.replace( '$INCLUDE_TEMPLATES', bindings.proper_indent(include_templates) )
+        level2_template = level2_template.replace( '$INCLUDE_TEMPLATES', bindings.proper_indent(include_templates) )
+      else:
+        level1_template = level1_template.replace( '\n    $INCLUDE_TEMPLATES', '' )
+        level2_template = level2_template.replace( '\n    $INCLUDE_TEMPLATES', '' )
+
+      # continue with first replacements
       level1_template = level1_template.replace( '$groupname', group_name.lower() )
       level1_template = level1_template.replace( "$SPECIALIZATION", value_type )
-    
+
       # take this subroutine for arguments etc.
       subroutine = case_map[ 'subroutines' ][ 0 ]
       print "taking",subroutine

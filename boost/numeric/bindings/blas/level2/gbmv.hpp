@@ -69,11 +69,12 @@ template< typename ValueType >
 struct gbmv_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type compute( char const trans, integer_t const kl,
+    static return_type invoke( char const trans, integer_t const kl,
             integer_t const ku, value_type const alpha, MatrixA& a,
             VectorX& x, value_type const beta, VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -99,7 +100,7 @@ gbmv( char const trans, integer_t const kl, integer_t const ku,
         MatrixA& a, VectorX& x, typename traits::matrix_traits<
         MatrixA >::value_type const beta, VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    gbmv_impl< value_type >::compute( trans, kl, ku, alpha, a, x, beta,
+    gbmv_impl< value_type >::invoke( trans, kl, ku, alpha, a, x, beta,
             y );
 }
 

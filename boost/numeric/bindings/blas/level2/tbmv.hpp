@@ -57,11 +57,12 @@ template< typename ValueType >
 struct tbmv_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename MatrixA, typename VectorX >
-    static return_type compute( char const trans, char const diag,
+    static return_type invoke( char const trans, char const diag,
             integer_t const k, MatrixA& a, VectorX& x ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -80,7 +81,7 @@ inline typename tbmv_impl< typename traits::matrix_traits<
 tbmv( char const trans, char const diag, integer_t const k, MatrixA& a,
         VectorX& x ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    tbmv_impl< value_type >::compute( trans, diag, k, a, x );
+    tbmv_impl< value_type >::invoke( trans, diag, k, a, x );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level2

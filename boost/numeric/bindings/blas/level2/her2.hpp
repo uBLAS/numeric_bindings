@@ -51,12 +51,13 @@ template< typename ValueType >
 struct her2_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename MatrixA >
-    static return_type compute( value_type const alpha, VectorX& x,
-            VectorY& y, MatrixA& a ) {
+    static return_type invoke( value_type const alpha, VectorX& x, VectorY& y,
+            MatrixA& a ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -78,7 +79,7 @@ inline typename her2_impl< typename traits::vector_traits<
 her2( typename traits::vector_traits< VectorX >::value_type const alpha,
         VectorX& x, VectorY& y, MatrixA& a ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    her2_impl< value_type >::compute( alpha, x, y, a );
+    her2_impl< value_type >::invoke( alpha, x, y, a );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level2

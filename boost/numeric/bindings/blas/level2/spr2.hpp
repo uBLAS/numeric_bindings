@@ -45,11 +45,12 @@ template< typename ValueType >
 struct spr2_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename MatrixAP >
-    static return_type compute( real_type const alpha, VectorX& x, VectorY& y,
+    static return_type invoke( real_type const alpha, VectorX& x, VectorY& y,
             MatrixAP& ap ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
@@ -72,7 +73,7 @@ inline typename spr2_impl< typename traits::vector_traits<
 spr2( typename traits::vector_traits< VectorX >::value_type const alpha,
         VectorX& x, VectorY& y, MatrixAP& ap ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    spr2_impl< value_type >::compute( alpha, x, y, ap );
+    spr2_impl< value_type >::invoke( alpha, x, y, ap );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level2

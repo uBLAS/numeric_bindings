@@ -24,7 +24,6 @@
 #include <boost/numeric/bindings/lapack/driver/spsv.hpp>
 
 #include <boost/numeric/bindings/lapack/keywords.hpp>
-#include <boost/numeric/bindings/lapack/detail/null_vector.hpp>
 
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/map.hpp>
@@ -39,9 +38,11 @@ namespace bindings {
 namespace lapack {
 
 template< typename Matrix >
-struct solve_dispatcher {
+struct solve_impl {
     typedef typename traits::matrix_traits< Matrix >::value_type value_type;
     typedef typename traits::matrix_traits< Matrix >::matrix_structure matrix_structure;
+
+    struct null_type {};
 
     typedef typename mpl::map<
         mpl::pair< traits::general_t, gesv_impl< value_type > >,
@@ -54,10 +55,6 @@ struct solve_dispatcher {
 
     typedef typename mpl::at< simple_map, matrix_structure >::type simple;
 
-    // placeholder for pivot vector type, 
-    // will dispatch to this type and a null_vector
-    typedef traits::detail::array< integer_t > pivot_type;
-
 };
 
 BOOST_PARAMETER_FUNCTION(
@@ -69,11 +66,11 @@ BOOST_PARAMETER_FUNCTION(
         (in_out(B), *)
     )
     (optional
-        (in_out(pivot), *,
-            typename solve_dispatcher< A_type >::pivot_type( traits::matrix_num_columns(A) ) )
+        (pivot, *,
+            typename solve_impl< A_type >::null_type() )
     )
     ) {
-        typedef typename solve_dispatcher< A_type >::simple routine;
+        typedef typename solve_impl< A_type >::simple routine;
         integer_t info(0);
         routine::solve( A, B, pivot, info );
     }

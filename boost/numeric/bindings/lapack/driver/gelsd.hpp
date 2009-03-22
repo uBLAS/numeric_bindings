@@ -15,6 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GELSD_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/lapack/auxiliary/ilaenv.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>

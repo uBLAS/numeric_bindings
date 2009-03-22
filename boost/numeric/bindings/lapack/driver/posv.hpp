@@ -15,6 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_POSV_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
@@ -61,9 +62,11 @@ struct posv_impl {
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-    // uniform high-level dispatching-function
+    // high-level solve typedefs and functions
+    typedef boost::mpl::bool_<false> has_pivot;
+
     template< typename MatrixA, typename MatrixB, typename VectorP >
-    static void solve( MatrixA& A, MatrixB& B, VectorP& pivot,
+    static void solve( MatrixA& A, MatrixB& B, VectorP const&,
             integer_t& info ) {
         invoke( A, B, info );
     }

@@ -28,11 +28,11 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void srot( integer_t const n, traits::complex_f* x,
-            integer_t const incx, traits::complex_f* y, integer_t const incy,
+    inline void srot( integer_t const n, traits::complex_f* cx,
+            integer_t const incx, traits::complex_f* cy, integer_t const incy,
             float const c, float const s ) {
-        BLAS_CSROT( &n, traits::complex_ptr(x), &incx, traits::complex_ptr(y),
-                &incy, &c, &s );
+        BLAS_CSROT( &n, traits::complex_ptr(cx), &incx,
+                traits::complex_ptr(cy), &incy, &c, &s );
     }
 }
 
@@ -41,31 +41,31 @@ template< typename ValueType >
 struct srot_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
-    template< typename VectorX, typename VectorY >
-    static return_type compute( integer_t const n, VectorX& x,
-            integer_t const incx, VectorY& y, integer_t const incy,
+    template< typename VectorCX, typename VectorCY >
+    static return_type invoke( integer_t const n, VectorCX& cx, VectorCY& cy,
             real_type const c, real_type const s ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorX >::value_type, typename traits::vector_traits<
-                VectorY >::value_type >::value) );
-        detail::srot( n, traits::vector_storage(x), incx,
-                traits::vector_storage(y), incy, c, s );
+                VectorCX >::value_type, typename traits::vector_traits<
+                VectorCY >::value_type >::value) );
+        detail::srot( n, traits::vector_storage(cx),
+                traits::vector_stride(cx), traits::vector_storage(cy),
+                traits::vector_stride(cy), c, s );
     }
 };
 
 // low-level template function for direct calls to level1::srot
-template< typename VectorX, typename VectorY >
+template< typename VectorCX, typename VectorCY >
 inline typename srot_impl< typename traits::vector_traits<
-        VectorX >::value_type >::return_type
-srot( integer_t const n, VectorX& x, integer_t const incx, VectorY& y,
-        integer_t const incy, typename traits::vector_traits<
-        VectorX >::value_type const c, typename traits::vector_traits<
-        VectorX >::value_type const s ) {
-    typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    srot_impl< value_type >::compute( n, x, incx, y, incy, c, s );
+        VectorCX >::value_type >::return_type
+srot( integer_t const n, VectorCX& cx, VectorCY& cy,
+        typename traits::vector_traits< VectorCX >::value_type const c,
+        typename traits::vector_traits< VectorCX >::value_type const s ) {
+    typedef typename traits::vector_traits< VectorCX >::value_type value_type;
+    srot_impl< value_type >::invoke( n, cx, cy, c, s );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level1

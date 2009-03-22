@@ -55,11 +55,12 @@ template< typename ValueType >
 struct swap_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename VectorX, typename VectorY >
-    static return_type compute( VectorX& x, VectorY& y ) {
+    static return_type invoke( VectorX& x, VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -75,7 +76,7 @@ inline typename swap_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
 swap( VectorX& x, VectorY& y ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    swap_impl< value_type >::compute( x, y );
+    swap_impl< value_type >::invoke( x, y );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level1

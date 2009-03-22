@@ -55,11 +55,12 @@ template< typename ValueType >
 struct axpy_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename VectorX, typename VectorY >
-    static return_type compute( value_type const a, VectorX& x, VectorY& y ) {
+    static return_type invoke( value_type const a, VectorX& x, VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -76,7 +77,7 @@ inline typename axpy_impl< typename traits::vector_traits<
 axpy( typename traits::vector_traits< VectorX >::value_type const a,
         VectorX& x, VectorY& y ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    axpy_impl< value_type >::compute( a, x, y );
+    axpy_impl< value_type >::invoke( a, x, y );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level1

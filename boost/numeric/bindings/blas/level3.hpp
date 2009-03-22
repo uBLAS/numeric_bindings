@@ -9,4 +9,6 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_HPP
 
+#include <boost/numeric/bindings/blas/solve.hpp>
+
 #endif

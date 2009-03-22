@@ -47,11 +47,12 @@ template< typename ValueType >
 struct hpr_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename VectorX, typename MatrixAP >
-    static return_type compute( real_type const alpha, VectorX& x,
+    static return_type invoke( real_type const alpha, VectorX& x,
             MatrixAP& ap ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::matrix_traits<
@@ -70,7 +71,7 @@ inline typename hpr_impl< typename traits::vector_traits<
 hpr( typename traits::vector_traits< VectorX >::value_type const alpha,
         VectorX& x, MatrixAP& ap ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    hpr_impl< value_type >::compute( alpha, x, ap );
+    hpr_impl< value_type >::invoke( alpha, x, ap );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level2

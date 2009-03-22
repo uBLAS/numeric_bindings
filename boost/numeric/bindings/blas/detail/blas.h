@@ -115,8 +115,8 @@ double BLAS_DSDOT( integer_t const* n, float const* sx, integer_t const* incx,
         float const* sy, integer_t const* incy );
 
 // Value-type variants of srot
-void BLAS_CSROT( integer_t const* n, fcomplex_t const* x,
-        integer_t const* incx, fcomplex_t const* y, integer_t const* incy,
+void BLAS_CSROT( integer_t const* n, fcomplex_t const* cx,
+        integer_t const* incx, fcomplex_t const* cy, integer_t const* incy,
         float const* c, float const* s );
 
 // Value-type variants of swap

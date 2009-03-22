@@ -39,11 +39,12 @@ template< typename ValueType >
 struct sdot_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef value_type return_type;
 
     // templated specialization
     template< typename VectorSX, typename VectorSY >
-    static return_type compute( integer_t const n, VectorSX& sx,
+    static return_type invoke( integer_t const n, VectorSX& sx,
             integer_t const incx, VectorSY& sy, integer_t const incy ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorSX >::value_type, typename traits::vector_traits<
@@ -60,7 +61,7 @@ inline typename sdot_impl< typename traits::vector_traits<
 sdot( integer_t const n, VectorSX& sx, integer_t const incx,
         VectorSY& sy, integer_t const incy ) {
     typedef typename traits::vector_traits< VectorSX >::value_type value_type;
-    return sdot_impl< value_type >::compute( n, sx, incx, sy, incy );
+    return sdot_impl< value_type >::invoke( n, sx, incx, sy, incy );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level1

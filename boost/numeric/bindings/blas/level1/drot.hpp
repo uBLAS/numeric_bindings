@@ -41,11 +41,12 @@ template< typename ValueType >
 struct drot_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename VectorCX, typename VectorCY >
-    static return_type compute( integer_t const n, VectorCX& cx, VectorCY& cy,
+    static return_type invoke( integer_t const n, VectorCX& cx, VectorCY& cy,
             real_type const c, real_type const s ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorCX >::value_type, typename traits::vector_traits<
@@ -64,7 +65,7 @@ drot( integer_t const n, VectorCX& cx, VectorCY& cy,
         typename traits::vector_traits< VectorCX >::value_type const c,
         typename traits::vector_traits< VectorCX >::value_type const s ) {
     typedef typename traits::vector_traits< VectorCX >::value_type value_type;
-    drot_impl< value_type >::compute( n, cx, cy, c, s );
+    drot_impl< value_type >::invoke( n, cx, cy, c, s );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level1

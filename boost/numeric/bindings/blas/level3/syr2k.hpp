@@ -67,11 +67,12 @@ template< typename ValueType >
 struct syr2k_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static return_type compute( char const trans, integer_t const k,
+    static return_type invoke( char const trans, integer_t const k,
             value_type const alpha, MatrixA& a, MatrixB& b,
             value_type const beta, MatrixC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -97,7 +98,7 @@ syr2k( char const trans, integer_t const k,
         MatrixA& a, MatrixB& b, typename traits::matrix_traits<
         MatrixA >::value_type const beta, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    syr2k_impl< value_type >::compute( trans, k, alpha, a, b, beta, c );
+    syr2k_impl< value_type >::invoke( trans, k, alpha, a, b, beta, c );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level3

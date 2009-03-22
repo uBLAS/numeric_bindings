@@ -21,7 +21,7 @@ inline typename level1::asum_impl<
     typename traits::vector_traits< VectorX >::value_type >::return_type
 norm_1( VectorX& x ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    return level1::asum_impl< value_type >::compute( x );
+    return level1::asum_impl< value_type >::invoke( x );
 }
 
 }}}} // namespace boost::numeric::bindings::blas

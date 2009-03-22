@@ -69,11 +69,12 @@ template< typename ValueType >
 struct gemm_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static return_type compute( char const transa, char const transb,
+    static return_type invoke( char const transa, char const transb,
             integer_t const k, value_type const alpha, MatrixA& a, MatrixB& b,
             value_type const beta, MatrixC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -99,7 +100,7 @@ gemm( char const transa, char const transb, integer_t const k,
         MatrixA& a, MatrixB& b, typename traits::matrix_traits<
         MatrixA >::value_type const beta, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    gemm_impl< value_type >::compute( transa, transb, k, alpha, a, b,
+    gemm_impl< value_type >::invoke( transa, transb, k, alpha, a, b,
             beta, c );
 }
 

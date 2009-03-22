@@ -16,14 +16,13 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-//using scale = level1::scal;
 template< typename VectorX >
-inline typename level1::scal_impl< 
+inline typename level1::scal_impl<
     typename traits::vector_traits< VectorX >::value_type >::return_type
 scale( typename traits::vector_traits< VectorX >::value_type const a,
-        VectorX& x ) {
+       VectorX& x ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    level1::scal_impl< value_type >::compute( a, x );
+    level1::scal_impl< value_type >::invoke( a, x );
 }
 
 }}}} // namespace boost::numeric::bindings::blas

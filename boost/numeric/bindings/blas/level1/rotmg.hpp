@@ -43,11 +43,12 @@ template< typename ValueType >
 struct rotmg_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename VectorDPARAM >
-    static return_type compute( real_type& d1, real_type& d2, real_type& x1,
+    static return_type invoke( real_type& d1, real_type& d2, real_type& x1,
             real_type const y1, VectorDPARAM& dparam ) {
         detail::rotmg( d1, d2, x1, y1, traits::vector_storage(dparam) );
     }
@@ -64,7 +65,7 @@ rotmg( typename traits::vector_traits< VectorDPARAM >::value_type& d1,
         VectorDPARAM& dparam ) {
     typedef typename traits::vector_traits<
             VectorDPARAM >::value_type value_type;
-    rotmg_impl< value_type >::compute( d1, d2, x1, y1, dparam );
+    rotmg_impl< value_type >::invoke( d1, d2, x1, y1, dparam );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level1

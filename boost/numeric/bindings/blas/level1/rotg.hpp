@@ -51,11 +51,12 @@ template< typename ValueType >
 struct rotg_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template<  >
-    static return_type compute( value_type& a, value_type& b, real_type& c,
+    static return_type invoke( value_type& a, value_type& b, real_type& c,
             value_type& s ) {
         detail::rotg( a, b, c, s );
     }
@@ -70,7 +71,7 @@ rotg( typename traits::TODO_traits< TODO >::value_type& a,
         typename traits::TODO_traits< TODO >::value_type& c,
         typename traits::TODO_traits< TODO >::value_type& s ) {
     typedef typename traits::TODO_traits< TODO >::value_type value_type;
-    rotg_impl< value_type >::compute( a, b, c, s );
+    rotg_impl< value_type >::invoke( a, b, c, s );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level1

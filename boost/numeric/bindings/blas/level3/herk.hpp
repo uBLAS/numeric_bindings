@@ -49,11 +49,12 @@ template< typename ValueType >
 struct herk_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename MatrixA, typename MatrixC >
-    static return_type compute( char const trans, integer_t const k,
+    static return_type invoke( char const trans, integer_t const k,
             real_type const alpha, MatrixA& a, real_type const beta,
             MatrixC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -75,7 +76,7 @@ herk( char const trans, integer_t const k,
         MatrixA& a, typename traits::matrix_traits<
         MatrixA >::value_type const beta, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    herk_impl< value_type >::compute( trans, k, alpha, a, beta, c );
+    herk_impl< value_type >::invoke( trans, k, alpha, a, beta, c );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level3

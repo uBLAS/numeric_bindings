@@ -65,11 +65,12 @@ template< typename ValueType >
 struct trsm_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename MatrixA, typename MatrixB >
-    static return_type compute( char const side, char const transa,
+    static return_type invoke( char const side, char const transa,
             char const diag, value_type const alpha, MatrixA& a, MatrixB& b ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -90,7 +91,7 @@ trsm( char const side, char const transa, char const diag,
         typename traits::matrix_traits< MatrixA >::value_type const alpha,
         MatrixA& a, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    trsm_impl< value_type >::compute( side, transa, diag, alpha, a, b );
+    trsm_impl< value_type >::invoke( side, transa, diag, alpha, a, b );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level3

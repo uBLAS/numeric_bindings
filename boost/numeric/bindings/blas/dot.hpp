@@ -23,6 +23,7 @@ namespace bindings {
 namespace blas {
 
 namespace detail {
+
 template< typename Vector >
 struct dot_dispatcher {
     typedef typename traits::vector_traits< Vector >::value_type value_type;
@@ -33,13 +34,14 @@ struct dot_dispatcher {
         mpl::pair< traits::complex_d, level1::dotu_impl< value_type > > > map;
     typedef typename mpl::at< map, value_type >::type routine;
 };
+
 } // namespace detail
 
 template< typename VectorX, typename VectorY >
 inline typename detail::dot_dispatcher< VectorX >::routine::return_type
 dot( VectorX& x, VectorY& y ) {
     typedef typename detail::dot_dispatcher< VectorX >::routine routine;
-    return routine::compute( x, y );
+    return routine::invoke( x, y );
 }
 
 }}}} // namespace boost::numeric::bindings::blas

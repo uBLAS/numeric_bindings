@@ -67,11 +67,12 @@ template< typename ValueType >
 struct gemv_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type compute( char const trans, value_type const alpha,
+    static return_type invoke( char const trans, value_type const alpha,
             MatrixA& a, VectorX& x, value_type const beta, VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -96,7 +97,7 @@ gemv( char const trans, typename traits::matrix_traits<
         typename traits::matrix_traits< MatrixA >::value_type const beta,
         VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    gemv_impl< value_type >::compute( trans, alpha, a, x, beta, y );
+    gemv_impl< value_type >::invoke( trans, alpha, a, x, beta, y );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level2

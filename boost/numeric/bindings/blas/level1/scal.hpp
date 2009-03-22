@@ -53,11 +53,12 @@ template< typename ValueType >
 struct scal_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename VectorX >
-    static return_type compute( value_type const a, VectorX& x ) {
+    static return_type invoke( value_type const a, VectorX& x ) {
         detail::scal( traits::vector_size(x), a,
                 traits::vector_storage(x), traits::vector_stride(x) );
     }
@@ -70,7 +71,7 @@ inline typename scal_impl< typename traits::vector_traits<
 scal( typename traits::vector_traits< VectorX >::value_type const a,
         VectorX& x ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    scal_impl< value_type >::compute( a, x );
+    scal_impl< value_type >::invoke( a, x );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level1

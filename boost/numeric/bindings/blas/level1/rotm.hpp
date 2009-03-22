@@ -43,11 +43,12 @@ template< typename ValueType >
 struct rotm_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename VectorPARAM >
-    static return_type compute( integer_t const n, VectorX& x,
+    static return_type invoke( integer_t const n, VectorX& x,
             integer_t const incx, VectorY& y, integer_t const incy,
             VectorPARAM& param ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -69,7 +70,7 @@ inline typename rotm_impl< typename traits::vector_traits<
 rotm( integer_t const n, VectorX& x, integer_t const incx, VectorY& y,
         integer_t const incy, VectorPARAM& param ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    rotm_impl< value_type >::compute( n, x, incx, y, incy, param );
+    rotm_impl< value_type >::invoke( n, x, incx, y, incy, param );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level1

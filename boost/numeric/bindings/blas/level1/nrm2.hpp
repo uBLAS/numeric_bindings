@@ -41,11 +41,12 @@ template< typename ValueType >
 struct nrm2_impl {
 
     typedef ValueType value_type;
+    typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef value_type return_type;
 
     // templated specialization
     template< typename VectorX >
-    static return_type compute( VectorX& x ) {
+    static return_type invoke( VectorX& x ) {
         return detail::nrm2( traits::vector_size(x),
                 traits::vector_storage(x), traits::vector_stride(x) );
     }
@@ -57,7 +58,7 @@ inline typename nrm2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
 nrm2( VectorX& x ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    return nrm2_impl< value_type >::compute( x );
+    return nrm2_impl< value_type >::invoke( x );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level1

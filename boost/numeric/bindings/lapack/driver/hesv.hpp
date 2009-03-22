@@ -15,6 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_HESV_HPP
 
 #include <boost/assert.hpp>
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
 #include <boost/numeric/bindings/traits/detail/array.hpp>
@@ -58,10 +59,20 @@ struct hesv_impl {
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
 
-    // uniform high-level dispatching-function
+    // high-level solve typedefs and functions
+    typedef boost::mpl::bool_<true> has_pivot;
+
     template< typename MatrixA, typename MatrixB, typename VectorP >
     static void solve( MatrixA& A, MatrixB& B, VectorP& pivot,
             integer_t& info ) {
+        invoke( A, pivot, B, info );
+    }
+
+    template< typename MatrixA, typename MatrixB, typename VectorP >
+    static void solve( MatrixA& A, MatrixB& B, VectorP const&,
+            integer_t& info ) {
+        traits::detail::array<
+                integer_t > pivot( traits::matrix_num_columns(A) );
         invoke( A, pivot, B, info );
     }
 

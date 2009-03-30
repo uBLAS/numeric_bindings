@@ -45,6 +45,7 @@ struct $groupname_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef $RETURN_TYPE return_type;
 
+$INCLUDE_TEMPLATES
     // templated specialization
     template< $TYPES >
     static return_type invoke( $LEVEL1 ) {

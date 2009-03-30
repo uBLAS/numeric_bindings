@@ -59,6 +59,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       '#include <boost/numeric/bindings/traits/traits.hpp>',
       '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
       '#include <boost/numeric/bindings/lapack/detail/lapack.h>',
+      '#include <boost/mpl/bool.hpp>',
       '#include <boost/type_traits/is_same.hpp>',
       '#include <boost/static_assert.hpp>' ]
 
@@ -430,7 +431,7 @@ def read_templates( template_file ):
     result[ split_templates[ index*2 ] ] = split_templates[ index*2 + 1 ]
   return result
 
-lapack_src_path = './lapack-3.1.1/SRC'
+lapack_src_path = './lapack-3.2.0/SRC'
 template_src_path = './templates'
 bindings_target_path = '../../../../boost/numeric/bindings/lapack/'
 test_target_path = '../test/lapack/'

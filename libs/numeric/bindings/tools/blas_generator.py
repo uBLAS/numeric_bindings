@@ -20,7 +20,7 @@ import pprint
 #
 # Group subroutines on their name, with the first character removed. This will 
 # group them in the same .hpp file as well. Sort these subroutines based on 
-# routine_cmp from bindings.py.
+# routine_cmp above.
 #
 def group_by_value_type( global_info_map ):
   group_map = {}
@@ -33,6 +33,7 @@ def group_by_value_type( global_info_map ):
     value.sort( bindings.routine_cmp )
   return group_map
   
+
 
 
  
@@ -51,6 +52,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       '#include <boost/numeric/bindings/traits/traits.hpp>',
       '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
       '#include <boost/numeric/bindings/blas/detail/blas.h>',
+      '#include <boost/mpl/bool.hpp>',
       '#include <boost/type_traits/is_same.hpp>',
       '#include <boost/static_assert.hpp>' ]
       
@@ -105,6 +107,20 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = template_map[ 'blas_level1' ]
       level2_template = template_map[ 'blas_level2' ]
 
+      # include templates come before anything else; they can hold any
+      # $ID
+      my_include_key = group_name.lower() + '.' + value_type + '.include_templates'
+      if netlib.my_has_key( my_include_key, template_map ):
+        include_template_list = template_map[ netlib.my_has_key( my_include_key, template_map ) ].strip().replace(' ','').split(",")
+        include_templates = ''
+        for template in include_template_list:
+          include_templates += template_map[ 'template_' + template ]
+        level1_template = level1_template.replace( '$INCLUDE_TEMPLATES', bindings.proper_indent(include_templates) )
+        level2_template = level2_template.replace( '$INCLUDE_TEMPLATES', bindings.proper_indent(include_templates) )
+      else:
+        level1_template = level1_template.replace( '\n$INCLUDE_TEMPLATES', '' )
+        level2_template = level2_template.replace( '\n$INCLUDE_TEMPLATES', '' )
+
       level0_arg_list = []
       level1_arg_list = []
       level2_arg_list = []
@@ -112,6 +128,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_type_arg_list = []
       level1_assert_list = []
       level1_static_assert_list = []
+      keyword_type_list = []
 
       #
       # Create static assertions, first by value type
@@ -155,6 +172,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = level1_template.replace( "$ASSERTS", "\n        ".join( level1_assert_list ) )
       level1_template = level1_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'level1_return_type' ] )
       level1_template = level1_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
+      level1_template = level1_template.replace( "$KEYWORDS", ", ".join( keyword_type_list ) )
 
       if len( level1_static_assert_list ) > 0:
         level1_template = level1_template.replace( "$STATIC_ASSERTS", "\n        ".join( level1_static_assert_list ) )

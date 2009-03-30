@@ -1,3 +1,3 @@
 $TEMPLATE[ptsv.all.include_templates]
-lapack_solve
+lapack_solve_pivot0
 $TEMPLATE[end]

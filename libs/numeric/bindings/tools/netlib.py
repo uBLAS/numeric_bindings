@@ -731,21 +731,27 @@ def parse_file( filename, template_map ):
     match_argument_declaration = re.compile( '^[ ]*(EXTERNAL|LOGICAL|CHARACTER|REAL|INTEGER' + \
       '|DOUBLE PRECISION|DOUBLE COMPLEX|COMPLEX\*16|COMPLEX)[ ]+(.*)$' ).search( code[ code_line_nr] )
     if match_argument_declaration != None:
-      for argument_match in re.findall( '([A-Z0-9]+(\([^\)]+\))?)[, ]?', match_argument_declaration.group( 2 ) ):
+      for argument_match in re.findall( '([A-Z0-9_]+(\([^\)]+\))?)[, ]?', match_argument_declaration.group( 2 ) ):
         argument_description = argument_match[0].strip().split( "(" )
         argument_name = argument_description[0]
-        argument_map[ argument_name ] = {}
-        argument_map[ argument_name ][ 'value_type' ] = match_argument_declaration.group( 1 )
-        if len(argument_description) == 1:
-          argument_map[ argument_name ][ 'type' ] = 'scalar'
-        else:
-          if argument_description[1].find( "," ) == -1:
-            argument_map[ argument_name ][ 'type' ] = 'vector'
+        if argument_name in subroutine_arguments:
+          argument_map[ argument_name ] = {}
+          argument_map[ argument_name ][ 'value_type' ] = match_argument_declaration.group( 1 )
+          if len(argument_description) == 1:
+            argument_map[ argument_name ][ 'type' ] = 'scalar'
           else:
-            argument_map[ argument_name ][ 'type' ] = 'matrix'
-            # check if there is a leading dimension
-            argument_map[ argument_name ][ 'leading_dimension' ] = argument_description[1].split( "," )[0].strip()
+            if argument_description[1].find( "," ) == -1:
+              argument_map[ argument_name ][ 'type' ] = 'vector'
+            else:
+              argument_map[ argument_name ][ 'type' ] = 'matrix'
+              # check if there is a leading dimension
+              argument_map[ argument_name ][ 'leading_dimension' ] = argument_description[1].split( "," )[0].strip()
     code_line_nr += 1
+
+  # If we were unable to find all argument declarations, bail out
+  if len(argument_map) < len( subroutine_arguments ):
+    print "ERROR: Unable to find all argument declarations"
+    return None, None
 
   # See if we are hard-forcing argument renaming aliases
   # This is needed for BLAS. It has argument names that are tied to the 

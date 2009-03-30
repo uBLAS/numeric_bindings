@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SDOT_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SDOT_HPP
 
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>

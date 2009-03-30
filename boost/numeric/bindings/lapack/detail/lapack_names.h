@@ -444,6 +444,12 @@
 #define LAPACK_CPBTRS FORTRAN_ID( cpbtrs )
 #define LAPACK_ZPBTRS FORTRAN_ID( zpbtrs )
 
+// Value-type variants of pftrs
+#define LAPACK_SPFTRS FORTRAN_ID( spftrs )
+#define LAPACK_DPFTRS FORTRAN_ID( dpftrs )
+#define LAPACK_CPFTRS FORTRAN_ID( cpftrs )
+#define LAPACK_ZPFTRS FORTRAN_ID( zpftrs )
+
 // Value-type variants of pocon
 #define LAPACK_SPOCON FORTRAN_ID( spocon )
 #define LAPACK_DPOCON FORTRAN_ID( dpocon )
@@ -905,6 +911,9 @@
 // Value-type variants of cgesv
 #define LAPACK_ZCGESV FORTRAN_ID( zcgesv )
 
+// Value-type variants of cposv
+#define LAPACK_ZCPOSV FORTRAN_ID( zcposv )
+
 // Value-type variants of gbsv
 #define LAPACK_SGBSV FORTRAN_ID( sgbsv )
 #define LAPACK_DGBSV FORTRAN_ID( dgbsv )
@@ -1007,6 +1016,9 @@
 
 // Value-type variants of sgesv
 #define LAPACK_DSGESV FORTRAN_ID( dsgesv )
+
+// Value-type variants of sposv
+#define LAPACK_DSPOSV FORTRAN_ID( dsposv )
 
 // Value-type variants of spsv
 #define LAPACK_SSPSV FORTRAN_ID( sspsv )

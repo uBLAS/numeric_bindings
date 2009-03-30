@@ -1203,6 +1203,20 @@ void LAPACK_ZPBTRS( char const* uplo, integer_t const* n, integer_t const* kd,
         integer_t const* nrhs, dcomplex_t const* ab, integer_t const* ldab,
         dcomplex_t* b, integer_t const* ldb, integer_t* info );
 
+// Value-type variants of pftrs
+void LAPACK_SPFTRS( char const* transr, char const* uplo, integer_t const* n,
+        integer_t const* nrhs, float const* a, float* b, integer_t const* ldb,
+        integer_t* info );
+void LAPACK_DPFTRS( char const* transr, char const* uplo, integer_t const* n,
+        integer_t const* nrhs, double const* a, double* b,
+        integer_t const* ldb, integer_t* info );
+void LAPACK_CPFTRS( char const* transr, char const* uplo, integer_t const* n,
+        integer_t const* nrhs, fcomplex_t const* a, fcomplex_t* b,
+        integer_t const* ldb, integer_t* info );
+void LAPACK_ZPFTRS( char const* transr, char const* uplo, integer_t const* n,
+        integer_t const* nrhs, dcomplex_t const* a, dcomplex_t* b,
+        integer_t const* ldb, integer_t* info );
+
 // Value-type variants of pocon
 void LAPACK_SPOCON( char const* uplo, integer_t const* n, float const* a,
         integer_t const* lda, float const* anorm, float* rcond, float* work,
@@ -2667,8 +2681,15 @@ void LAPACK_ZGGLSE( integer_t const* m, integer_t const* n,
 void LAPACK_ZCGESV( integer_t const* n, integer_t const* nrhs, dcomplex_t* a,
         integer_t const* lda, integer_t* ipiv, dcomplex_t const* b,
         integer_t const* ldb, dcomplex_t* x, integer_t const* ldx,
-        dcomplex_t* work, fcomplex_t* swork, integer_t* iter,
+        dcomplex_t* work, fcomplex_t* swork, double* rwork, integer_t* iter,
         integer_t* info );
+
+// Value-type variants of cposv
+void LAPACK_ZCPOSV( char const* uplo, integer_t const* n,
+        integer_t const* nrhs, dcomplex_t* a, integer_t const* lda,
+        dcomplex_t const* b, integer_t const* ldb, dcomplex_t* x,
+        integer_t const* ldx, dcomplex_t* work, fcomplex_t* swork,
+        double* rwork, integer_t* iter, integer_t* info );
 
 // Value-type variants of gbsv
 void LAPACK_SGBSV( integer_t const* n, integer_t const* kl,
@@ -2998,6 +3019,13 @@ void LAPACK_DSGESV( integer_t const* n, integer_t const* nrhs, double* a,
         integer_t const* lda, integer_t* ipiv, double const* b,
         integer_t const* ldb, double* x, integer_t const* ldx, double* work,
         float* swork, integer_t* iter, integer_t* info );
+
+// Value-type variants of sposv
+void LAPACK_DSPOSV( char const* uplo, integer_t const* n,
+        integer_t const* nrhs, double* a, integer_t const* lda,
+        double const* b, integer_t const* ldb, double* x,
+        integer_t const* ldx, double* work, float* swork, integer_t* iter,
+        integer_t* info );
 
 // Value-type variants of spsv
 void LAPACK_SSPSV( char const* uplo, integer_t const* n,

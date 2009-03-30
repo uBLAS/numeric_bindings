@@ -30,8 +30,8 @@ struct dot_dispatcher {
     typedef typename mpl::map<
         mpl::pair< float, level1::dot_impl< value_type > >,
         mpl::pair< double, level1::dot_impl< value_type > >,
-        mpl::pair< traits::complex_f, level1::dotu_impl< value_type > >,
-        mpl::pair< traits::complex_d, level1::dotu_impl< value_type > > > map;
+        mpl::pair< traits::complex_f, level1::dotc_impl< value_type > >,
+        mpl::pair< traits::complex_d, level1::dotc_impl< value_type > > > map;
     typedef typename mpl::at< map, value_type >::type routine;
 };
 

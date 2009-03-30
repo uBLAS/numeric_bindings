@@ -14,6 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_GEMV_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_GEMV_HPP
 
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/blas/detail/blas.h>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
@@ -69,6 +70,13 @@ struct gemv_impl {
     typedef ValueType value_type;
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
+
+    // high-level transform typedefs and functions
+    template< typename MatrixA, typename VectorX, typename VectorY >
+    static return_type transform( MatrixA& A, VectorX& x, VectorY& y,
+            const value_type alpha, const value_type beta ) {
+        invoke(  );
+    }
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorY >

@@ -21,7 +21,7 @@
 #ifndef BOOST_UBLAS_HAVE_BINDINGS
 #  include <boost/numeric/ublas/banded.hpp> 
 #endif 
-#include <boost/numeric/bindings/traits/detail/ublas_ordering.hpp>
+#include <boost/numeric/bindings/traits/detail/ublas_banded_ordering.hpp>
 
 #if defined (BOOST_NUMERIC_BINDINGS_FORTRAN) || !defined (BOOST_NUMERIC_BINDINGS_NO_STRUCTURE_CHECK)
 #  include <boost/static_assert.hpp>
@@ -54,7 +54,7 @@ namespace boost { namespace numeric { namespace bindings { namespace traits {
     typedef boost::numeric::ublas::banded_matrix<T, F, ArrT>   identifier_type ;
     typedef M                                                  matrix_type;
     typedef banded_t                                           matrix_structure; 
-    typedef typename detail::ublas_ordering<
+    typedef typename detail::ublas_banded_ordering<
       typename F::orientation_category
     >::type                                             ordering_type; 
 

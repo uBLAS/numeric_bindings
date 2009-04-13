@@ -11,6 +11,7 @@
 
 #include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/type.h>
+#include <boost/type_traits/is_complex.hpp>
 
 namespace boost {
 namespace numeric {
@@ -18,7 +19,7 @@ namespace bindings {
 namespace traits {
 
 template< typename T >
-struct is_complex: boost::mpl::bool_<false> {};
+struct is_complex: boost::is_complex<T> {};
 
 template<>
 struct is_complex< fcomplex_t >: boost::mpl::bool_<true> {};

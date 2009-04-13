@@ -255,9 +255,9 @@ template< typename VectorD, typename VectorE, typename MatrixB,
         typename Workspace >
 inline integer_t lalsd( char const uplo, integer_t const smlsiz,
         integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
-        typename traits::vector_traits< VectorD >::value_type const rcond,
+        typename traits::matrix_traits< MatrixB >::value_type const rcond,
         integer_t& rank, Workspace work ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixB >::value_type value_type;
     integer_t info(0);
     lalsd_impl< value_type >::invoke( uplo, smlsiz, n, d, e, b, rcond,
             rank, info, work );
@@ -268,9 +268,9 @@ inline integer_t lalsd( char const uplo, integer_t const smlsiz,
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline integer_t lalsd( char const uplo, integer_t const smlsiz,
         integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
-        typename traits::vector_traits< VectorD >::value_type const rcond,
+        typename traits::matrix_traits< MatrixB >::value_type const rcond,
         integer_t& rank ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixB >::value_type value_type;
     integer_t info(0);
     lalsd_impl< value_type >::invoke( uplo, smlsiz, n, d, e, b, rcond,
             rank, info, optimal_workspace() );

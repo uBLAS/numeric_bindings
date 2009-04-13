@@ -169,7 +169,7 @@ template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
 inline integer_t pteqr( char const compz, integer_t const n, VectorD& d,
         VectorE& e, MatrixZ& z, Workspace work ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);
     pteqr_impl< value_type >::invoke( compz, n, d, e, z, info, work );
     return info;
@@ -179,7 +179,7 @@ inline integer_t pteqr( char const compz, integer_t const n, VectorD& d,
 template< typename VectorD, typename VectorE, typename MatrixZ >
 inline integer_t pteqr( char const compz, integer_t const n, VectorD& d,
         VectorE& e, MatrixZ& z ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);
     pteqr_impl< value_type >::invoke( compz, n, d, e, z, info,
             optimal_workspace() );

@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 #  Copyright (c) 2008 Thomas Klimpel and Rutger ter Borg
 #
@@ -99,7 +100,20 @@ def write_functions( info_map, group, template_map, base_dir ):
           cases[ 'complex' ] = {}
           cases[ 'complex' ][ 'subroutines' ] = []
         cases[ 'complex' ][ 'subroutines' ] += [ subroutine ]
-    
+
+    # Figure out what the real/complex type selector argument might be
+    type_selector_candidates = []
+    if cases.has_key( 'real' ) and cases.has_key( 'complex' ):
+      # we have real and complex scenarios, these keys only exist
+      # if we also have associated routines
+      for arg in info_map[ cases[ 'real' ][ 'subroutines' ][0] ][ 'arguments' ]:
+        if arg in info_map[ cases[ 'complex' ][ 'subroutines' ][0] ][ 'arguments' ]:
+          if info_map[ cases[ 'real' ][ 'subroutines' ][0] ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_type' ] != None and \
+             info_map[ cases[ 'complex' ][ 'subroutines' ][0] ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_type' ] != None and \
+             info_map[ cases[ 'real' ][ 'subroutines' ][0] ][ 'argument_map' ][ arg ][ 'value_type_variant' ] == 'real' and \
+             info_map[ cases[ 'complex' ][ 'subroutines' ][0] ][ 'argument_map' ][ arg ][ 'value_type_variant' ] == 'complex':
+            type_selector_candidates += [ arg ]
+
     #
     # LEVEL 1 and 2 HANDLING
     #
@@ -222,8 +236,19 @@ def write_functions( info_map, group, template_map, base_dir ):
       # some special stuff is done here, such as replacing real_type with a 
       # type-traits deduction, etc..
       level2_template = level2_template.replace( "$LEVEL2", ", ".join( level2_arg_list ) )
-      first_typename = level1_type_arg_list[0].split(" ")[-1]
-      first_typename_datatype = first_typename[0:6].lower() # 'matrix' or 'vector'
+
+      # Determine a right type to select for real or complex variants
+      first_typename = ''
+      print "Type selectors: ", type_selector_candidates
+      if len( type_selector_candidates ) > 0:
+        first_typename_arg = type_selector_candidates[0]
+        first_typename_code = info_map[ subroutine ][ 'argument_map' ][ first_typename_arg ][ 'code' ][ 'level_1_type' ]
+        first_typename = first_typename_code.split(" ")[-1]
+      else:
+        first_typename = level1_type_arg_list[0].split(" ")[-1]
+
+      # generate the word "matrix" or "vector", to select the right traits
+      first_typename_datatype = first_typename[0:6].lower()
       level2_template = level2_template.replace( "$FIRST_TYPENAME", first_typename )
       level2_template = level2_template.replace( "$TYPEOF_FIRST_TYPENAME", first_typename_datatype )
       level2_template = level2_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )

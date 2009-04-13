@@ -114,9 +114,9 @@ struct stegr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::vector_size(e) >= n );
         BOOST_ASSERT( traits::vector_size(w) >= n );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( n, jobz ));
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
-                min_size_iwork( $CALL_MIN_SIZE ));
+                min_size_iwork( n, jobz ));
         detail::stegr( jobz, range, n, traits::vector_storage(d),
                 traits::vector_storage(e), vl, vu, il, iu, abstol, m,
                 traits::vector_storage(w), traits::matrix_storage(z),
@@ -135,10 +135,10 @@ struct stegr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t const il, integer_t const iu, real_type const abstol,
             integer_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz,
             integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                $CALL_MIN_SIZE ) );
+        traits::detail::array< real_type > tmp_work( min_size_work( n,
+                jobz ) );
+        traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n,
+                jobz ) );
         invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
                 info, workspace( tmp_work, tmp_iwork ) );
     }
@@ -165,12 +165,20 @@ struct stegr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 info, workspace( tmp_work, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_work( integer_t const n, char const jobz ) {
+        if ( jobz == 'V' ) {
+            return std::max( 1, 18*n );
+        } else {
+            return std::max( 1, 12*n );
+        }
     }
 
-    static integer_t min_size_iwork( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_iwork( integer_t const n, char const jobz ) {
+        if ( jobz == 'V' ) {
+            return std::max( 1, 10*n );
+        } else {
+            return std::max( 1, 8*n );
+        }
     }
 };
 
@@ -203,9 +211,9 @@ struct stegr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::vector_size(e) >= n );
         BOOST_ASSERT( traits::vector_size(w) >= n );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( n, jobz ));
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
-                min_size_iwork( $CALL_MIN_SIZE ));
+                min_size_iwork( n, jobz ));
         detail::stegr( jobz, range, n, traits::vector_storage(d),
                 traits::vector_storage(e), vl, vu, il, iu, abstol, m,
                 traits::vector_storage(w), traits::matrix_storage(z),
@@ -224,10 +232,10 @@ struct stegr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t const il, integer_t const iu, real_type const abstol,
             integer_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz,
             integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                $CALL_MIN_SIZE ) );
+        traits::detail::array< real_type > tmp_work( min_size_work( n,
+                jobz ) );
+        traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n,
+                jobz ) );
         invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
                 info, workspace( tmp_work, tmp_iwork ) );
     }
@@ -254,12 +262,20 @@ struct stegr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 info, workspace( tmp_work, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_work( integer_t const n, char const jobz ) {
+        if ( jobz == 'V' ) {
+            return std::max( 1, 18*n );
+        } else {
+            return std::max( 1, 12*n );
+        }
     }
 
-    static integer_t min_size_iwork( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_iwork( integer_t const n, char const jobz ) {
+        if ( jobz == 'V' ) {
+            return std::max( 1, 10*n );
+        } else {
+            return std::max( 1, 8*n );
+        }
     }
 };
 
@@ -269,13 +285,13 @@ template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorISUPPZ, typename Workspace >
 inline integer_t stegr( char const jobz, char const range,
         integer_t const n, VectorD& d, VectorE& e,
-        typename traits::vector_traits< VectorD >::value_type const vl,
-        typename traits::vector_traits< VectorD >::value_type const vu,
+        typename traits::matrix_traits< MatrixZ >::value_type const vl,
+        typename traits::matrix_traits< MatrixZ >::value_type const vu,
         integer_t const il, integer_t const iu,
-        typename traits::vector_traits< VectorD >::value_type const abstol,
+        typename traits::matrix_traits< MatrixZ >::value_type const abstol,
         integer_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz,
         Workspace work ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);
     stegr_impl< value_type >::invoke( jobz, range, n, d, e, vl, vu, il,
             iu, abstol, m, w, z, isuppz, info, work );
@@ -287,12 +303,12 @@ template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorISUPPZ >
 inline integer_t stegr( char const jobz, char const range,
         integer_t const n, VectorD& d, VectorE& e,
-        typename traits::vector_traits< VectorD >::value_type const vl,
-        typename traits::vector_traits< VectorD >::value_type const vu,
+        typename traits::matrix_traits< MatrixZ >::value_type const vl,
+        typename traits::matrix_traits< MatrixZ >::value_type const vu,
         integer_t const il, integer_t const iu,
-        typename traits::vector_traits< VectorD >::value_type const abstol,
+        typename traits::matrix_traits< MatrixZ >::value_type const abstol,
         integer_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);
     stegr_impl< value_type >::invoke( jobz, range, n, d, e, vl, vu, il,
             iu, abstol, m, w, z, isuppz, info, optimal_workspace() );

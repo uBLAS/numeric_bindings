@@ -247,7 +247,7 @@ inline integer_t stein( integer_t const n, VectorD& d, VectorE& e,
         integer_t const m, VectorW& w, VectorIBLOCK& iblock,
         VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
         Workspace work ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);
     stein_impl< value_type >::invoke( n, d, e, m, w, iblock, isplit, z,
             ifail, info, work );
@@ -261,7 +261,7 @@ template< typename VectorD, typename VectorE, typename VectorW,
 inline integer_t stein( integer_t const n, VectorD& d, VectorE& e,
         integer_t const m, VectorW& w, VectorIBLOCK& iblock,
         VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);
     stein_impl< value_type >::invoke( n, d, e, m, w, iblock, isplit, z,
             ifail, info, optimal_workspace() );

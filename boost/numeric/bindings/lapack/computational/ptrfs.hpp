@@ -266,7 +266,7 @@ template< typename VectorD, typename VectorE, typename VectorDF,
 inline integer_t ptrfs( integer_t const n, VectorD& d, VectorE& e,
         VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     ptrfs_impl< value_type >::invoke( n, d, e, df, ef, b, x, ferr, berr,
             info, work );
@@ -280,7 +280,7 @@ template< typename VectorD, typename VectorE, typename VectorDF,
 inline integer_t ptrfs( integer_t const n, VectorD& d, VectorE& e,
         VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x, VectorFERR& ferr,
         VectorBERR& berr ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     ptrfs_impl< value_type >::invoke( n, d, e, df, ef, b, x, ferr, berr,
             info, optimal_workspace() );
@@ -293,7 +293,7 @@ template< typename VectorD, typename VectorE, typename VectorDF,
 inline integer_t ptrfs( char const uplo, integer_t const n, VectorD& d,
         VectorE& e, VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     ptrfs_impl< value_type >::invoke( uplo, n, d, e, df, ef, b, x, ferr,
             berr, info, work );
@@ -307,7 +307,7 @@ template< typename VectorD, typename VectorE, typename VectorDF,
 inline integer_t ptrfs( char const uplo, integer_t const n, VectorD& d,
         VectorE& e, VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
         VectorFERR& ferr, VectorBERR& berr ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     ptrfs_impl< value_type >::invoke( uplo, n, d, e, df, ef, b, x, ferr,
             berr, info, optimal_workspace() );

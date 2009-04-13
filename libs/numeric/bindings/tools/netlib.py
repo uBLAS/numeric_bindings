@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 #  Copyright (c) 2008 Thomas Klimpel and Rutger ter Borg
 #
@@ -20,10 +21,18 @@ global_type_map = {
   'INTEGER': 'integer_t',
   'REAL': 'float', 
   'DOUBLE PRECISION': 'double' }
-  
+
+global_type_variant_map = {
+  'CHARACTER': None,
+  'LOGICAL': None, 
+  'INTEGER': None,
+  'REAL': 'real', 
+  'DOUBLE PRECISION': 'real',
+  'COMPLEX': 'complex',
+  'COMPLEX*16': 'complex',
+  'DOUBLE COMPLEX': 'complex' }
+
 templates = {}
-
-
 
 
 def value_type( fortran_type ):
@@ -737,6 +746,7 @@ def parse_file( filename, template_map ):
         if argument_name in subroutine_arguments:
           argument_map[ argument_name ] = {}
           argument_map[ argument_name ][ 'value_type' ] = match_argument_declaration.group( 1 )
+          argument_map[ argument_name ][ 'value_type_variant' ] = global_type_variant_map[ argument_map[ argument_name ][ 'value_type' ] ]
           if len(argument_description) == 1:
             argument_map[ argument_name ][ 'type' ] = 'scalar'
           else:

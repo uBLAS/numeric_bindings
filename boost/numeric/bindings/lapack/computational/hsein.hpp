@@ -279,8 +279,7 @@ inline integer_t hsein( char const side, char const eigsrc,
         VectorWI& wi, MatrixVL& vl, MatrixVR& vr, integer_t const mm,
         integer_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr,
         Workspace work ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
     hsein_impl< value_type >::invoke( side, eigsrc, initv, select, h, wr,
             wi, vl, vr, mm, m, ifaill, ifailr, info, work );
@@ -295,8 +294,7 @@ inline integer_t hsein( char const side, char const eigsrc,
         char const initv, VectorSELECT& select, MatrixH& h, VectorWR& wr,
         VectorWI& wi, MatrixVL& vl, MatrixVR& vr, integer_t const mm,
         integer_t& m, VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
     hsein_impl< value_type >::invoke( side, eigsrc, initv, select, h, wr,
             wi, vl, vr, mm, m, ifaill, ifailr, info, optimal_workspace() );
@@ -310,8 +308,7 @@ inline integer_t hsein( char const side, char const eigsrc,
         char const initv, VectorSELECT& select, MatrixH& h, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
     hsein_impl< value_type >::invoke( side, eigsrc, initv, select, h, w,
             vl, vr, mm, m, ifaill, ifailr, info, work );
@@ -326,8 +323,7 @@ inline integer_t hsein( char const side, char const eigsrc,
         char const initv, VectorSELECT& select, MatrixH& h, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
         VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
     hsein_impl< value_type >::invoke( side, eigsrc, initv, select, h, w,
             vl, vr, mm, m, ifaill, ifailr, info, optimal_workspace() );

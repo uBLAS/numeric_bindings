@@ -222,8 +222,7 @@ template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
 inline integer_t trevc( char const side, char const howmny,
         VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
         integer_t const mm, integer_t& m, Workspace work ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
     integer_t info(0);
     trevc_impl< value_type >::invoke( side, howmny, select, t, vl, vr,
             mm, m, info, work );
@@ -236,8 +235,7 @@ template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
 inline integer_t trevc( char const side, char const howmny,
         VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
         integer_t const mm, integer_t& m ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
     integer_t info(0);
     trevc_impl< value_type >::invoke( side, howmny, select, t, vl, vr,
             mm, m, info, optimal_workspace() );

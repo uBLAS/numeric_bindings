@@ -231,8 +231,7 @@ inline integer_t tgevc( char const side, char const howmny,
         VectorSELECT& select, integer_t const n, MatrixS& s, MatrixP& p,
         MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m,
         Workspace work ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixS >::value_type value_type;
     integer_t info(0);
     tgevc_impl< value_type >::invoke( side, howmny, select, n, s, p, vl,
             vr, mm, m, info, work );
@@ -245,8 +244,7 @@ template< typename VectorSELECT, typename MatrixS, typename MatrixP,
 inline integer_t tgevc( char const side, char const howmny,
         VectorSELECT& select, integer_t const n, MatrixS& s, MatrixP& p,
         MatrixVL& vl, MatrixVR& vr, integer_t const mm, integer_t& m ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixS >::value_type value_type;
     integer_t info(0);
     tgevc_impl< value_type >::invoke( side, howmny, select, n, s, p, vl,
             vr, mm, m, info, optimal_workspace() );

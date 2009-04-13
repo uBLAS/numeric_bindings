@@ -337,11 +337,10 @@ inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
         logical_t const wantz, VectorSELECT& select, integer_t const n,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& m,
-        typename traits::vector_traits< VectorSELECT >::value_type& pl,
-        typename traits::vector_traits< VectorSELECT >::value_type& pr,
+        typename traits::matrix_traits< MatrixA >::value_type& pl,
+        typename traits::matrix_traits< MatrixA >::value_type& pr,
         VectorDIF& dif, Workspace work ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     tgsen_impl< value_type >::invoke( ijob, wantq, wantz, select, n, a,
             b, alphar, alphai, beta, q, z, m, pl, pr, dif, info, work );
@@ -356,11 +355,10 @@ inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
         logical_t const wantz, VectorSELECT& select, integer_t const n,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& m,
-        typename traits::vector_traits< VectorSELECT >::value_type& pl,
-        typename traits::vector_traits< VectorSELECT >::value_type& pr,
+        typename traits::matrix_traits< MatrixA >::value_type& pl,
+        typename traits::matrix_traits< MatrixA >::value_type& pr,
         VectorDIF& dif ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     tgsen_impl< value_type >::invoke( ijob, wantq, wantz, select, n, a,
             b, alphar, alphai, beta, q, z, m, pl, pr, dif, info,
@@ -374,11 +372,10 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
 inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
         logical_t const wantz, VectorSELECT& select, integer_t const n,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z, integer_t& m, typename traits::vector_traits<
-        VectorSELECT >::value_type& pl, typename traits::vector_traits<
-        VectorSELECT >::value_type& pr, VectorDIF& dif, Workspace work ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+        MatrixQ& q, MatrixZ& z, integer_t& m, typename traits::matrix_traits<
+        MatrixA >::value_type& pl, typename traits::matrix_traits<
+        MatrixA >::value_type& pr, VectorDIF& dif, Workspace work ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     tgsen_impl< value_type >::invoke( ijob, wantq, wantz, select, n, a,
             b, alpha, beta, q, z, m, pl, pr, dif, info, work );
@@ -392,11 +389,10 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
 inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
         logical_t const wantz, VectorSELECT& select, integer_t const n,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-        MatrixQ& q, MatrixZ& z, integer_t& m, typename traits::vector_traits<
-        VectorSELECT >::value_type& pl, typename traits::vector_traits<
-        VectorSELECT >::value_type& pr, VectorDIF& dif ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+        MatrixQ& q, MatrixZ& z, integer_t& m, typename traits::matrix_traits<
+        MatrixA >::value_type& pl, typename traits::matrix_traits<
+        MatrixA >::value_type& pr, VectorDIF& dif ) {
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     tgsen_impl< value_type >::invoke( ijob, wantq, wantz, select, n, a,
             b, alpha, beta, q, z, m, pl, pr, dif, info, optimal_workspace() );

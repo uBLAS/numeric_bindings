@@ -138,7 +138,7 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline integer_t ptsv( integer_t const n, VectorD& d, VectorE& e,
         MatrixB& b ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     ptsv_impl< value_type >::invoke( n, d, e, b, info );
     return info;

@@ -227,7 +227,7 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
 inline integer_t bdsqr( char const uplo, integer_t const n, VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, Workspace work ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixVT >::value_type value_type;
     integer_t info(0);
     bdsqr_impl< value_type >::invoke( uplo, n, d, e, vt, u, c, info,
             work );
@@ -239,7 +239,7 @@ template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
 inline integer_t bdsqr( char const uplo, integer_t const n, VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixVT >::value_type value_type;
     integer_t info(0);
     bdsqr_impl< value_type >::invoke( uplo, n, d, e, vt, u, c, info,
             optimal_workspace() );

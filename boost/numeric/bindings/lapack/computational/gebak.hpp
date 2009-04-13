@@ -131,8 +131,7 @@ template< typename VectorSCALE, typename MatrixV >
 inline integer_t gebak( char const job, char const side,
         integer_t const ilo, integer_t const ihi, VectorSCALE& scale,
         MatrixV& v ) {
-    typedef typename traits::vector_traits<
-            VectorSCALE >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixV >::value_type value_type;
     integer_t info(0);
     gebak_impl< value_type >::invoke( job, side, ilo, ihi, scale, v,
             info );

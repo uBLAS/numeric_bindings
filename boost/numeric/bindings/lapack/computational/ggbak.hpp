@@ -143,8 +143,7 @@ template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
 inline integer_t ggbak( char const job, char const side,
         integer_t const ilo, integer_t const ihi, VectorLSCALE& lscale,
         VectorRSCALE& rscale, MatrixV& v ) {
-    typedef typename traits::vector_traits<
-            VectorLSCALE >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixV >::value_type value_type;
     integer_t info(0);
     ggbak_impl< value_type >::invoke( job, side, ilo, ihi, lscale,
             rscale, v, info );

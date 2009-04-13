@@ -120,7 +120,7 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline integer_t pttrs( integer_t const n, VectorD& d, VectorE& e,
         MatrixB& b ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     pttrs_impl< value_type >::invoke( n, d, e, b, info );
     return info;
@@ -129,7 +129,7 @@ inline integer_t pttrs( integer_t const n, VectorD& d, VectorE& e,
 template< typename VectorD, typename VectorE, typename MatrixB >
 inline integer_t pttrs( char const uplo, integer_t const n, VectorD& d,
         VectorE& e, MatrixB& b ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
+    typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     pttrs_impl< value_type >::invoke( uplo, n, d, e, b, info );
     return info;

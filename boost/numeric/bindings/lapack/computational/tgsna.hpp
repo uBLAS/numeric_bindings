@@ -285,8 +285,7 @@ inline integer_t tgsna( char const job, char const howmny,
         VectorSELECT& select, integer_t const n, MatrixA& a, MatrixB& b,
         MatrixVL& vl, MatrixVR& vr, VectorS& s, VectorDIF& dif,
         integer_t const mm, integer_t& m, Workspace work ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     tgsna_impl< value_type >::invoke( job, howmny, select, n, a, b, vl,
             vr, s, dif, mm, m, info, work );
@@ -301,8 +300,7 @@ inline integer_t tgsna( char const job, char const howmny,
         VectorSELECT& select, integer_t const n, MatrixA& a, MatrixB& b,
         MatrixVL& vl, MatrixVR& vr, VectorS& s, VectorDIF& dif,
         integer_t const mm, integer_t& m ) {
-    typedef typename traits::vector_traits<
-            VectorSELECT >::value_type value_type;
+    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     tgsna_impl< value_type >::invoke( job, howmny, select, n, a, b, vl,
             vr, s, dif, mm, m, info, optimal_workspace() );

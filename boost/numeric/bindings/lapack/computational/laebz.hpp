@@ -153,11 +153,14 @@ template< typename VectorD, typename VectorE, typename VectorE2,
         typename MatrixNAB, typename Workspace >
 inline integer_t laebz( integer_t const ijob, integer_t const nitmax,
         integer_t const n, integer_t const minp, integer_t const nbmin,
-        typename traits::vector_traits< VectorD >::value_type const abstol,
-        typename traits::vector_traits< VectorD >::value_type const reltol,
-        typename traits::vector_traits< VectorD >::value_type const pivmin,
-        VectorD& d, VectorE& e, VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
-        VectorC& c, integer_t& mout, MatrixNAB& nab, Workspace work ) {
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const abstol,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const reltol,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const pivmin, VectorD& d,
+        VectorE& e, VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
+        integer_t& mout, MatrixNAB& nab, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     laebz_impl< value_type >::invoke( ijob, nitmax, n, minp, nbmin,
@@ -172,11 +175,14 @@ template< typename VectorD, typename VectorE, typename VectorE2,
         typename MatrixNAB >
 inline integer_t laebz( integer_t const ijob, integer_t const nitmax,
         integer_t const n, integer_t const minp, integer_t const nbmin,
-        typename traits::vector_traits< VectorD >::value_type const abstol,
-        typename traits::vector_traits< VectorD >::value_type const reltol,
-        typename traits::vector_traits< VectorD >::value_type const pivmin,
-        VectorD& d, VectorE& e, VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
-        VectorC& c, integer_t& mout, MatrixNAB& nab ) {
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const abstol,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const reltol,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const pivmin, VectorD& d,
+        VectorE& e, VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
+        integer_t& mout, MatrixNAB& nab ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     laebz_impl< value_type >::invoke( ijob, nitmax, n, minp, nbmin,

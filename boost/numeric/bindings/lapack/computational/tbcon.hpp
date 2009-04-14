@@ -191,8 +191,8 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixAB, typename Workspace >
 inline integer_t tbcon( char const norm, char const uplo,
         char const diag, integer_t const n, integer_t const kd, MatrixAB& ab,
-        typename traits::matrix_traits< MatrixAB >::value_type& rcond,
-        Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     tbcon_impl< value_type >::invoke( norm, uplo, diag, n, kd, ab, rcond,
@@ -204,7 +204,8 @@ inline integer_t tbcon( char const norm, char const uplo,
 template< typename MatrixAB >
 inline integer_t tbcon( char const norm, char const uplo,
         char const diag, integer_t const n, integer_t const kd, MatrixAB& ab,
-        typename traits::matrix_traits< MatrixAB >::value_type& rcond ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     tbcon_impl< value_type >::invoke( norm, uplo, diag, n, kd, ab, rcond,

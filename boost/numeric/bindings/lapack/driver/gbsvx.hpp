@@ -317,8 +317,9 @@ inline integer_t gbsvx( char const fact, char const trans,
         integer_t const n, integer_t const kl, integer_t const ku,
         MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv, char& equed,
         VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename traits::matrix_traits< MatrixAB >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     gbsvx_impl< value_type >::invoke( fact, trans, n, kl, ku, ab, afb,
@@ -334,8 +335,9 @@ inline integer_t gbsvx( char const fact, char const trans,
         integer_t const n, integer_t const kl, integer_t const ku,
         MatrixAB& ab, MatrixAFB& afb, VectorIPIV& ipiv, char& equed,
         VectorR& r, VectorC& c, MatrixB& b, MatrixX& x,
-        typename traits::matrix_traits< MatrixAB >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     gbsvx_impl< value_type >::invoke( fact, trans, n, kl, ku, ab, afb,

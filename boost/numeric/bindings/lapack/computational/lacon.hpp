@@ -148,8 +148,9 @@ struct lacon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call lacon
 template< typename VectorX, typename Workspace >
 inline integer_t lacon( integer_t const n, VectorX& x,
-        typename traits::vector_traits< VectorX >::value_type& est,
-        integer_t& kase, Workspace work ) {
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorX >::value_type >::real_type& est, integer_t& kase,
+        Workspace work ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     integer_t info(0);
     lacon_impl< value_type >::invoke( n, x, est, kase, work );
@@ -159,8 +160,8 @@ inline integer_t lacon( integer_t const n, VectorX& x,
 // template function to call lacon, default workspace type
 template< typename VectorX >
 inline integer_t lacon( integer_t const n, VectorX& x,
-        typename traits::vector_traits< VectorX >::value_type& est,
-        integer_t& kase ) {
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorX >::value_type >::real_type& est, integer_t& kase ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     integer_t info(0);
     lacon_impl< value_type >::invoke( n, x, est, kase,

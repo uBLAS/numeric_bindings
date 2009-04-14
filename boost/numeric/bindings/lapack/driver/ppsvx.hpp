@@ -280,8 +280,9 @@ template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename VectorBERR, typename Workspace >
 inline integer_t ppsvx( char const fact, MatrixAP& ap, VectorAFP& afp,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename traits::matrix_traits< MatrixAP >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     ppsvx_impl< value_type >::invoke( fact, ap, afp, equed, s, b, x,
@@ -295,8 +296,9 @@ template< typename MatrixAP, typename VectorAFP, typename VectorS,
         typename VectorBERR >
 inline integer_t ppsvx( char const fact, MatrixAP& ap, VectorAFP& afp,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
-        typename traits::matrix_traits< MatrixAP >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     ppsvx_impl< value_type >::invoke( fact, ap, afp, equed, s, b, x,

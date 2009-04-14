@@ -182,9 +182,10 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call gecon
 template< typename MatrixA, typename Workspace >
 inline integer_t gecon( char const norm, MatrixA& a,
-        typename traits::matrix_traits< MatrixA >::value_type const anorm,
-        typename traits::matrix_traits< MatrixA >::value_type& rcond,
-        Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const anorm,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gecon_impl< value_type >::invoke( norm, a, anorm, rcond, info, work );
@@ -194,8 +195,10 @@ inline integer_t gecon( char const norm, MatrixA& a,
 // template function to call gecon, default workspace type
 template< typename MatrixA >
 inline integer_t gecon( char const norm, MatrixA& a,
-        typename traits::matrix_traits< MatrixA >::value_type const anorm,
-        typename traits::matrix_traits< MatrixA >::value_type& rcond ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const anorm,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gecon_impl< value_type >::invoke( norm, a, anorm, rcond, info,

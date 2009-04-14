@@ -270,8 +270,9 @@ template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename VectorBERR, typename Workspace >
 inline integer_t spsvx( char const fact, MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-        typename traits::matrix_traits< MatrixAP >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     spsvx_impl< value_type >::invoke( fact, ap, afp, ipiv, b, x, rcond,
@@ -285,8 +286,9 @@ template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename VectorBERR >
 inline integer_t spsvx( char const fact, MatrixAP& ap, MatrixAFP& afp,
         VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-        typename traits::matrix_traits< MatrixAP >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     spsvx_impl< value_type >::invoke( fact, ap, afp, ipiv, b, x, rcond,

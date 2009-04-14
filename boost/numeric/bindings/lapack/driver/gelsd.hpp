@@ -301,8 +301,9 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename MatrixB, typename VectorS,
         typename Workspace >
 inline integer_t gelsd( MatrixA& a, MatrixB& b, VectorS& s,
-        typename traits::matrix_traits< MatrixA >::value_type const rcond,
-        integer_t& rank, Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const rcond, integer_t& rank,
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gelsd_impl< value_type >::invoke( a, b, s, rcond, rank, info, work );
@@ -312,8 +313,8 @@ inline integer_t gelsd( MatrixA& a, MatrixB& b, VectorS& s,
 // template function to call gelsd, default workspace type
 template< typename MatrixA, typename MatrixB, typename VectorS >
 inline integer_t gelsd( MatrixA& a, MatrixB& b, VectorS& s,
-        typename traits::matrix_traits< MatrixA >::value_type const rcond,
-        integer_t& rank ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const rcond, integer_t& rank ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gelsd_impl< value_type >::invoke( a, b, s, rcond, rank, info,

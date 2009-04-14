@@ -143,8 +143,9 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline integer_t trsyl( char const trana, char const tranb,
         integer_t const isgn, integer_t const m, integer_t const n,
-        MatrixA& a, MatrixB& b, MatrixC& c, typename traits::matrix_traits<
-        MatrixA >::value_type& scale ) {
+        MatrixA& a, MatrixB& b, MatrixC& c, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& scale ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     trsyl_impl< value_type >::invoke( trana, tranb, isgn, m, n, a, b, c,

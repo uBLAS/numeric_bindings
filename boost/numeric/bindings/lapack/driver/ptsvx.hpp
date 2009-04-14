@@ -267,8 +267,9 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR, typename Workspace >
 inline integer_t ptsvx( char const fact, integer_t const n, VectorD& d,
         VectorE& e, VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
-        typename traits::vector_traits< VectorE >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorE >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     ptsvx_impl< value_type >::invoke( fact, n, d, e, df, ef, b, x, rcond,
@@ -282,8 +283,9 @@ template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorFERR, typename VectorBERR >
 inline integer_t ptsvx( char const fact, integer_t const n, VectorD& d,
         VectorE& e, VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
-        typename traits::vector_traits< VectorE >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr ) {
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorE >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
     typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     ptsvx_impl< value_type >::invoke( fact, n, d, e, df, ef, b, x, rcond,

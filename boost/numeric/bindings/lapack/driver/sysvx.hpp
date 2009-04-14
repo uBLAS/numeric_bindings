@@ -317,8 +317,9 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename VectorBERR, typename Workspace >
 inline integer_t sysvx( char const fact, MatrixA& a, MatrixAF& af,
         VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-        typename traits::matrix_traits< MatrixA >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     sysvx_impl< value_type >::invoke( fact, a, af, ipiv, b, x, rcond,
@@ -332,8 +333,9 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename VectorBERR >
 inline integer_t sysvx( char const fact, MatrixA& a, MatrixAF& af,
         VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-        typename traits::matrix_traits< MatrixA >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     sysvx_impl< value_type >::invoke( fact, a, af, ipiv, b, x, rcond,

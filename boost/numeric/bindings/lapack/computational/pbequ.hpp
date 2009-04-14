@@ -113,9 +113,11 @@ struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call pbequ
 template< typename MatrixAB, typename VectorS >
 inline integer_t pbequ( integer_t const n, integer_t const kd,
-        MatrixAB& ab, VectorS& s, typename traits::matrix_traits<
-        MatrixAB >::value_type& scond, typename traits::matrix_traits<
-        MatrixAB >::value_type& amax ) {
+        MatrixAB& ab, VectorS& s, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& scond,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& amax ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     pbequ_impl< value_type >::invoke( n, kd, ab, s, scond, amax, info );

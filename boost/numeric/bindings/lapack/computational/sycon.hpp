@@ -181,9 +181,10 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call sycon
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
 inline integer_t sycon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
-        typename traits::matrix_traits< MatrixA >::value_type const anorm,
-        typename traits::matrix_traits< MatrixA >::value_type& rcond,
-        Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const anorm,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     sycon_impl< value_type >::invoke( uplo, a, ipiv, anorm, rcond, info,
@@ -194,8 +195,10 @@ inline integer_t sycon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
 // template function to call sycon, default workspace type
 template< typename MatrixA, typename VectorIPIV >
 inline integer_t sycon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
-        typename traits::matrix_traits< MatrixA >::value_type const anorm,
-        typename traits::matrix_traits< MatrixA >::value_type& rcond ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const anorm,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     sycon_impl< value_type >::invoke( uplo, a, ipiv, anorm, rcond, info,

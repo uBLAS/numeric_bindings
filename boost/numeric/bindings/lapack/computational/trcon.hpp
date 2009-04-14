@@ -188,8 +188,9 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call trcon
 template< typename MatrixA, typename Workspace >
 inline integer_t trcon( char const norm, char const uplo,
-        char const diag, MatrixA& a, typename traits::matrix_traits<
-        MatrixA >::value_type& rcond, Workspace work ) {
+        char const diag, MatrixA& a, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     trcon_impl< value_type >::invoke( norm, uplo, diag, a, rcond, info,
@@ -200,8 +201,9 @@ inline integer_t trcon( char const norm, char const uplo,
 // template function to call trcon, default workspace type
 template< typename MatrixA >
 inline integer_t trcon( char const norm, char const uplo,
-        char const diag, MatrixA& a, typename traits::matrix_traits<
-        MatrixA >::value_type& rcond ) {
+        char const diag, MatrixA& a, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     trcon_impl< value_type >::invoke( norm, uplo, diag, a, rcond, info,

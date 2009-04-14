@@ -182,9 +182,11 @@ struct pbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call pbcon
 template< typename MatrixAB, typename Workspace >
 inline integer_t pbcon( char const uplo, integer_t const n,
-        integer_t const kd, MatrixAB& ab, typename traits::matrix_traits<
-        MatrixAB >::value_type const anorm, typename traits::matrix_traits<
-        MatrixAB >::value_type& rcond, Workspace work ) {
+        integer_t const kd, MatrixAB& ab, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const anorm,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     pbcon_impl< value_type >::invoke( uplo, n, kd, ab, anorm, rcond,
@@ -195,9 +197,11 @@ inline integer_t pbcon( char const uplo, integer_t const n,
 // template function to call pbcon, default workspace type
 template< typename MatrixAB >
 inline integer_t pbcon( char const uplo, integer_t const n,
-        integer_t const kd, MatrixAB& ab, typename traits::matrix_traits<
-        MatrixAB >::value_type const anorm, typename traits::matrix_traits<
-        MatrixAB >::value_type& rcond ) {
+        integer_t const kd, MatrixAB& ab, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const anorm,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     pbcon_impl< value_type >::invoke( uplo, n, kd, ab, anorm, rcond,

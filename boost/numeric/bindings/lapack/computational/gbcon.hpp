@@ -201,9 +201,11 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixAB, typename VectorIPIV, typename Workspace >
 inline integer_t gbcon( char const norm, integer_t const n,
         integer_t const kl, integer_t const ku, MatrixAB& ab,
-        VectorIPIV& ipiv, typename traits::matrix_traits<
-        MatrixAB >::value_type const anorm, typename traits::matrix_traits<
-        MatrixAB >::value_type& rcond, Workspace work ) {
+        VectorIPIV& ipiv, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const anorm,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     gbcon_impl< value_type >::invoke( norm, n, kl, ku, ab, ipiv, anorm,
@@ -215,9 +217,11 @@ inline integer_t gbcon( char const norm, integer_t const n,
 template< typename MatrixAB, typename VectorIPIV >
 inline integer_t gbcon( char const norm, integer_t const n,
         integer_t const kl, integer_t const ku, MatrixAB& ab,
-        VectorIPIV& ipiv, typename traits::matrix_traits<
-        MatrixAB >::value_type const anorm, typename traits::matrix_traits<
-        MatrixAB >::value_type& rcond ) {
+        VectorIPIV& ipiv, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const anorm,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     gbcon_impl< value_type >::invoke( norm, n, kl, ku, ab, ipiv, anorm,

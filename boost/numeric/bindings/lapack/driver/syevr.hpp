@@ -157,12 +157,14 @@ struct syevr_impl {
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorISUPPZ, typename Workspace >
 inline integer_t syevr( char const jobz, char const range, MatrixA& a,
-        typename traits::matrix_traits< MatrixA >::value_type const vl,
-        typename traits::matrix_traits< MatrixA >::value_type const vu,
-        integer_t const il, integer_t const iu,
-        typename traits::matrix_traits< MatrixA >::value_type const abstol,
-        integer_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz,
-        Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const vl,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const vu, integer_t const il,
+        integer_t const iu, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const abstol, integer_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     syevr_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,
@@ -174,11 +176,14 @@ inline integer_t syevr( char const jobz, char const range, MatrixA& a,
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorISUPPZ >
 inline integer_t syevr( char const jobz, char const range, MatrixA& a,
-        typename traits::matrix_traits< MatrixA >::value_type const vl,
-        typename traits::matrix_traits< MatrixA >::value_type const vu,
-        integer_t const il, integer_t const iu,
-        typename traits::matrix_traits< MatrixA >::value_type const abstol,
-        integer_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const vl,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const vu, integer_t const il,
+        integer_t const iu, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const abstol, integer_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     syevr_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,

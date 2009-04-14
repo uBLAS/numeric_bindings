@@ -314,9 +314,10 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
 inline integer_t geesx( char const jobvs, char const sort,
         logical_t* select, char const sense, MatrixA& a, integer_t& sdim,
         VectorWR& wr, VectorWI& wi, MatrixVS& vs,
-        typename traits::matrix_traits< MatrixA >::value_type& rconde,
-        typename traits::matrix_traits< MatrixA >::value_type& rcondv,
-        Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rconde,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcondv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     geesx_impl< value_type >::invoke( jobvs, sort, select, sense, a,
@@ -330,8 +331,10 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
 inline integer_t geesx( char const jobvs, char const sort,
         logical_t* select, char const sense, MatrixA& a, integer_t& sdim,
         VectorWR& wr, VectorWI& wi, MatrixVS& vs,
-        typename traits::matrix_traits< MatrixA >::value_type& rconde,
-        typename traits::matrix_traits< MatrixA >::value_type& rcondv ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rconde,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcondv ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     geesx_impl< value_type >::invoke( jobvs, sort, select, sense, a,
@@ -343,9 +346,11 @@ template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
 inline integer_t geesx( char const jobvs, char const sort,
         logical_t* select, char const sense, MatrixA& a, integer_t& sdim,
-        VectorW& w, MatrixVS& vs, typename traits::matrix_traits<
-        MatrixA >::value_type& rconde, typename traits::matrix_traits<
-        MatrixA >::value_type& rcondv, Workspace work ) {
+        VectorW& w, MatrixVS& vs, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rconde,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcondv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     geesx_impl< value_type >::invoke( jobvs, sort, select, sense, a,
@@ -357,9 +362,11 @@ inline integer_t geesx( char const jobvs, char const sort,
 template< typename MatrixA, typename VectorW, typename MatrixVS >
 inline integer_t geesx( char const jobvs, char const sort,
         logical_t* select, char const sense, MatrixA& a, integer_t& sdim,
-        VectorW& w, MatrixVS& vs, typename traits::matrix_traits<
-        MatrixA >::value_type& rconde, typename traits::matrix_traits<
-        MatrixA >::value_type& rcondv ) {
+        VectorW& w, MatrixVS& vs, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rconde,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcondv ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     geesx_impl< value_type >::invoke( jobvs, sort, select, sense, a,

@@ -147,12 +147,14 @@ template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline integer_t sbevx( char const jobz, char const range,
         integer_t const n, integer_t const kd, MatrixAB& ab, MatrixQ& q,
-        typename traits::matrix_traits< MatrixAB >::value_type const vl,
-        typename traits::matrix_traits< MatrixAB >::value_type const vu,
-        integer_t const il, integer_t const iu,
-        typename traits::matrix_traits< MatrixAB >::value_type const abstol,
-        integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const vl,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const vu, integer_t const il,
+        integer_t const iu, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const abstol, integer_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     sbevx_impl< value_type >::invoke( jobz, range, n, kd, ab, q, vl, vu,
@@ -165,11 +167,14 @@ template< typename MatrixAB, typename MatrixQ, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline integer_t sbevx( char const jobz, char const range,
         integer_t const n, integer_t const kd, MatrixAB& ab, MatrixQ& q,
-        typename traits::matrix_traits< MatrixAB >::value_type const vl,
-        typename traits::matrix_traits< MatrixAB >::value_type const vu,
-        integer_t const il, integer_t const iu,
-        typename traits::matrix_traits< MatrixAB >::value_type const abstol,
-        integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const vl,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const vu, integer_t const il,
+        integer_t const iu, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const abstol, integer_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     sbevx_impl< value_type >::invoke( jobz, range, n, kd, ab, q, vl, vu,

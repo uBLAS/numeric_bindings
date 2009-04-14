@@ -289,9 +289,10 @@ template< typename MatrixA, typename MatrixB, typename MatrixC,
 inline integer_t tgsyl( char const trans, integer_t const ijob,
         integer_t const m, integer_t const n, MatrixA& a, MatrixB& b,
         MatrixC& c, MatrixD& d, MatrixE& e, MatrixF& f,
-        typename traits::matrix_traits< MatrixA >::value_type& scale,
-        typename traits::matrix_traits< MatrixA >::value_type& dif,
-        Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& scale,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& dif, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     tgsyl_impl< value_type >::invoke( trans, ijob, m, n, a, b, c, d, e,
@@ -305,8 +306,10 @@ template< typename MatrixA, typename MatrixB, typename MatrixC,
 inline integer_t tgsyl( char const trans, integer_t const ijob,
         integer_t const m, integer_t const n, MatrixA& a, MatrixB& b,
         MatrixC& c, MatrixD& d, MatrixE& e, MatrixF& f,
-        typename traits::matrix_traits< MatrixA >::value_type& scale,
-        typename traits::matrix_traits< MatrixA >::value_type& dif ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& scale,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& dif ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     tgsyl_impl< value_type >::invoke( trans, ijob, m, n, a, b, c, d, e,

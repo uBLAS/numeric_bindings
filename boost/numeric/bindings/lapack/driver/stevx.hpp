@@ -138,12 +138,14 @@ template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
 inline integer_t stevx( char const jobz, char const range,
         integer_t const n, VectorD& d, VectorE& e,
-        typename traits::vector_traits< VectorD >::value_type const vl,
-        typename traits::vector_traits< VectorD >::value_type const vu,
-        integer_t const il, integer_t const iu,
-        typename traits::vector_traits< VectorD >::value_type const abstol,
-        integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const vl,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const vu, integer_t const il,
+        integer_t const iu, typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorD >::value_type >::real_type const abstol, integer_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     stevx_impl< value_type >::invoke( jobz, range, n, d, e, vl, vu, il,
@@ -156,11 +158,14 @@ template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
 inline integer_t stevx( char const jobz, char const range,
         integer_t const n, VectorD& d, VectorE& e,
-        typename traits::vector_traits< VectorD >::value_type const vl,
-        typename traits::vector_traits< VectorD >::value_type const vu,
-        integer_t const il, integer_t const iu,
-        typename traits::vector_traits< VectorD >::value_type const abstol,
-        integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const vl,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const vu, integer_t const il,
+        integer_t const iu, typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorD >::value_type >::real_type const abstol, integer_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     stevx_impl< value_type >::invoke( jobz, range, n, d, e, vl, vu, il,

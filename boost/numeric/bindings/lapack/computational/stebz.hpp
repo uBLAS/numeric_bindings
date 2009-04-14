@@ -141,13 +141,16 @@ struct stebz_impl {
 template< typename VectorD, typename VectorE, typename VectorW,
         typename VectorIBLOCK, typename VectorISPLIT, typename Workspace >
 inline integer_t stebz( char const range, char const order,
-        integer_t const n, typename traits::vector_traits<
-        VectorD >::value_type const vl, typename traits::vector_traits<
-        VectorD >::value_type const vu, integer_t const il,
-        integer_t const iu, typename traits::vector_traits<
-        VectorD >::value_type const abstol, VectorD& d, VectorE& e,
-        integer_t& m, integer_t& nsplit, VectorW& w, VectorIBLOCK& iblock,
-        VectorISPLIT& isplit, Workspace work ) {
+        integer_t const n, typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorD >::value_type >::real_type const vl,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const vu, integer_t const il,
+        integer_t const iu, typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorD >::value_type >::real_type const abstol, VectorD& d,
+        VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
+        VectorIBLOCK& iblock, VectorISPLIT& isplit, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     stebz_impl< value_type >::invoke( range, order, n, vl, vu, il, iu,
@@ -159,13 +162,16 @@ inline integer_t stebz( char const range, char const order,
 template< typename VectorD, typename VectorE, typename VectorW,
         typename VectorIBLOCK, typename VectorISPLIT >
 inline integer_t stebz( char const range, char const order,
-        integer_t const n, typename traits::vector_traits<
-        VectorD >::value_type const vl, typename traits::vector_traits<
-        VectorD >::value_type const vu, integer_t const il,
-        integer_t const iu, typename traits::vector_traits<
-        VectorD >::value_type const abstol, VectorD& d, VectorE& e,
-        integer_t& m, integer_t& nsplit, VectorW& w, VectorIBLOCK& iblock,
-        VectorISPLIT& isplit ) {
+        integer_t const n, typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorD >::value_type >::real_type const vl,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type const vu, integer_t const il,
+        integer_t const iu, typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorD >::value_type >::real_type const abstol, VectorD& d,
+        VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
+        VectorIBLOCK& iblock, VectorISPLIT& isplit ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     stebz_impl< value_type >::invoke( range, order, n, vl, vu, il, iu,

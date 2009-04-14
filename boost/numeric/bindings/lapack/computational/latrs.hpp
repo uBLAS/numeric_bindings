@@ -138,8 +138,8 @@ struct latrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename VectorX, typename VectorCNORM >
 inline integer_t latrs( char const uplo, char const trans,
         char const diag, char const normin, MatrixA& a, VectorX& x,
-        typename traits::matrix_traits< MatrixA >::value_type& scale,
-        VectorCNORM& cnorm ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& scale, VectorCNORM& cnorm ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     latrs_impl< value_type >::invoke( uplo, trans, diag, normin, a, x,

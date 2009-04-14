@@ -312,11 +312,12 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ, typename Workspace >
 inline integer_t ggsvp( char const jobu, char const jobv,
-        char const jobq, MatrixA& a, MatrixB& b,
-        typename traits::matrix_traits< MatrixA >::value_type const tola,
-        typename traits::matrix_traits< MatrixA >::value_type const tolb,
-        integer_t& k, integer_t& l, MatrixU& u, MatrixV& v, MatrixQ& q,
-        Workspace work ) {
+        char const jobq, MatrixA& a, MatrixB& b, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const tola,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const tolb, integer_t& k,
+        integer_t& l, MatrixU& u, MatrixV& v, MatrixQ& q, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ggsvp_impl< value_type >::invoke( jobu, jobv, jobq, a, b, tola, tolb,
@@ -328,10 +329,12 @@ inline integer_t ggsvp( char const jobu, char const jobv,
 template< typename MatrixA, typename MatrixB, typename MatrixU,
         typename MatrixV, typename MatrixQ >
 inline integer_t ggsvp( char const jobu, char const jobv,
-        char const jobq, MatrixA& a, MatrixB& b,
-        typename traits::matrix_traits< MatrixA >::value_type const tola,
-        typename traits::matrix_traits< MatrixA >::value_type const tolb,
-        integer_t& k, integer_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
+        char const jobq, MatrixA& a, MatrixB& b, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const tola,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const tolb, integer_t& k,
+        integer_t& l, MatrixU& u, MatrixV& v, MatrixQ& q ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ggsvp_impl< value_type >::invoke( jobu, jobv, jobq, a, b, tola, tolb,

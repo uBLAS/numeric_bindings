@@ -332,8 +332,9 @@ inline integer_t gtsvx( char const fact, char const trans,
         integer_t const n, VectorDL& dl, VectorD& d, VectorDU& du,
         VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
         VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-        typename traits::vector_traits< VectorDL >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorDL >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     typedef typename traits::vector_traits< VectorDL >::value_type value_type;
     integer_t info(0);
     gtsvx_impl< value_type >::invoke( fact, trans, n, dl, d, du, dlf, df,
@@ -350,8 +351,9 @@ inline integer_t gtsvx( char const fact, char const trans,
         integer_t const n, VectorDL& dl, VectorD& d, VectorDU& du,
         VectorDLF& dlf, VectorDF& df, VectorDUF& duf, VectorDU2& du2,
         VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-        typename traits::vector_traits< VectorDL >::value_type& rcond,
-        VectorFERR& ferr, VectorBERR& berr ) {
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorDL >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
     typedef typename traits::vector_traits< VectorDL >::value_type value_type;
     integer_t info(0);
     gtsvx_impl< value_type >::invoke( fact, trans, n, dl, d, du, dlf, df,

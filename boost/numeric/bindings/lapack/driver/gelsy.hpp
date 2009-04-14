@@ -239,8 +239,9 @@ struct gelsy_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename MatrixB, typename VectorJPVT,
         typename Workspace >
 inline integer_t gelsy( MatrixA& a, MatrixB& b, VectorJPVT& jpvt,
-        typename traits::matrix_traits< MatrixA >::value_type const rcond,
-        integer_t& rank, Workspace work ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const rcond, integer_t& rank,
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gelsy_impl< value_type >::invoke( a, b, jpvt, rcond, rank, info,
@@ -251,8 +252,8 @@ inline integer_t gelsy( MatrixA& a, MatrixB& b, VectorJPVT& jpvt,
 // template function to call gelsy, default workspace type
 template< typename MatrixA, typename MatrixB, typename VectorJPVT >
 inline integer_t gelsy( MatrixA& a, MatrixB& b, VectorJPVT& jpvt,
-        typename traits::matrix_traits< MatrixA >::value_type const rcond,
-        integer_t& rank ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const rcond, integer_t& rank ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gelsy_impl< value_type >::invoke( a, b, jpvt, rcond, rank, info,

@@ -288,9 +288,11 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename MatrixQ, typename Workspace >
 inline integer_t tgsja( char const jobu, char const jobv,
         char const jobq, integer_t const k, integer_t const l, MatrixA& a,
-        MatrixB& b, typename traits::matrix_traits<
-        MatrixA >::value_type const tola, typename traits::matrix_traits<
-        MatrixA >::value_type const tolb, VectorALPHA& alpha,
+        MatrixB& b, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const tola,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const tolb, VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         integer_t& ncycle, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -306,9 +308,11 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename MatrixQ >
 inline integer_t tgsja( char const jobu, char const jobv,
         char const jobq, integer_t const k, integer_t const l, MatrixA& a,
-        MatrixB& b, typename traits::matrix_traits<
-        MatrixA >::value_type const tola, typename traits::matrix_traits<
-        MatrixA >::value_type const tolb, VectorALPHA& alpha,
+        MatrixB& b, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const tola,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type const tolb, VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         integer_t& ncycle ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;

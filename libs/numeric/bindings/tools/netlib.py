@@ -159,8 +159,8 @@ def level2_type( name, properties ):
 
   if result != None:
     if properties[ 'value_type' ] == 'REAL' or properties[ 'value_type' ] == 'DOUBLE PRECISION':
-      result = result.replace( "real_type", "typename traits::$TYPEOF_FIRST_TYPENAME" + \
-        "_traits< $FIRST_TYPENAME >::value_type" )
+      result = result.replace( "real_type", "typename traits::type_traits< typename traits::$TYPEOF_FIRST_TYPENAME" + \
+        "_traits< $FIRST_TYPENAME >::value_type >::real_type" )
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
       properties[ 'value_type' ] == 'DOUBLE COMPLEX':
       result = result.replace( "value_type", "typename traits::$TYPEOF_FIRST_TYPENAME" + \

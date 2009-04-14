@@ -311,9 +311,10 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename Workspace >
 inline integer_t gesvx( char const fact, char const trans, MatrixA& a,
         MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename traits::matrix_traits<
-        MatrixA >::value_type& rcond, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
+        MatrixB& b, MatrixX& x, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gesvx_impl< value_type >::invoke( fact, trans, a, af, ipiv, equed, r,
@@ -327,8 +328,10 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
 inline integer_t gesvx( char const fact, char const trans, MatrixA& a,
         MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
-        MatrixB& b, MatrixX& x, typename traits::matrix_traits<
-        MatrixA >::value_type& rcond, VectorFERR& ferr, VectorBERR& berr ) {
+        MatrixB& b, MatrixX& x, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rcond, VectorFERR& ferr,
+        VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gesvx_impl< value_type >::invoke( fact, trans, a, af, ipiv, equed, r,

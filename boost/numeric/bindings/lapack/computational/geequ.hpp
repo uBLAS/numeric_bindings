@@ -119,9 +119,12 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call geequ
 template< typename MatrixA, typename VectorR, typename VectorC >
 inline integer_t geequ( MatrixA& a, VectorR& r, VectorC& c,
-        typename traits::matrix_traits< MatrixA >::value_type& rowcnd,
-        typename traits::matrix_traits< MatrixA >::value_type& colcnd,
-        typename traits::matrix_traits< MatrixA >::value_type& amax ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& rowcnd,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& colcnd,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& amax ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     geequ_impl< value_type >::invoke( a, r, c, rowcnd, colcnd, amax,

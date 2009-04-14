@@ -168,13 +168,15 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename Workspace >
 inline integer_t hbgvx( char const jobz, char const range,
         integer_t const n, integer_t const ka, integer_t const kb,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        typename traits::matrix_traits< MatrixAB >::value_type const vl,
-        typename traits::matrix_traits< MatrixAB >::value_type const vu,
-        integer_t const il, integer_t const iu,
-        typename traits::matrix_traits< MatrixAB >::value_type const abstol,
-        integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const vl,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const vu, integer_t const il,
+        integer_t const iu, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const abstol, integer_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     hbgvx_impl< value_type >::invoke( jobz, range, n, ka, kb, ab, bb, q,
@@ -187,12 +189,15 @@ template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
         typename VectorW, typename MatrixZ, typename VectorIFAIL >
 inline integer_t hbgvx( char const jobz, char const range,
         integer_t const n, integer_t const ka, integer_t const kb,
-        MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        typename traits::matrix_traits< MatrixAB >::value_type const vl,
-        typename traits::matrix_traits< MatrixAB >::value_type const vu,
-        integer_t const il, integer_t const iu,
-        typename traits::matrix_traits< MatrixAB >::value_type const abstol,
-        integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAB& ab, MatrixBB& bb, MatrixQ& q, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const vl,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const vu, integer_t const il,
+        integer_t const iu, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type const abstol, integer_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     hbgvx_impl< value_type >::invoke( jobz, range, n, ka, kb, ab, bb, q,

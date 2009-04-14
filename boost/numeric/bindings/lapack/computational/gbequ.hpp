@@ -130,10 +130,13 @@ struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixAB, typename VectorR, typename VectorC >
 inline integer_t gbequ( integer_t const m, integer_t const n,
         integer_t const kl, integer_t const ku, MatrixAB& ab, VectorR& r,
-        VectorC& c, typename traits::matrix_traits<
-        MatrixAB >::value_type& rowcnd, typename traits::matrix_traits<
-        MatrixAB >::value_type& colcnd, typename traits::matrix_traits<
-        MatrixAB >::value_type& amax ) {
+        VectorC& c, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& rowcnd,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& colcnd,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type& amax ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     gbequ_impl< value_type >::invoke( m, n, kl, ku, ab, r, c, rowcnd,

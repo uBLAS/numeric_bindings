@@ -365,8 +365,9 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
 inline integer_t geevx( char const balanc, char const jobvl,
         char const jobvr, char const sense, MatrixA& a, VectorWR& wr,
         VectorWI& wi, MatrixVL& vl, MatrixVR& vr, integer_t& ilo,
-        integer_t& ihi, VectorSCALE& scale, typename traits::matrix_traits<
-        MatrixA >::value_type& abnrm, VectorRCONDE& rconde,
+        integer_t& ihi, VectorSCALE& scale, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -382,8 +383,9 @@ template< typename MatrixA, typename VectorWR, typename VectorWI,
 inline integer_t geevx( char const balanc, char const jobvl,
         char const jobvr, char const sense, MatrixA& a, VectorWR& wr,
         VectorWI& wi, MatrixVL& vl, MatrixVR& vr, integer_t& ilo,
-        integer_t& ihi, VectorSCALE& scale, typename traits::matrix_traits<
-        MatrixA >::value_type& abnrm, VectorRCONDE& rconde,
+        integer_t& ihi, VectorSCALE& scale, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -399,8 +401,9 @@ template< typename MatrixA, typename VectorW, typename MatrixVL,
 inline integer_t geevx( char const balanc, char const jobvl,
         char const jobvr, char const sense, MatrixA& a, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
-        VectorSCALE& scale, typename traits::matrix_traits<
-        MatrixA >::value_type& abnrm, VectorRCONDE& rconde,
+        VectorSCALE& scale, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -416,8 +419,9 @@ template< typename MatrixA, typename VectorW, typename MatrixVL,
 inline integer_t geevx( char const balanc, char const jobvl,
         char const jobvr, char const sense, MatrixA& a, VectorW& w,
         MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
-        VectorSCALE& scale, typename traits::matrix_traits<
-        MatrixA >::value_type& abnrm, VectorRCONDE& rconde,
+        VectorSCALE& scale, typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& abnrm, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);

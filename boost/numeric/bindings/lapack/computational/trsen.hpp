@@ -136,9 +136,11 @@ template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW, typename Workspace >
 inline integer_t trsen( char const job, char const compq,
         VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
-        integer_t& m, typename traits::vector_traits<
-        VectorSELECT >::value_type& s, typename traits::vector_traits<
-        VectorSELECT >::value_type& sep, Workspace work ) {
+        integer_t& m, typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorSELECT >::value_type >::real_type& s,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorSELECT >::value_type >::real_type& sep, Workspace work ) {
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);
@@ -152,9 +154,11 @@ template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW >
 inline integer_t trsen( char const job, char const compq,
         VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
-        integer_t& m, typename traits::vector_traits<
-        VectorSELECT >::value_type& s, typename traits::vector_traits<
-        VectorSELECT >::value_type& sep ) {
+        integer_t& m, typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorSELECT >::value_type >::real_type& s,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorSELECT >::value_type >::real_type& sep ) {
     typedef typename traits::vector_traits<
             VectorSELECT >::value_type value_type;
     integer_t info(0);

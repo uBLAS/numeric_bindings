@@ -107,8 +107,10 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call poequ
 template< typename MatrixA, typename VectorS >
 inline integer_t poequ( MatrixA& a, VectorS& s,
-        typename traits::matrix_traits< MatrixA >::value_type& scond,
-        typename traits::matrix_traits< MatrixA >::value_type& amax ) {
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& scond,
+        typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type& amax ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     poequ_impl< value_type >::invoke( a, s, scond, amax, info );

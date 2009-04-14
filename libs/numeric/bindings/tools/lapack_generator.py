@@ -521,7 +521,7 @@ routines[ 'computational' ][ 'general_least_squares' ][ 'endings' ] = [ 'GQRF', 
 
 # based on LAPACK Users' Guide, table 2.10
 routines[ 'computational' ][ 'symmetric_eigen' ] = {}
-routines[ 'computational' ][ 'symmetric_eigen' ][ 'endings' ] = [ 'TRD', 'MTR', 'GTR', 'TEQR', 'ERF', 'EDC', 'EGR', 'EBZ', 'TEIN' ]
+routines[ 'computational' ][ 'symmetric_eigen' ][ 'endings' ] = [ 'TRD', 'MTR', 'GTR', 'TEQR', 'ERF', 'EDC', 'EGR', 'EBZ', 'TEIN', 'EMR' ]
 
 # based on LAPACK Users' Guide, table 2.11
 routines[ 'computational' ][ 'nonsymmetric_eigen' ] = {}

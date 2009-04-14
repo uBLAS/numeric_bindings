@@ -678,6 +678,12 @@
 #define LAPACK_CSTEIN FORTRAN_ID( cstein )
 #define LAPACK_ZSTEIN FORTRAN_ID( zstein )
 
+// Value-type variants of stemr
+#define LAPACK_SSTEMR FORTRAN_ID( sstemr )
+#define LAPACK_DSTEMR FORTRAN_ID( dstemr )
+#define LAPACK_CSTEMR FORTRAN_ID( cstemr )
+#define LAPACK_ZSTEMR FORTRAN_ID( zstemr )
+
 // Value-type variants of steqr
 #define LAPACK_SSTEQR FORTRAN_ID( ssteqr )
 #define LAPACK_DSTEQR FORTRAN_ID( dsteqr )

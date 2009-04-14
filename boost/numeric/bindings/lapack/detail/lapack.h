@@ -1849,6 +1849,36 @@ void LAPACK_ZSTEIN( integer_t const* n, double const* d, double const* e,
         integer_t const* isplit, dcomplex_t* z, integer_t const* ldz,
         double* work, integer_t* iwork, integer_t* ifail, integer_t* info );
 
+// Value-type variants of stemr
+void LAPACK_SSTEMR( char const* jobz, char const* range, integer_t const* n,
+        float* d, float* e, float const* vl, float const* vu,
+        integer_t const* il, integer_t const* iu, integer_t* m, float* w,
+        float* z, integer_t const* ldz, integer_t const* nzc,
+        integer_t* isuppz, logical_t* tryrac, float* work,
+        integer_t const* lwork, integer_t* iwork, integer_t const* liwork,
+        integer_t* info );
+void LAPACK_DSTEMR( char const* jobz, char const* range, integer_t const* n,
+        double* d, double* e, double const* vl, double const* vu,
+        integer_t const* il, integer_t const* iu, integer_t* m, double* w,
+        double* z, integer_t const* ldz, integer_t const* nzc,
+        integer_t* isuppz, logical_t* tryrac, double* work,
+        integer_t const* lwork, integer_t* iwork, integer_t const* liwork,
+        integer_t* info );
+void LAPACK_CSTEMR( char const* jobz, char const* range, integer_t const* n,
+        float* d, float* e, float const* vl, float const* vu,
+        integer_t const* il, integer_t const* iu, integer_t* m, float* w,
+        fcomplex_t* z, integer_t const* ldz, integer_t const* nzc,
+        integer_t* isuppz, logical_t* tryrac, float* work,
+        integer_t const* lwork, integer_t* iwork, integer_t const* liwork,
+        integer_t* info );
+void LAPACK_ZSTEMR( char const* jobz, char const* range, integer_t const* n,
+        double* d, double* e, double const* vl, double const* vu,
+        integer_t const* il, integer_t const* iu, integer_t* m, double* w,
+        dcomplex_t* z, integer_t const* ldz, integer_t const* nzc,
+        integer_t* isuppz, logical_t* tryrac, double* work,
+        integer_t const* lwork, integer_t* iwork, integer_t const* liwork,
+        integer_t* info );
+
 // Value-type variants of steqr
 void LAPACK_SSTEQR( char const* compz, integer_t const* n, float* d, float* e,
         float* z, integer_t const* ldz, float* work, integer_t* info );

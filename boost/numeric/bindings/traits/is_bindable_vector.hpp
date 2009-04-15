@@ -22,7 +22,6 @@ struct is_bindable_vector {
 
     typedef char yes;
     typedef char (&no)[2];
-    struct other_type;
 
     template< typename V >
     static yes tester( typename vector_traits<V>::pointer );

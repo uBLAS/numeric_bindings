@@ -10,6 +10,7 @@
 #define BOOST_NUMERIC_BINDINGS_TRAITS_IS_BINDABLE_VECTOR_HPP
 
 #include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/traits/vector_traits.hpp>
 
 namespace boost {
 namespace numeric {
@@ -17,7 +18,22 @@ namespace bindings {
 namespace traits {
 
 template< typename T >
-struct is_bindable_vector: boost::mpl::bool_<false> {};
+struct is_bindable_vector {
+
+    typedef char yes;
+    typedef char (&no)[2];
+    struct other_type;
+
+    template< typename V >
+    static yes tester( typename vector_traits<V>::pointer );
+
+    template< typename V >
+    static no tester( ... );
+
+    static bool const value = sizeof(tester<T>(0)) == sizeof(yes);
+
+    typedef mpl::bool_<value> type;
+};
 
 }}}}
 

@@ -15,6 +15,8 @@
 #define BOOST_NUMERIC_BINDINGS_TRAITS_VECTOR_TRAITS_HPP
 
 #include <boost/numeric/bindings/traits/config.hpp> 
+#include <boost/utility/enable_if.hpp>
+#include <boost/numeric/bindings/traits/is_numeric.hpp>
 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
 
@@ -49,15 +51,20 @@ namespace boost { namespace numeric { namespace bindings { namespace traits {
   // Note that  boost::remove_const<VType>::type == VIdentifier.
   template <typename VIdentifier, typename VType>
   struct vector_detail_traits {
-   // typedef void        value_type;
     typedef VIdentifier identifier_type; 
     typedef VType       vector_type; 
   };
 
-  // vector_traits<> generic version:
-  template <typename V>
-  struct vector_traits : vector_detail_traits< typename boost::remove_const<V>::type, V > {}; 
+  // vector_traits<> generic version: no specialization(s)
+  template< typename V, typename Enable = void>
+  struct vector_traits {};
 
+  // vector_traits<>, specializes is ::value_type is numeric
+  template <typename V>
+  struct vector_traits< V, typename boost::enable_if<
+        is_numeric< typename vector_detail_traits< typename boost::remove_const<V>::type, V >::value_type > 
+        >::type >:
+    vector_detail_traits< typename boost::remove_const<V>::type, V > {};
 
   ///////////////////////////
   //

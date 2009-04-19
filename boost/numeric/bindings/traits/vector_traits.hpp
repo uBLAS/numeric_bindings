@@ -59,7 +59,7 @@ namespace boost { namespace numeric { namespace bindings { namespace traits {
   template< typename V, typename Enable = void>
   struct vector_traits {};
 
-  // vector_traits<>, specializes is ::value_type is numeric
+  // vector_traits<>, specializes if ::value_type is numeric
   template <typename V>
   struct vector_traits< V, typename boost::enable_if<
         is_numeric< typename vector_detail_traits< typename boost::remove_const<V>::type, V >::value_type > 

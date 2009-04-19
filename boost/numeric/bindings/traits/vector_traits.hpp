@@ -48,13 +48,13 @@ namespace boost { namespace numeric { namespace bindings { namespace traits {
   // e.g.  vector_detail_traits< std::vector<int>, std::vector<int> >
   // Note that  boost::remove_const<VType>::type == VIdentifier.
   template <typename VIdentifier, typename VType>
-  struct vector_detail_traits : default_vector_traits<VType, typename VType::value_type > 
-  {
+  struct vector_detail_traits {
+   // typedef void        value_type;
     typedef VIdentifier identifier_type; 
     typedef VType       vector_type; 
   };
 
-  // vector_traits<> generic version: 
+  // vector_traits<> generic version:
   template <typename V>
   struct vector_traits : vector_detail_traits< typename boost::remove_const<V>::type, V > {}; 
 

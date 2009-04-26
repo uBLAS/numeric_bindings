@@ -15,6 +15,8 @@
 #define BOOST_NUMERIC_BINDINGS_TRAITS_MATRIX_TRAITS_HPP
 
 #include <boost/numeric/bindings/traits/config.hpp> 
+#include <boost/utility/enable_if.hpp>
+#include <boost/numeric/bindings/traits/is_numeric.hpp>
 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
 
@@ -43,9 +45,17 @@ namespace boost { namespace numeric { namespace bindings { namespace traits {
     typedef MType       matrix_type; 
   };
 
-  /// matrix_traits<> generic version: 
-  template <typename M>
-  struct matrix_traits : matrix_detail_traits< typename boost::remove_const<M>::type, M> {
+  /// matrix_traits<> generic version: no specialization(s)
+  template< typename M, typename Enable = void >
+  struct matrix_traits {};
+
+  /// matrix_traits<> generic version which will be 
+  /// enabled if the matrix_detail_traits<>::value_type is a numeric type
+  template< typename M >
+  struct matrix_traits< M, typename boost::enable_if< is_numeric<
+        typename matrix_detail_traits< typename boost::remove_const<M>::type, M>::value_type
+        > >::type >:
+    matrix_detail_traits< typename boost::remove_const<M>::type, M> {
     // typedefs:
     //   matrix_structure 
     //   ordering_type

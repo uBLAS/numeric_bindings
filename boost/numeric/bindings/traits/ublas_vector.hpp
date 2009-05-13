@@ -25,6 +25,11 @@
 
 namespace boost { namespace numeric { namespace bindings { namespace traits {
 
+   // ublas::unbounded array
+  template< typename T, typename Allocator, typename V >
+  struct vector_detail_traits< ublas::unbounded_array< T, Allocator >, V >:
+  public default_vector_traits< V, T > {};
+
   // ublas::vector<>
   template <typename T, typename ArrT, typename V>
   struct vector_detail_traits< boost::numeric::ublas::vector<T, ArrT>, V > 

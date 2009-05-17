@@ -176,31 +176,38 @@ namespace boost { namespace numeric { namespace bindings { namespace mumps {
   // Generic MUMPS data for any value_type
   //
   template <typename M>
-  struct mumps
-  : detail::mumps_type< typename boost::numeric::bindings::traits::sparse_matrix_traits<M>::value_type >::type
+  class mumps
+  : public detail::mumps_type< typename boost::numeric::bindings::traits::sparse_matrix_traits<M>::value_type >::type
   {
-    typedef typename boost::numeric::bindings::traits::sparse_matrix_traits<M>::value_type                                      value_type ;
-    typedef typename detail::mumps_type< typename boost::numeric::bindings::traits::sparse_matrix_traits<M>::value_type >::type c_struct_type ;
+    public:
+      typedef typename boost::numeric::bindings::traits::sparse_matrix_traits<M>::value_type                                      value_type ;
+      typedef typename detail::mumps_type< typename boost::numeric::bindings::traits::sparse_matrix_traits<M>::value_type >::type c_struct_type ;
 
-    //
-    // Initialize MUMPS solver
-    // Pass a communicator (comm=-987654 means choose default)
-    // Pass 'par': default = 1: host is involved in factorization
-    //
-    mumps( int comm_fortran=-987654, int par=1 )
-    {
-      this->job = -1 ;
-      this->par = par ;
-      this->comm_fortran = comm_fortran ;
-      this->sym = detail::mumps_sym< typename boost::numeric::bindings::traits::sparse_matrix_traits<M>::matrix_structure >::value ;
-      detail::mumps_call<value_type>() ( *this ) ;
-    }
+      //
+      // Initialize MUMPS solver
+      // Pass a communicator (comm=-987654 means choose default)
+      // Pass 'par': default = 1: host is involved in factorization
+      //
+      mumps( int comm_fortran=-987654, int par=1 )
+      {
+        this->job = -1 ;
+        this->par = par ;
+        this->comm_fortran = comm_fortran ;
+        this->sym = detail::mumps_sym< typename boost::numeric::bindings::traits::sparse_matrix_traits<M>::matrix_structure >::value ;
+        detail::mumps_call<value_type>() ( *this ) ;
+      }
 
-    // Destroy the solver
-    ~mumps() {
-      this->job = -2 ;
-      detail::mumps_call<value_type>() ( *this ) ;
-    }
+      // Destroy the solver
+      ~mumps() {
+        this->job = -2 ;
+        detail::mumps_call<value_type>() ( *this ) ;
+      }
+
+    private:
+      // Disable assignment and Copy Constructor
+      mumps& operator=( mumps const& that ) { return *this ; }
+
+      mumps( mumps const& that ) {}
   } ;
 
 

@@ -75,9 +75,9 @@ struct syr2k_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static return_type invoke( const char trans, const integer_t k,
-            const value_type alpha, const MatrixA& a, const MatrixB& b,
-            const value_type beta, MatrixC& c ) {
+    static return_type invoke( const char trans, const value_type alpha,
+            const MatrixA& a, const MatrixB& b, const value_type beta,
+            MatrixC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -85,10 +85,12 @@ struct syr2k_impl {
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
         detail::syr2k( traits::matrix_uplo_tag(c), trans,
-                traits::matrix_num_columns(c), k, alpha,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::matrix_storage(b), traits::leading_dimension(b), beta,
-                traits::matrix_storage(c), traits::leading_dimension(c) );
+                traits::matrix_num_columns(c),
+                (trans=='N'?traits::matrix_num_columns(a),
+                traits::matrix_num_rows(a)), alpha, traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::matrix_storage(b),
+                traits::leading_dimension(b), beta, traits::matrix_storage(c),
+                traits::leading_dimension(c) );
     }
 };
 
@@ -96,13 +98,12 @@ struct syr2k_impl {
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename syr2k_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-syr2k( const char trans, const integer_t k,
-        const typename traits::matrix_traits< MatrixA >::value_type alpha,
-        const MatrixA& a, const MatrixB& b,
+syr2k( const char trans, const typename traits::matrix_traits<
+        MatrixA >::value_type alpha, const MatrixA& a, const MatrixB& b,
         const typename traits::matrix_traits< MatrixA >::value_type beta,
         MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    syr2k_impl< value_type >::invoke( trans, k, alpha, a, b, beta, c );
+    syr2k_impl< value_type >::invoke( trans, alpha, a, b, beta, c );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level3

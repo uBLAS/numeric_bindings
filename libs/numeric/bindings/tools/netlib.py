@@ -985,7 +985,10 @@ def parse_file( filename, template_map ):
       if my_has_key( traits_key, template_map ):
         data = template_map[ my_has_key( traits_key, template_map ) ].split(",")
         argument_properties[ 'trait_type' ] = data[0].strip()
-        argument_properties[ 'trait_of' ] = data[1].strip()
+        if len(data)==2:
+          argument_properties[ 'trait_of' ] = data[1].strip()
+        else:
+          argument_properties[ 'trait_of' ] = [ data[1].strip(), data[2].strip() ]
 
       #
       # If traits are not user-defined, try the regular detection stuff

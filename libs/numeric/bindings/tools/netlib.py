@@ -75,7 +75,7 @@ def cpp_type( name, properties ):
     
   if properties[ 'type' ] == 'vector' or properties[ 'type' ] == 'matrix':
     if properties[ 'io' ] == [ 'input' ]:
-        result += ' const'
+        result = 'const ' + result
     result += '*'
 
   result += ' ' + name.lower()
@@ -116,6 +116,10 @@ def call_level0_type( name, properties, arg_map ):
       result = "traits::matrix_num_columns(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'num_rows':
       result = "traits::matrix_num_rows(" + properties[ 'trait_of' ].lower() + ")"
+    if properties[ 'trait_type' ] == 'trans_num_columns':
+      result = "(" + properties[ 'trait_of' ][0].lower() + "=='N'?" + \
+               "traits::matrix_num_columns(" + properties[ 'trait_of' ][1].lower() + ")," + \
+               "traits::matrix_num_rows(" + properties[ 'trait_of' ][1].lower() + "))"
     if properties[ 'trait_type' ] == 'size':
       my_name = properties[ 'trait_of' ].lower()
       referring_to_properties = arg_map[ properties[ 'trait_of' ] ]
@@ -1008,13 +1012,30 @@ def parse_file( filename, template_map ):
               argument_properties[ 'trait_type' ] = 'num_' + match_matrix_traits[0][0]
               argument_properties[ 'trait_of' ] = matrix_name.strip()
 
-      # if we have found no matches .. perhaps there's something in the templating system
+      #
+      # Matrix traits detection, continued
+      # try to detect stuff like "the number of rows of op( ... )"
+      #
       else:
-        traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait'
-        if my_has_key( traits_key, template_map ):
-          data = template_map[ my_has_key( traits_key, template_map ) ].split(",")
-          argument_properties[ 'trait_type' ] = data[0].strip()
-          argument_properties[ 'trait_of' ] = data[1].strip()
+        match_matrix_traits = re.compile( '(columns|rows)(of|the|matrix|\s)+op\(\s?([A-Z])\s?\)',
+            re.M | re.S ).findall( comment_block )
+        if len( match_matrix_traits ) > 0 and \
+                'TRANS' +match_matrix_traits[0][2].strip() in argument_map:
+          print "CHECK TODO:", match_matrix_traits
+          argument_properties[ 'trait_type' ] = 'trans_num_' + match_matrix_traits[0][0]
+          argument_properties[ 'trait_of' ] = [ 'TRANS' + match_matrix_traits[0][2].strip(), \
+                                                          match_matrix_traits[0][2].strip() ]
+
+        #
+        # Fallback for previous two cases
+        # if we have found no matches .. perhaps there's something in the templating system
+        #
+        else:
+          traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait'
+          if my_has_key( traits_key, template_map ):
+            data = template_map[ my_has_key( traits_key, template_map ) ].split(",")
+            argument_properties[ 'trait_type' ] = data[0].strip()
+            argument_properties[ 'trait_of' ] = data[1].strip()
 
       #
       # Fetch array traits, such as "the length of the array WORK"
@@ -1023,7 +1044,6 @@ def parse_file( filename, template_map ):
       if len( match_array_traits ) > 0 and match_array_traits[ 0 ][ 3 ] in grouped_arguments[ 'by_type' ][ 'vector' ]:
         argument_properties[ 'trait_type' ] = 'size'
         argument_properties[ 'trait_of' ] = match_array_traits[ 0 ][ 3 ]
-
 
       match_stride_traits = re.compile( '([Tt]he increment)(\s|for|the|elements|of)+([A-Z]+)', re.M | re.S ).findall( comment_block )
       print match_stride_traits

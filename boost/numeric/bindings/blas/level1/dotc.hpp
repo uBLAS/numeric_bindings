@@ -29,15 +29,15 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline fcomplex_t dotc( integer_t const n, traits::complex_f* x,
-            integer_t const incx, traits::complex_f* y,
-            integer_t const incy ) {
+    inline fcomplex_t dotc( const integer_t n, traits::complex_f const* x,
+            const integer_t incx, traits::complex_f const* y,
+            const integer_t incy ) {
         return BLAS_CDOTC( &n, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(y), &incy );
     }
-    inline dcomplex_t dotc( integer_t const n, traits::complex_d* x,
-            integer_t const incx, traits::complex_d* y,
-            integer_t const incy ) {
+    inline dcomplex_t dotc( const integer_t n, traits::complex_d const* x,
+            const integer_t incx, traits::complex_d const* y,
+            const integer_t incy ) {
         return BLAS_ZDOTC( &n, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(y), &incy );
     }
@@ -53,7 +53,7 @@ struct dotc_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY >
-    static return_type invoke( VectorX& x, VectorY& y ) {
+    static return_type invoke( const VectorX& x, const VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -67,7 +67,7 @@ struct dotc_impl {
 template< typename VectorX, typename VectorY >
 inline typename dotc_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-dotc( VectorX& x, VectorY& y ) {
+dotc( const VectorX& x, const VectorY& y ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     return dotc_impl< value_type >::invoke( x, y );
 }

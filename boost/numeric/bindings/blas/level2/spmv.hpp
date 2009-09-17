@@ -29,14 +29,14 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void spmv( char const uplo, integer_t const n, float const alpha,
-            float* ap, float* x, integer_t const incx, float const beta,
-            float* y, integer_t const incy ) {
+    inline void spmv( const char uplo, const integer_t n, const float alpha,
+            float const* ap, float const* x, const integer_t incx,
+            const float beta, float* y, const integer_t incy ) {
         BLAS_SSPMV( &uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy );
     }
-    inline void spmv( char const uplo, integer_t const n, double const alpha,
-            double* ap, double* x, integer_t const incx, double const beta,
-            double* y, integer_t const incy ) {
+    inline void spmv( const char uplo, const integer_t n, const double alpha,
+            double const* ap, double const* x, const integer_t incx,
+            const double beta, double* y, const integer_t incy ) {
         BLAS_DSPMV( &uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy );
     }
 }
@@ -51,8 +51,8 @@ struct spmv_impl {
 
     // templated specialization
     template< typename MatrixAP, typename VectorX, typename VectorY >
-    static return_type invoke( real_type const alpha, MatrixAP& ap,
-            VectorX& x, real_type const beta, VectorY& y ) {
+    static return_type invoke( const real_type alpha, const MatrixAP& ap,
+            const VectorX& x, const real_type beta, VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAP >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
@@ -71,10 +71,12 @@ struct spmv_impl {
 template< typename MatrixAP, typename VectorX, typename VectorY >
 inline typename spmv_impl< typename traits::matrix_traits<
         MatrixAP >::value_type >::return_type
-spmv( typename traits::matrix_traits<
-        MatrixAP >::value_type const alpha, MatrixAP& ap, VectorX& x,
-        typename traits::matrix_traits< MatrixAP >::value_type const beta,
-        VectorY& y ) {
+spmv( const typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type alpha, const MatrixAP& ap,
+        const VectorX& x, const typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type beta, VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     spmv_impl< value_type >::invoke( alpha, ap, x, beta, y );
 }

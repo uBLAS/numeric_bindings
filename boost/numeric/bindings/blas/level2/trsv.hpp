@@ -29,25 +29,25 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void trsv( char const uplo, char const trans, char const diag,
-            integer_t const n, float* a, integer_t const lda, float* x,
-            integer_t const incx ) {
+    inline void trsv( const char uplo, const char trans, const char diag,
+            const integer_t n, float const* a, const integer_t lda, float* x,
+            const integer_t incx ) {
         BLAS_STRSV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
     }
-    inline void trsv( char const uplo, char const trans, char const diag,
-            integer_t const n, double* a, integer_t const lda, double* x,
-            integer_t const incx ) {
+    inline void trsv( const char uplo, const char trans, const char diag,
+            const integer_t n, double const* a, const integer_t lda,
+            double* x, const integer_t incx ) {
         BLAS_DTRSV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
     }
-    inline void trsv( char const uplo, char const trans, char const diag,
-            integer_t const n, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* x, integer_t const incx ) {
+    inline void trsv( const char uplo, const char trans, const char diag,
+            const integer_t n, traits::complex_f const* a,
+            const integer_t lda, traits::complex_f* x, const integer_t incx ) {
         BLAS_CTRSV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(x), &incx );
     }
-    inline void trsv( char const uplo, char const trans, char const diag,
-            integer_t const n, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* x, integer_t const incx ) {
+    inline void trsv( const char uplo, const char trans, const char diag,
+            const integer_t n, traits::complex_d const* a,
+            const integer_t lda, traits::complex_d* x, const integer_t incx ) {
         BLAS_ZTRSV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(x), &incx );
     }
@@ -63,8 +63,8 @@ struct trsv_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorX >
-    static return_type invoke( char const trans, char const diag, MatrixA& a,
-            VectorX& x ) {
+    static return_type invoke( const char trans, const char diag,
+            const MatrixA& a, VectorX& x ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
@@ -79,7 +79,7 @@ struct trsv_impl {
 template< typename MatrixA, typename VectorX >
 inline typename trsv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-trsv( char const trans, char const diag, MatrixA& a, VectorX& x ) {
+trsv( const char trans, const char diag, const MatrixA& a, VectorX& x ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     trsv_impl< value_type >::invoke( trans, diag, a, x );
 }

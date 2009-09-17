@@ -29,9 +29,9 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void drot( integer_t const n, traits::complex_d* cx,
-            integer_t const incx, traits::complex_d* cy, integer_t const incy,
-            double const c, double const s ) {
+    inline void drot( const integer_t n, traits::complex_d const* cx,
+            const integer_t incx, traits::complex_d const* cy,
+            const integer_t incy, const double c, const double s ) {
         BLAS_ZDROT( &n, traits::complex_ptr(cx), &incx,
                 traits::complex_ptr(cy), &incy, &c, &s );
     }
@@ -47,8 +47,8 @@ struct drot_impl {
 
     // templated specialization
     template< typename VectorCX, typename VectorCY >
-    static return_type invoke( integer_t const n, VectorCX& cx, VectorCY& cy,
-            real_type const c, real_type const s ) {
+    static return_type invoke( const integer_t n, const VectorCX& cx,
+            const VectorCY& cy, const real_type c, const real_type s ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorCX >::value_type, typename traits::vector_traits<
                 VectorCY >::value_type >::value) );
@@ -62,9 +62,11 @@ struct drot_impl {
 template< typename VectorCX, typename VectorCY >
 inline typename drot_impl< typename traits::vector_traits<
         VectorCX >::value_type >::return_type
-drot( integer_t const n, VectorCX& cx, VectorCY& cy,
-        typename traits::vector_traits< VectorCX >::value_type const c,
-        typename traits::vector_traits< VectorCX >::value_type const s ) {
+drot( const integer_t n, const VectorCX& cx, const VectorCY& cy,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorCX >::value_type >::real_type c,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorCX >::value_type >::real_type s ) {
     typedef typename traits::vector_traits< VectorCX >::value_type value_type;
     drot_impl< value_type >::invoke( n, cx, cy, c, s );
 }

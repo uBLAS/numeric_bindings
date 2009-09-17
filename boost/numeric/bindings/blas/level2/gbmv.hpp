@@ -29,36 +29,38 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void gbmv( char const trans, integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, float const alpha,
-            float* a, integer_t const lda, float* x, integer_t const incx,
-            float const beta, float* y, integer_t const incy ) {
+    inline void gbmv( const char trans, const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, const float alpha,
+            float const* a, const integer_t lda, float const* x,
+            const integer_t incx, const float beta, float* y,
+            const integer_t incy ) {
         BLAS_SGBMV( &trans, &m, &n, &kl, &ku, &alpha, a, &lda, x, &incx,
                 &beta, y, &incy );
     }
-    inline void gbmv( char const trans, integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, double const alpha,
-            double* a, integer_t const lda, double* x, integer_t const incx,
-            double const beta, double* y, integer_t const incy ) {
+    inline void gbmv( const char trans, const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, const double alpha,
+            double const* a, const integer_t lda, double const* x,
+            const integer_t incx, const double beta, double* y,
+            const integer_t incy ) {
         BLAS_DGBMV( &trans, &m, &n, &kl, &ku, &alpha, a, &lda, x, &incx,
                 &beta, y, &incy );
     }
-    inline void gbmv( char const trans, integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku,
-            traits::complex_f const alpha, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* x, integer_t const incx,
-            traits::complex_f const beta, traits::complex_f* y,
-            integer_t const incy ) {
+    inline void gbmv( const char trans, const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku,
+            const traits::complex_f alpha, traits::complex_f const* a,
+            const integer_t lda, traits::complex_f const* x,
+            const integer_t incx, const traits::complex_f beta,
+            traits::complex_f* y, const integer_t incy ) {
         BLAS_CGBMV( &trans, &m, &n, &kl, &ku, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
     }
-    inline void gbmv( char const trans, integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku,
-            traits::complex_d const alpha, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* x, integer_t const incx,
-            traits::complex_d const beta, traits::complex_d* y,
-            integer_t const incy ) {
+    inline void gbmv( const char trans, const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku,
+            const traits::complex_d alpha, traits::complex_d const* a,
+            const integer_t lda, traits::complex_d const* x,
+            const integer_t incx, const traits::complex_d beta,
+            traits::complex_d* y, const integer_t incy ) {
         BLAS_ZGBMV( &trans, &m, &n, &kl, &ku, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
@@ -75,9 +77,9 @@ struct gbmv_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type invoke( char const trans, integer_t const kl,
-            integer_t const ku, value_type const alpha, MatrixA& a,
-            VectorX& x, value_type const beta, VectorY& y ) {
+    static return_type invoke( const char trans, const integer_t kl,
+            const integer_t ku, const value_type alpha, const MatrixA& a,
+            const VectorX& x, const value_type beta, VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
@@ -96,10 +98,11 @@ struct gbmv_impl {
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename gbmv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-gbmv( char const trans, integer_t const kl, integer_t const ku,
-        typename traits::matrix_traits< MatrixA >::value_type const alpha,
-        MatrixA& a, VectorX& x, typename traits::matrix_traits<
-        MatrixA >::value_type const beta, VectorY& y ) {
+gbmv( const char trans, const integer_t kl, const integer_t ku,
+        const typename traits::matrix_traits< MatrixA >::value_type alpha,
+        const MatrixA& a, const VectorX& x,
+        const typename traits::matrix_traits< MatrixA >::value_type beta,
+        VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     gbmv_impl< value_type >::invoke( trans, kl, ku, alpha, a, x, beta,
             y );

@@ -29,12 +29,12 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void rotm( integer_t const n, float* x, integer_t const incx,
-            float* y, integer_t const incy, float* param ) {
+    inline void rotm( const integer_t n, float* x, const integer_t incx,
+            float* y, const integer_t incy, float* param ) {
         BLAS_SROTM( &n, x, &incx, y, &incy, param );
     }
-    inline void rotm( integer_t const n, double* x, integer_t const incx,
-            double* y, integer_t const incy, double* param ) {
+    inline void rotm( const integer_t n, double* x, const integer_t incx,
+            double* y, const integer_t incy, double* param ) {
         BLAS_DROTM( &n, x, &incx, y, &incy, param );
     }
 }
@@ -49,8 +49,8 @@ struct rotm_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename VectorPARAM >
-    static return_type invoke( integer_t const n, VectorX& x,
-            integer_t const incx, VectorY& y, integer_t const incy,
+    static return_type invoke( const integer_t n, VectorX& x,
+            const integer_t incx, VectorY& y, const integer_t incy,
             VectorPARAM& param ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
@@ -68,8 +68,8 @@ struct rotm_impl {
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-rotm( integer_t const n, VectorX& x, integer_t const incx, VectorY& y,
-        integer_t const incy, VectorPARAM& param ) {
+rotm( const integer_t n, VectorX& x, const integer_t incx, VectorY& y,
+        const integer_t incy, VectorPARAM& param ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     rotm_impl< value_type >::invoke( n, x, incx, y, incy, param );
 }

@@ -29,34 +29,36 @@ namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void symm( char const side, char const uplo, integer_t const m,
-            integer_t const n, float const alpha, float* a,
-            integer_t const lda, float* b, integer_t const ldb,
-            float const beta, float* c, integer_t const ldc ) {
+    inline void symm( const char side, const char uplo, const integer_t m,
+            const integer_t n, const float alpha, float const* a,
+            const integer_t lda, float const* b, const integer_t ldb,
+            const float beta, float* c, const integer_t ldc ) {
         BLAS_SSYMM( &side, &uplo, &m, &n, &alpha, a, &lda, b, &ldb, &beta, c,
                 &ldc );
     }
-    inline void symm( char const side, char const uplo, integer_t const m,
-            integer_t const n, double const alpha, double* a,
-            integer_t const lda, double* b, integer_t const ldb,
-            double const beta, double* c, integer_t const ldc ) {
+    inline void symm( const char side, const char uplo, const integer_t m,
+            const integer_t n, const double alpha, double const* a,
+            const integer_t lda, double const* b, const integer_t ldb,
+            const double beta, double* c, const integer_t ldc ) {
         BLAS_DSYMM( &side, &uplo, &m, &n, &alpha, a, &lda, b, &ldb, &beta, c,
                 &ldc );
     }
-    inline void symm( char const side, char const uplo, integer_t const m,
-            integer_t const n, traits::complex_f const alpha,
-            traits::complex_f* a, integer_t const lda, traits::complex_f* b,
-            integer_t const ldb, traits::complex_f const beta,
-            traits::complex_f* c, integer_t const ldc ) {
+    inline void symm( const char side, const char uplo, const integer_t m,
+            const integer_t n, const traits::complex_f alpha,
+            traits::complex_f const* a, const integer_t lda,
+            traits::complex_f const* b, const integer_t ldb,
+            const traits::complex_f beta, traits::complex_f* c,
+            const integer_t ldc ) {
         BLAS_CSYMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
                 traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
     }
-    inline void symm( char const side, char const uplo, integer_t const m,
-            integer_t const n, traits::complex_d const alpha,
-            traits::complex_d* a, integer_t const lda, traits::complex_d* b,
-            integer_t const ldb, traits::complex_d const beta,
-            traits::complex_d* c, integer_t const ldc ) {
+    inline void symm( const char side, const char uplo, const integer_t m,
+            const integer_t n, const traits::complex_d alpha,
+            traits::complex_d const* a, const integer_t lda,
+            traits::complex_d const* b, const integer_t ldb,
+            const traits::complex_d beta, traits::complex_d* c,
+            const integer_t ldc ) {
         BLAS_ZSYMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
                 traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
@@ -73,8 +75,9 @@ struct symm_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static return_type invoke( char const side, value_type const alpha,
-            MatrixA& a, MatrixB& b, value_type const beta, MatrixC& c ) {
+    static return_type invoke( const char side, const value_type alpha,
+            const MatrixA& a, const MatrixB& b, const value_type beta,
+            MatrixC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -94,9 +97,9 @@ struct symm_impl {
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename symm_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-symm( char const side, typename traits::matrix_traits<
-        MatrixA >::value_type const alpha, MatrixA& a, MatrixB& b,
-        typename traits::matrix_traits< MatrixA >::value_type const beta,
+symm( const char side, const typename traits::matrix_traits<
+        MatrixA >::value_type alpha, const MatrixA& a, const MatrixB& b,
+        const typename traits::matrix_traits< MatrixA >::value_type beta,
         MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     symm_impl< value_type >::invoke( side, alpha, a, b, beta, c );

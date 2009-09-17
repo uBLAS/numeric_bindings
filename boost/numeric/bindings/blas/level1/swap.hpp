@@ -29,23 +29,23 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void swap( integer_t const n, float* x, integer_t const incx,
-            float* y, integer_t const incy ) {
+    inline void swap( const integer_t n, float* x, const integer_t incx,
+            float* y, const integer_t incy ) {
         BLAS_SSWAP( &n, x, &incx, y, &incy );
     }
-    inline void swap( integer_t const n, double* x, integer_t const incx,
-            double* y, integer_t const incy ) {
+    inline void swap( const integer_t n, double* x, const integer_t incx,
+            double* y, const integer_t incy ) {
         BLAS_DSWAP( &n, x, &incx, y, &incy );
     }
-    inline void swap( integer_t const n, traits::complex_f* x,
-            integer_t const incx, traits::complex_f* y,
-            integer_t const incy ) {
+    inline void swap( const integer_t n, traits::complex_f* x,
+            const integer_t incx, traits::complex_f* y,
+            const integer_t incy ) {
         BLAS_CSWAP( &n, traits::complex_ptr(x), &incx, traits::complex_ptr(y),
                 &incy );
     }
-    inline void swap( integer_t const n, traits::complex_d* x,
-            integer_t const incx, traits::complex_d* y,
-            integer_t const incy ) {
+    inline void swap( const integer_t n, traits::complex_d* x,
+            const integer_t incx, traits::complex_d* y,
+            const integer_t incy ) {
         BLAS_ZSWAP( &n, traits::complex_ptr(x), &incx, traits::complex_ptr(y),
                 &incy );
     }

@@ -29,20 +29,20 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void hpmv( char const uplo, integer_t const n,
-            traits::complex_f const alpha, traits::complex_f* ap,
-            traits::complex_f* x, integer_t const incx,
-            traits::complex_f const beta, traits::complex_f* y,
-            integer_t const incy ) {
+    inline void hpmv( const char uplo, const integer_t n,
+            const traits::complex_f alpha, traits::complex_f const* ap,
+            traits::complex_f const* x, const integer_t incx,
+            const traits::complex_f beta, traits::complex_f* y,
+            const integer_t incy ) {
         BLAS_CHPMV( &uplo, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(ap), traits::complex_ptr(x), &incx,
                 traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
     }
-    inline void hpmv( char const uplo, integer_t const n,
-            traits::complex_d const alpha, traits::complex_d* ap,
-            traits::complex_d* x, integer_t const incx,
-            traits::complex_d const beta, traits::complex_d* y,
-            integer_t const incy ) {
+    inline void hpmv( const char uplo, const integer_t n,
+            const traits::complex_d alpha, traits::complex_d const* ap,
+            traits::complex_d const* x, const integer_t incx,
+            const traits::complex_d beta, traits::complex_d* y,
+            const integer_t incy ) {
         BLAS_ZHPMV( &uplo, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(ap), traits::complex_ptr(x), &incx,
                 traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
@@ -59,8 +59,8 @@ struct hpmv_impl {
 
     // templated specialization
     template< typename MatrixAP, typename VectorX, typename VectorY >
-    static return_type invoke( value_type const alpha, MatrixAP& ap,
-            VectorX& x, value_type const beta, VectorY& y ) {
+    static return_type invoke( const value_type alpha, const MatrixAP& ap,
+            const VectorX& x, const value_type beta, VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAP >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
@@ -79,9 +79,9 @@ struct hpmv_impl {
 template< typename MatrixAP, typename VectorX, typename VectorY >
 inline typename hpmv_impl< typename traits::matrix_traits<
         MatrixAP >::value_type >::return_type
-hpmv( typename traits::matrix_traits<
-        MatrixAP >::value_type const alpha, MatrixAP& ap, VectorX& x,
-        typename traits::matrix_traits< MatrixAP >::value_type const beta,
+hpmv( const typename traits::matrix_traits<
+        MatrixAP >::value_type alpha, const MatrixAP& ap, const VectorX& x,
+        const typename traits::matrix_traits< MatrixAP >::value_type beta,
         VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     hpmv_impl< value_type >::invoke( alpha, ap, x, beta, y );

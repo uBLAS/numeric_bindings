@@ -29,20 +29,20 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void hbmv( char const uplo, integer_t const n, integer_t const k,
-            traits::complex_f const alpha, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* x, integer_t const incx,
-            traits::complex_f const beta, traits::complex_f* y,
-            integer_t const incy ) {
+    inline void hbmv( const char uplo, const integer_t n, const integer_t k,
+            const traits::complex_f alpha, traits::complex_f const* a,
+            const integer_t lda, traits::complex_f const* x,
+            const integer_t incx, const traits::complex_f beta,
+            traits::complex_f* y, const integer_t incy ) {
         BLAS_CHBMV( &uplo, &n, &k, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
     }
-    inline void hbmv( char const uplo, integer_t const n, integer_t const k,
-            traits::complex_d const alpha, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* x, integer_t const incx,
-            traits::complex_d const beta, traits::complex_d* y,
-            integer_t const incy ) {
+    inline void hbmv( const char uplo, const integer_t n, const integer_t k,
+            const traits::complex_d alpha, traits::complex_d const* a,
+            const integer_t lda, traits::complex_d const* x,
+            const integer_t incx, const traits::complex_d beta,
+            traits::complex_d* y, const integer_t incy ) {
         BLAS_ZHBMV( &uplo, &n, &k, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
@@ -59,8 +59,9 @@ struct hbmv_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type invoke( integer_t const k, value_type const alpha,
-            MatrixA& a, VectorX& x, value_type const beta, VectorY& y ) {
+    static return_type invoke( const integer_t k, const value_type alpha,
+            const MatrixA& a, const VectorX& x, const value_type beta,
+            VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
@@ -79,9 +80,9 @@ struct hbmv_impl {
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename hbmv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-hbmv( integer_t const k, typename traits::matrix_traits<
-        MatrixA >::value_type const alpha, MatrixA& a, VectorX& x,
-        typename traits::matrix_traits< MatrixA >::value_type const beta,
+hbmv( const integer_t k, const typename traits::matrix_traits<
+        MatrixA >::value_type alpha, const MatrixA& a, const VectorX& x,
+        const typename traits::matrix_traits< MatrixA >::value_type beta,
         VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     hbmv_impl< value_type >::invoke( k, alpha, a, x, beta, y );

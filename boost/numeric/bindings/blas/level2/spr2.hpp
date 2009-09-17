@@ -29,14 +29,14 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void spr2( char const uplo, integer_t const n, float const alpha,
-            float* x, integer_t const incx, float* y, integer_t const incy,
-            float* ap ) {
+    inline void spr2( const char uplo, const integer_t n, const float alpha,
+            float const* x, const integer_t incx, float const* y,
+            const integer_t incy, float* ap ) {
         BLAS_SSPR2( &uplo, &n, &alpha, x, &incx, y, &incy, ap );
     }
-    inline void spr2( char const uplo, integer_t const n, double const alpha,
-            double* x, integer_t const incx, double* y, integer_t const incy,
-            double* ap ) {
+    inline void spr2( const char uplo, const integer_t n, const double alpha,
+            double const* x, const integer_t incx, double const* y,
+            const integer_t incy, double* ap ) {
         BLAS_DSPR2( &uplo, &n, &alpha, x, &incx, y, &incy, ap );
     }
 }
@@ -51,8 +51,8 @@ struct spr2_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename MatrixAP >
-    static return_type invoke( real_type const alpha, VectorX& x, VectorY& y,
-            MatrixAP& ap ) {
+    static return_type invoke( const real_type alpha, const VectorX& x,
+            const VectorY& y, MatrixAP& ap ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -71,8 +71,10 @@ struct spr2_impl {
 template< typename VectorX, typename VectorY, typename MatrixAP >
 inline typename spr2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-spr2( typename traits::vector_traits< VectorX >::value_type const alpha,
-        VectorX& x, VectorY& y, MatrixAP& ap ) {
+spr2( const typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorX >::value_type >::real_type alpha, const VectorX& x,
+        const VectorY& y, MatrixAP& ap ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     spr2_impl< value_type >::invoke( alpha, x, y, ap );
 }

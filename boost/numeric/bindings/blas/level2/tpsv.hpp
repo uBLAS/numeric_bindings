@@ -29,23 +29,25 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void tpsv( char const uplo, char const trans, char const diag,
-            integer_t const n, float* ap, float* x, integer_t const incx ) {
+    inline void tpsv( const char uplo, const char trans, const char diag,
+            const integer_t n, float const* ap, float* x,
+            const integer_t incx ) {
         BLAS_STPSV( &uplo, &trans, &diag, &n, ap, x, &incx );
     }
-    inline void tpsv( char const uplo, char const trans, char const diag,
-            integer_t const n, double* ap, double* x, integer_t const incx ) {
+    inline void tpsv( const char uplo, const char trans, const char diag,
+            const integer_t n, double const* ap, double* x,
+            const integer_t incx ) {
         BLAS_DTPSV( &uplo, &trans, &diag, &n, ap, x, &incx );
     }
-    inline void tpsv( char const uplo, char const trans, char const diag,
-            integer_t const n, traits::complex_f* ap, traits::complex_f* x,
-            integer_t const incx ) {
+    inline void tpsv( const char uplo, const char trans, const char diag,
+            const integer_t n, traits::complex_f const* ap,
+            traits::complex_f* x, const integer_t incx ) {
         BLAS_CTPSV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(x), &incx );
     }
-    inline void tpsv( char const uplo, char const trans, char const diag,
-            integer_t const n, traits::complex_d* ap, traits::complex_d* x,
-            integer_t const incx ) {
+    inline void tpsv( const char uplo, const char trans, const char diag,
+            const integer_t n, traits::complex_d const* ap,
+            traits::complex_d* x, const integer_t incx ) {
         BLAS_ZTPSV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(x), &incx );
     }
@@ -61,8 +63,8 @@ struct tpsv_impl {
 
     // templated specialization
     template< typename MatrixAP, typename VectorX >
-    static return_type invoke( char const trans, char const diag,
-            MatrixAP& ap, VectorX& x ) {
+    static return_type invoke( const char trans, const char diag,
+            const MatrixAP& ap, VectorX& x ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAP >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
@@ -76,7 +78,8 @@ struct tpsv_impl {
 template< typename MatrixAP, typename VectorX >
 inline typename tpsv_impl< typename traits::matrix_traits<
         MatrixAP >::value_type >::return_type
-tpsv( char const trans, char const diag, MatrixAP& ap, VectorX& x ) {
+tpsv( const char trans, const char diag, const MatrixAP& ap,
+        VectorX& x ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     tpsv_impl< value_type >::invoke( trans, diag, ap, x );
 }

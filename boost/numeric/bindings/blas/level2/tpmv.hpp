@@ -29,23 +29,25 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void tpmv( char const uplo, char const trans, char const diag,
-            integer_t const n, float* ap, float* x, integer_t const incx ) {
+    inline void tpmv( const char uplo, const char trans, const char diag,
+            const integer_t n, float const* ap, float* x,
+            const integer_t incx ) {
         BLAS_STPMV( &uplo, &trans, &diag, &n, ap, x, &incx );
     }
-    inline void tpmv( char const uplo, char const trans, char const diag,
-            integer_t const n, double* ap, double* x, integer_t const incx ) {
+    inline void tpmv( const char uplo, const char trans, const char diag,
+            const integer_t n, double const* ap, double* x,
+            const integer_t incx ) {
         BLAS_DTPMV( &uplo, &trans, &diag, &n, ap, x, &incx );
     }
-    inline void tpmv( char const uplo, char const trans, char const diag,
-            integer_t const n, traits::complex_f* ap, traits::complex_f* x,
-            integer_t const incx ) {
+    inline void tpmv( const char uplo, const char trans, const char diag,
+            const integer_t n, traits::complex_f const* ap,
+            traits::complex_f* x, const integer_t incx ) {
         BLAS_CTPMV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(x), &incx );
     }
-    inline void tpmv( char const uplo, char const trans, char const diag,
-            integer_t const n, traits::complex_d* ap, traits::complex_d* x,
-            integer_t const incx ) {
+    inline void tpmv( const char uplo, const char trans, const char diag,
+            const integer_t n, traits::complex_d const* ap,
+            traits::complex_d* x, const integer_t incx ) {
         BLAS_ZTPMV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(x), &incx );
     }
@@ -61,8 +63,8 @@ struct tpmv_impl {
 
     // templated specialization
     template< typename MatrixAP, typename VectorX >
-    static return_type invoke( char const trans, char const diag,
-            MatrixAP& ap, VectorX& x ) {
+    static return_type invoke( const char trans, const char diag,
+            const MatrixAP& ap, VectorX& x ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAP >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
@@ -76,7 +78,8 @@ struct tpmv_impl {
 template< typename MatrixAP, typename VectorX >
 inline typename tpmv_impl< typename traits::matrix_traits<
         MatrixAP >::value_type >::return_type
-tpmv( char const trans, char const diag, MatrixAP& ap, VectorX& x ) {
+tpmv( const char trans, const char diag, const MatrixAP& ap,
+        VectorX& x ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     tpmv_impl< value_type >::invoke( trans, diag, ap, x );
 }

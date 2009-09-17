@@ -29,12 +29,14 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void syr( char const uplo, integer_t const n, float const alpha,
-            float* x, integer_t const incx, float* a, integer_t const lda ) {
+    inline void syr( const char uplo, const integer_t n, const float alpha,
+            float const* x, const integer_t incx, float* a,
+            const integer_t lda ) {
         BLAS_SSYR( &uplo, &n, &alpha, x, &incx, a, &lda );
     }
-    inline void syr( char const uplo, integer_t const n, double const alpha,
-            double* x, integer_t const incx, double* a, integer_t const lda ) {
+    inline void syr( const char uplo, const integer_t n, const double alpha,
+            double const* x, const integer_t incx, double* a,
+            const integer_t lda ) {
         BLAS_DSYR( &uplo, &n, &alpha, x, &incx, a, &lda );
     }
 }
@@ -49,7 +51,7 @@ struct syr_impl {
 
     // templated specialization
     template< typename VectorX, typename MatrixA >
-    static return_type invoke( real_type const alpha, VectorX& x,
+    static return_type invoke( const real_type alpha, const VectorX& x,
             MatrixA& a ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::matrix_traits<
@@ -65,8 +67,10 @@ struct syr_impl {
 template< typename VectorX, typename MatrixA >
 inline typename syr_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-syr( typename traits::vector_traits< VectorX >::value_type const alpha,
-        VectorX& x, MatrixA& a ) {
+syr( const typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorX >::value_type >::real_type alpha, const VectorX& x,
+        MatrixA& a ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     syr_impl< value_type >::invoke( alpha, x, a );
 }

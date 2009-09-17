@@ -29,23 +29,23 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void axpy( integer_t const n, float const a, float* x,
-            integer_t const incx, float* y, integer_t const incy ) {
+    inline void axpy( const integer_t n, const float a, float const* x,
+            const integer_t incx, float* y, const integer_t incy ) {
         BLAS_SAXPY( &n, &a, x, &incx, y, &incy );
     }
-    inline void axpy( integer_t const n, double const a, double* x,
-            integer_t const incx, double* y, integer_t const incy ) {
+    inline void axpy( const integer_t n, const double a, double const* x,
+            const integer_t incx, double* y, const integer_t incy ) {
         BLAS_DAXPY( &n, &a, x, &incx, y, &incy );
     }
-    inline void axpy( integer_t const n, traits::complex_f const a,
-            traits::complex_f* x, integer_t const incx, traits::complex_f* y,
-            integer_t const incy ) {
+    inline void axpy( const integer_t n, const traits::complex_f a,
+            traits::complex_f const* x, const integer_t incx,
+            traits::complex_f* y, const integer_t incy ) {
         BLAS_CAXPY( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
                 &incx, traits::complex_ptr(y), &incy );
     }
-    inline void axpy( integer_t const n, traits::complex_d const a,
-            traits::complex_d* x, integer_t const incx, traits::complex_d* y,
-            integer_t const incy ) {
+    inline void axpy( const integer_t n, const traits::complex_d a,
+            traits::complex_d const* x, const integer_t incx,
+            traits::complex_d* y, const integer_t incy ) {
         BLAS_ZAXPY( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
                 &incx, traits::complex_ptr(y), &incy );
     }
@@ -61,7 +61,8 @@ struct axpy_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY >
-    static return_type invoke( value_type const a, VectorX& x, VectorY& y ) {
+    static return_type invoke( const value_type a, const VectorX& x,
+            VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -75,8 +76,8 @@ struct axpy_impl {
 template< typename VectorX, typename VectorY >
 inline typename axpy_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-axpy( typename traits::vector_traits< VectorX >::value_type const a,
-        VectorX& x, VectorY& y ) {
+axpy( const typename traits::vector_traits< VectorX >::value_type a,
+        const VectorX& x, VectorY& y ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     axpy_impl< value_type >::invoke( a, x, y );
 }

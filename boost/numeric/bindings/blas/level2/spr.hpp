@@ -29,12 +29,12 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void spr( char const uplo, integer_t const n, float const alpha,
-            float* x, integer_t const incx, float* ap ) {
+    inline void spr( const char uplo, const integer_t n, const float alpha,
+            float const* x, const integer_t incx, float* ap ) {
         BLAS_SSPR( &uplo, &n, &alpha, x, &incx, ap );
     }
-    inline void spr( char const uplo, integer_t const n, double const alpha,
-            double* x, integer_t const incx, double* ap ) {
+    inline void spr( const char uplo, const integer_t n, const double alpha,
+            double const* x, const integer_t incx, double* ap ) {
         BLAS_DSPR( &uplo, &n, &alpha, x, &incx, ap );
     }
 }
@@ -49,7 +49,7 @@ struct spr_impl {
 
     // templated specialization
     template< typename VectorX, typename MatrixAP >
-    static return_type invoke( real_type const alpha, VectorX& x,
+    static return_type invoke( const real_type alpha, const VectorX& x,
             MatrixAP& ap ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::matrix_traits<
@@ -65,8 +65,10 @@ struct spr_impl {
 template< typename VectorX, typename MatrixAP >
 inline typename spr_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-spr( typename traits::vector_traits< VectorX >::value_type const alpha,
-        VectorX& x, MatrixAP& ap ) {
+spr( const typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorX >::value_type >::real_type alpha, const VectorX& x,
+        MatrixAP& ap ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     spr_impl< value_type >::invoke( alpha, x, ap );
 }

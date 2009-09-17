@@ -29,21 +29,21 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void scal( integer_t const n, float const a, float* x,
-            integer_t const incx ) {
+    inline void scal( const integer_t n, const float a, float const* x,
+            const integer_t incx ) {
         BLAS_SSCAL( &n, &a, x, &incx );
     }
-    inline void scal( integer_t const n, double const a, double* x,
-            integer_t const incx ) {
+    inline void scal( const integer_t n, const double a, double const* x,
+            const integer_t incx ) {
         BLAS_DSCAL( &n, &a, x, &incx );
     }
-    inline void scal( integer_t const n, traits::complex_f const a,
-            traits::complex_f* x, integer_t const incx ) {
+    inline void scal( const integer_t n, const traits::complex_f a,
+            traits::complex_f const* x, const integer_t incx ) {
         BLAS_CSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
                 &incx );
     }
-    inline void scal( integer_t const n, traits::complex_d const a,
-            traits::complex_d* x, integer_t const incx ) {
+    inline void scal( const integer_t n, const traits::complex_d a,
+            traits::complex_d const* x, const integer_t incx ) {
         BLAS_ZSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
                 &incx );
     }
@@ -59,7 +59,7 @@ struct scal_impl {
 
     // templated specialization
     template< typename VectorX >
-    static return_type invoke( value_type const a, VectorX& x ) {
+    static return_type invoke( const value_type a, const VectorX& x ) {
         detail::scal( traits::vector_size(x), a,
                 traits::vector_storage(x), traits::vector_stride(x) );
     }
@@ -69,8 +69,8 @@ struct scal_impl {
 template< typename VectorX >
 inline typename scal_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-scal( typename traits::vector_traits< VectorX >::value_type const a,
-        VectorX& x ) {
+scal( const typename traits::vector_traits< VectorX >::value_type a,
+        const VectorX& x ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     scal_impl< value_type >::invoke( a, x );
 }

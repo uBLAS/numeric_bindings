@@ -29,32 +29,32 @@ namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void syrk( char const uplo, char const trans, integer_t const n,
-            integer_t const k, float const alpha, float* a,
-            integer_t const lda, float const beta, float* c,
-            integer_t const ldc ) {
+    inline void syrk( const char uplo, const char trans, const integer_t n,
+            const integer_t k, const float alpha, float const* a,
+            const integer_t lda, const float beta, float* c,
+            const integer_t ldc ) {
         BLAS_SSYRK( &uplo, &trans, &n, &k, &alpha, a, &lda, &beta, c, &ldc );
     }
-    inline void syrk( char const uplo, char const trans, integer_t const n,
-            integer_t const k, double const alpha, double* a,
-            integer_t const lda, double const beta, double* c,
-            integer_t const ldc ) {
+    inline void syrk( const char uplo, const char trans, const integer_t n,
+            const integer_t k, const double alpha, double const* a,
+            const integer_t lda, const double beta, double* c,
+            const integer_t ldc ) {
         BLAS_DSYRK( &uplo, &trans, &n, &k, &alpha, a, &lda, &beta, c, &ldc );
     }
-    inline void syrk( char const uplo, char const trans, integer_t const n,
-            integer_t const k, traits::complex_f const alpha,
-            traits::complex_f* a, integer_t const lda,
-            traits::complex_f const beta, traits::complex_f* c,
-            integer_t const ldc ) {
+    inline void syrk( const char uplo, const char trans, const integer_t n,
+            const integer_t k, const traits::complex_f alpha,
+            traits::complex_f const* a, const integer_t lda,
+            const traits::complex_f beta, traits::complex_f* c,
+            const integer_t ldc ) {
         BLAS_CSYRK( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(&beta),
                 traits::complex_ptr(c), &ldc );
     }
-    inline void syrk( char const uplo, char const trans, integer_t const n,
-            integer_t const k, traits::complex_d const alpha,
-            traits::complex_d* a, integer_t const lda,
-            traits::complex_d const beta, traits::complex_d* c,
-            integer_t const ldc ) {
+    inline void syrk( const char uplo, const char trans, const integer_t n,
+            const integer_t k, const traits::complex_d alpha,
+            traits::complex_d const* a, const integer_t lda,
+            const traits::complex_d beta, traits::complex_d* c,
+            const integer_t ldc ) {
         BLAS_ZSYRK( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(&beta),
                 traits::complex_ptr(c), &ldc );
@@ -71,8 +71,8 @@ struct syrk_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixC >
-    static return_type invoke( char const trans, integer_t const k,
-            value_type const alpha, MatrixA& a, value_type const beta,
+    static return_type invoke( const char trans, const integer_t k,
+            const value_type alpha, const MatrixA& a, const value_type beta,
             MatrixC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -88,10 +88,10 @@ struct syrk_impl {
 template< typename MatrixA, typename MatrixC >
 inline typename syrk_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-syrk( char const trans, integer_t const k,
-        typename traits::matrix_traits< MatrixA >::value_type const alpha,
-        MatrixA& a, typename traits::matrix_traits<
-        MatrixA >::value_type const beta, MatrixC& c ) {
+syrk( const char trans, const integer_t k,
+        const typename traits::matrix_traits< MatrixA >::value_type alpha,
+        const MatrixA& a, const typename traits::matrix_traits<
+        MatrixA >::value_type beta, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     syrk_impl< value_type >::invoke( trans, k, alpha, a, beta, c );
 }

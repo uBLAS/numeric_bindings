@@ -29,10 +29,12 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline float asum( integer_t const n, float* x, integer_t const incx ) {
+    inline float asum( const integer_t n, float const* x,
+            const integer_t incx ) {
         return BLAS_SASUM( &n, x, &incx );
     }
-    inline double asum( integer_t const n, double* x, integer_t const incx ) {
+    inline double asum( const integer_t n, double const* x,
+            const integer_t incx ) {
         return BLAS_DASUM( &n, x, &incx );
     }
 }
@@ -47,7 +49,7 @@ struct asum_impl {
 
     // templated specialization
     template< typename VectorX >
-    static return_type invoke( VectorX& x ) {
+    static return_type invoke( const VectorX& x ) {
         return detail::asum( traits::vector_size(x),
                 traits::vector_storage(x), traits::vector_stride(x) );
     }
@@ -57,7 +59,7 @@ struct asum_impl {
 template< typename VectorX >
 inline typename asum_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-asum( VectorX& x ) {
+asum( const VectorX& x ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     return asum_impl< value_type >::invoke( x );
 }

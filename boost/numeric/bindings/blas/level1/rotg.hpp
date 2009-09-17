@@ -69,8 +69,9 @@ inline typename rotg_impl< typename traits::TODO_traits<
         TODO >::value_type >::return_type
 rotg( typename traits::TODO_traits< TODO >::value_type& a,
         typename traits::TODO_traits< TODO >::value_type& b,
-        typename traits::TODO_traits< TODO >::value_type& c,
-        typename traits::TODO_traits< TODO >::value_type& s ) {
+        typename traits::type_traits< typename traits::TODO_traits<
+        TODO >::value_type >::real_type& c, typename traits::TODO_traits<
+        TODO >::value_type& s ) {
     typedef typename traits::TODO_traits< TODO >::value_type value_type;
     rotg_impl< value_type >::invoke( a, b, c, s );
 }

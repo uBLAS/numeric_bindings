@@ -29,17 +29,17 @@ namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void herk( char const uplo, char const trans, integer_t const n,
-            integer_t const k, float const alpha, traits::complex_f* a,
-            integer_t const lda, float const beta, traits::complex_f* c,
-            integer_t const ldc ) {
+    inline void herk( const char uplo, const char trans, const integer_t n,
+            const integer_t k, const float alpha, traits::complex_f const* a,
+            const integer_t lda, const float beta, traits::complex_f* c,
+            const integer_t ldc ) {
         BLAS_CHERK( &uplo, &trans, &n, &k, &alpha, traits::complex_ptr(a),
                 &lda, &beta, traits::complex_ptr(c), &ldc );
     }
-    inline void herk( char const uplo, char const trans, integer_t const n,
-            integer_t const k, double const alpha, traits::complex_d* a,
-            integer_t const lda, double const beta, traits::complex_d* c,
-            integer_t const ldc ) {
+    inline void herk( const char uplo, const char trans, const integer_t n,
+            const integer_t k, const double alpha, traits::complex_d const* a,
+            const integer_t lda, const double beta, traits::complex_d* c,
+            const integer_t ldc ) {
         BLAS_ZHERK( &uplo, &trans, &n, &k, &alpha, traits::complex_ptr(a),
                 &lda, &beta, traits::complex_ptr(c), &ldc );
     }
@@ -55,8 +55,8 @@ struct herk_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixC >
-    static return_type invoke( char const trans, integer_t const k,
-            real_type const alpha, MatrixA& a, real_type const beta,
+    static return_type invoke( const char trans, const integer_t k,
+            const real_type alpha, const MatrixA& a, const real_type beta,
             MatrixC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -72,10 +72,11 @@ struct herk_impl {
 template< typename MatrixA, typename MatrixC >
 inline typename herk_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-herk( char const trans, integer_t const k,
-        typename traits::matrix_traits< MatrixA >::value_type const alpha,
-        MatrixA& a, typename traits::matrix_traits<
-        MatrixA >::value_type const beta, MatrixC& c ) {
+herk( const char trans, const integer_t k,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type alpha, const MatrixA& a,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type beta, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     herk_impl< value_type >::invoke( trans, k, alpha, a, beta, c );
 }

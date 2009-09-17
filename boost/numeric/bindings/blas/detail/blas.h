@@ -24,63 +24,63 @@ extern "C" {
 //
 
 // Value-type variants of asum
-float BLAS_SASUM( integer_t const* n, float const* x, integer_t const* incx );
-double BLAS_DASUM( integer_t const* n, double const* x,
-        integer_t const* incx );
+float BLAS_SASUM( const integer_t* n, const float* x, const integer_t* incx );
+double BLAS_DASUM( const integer_t* n, const double* x,
+        const integer_t* incx );
 
 // Value-type variants of axpy
-void BLAS_SAXPY( integer_t const* n, float const* a, float const* x,
-        integer_t const* incx, float* y, integer_t const* incy );
-void BLAS_DAXPY( integer_t const* n, double const* a, double const* x,
-        integer_t const* incx, double* y, integer_t const* incy );
-void BLAS_CAXPY( integer_t const* n, fcomplex_t const* a, fcomplex_t const* x,
-        integer_t const* incx, fcomplex_t* y, integer_t const* incy );
-void BLAS_ZAXPY( integer_t const* n, dcomplex_t const* a, dcomplex_t const* x,
-        integer_t const* incx, dcomplex_t* y, integer_t const* incy );
+void BLAS_SAXPY( const integer_t* n, const float* a, const float* x,
+        const integer_t* incx, float* y, const integer_t* incy );
+void BLAS_DAXPY( const integer_t* n, const double* a, const double* x,
+        const integer_t* incx, double* y, const integer_t* incy );
+void BLAS_CAXPY( const integer_t* n, const fcomplex_t* a, const fcomplex_t* x,
+        const integer_t* incx, fcomplex_t* y, const integer_t* incy );
+void BLAS_ZAXPY( const integer_t* n, const dcomplex_t* a, const dcomplex_t* x,
+        const integer_t* incx, dcomplex_t* y, const integer_t* incy );
 
 // Value-type variants of copy
-void BLAS_SCOPY( integer_t const* n, float const* x, integer_t const* incx,
-        float const* y, integer_t const* incy );
-void BLAS_DCOPY( integer_t const* n, double const* x, integer_t const* incx,
-        double const* y, integer_t const* incy );
-void BLAS_CCOPY( integer_t const* n, fcomplex_t const* x,
-        integer_t const* incx, fcomplex_t const* y, integer_t const* incy );
-void BLAS_ZCOPY( integer_t const* n, dcomplex_t const* x,
-        integer_t const* incx, dcomplex_t const* y, integer_t const* incy );
+void BLAS_SCOPY( const integer_t* n, const float* x, const integer_t* incx,
+        const float* y, const integer_t* incy );
+void BLAS_DCOPY( const integer_t* n, const double* x, const integer_t* incx,
+        const double* y, const integer_t* incy );
+void BLAS_CCOPY( const integer_t* n, const fcomplex_t* x,
+        const integer_t* incx, const fcomplex_t* y, const integer_t* incy );
+void BLAS_ZCOPY( const integer_t* n, const dcomplex_t* x,
+        const integer_t* incx, const dcomplex_t* y, const integer_t* incy );
 
 // Value-type variants of dot
-float BLAS_SDOT( integer_t const* n, float const* x, integer_t const* incx,
-        float const* y, integer_t const* incy );
-double BLAS_DDOT( integer_t const* n, double const* x, integer_t const* incx,
-        double const* y, integer_t const* incy );
+float BLAS_SDOT( const integer_t* n, const float* x, const integer_t* incx,
+        const float* y, const integer_t* incy );
+double BLAS_DDOT( const integer_t* n, const double* x, const integer_t* incx,
+        const double* y, const integer_t* incy );
 
 // Value-type variants of dotc
-fcomplex_t BLAS_CDOTC( integer_t const* n, fcomplex_t const* x,
-        integer_t const* incx, fcomplex_t const* y, integer_t const* incy );
-dcomplex_t BLAS_ZDOTC( integer_t const* n, dcomplex_t const* x,
-        integer_t const* incx, dcomplex_t const* y, integer_t const* incy );
+fcomplex_t BLAS_CDOTC( const integer_t* n, const fcomplex_t* x,
+        const integer_t* incx, const fcomplex_t* y, const integer_t* incy );
+dcomplex_t BLAS_ZDOTC( const integer_t* n, const dcomplex_t* x,
+        const integer_t* incx, const dcomplex_t* y, const integer_t* incy );
 
 // Value-type variants of dotu
-fcomplex_t BLAS_CDOTU( integer_t const* n, fcomplex_t const* x,
-        integer_t const* incx, fcomplex_t const* y, integer_t const* incy );
-dcomplex_t BLAS_ZDOTU( integer_t const* n, dcomplex_t const* x,
-        integer_t const* incx, dcomplex_t const* y, integer_t const* incy );
+fcomplex_t BLAS_CDOTU( const integer_t* n, const fcomplex_t* x,
+        const integer_t* incx, const fcomplex_t* y, const integer_t* incy );
+dcomplex_t BLAS_ZDOTU( const integer_t* n, const dcomplex_t* x,
+        const integer_t* incx, const dcomplex_t* y, const integer_t* incy );
 
 // Value-type variants of drot
-void BLAS_ZDROT( integer_t const* n, dcomplex_t const* cx,
-        integer_t const* incx, dcomplex_t const* cy, integer_t const* incy,
-        double const* c, double const* s );
+void BLAS_ZDROT( const integer_t* n, const dcomplex_t* cx,
+        const integer_t* incx, const dcomplex_t* cy, const integer_t* incy,
+        const double* c, const double* s );
 
 // Value-type variants of nrm2
-float BLAS_SNRM2( integer_t const* n, float const* x, integer_t const* incx );
-double BLAS_DNRM2( integer_t const* n, double const* x,
-        integer_t const* incx );
+float BLAS_SNRM2( const integer_t* n, const float* x, const integer_t* incx );
+double BLAS_DNRM2( const integer_t* n, const double* x,
+        const integer_t* incx );
 
 // Value-type variants of rot
-void BLAS_SROT( integer_t const* n, float const* x, integer_t const* incx,
-        float* y, integer_t const* incy, float const* c, float const* s );
-void BLAS_DROT( integer_t const* n, double const* x, integer_t const* incx,
-        double* y, integer_t const* incy, double const* c, double const* s );
+void BLAS_SROT( const integer_t* n, const float* x, const integer_t* incx,
+        float* y, const integer_t* incy, const float* c, const float* s );
+void BLAS_DROT( const integer_t* n, const double* x, const integer_t* incx,
+        double* y, const integer_t* incy, const double* c, const double* s );
 
 // Value-type variants of rotg
 void BLAS_SROTG( float* a, float* b, float* c, float* s );
@@ -89,465 +89,465 @@ void BLAS_CROTG( fcomplex_t* a, fcomplex_t* b, float* c, fcomplex_t* s );
 void BLAS_ZROTG( dcomplex_t* a, dcomplex_t* b, double* c, dcomplex_t* s );
 
 // Value-type variants of rotm
-void BLAS_SROTM( integer_t const* n, float* x, integer_t const* incx,
-        float* y, integer_t const* incy, float* param );
-void BLAS_DROTM( integer_t const* n, double* x, integer_t const* incx,
-        double* y, integer_t const* incy, double* param );
+void BLAS_SROTM( const integer_t* n, float* x, const integer_t* incx,
+        float* y, const integer_t* incy, float* param );
+void BLAS_DROTM( const integer_t* n, double* x, const integer_t* incx,
+        double* y, const integer_t* incy, double* param );
 
 // Value-type variants of rotmg
-void BLAS_SROTMG( float* d1, float* d2, float* x1, float const* y1,
+void BLAS_SROTMG( float* d1, float* d2, float* x1, const float* y1,
         float* sparam );
-void BLAS_DROTMG( double* d1, double* d2, double* x1, double const* y1,
+void BLAS_DROTMG( double* d1, double* d2, double* x1, const double* y1,
         double* dparam );
 
 // Value-type variants of scal
-void BLAS_SSCAL( integer_t const* n, float const* a, float const* x,
-        integer_t const* incx );
-void BLAS_DSCAL( integer_t const* n, double const* a, double const* x,
-        integer_t const* incx );
-void BLAS_CSCAL( integer_t const* n, fcomplex_t const* a, fcomplex_t const* x,
-        integer_t const* incx );
-void BLAS_ZSCAL( integer_t const* n, dcomplex_t const* a, dcomplex_t const* x,
-        integer_t const* incx );
+void BLAS_SSCAL( const integer_t* n, const float* a, const float* x,
+        const integer_t* incx );
+void BLAS_DSCAL( const integer_t* n, const double* a, const double* x,
+        const integer_t* incx );
+void BLAS_CSCAL( const integer_t* n, const fcomplex_t* a, const fcomplex_t* x,
+        const integer_t* incx );
+void BLAS_ZSCAL( const integer_t* n, const dcomplex_t* a, const dcomplex_t* x,
+        const integer_t* incx );
 
 // Value-type variants of sdot
-double BLAS_DSDOT( integer_t const* n, float const* sx, integer_t const* incx,
-        float const* sy, integer_t const* incy );
+double BLAS_DSDOT( const integer_t* n, const float* sx, const integer_t* incx,
+        const float* sy, const integer_t* incy );
 
 // Value-type variants of srot
-void BLAS_CSROT( integer_t const* n, fcomplex_t const* cx,
-        integer_t const* incx, fcomplex_t const* cy, integer_t const* incy,
-        float const* c, float const* s );
+void BLAS_CSROT( const integer_t* n, const fcomplex_t* cx,
+        const integer_t* incx, const fcomplex_t* cy, const integer_t* incy,
+        const float* c, const float* s );
 
 // Value-type variants of swap
-void BLAS_SSWAP( integer_t const* n, float* x, integer_t const* incx,
-        float* y, integer_t const* incy );
-void BLAS_DSWAP( integer_t const* n, double* x, integer_t const* incx,
-        double* y, integer_t const* incy );
-void BLAS_CSWAP( integer_t const* n, fcomplex_t* x, integer_t const* incx,
-        fcomplex_t* y, integer_t const* incy );
-void BLAS_ZSWAP( integer_t const* n, dcomplex_t* x, integer_t const* incx,
-        dcomplex_t* y, integer_t const* incy );
+void BLAS_SSWAP( const integer_t* n, float* x, const integer_t* incx,
+        float* y, const integer_t* incy );
+void BLAS_DSWAP( const integer_t* n, double* x, const integer_t* incx,
+        double* y, const integer_t* incy );
+void BLAS_CSWAP( const integer_t* n, fcomplex_t* x, const integer_t* incx,
+        fcomplex_t* y, const integer_t* incy );
+void BLAS_ZSWAP( const integer_t* n, dcomplex_t* x, const integer_t* incx,
+        dcomplex_t* y, const integer_t* incy );
 
 //
 // BLAS level2 routines
 //
 
 // Value-type variants of gbmv
-void BLAS_SGBMV( char const* trans, integer_t const* m, integer_t const* n,
-        integer_t const* kl, integer_t const* ku, float const* alpha,
-        float const* a, integer_t const* lda, float const* x,
-        integer_t const* incx, float const* beta, float* y,
-        integer_t const* incy );
-void BLAS_DGBMV( char const* trans, integer_t const* m, integer_t const* n,
-        integer_t const* kl, integer_t const* ku, double const* alpha,
-        double const* a, integer_t const* lda, double const* x,
-        integer_t const* incx, double const* beta, double* y,
-        integer_t const* incy );
-void BLAS_CGBMV( char const* trans, integer_t const* m, integer_t const* n,
-        integer_t const* kl, integer_t const* ku, fcomplex_t const* alpha,
-        fcomplex_t const* a, integer_t const* lda, fcomplex_t const* x,
-        integer_t const* incx, fcomplex_t const* beta, fcomplex_t* y,
-        integer_t const* incy );
-void BLAS_ZGBMV( char const* trans, integer_t const* m, integer_t const* n,
-        integer_t const* kl, integer_t const* ku, dcomplex_t const* alpha,
-        dcomplex_t const* a, integer_t const* lda, dcomplex_t const* x,
-        integer_t const* incx, dcomplex_t const* beta, dcomplex_t* y,
-        integer_t const* incy );
+void BLAS_SGBMV( const char* trans, const integer_t* m, const integer_t* n,
+        const integer_t* kl, const integer_t* ku, const float* alpha,
+        const float* a, const integer_t* lda, const float* x,
+        const integer_t* incx, const float* beta, float* y,
+        const integer_t* incy );
+void BLAS_DGBMV( const char* trans, const integer_t* m, const integer_t* n,
+        const integer_t* kl, const integer_t* ku, const double* alpha,
+        const double* a, const integer_t* lda, const double* x,
+        const integer_t* incx, const double* beta, double* y,
+        const integer_t* incy );
+void BLAS_CGBMV( const char* trans, const integer_t* m, const integer_t* n,
+        const integer_t* kl, const integer_t* ku, const fcomplex_t* alpha,
+        const fcomplex_t* a, const integer_t* lda, const fcomplex_t* x,
+        const integer_t* incx, const fcomplex_t* beta, fcomplex_t* y,
+        const integer_t* incy );
+void BLAS_ZGBMV( const char* trans, const integer_t* m, const integer_t* n,
+        const integer_t* kl, const integer_t* ku, const dcomplex_t* alpha,
+        const dcomplex_t* a, const integer_t* lda, const dcomplex_t* x,
+        const integer_t* incx, const dcomplex_t* beta, dcomplex_t* y,
+        const integer_t* incy );
 
 // Value-type variants of gemv
-void BLAS_SGEMV( char const* trans, integer_t const* m, integer_t const* n,
-        float const* alpha, float const* a, integer_t const* lda,
-        float const* x, integer_t const* incx, float const* beta, float* y,
-        integer_t const* incy );
-void BLAS_DGEMV( char const* trans, integer_t const* m, integer_t const* n,
-        double const* alpha, double const* a, integer_t const* lda,
-        double const* x, integer_t const* incx, double const* beta, double* y,
-        integer_t const* incy );
-void BLAS_CGEMV( char const* trans, integer_t const* m, integer_t const* n,
-        fcomplex_t const* alpha, fcomplex_t const* a, integer_t const* lda,
-        fcomplex_t const* x, integer_t const* incx, fcomplex_t const* beta,
-        fcomplex_t* y, integer_t const* incy );
-void BLAS_ZGEMV( char const* trans, integer_t const* m, integer_t const* n,
-        dcomplex_t const* alpha, dcomplex_t const* a, integer_t const* lda,
-        dcomplex_t const* x, integer_t const* incx, dcomplex_t const* beta,
-        dcomplex_t* y, integer_t const* incy );
+void BLAS_SGEMV( const char* trans, const integer_t* m, const integer_t* n,
+        const float* alpha, const float* a, const integer_t* lda,
+        const float* x, const integer_t* incx, const float* beta, float* y,
+        const integer_t* incy );
+void BLAS_DGEMV( const char* trans, const integer_t* m, const integer_t* n,
+        const double* alpha, const double* a, const integer_t* lda,
+        const double* x, const integer_t* incx, const double* beta, double* y,
+        const integer_t* incy );
+void BLAS_CGEMV( const char* trans, const integer_t* m, const integer_t* n,
+        const fcomplex_t* alpha, const fcomplex_t* a, const integer_t* lda,
+        const fcomplex_t* x, const integer_t* incx, const fcomplex_t* beta,
+        fcomplex_t* y, const integer_t* incy );
+void BLAS_ZGEMV( const char* trans, const integer_t* m, const integer_t* n,
+        const dcomplex_t* alpha, const dcomplex_t* a, const integer_t* lda,
+        const dcomplex_t* x, const integer_t* incx, const dcomplex_t* beta,
+        dcomplex_t* y, const integer_t* incy );
 
 // Value-type variants of ger
-void BLAS_SGER( integer_t const* m, integer_t const* n, float const* alpha,
-        float const* x, integer_t const* incx, float const* y,
-        integer_t const* incy, float* a, integer_t const* lda );
-void BLAS_DGER( integer_t const* m, integer_t const* n, double const* alpha,
-        double const* x, integer_t const* incx, double const* y,
-        integer_t const* incy, double* a, integer_t const* lda );
+void BLAS_SGER( const integer_t* m, const integer_t* n, const float* alpha,
+        const float* x, const integer_t* incx, const float* y,
+        const integer_t* incy, float* a, const integer_t* lda );
+void BLAS_DGER( const integer_t* m, const integer_t* n, const double* alpha,
+        const double* x, const integer_t* incx, const double* y,
+        const integer_t* incy, double* a, const integer_t* lda );
 
 // Value-type variants of gerc
-void BLAS_CGERC( integer_t const* m, integer_t const* n,
-        fcomplex_t const* alpha, fcomplex_t const* x, integer_t const* incx,
-        fcomplex_t const* y, integer_t const* incy, fcomplex_t* a,
-        integer_t const* lda );
-void BLAS_ZGERC( integer_t const* m, integer_t const* n,
-        dcomplex_t const* alpha, dcomplex_t const* x, integer_t const* incx,
-        dcomplex_t const* y, integer_t const* incy, dcomplex_t* a,
-        integer_t const* lda );
+void BLAS_CGERC( const integer_t* m, const integer_t* n,
+        const fcomplex_t* alpha, const fcomplex_t* x, const integer_t* incx,
+        const fcomplex_t* y, const integer_t* incy, fcomplex_t* a,
+        const integer_t* lda );
+void BLAS_ZGERC( const integer_t* m, const integer_t* n,
+        const dcomplex_t* alpha, const dcomplex_t* x, const integer_t* incx,
+        const dcomplex_t* y, const integer_t* incy, dcomplex_t* a,
+        const integer_t* lda );
 
 // Value-type variants of geru
-void BLAS_CGERU( integer_t const* m, integer_t const* n,
-        fcomplex_t const* alpha, fcomplex_t const* x, integer_t const* incx,
-        fcomplex_t const* y, integer_t const* incy, fcomplex_t* a,
-        integer_t const* lda );
-void BLAS_ZGERU( integer_t const* m, integer_t const* n,
-        dcomplex_t const* alpha, dcomplex_t const* x, integer_t const* incx,
-        dcomplex_t const* y, integer_t const* incy, dcomplex_t* a,
-        integer_t const* lda );
+void BLAS_CGERU( const integer_t* m, const integer_t* n,
+        const fcomplex_t* alpha, const fcomplex_t* x, const integer_t* incx,
+        const fcomplex_t* y, const integer_t* incy, fcomplex_t* a,
+        const integer_t* lda );
+void BLAS_ZGERU( const integer_t* m, const integer_t* n,
+        const dcomplex_t* alpha, const dcomplex_t* x, const integer_t* incx,
+        const dcomplex_t* y, const integer_t* incy, dcomplex_t* a,
+        const integer_t* lda );
 
 // Value-type variants of hbmv
-void BLAS_CHBMV( char const* uplo, integer_t const* n, integer_t const* k,
-        fcomplex_t const* alpha, fcomplex_t const* a, integer_t const* lda,
-        fcomplex_t const* x, integer_t const* incx, fcomplex_t const* beta,
-        fcomplex_t* y, integer_t const* incy );
-void BLAS_ZHBMV( char const* uplo, integer_t const* n, integer_t const* k,
-        dcomplex_t const* alpha, dcomplex_t const* a, integer_t const* lda,
-        dcomplex_t const* x, integer_t const* incx, dcomplex_t const* beta,
-        dcomplex_t* y, integer_t const* incy );
+void BLAS_CHBMV( const char* uplo, const integer_t* n, const integer_t* k,
+        const fcomplex_t* alpha, const fcomplex_t* a, const integer_t* lda,
+        const fcomplex_t* x, const integer_t* incx, const fcomplex_t* beta,
+        fcomplex_t* y, const integer_t* incy );
+void BLAS_ZHBMV( const char* uplo, const integer_t* n, const integer_t* k,
+        const dcomplex_t* alpha, const dcomplex_t* a, const integer_t* lda,
+        const dcomplex_t* x, const integer_t* incx, const dcomplex_t* beta,
+        dcomplex_t* y, const integer_t* incy );
 
 // Value-type variants of hemv
-void BLAS_CHEMV( char const* uplo, integer_t const* n,
-        fcomplex_t const* alpha, fcomplex_t const* a, integer_t const* lda,
-        fcomplex_t const* x, integer_t const* incx, fcomplex_t const* beta,
-        fcomplex_t* y, integer_t const* incy );
-void BLAS_ZHEMV( char const* uplo, integer_t const* n,
-        dcomplex_t const* alpha, dcomplex_t const* a, integer_t const* lda,
-        dcomplex_t const* x, integer_t const* incx, dcomplex_t const* beta,
-        dcomplex_t* y, integer_t const* incy );
+void BLAS_CHEMV( const char* uplo, const integer_t* n,
+        const fcomplex_t* alpha, const fcomplex_t* a, const integer_t* lda,
+        const fcomplex_t* x, const integer_t* incx, const fcomplex_t* beta,
+        fcomplex_t* y, const integer_t* incy );
+void BLAS_ZHEMV( const char* uplo, const integer_t* n,
+        const dcomplex_t* alpha, const dcomplex_t* a, const integer_t* lda,
+        const dcomplex_t* x, const integer_t* incx, const dcomplex_t* beta,
+        dcomplex_t* y, const integer_t* incy );
 
 // Value-type variants of her
-void BLAS_CHER( char const* uplo, integer_t const* n, float const* alpha,
-        fcomplex_t const* x, integer_t const* incx, fcomplex_t* a,
-        integer_t const* lda );
-void BLAS_ZHER( char const* uplo, integer_t const* n, double const* alpha,
-        dcomplex_t const* x, integer_t const* incx, dcomplex_t* a,
-        integer_t const* lda );
+void BLAS_CHER( const char* uplo, const integer_t* n, const float* alpha,
+        const fcomplex_t* x, const integer_t* incx, fcomplex_t* a,
+        const integer_t* lda );
+void BLAS_ZHER( const char* uplo, const integer_t* n, const double* alpha,
+        const dcomplex_t* x, const integer_t* incx, dcomplex_t* a,
+        const integer_t* lda );
 
 // Value-type variants of her2
-void BLAS_CHER2( char const* uplo, integer_t const* n,
-        fcomplex_t const* alpha, fcomplex_t const* x, integer_t const* incx,
-        fcomplex_t const* y, integer_t const* incy, fcomplex_t* a,
-        integer_t const* lda );
-void BLAS_ZHER2( char const* uplo, integer_t const* n,
-        dcomplex_t const* alpha, dcomplex_t const* x, integer_t const* incx,
-        dcomplex_t const* y, integer_t const* incy, dcomplex_t* a,
-        integer_t const* lda );
+void BLAS_CHER2( const char* uplo, const integer_t* n,
+        const fcomplex_t* alpha, const fcomplex_t* x, const integer_t* incx,
+        const fcomplex_t* y, const integer_t* incy, fcomplex_t* a,
+        const integer_t* lda );
+void BLAS_ZHER2( const char* uplo, const integer_t* n,
+        const dcomplex_t* alpha, const dcomplex_t* x, const integer_t* incx,
+        const dcomplex_t* y, const integer_t* incy, dcomplex_t* a,
+        const integer_t* lda );
 
 // Value-type variants of hpmv
-void BLAS_CHPMV( char const* uplo, integer_t const* n,
-        fcomplex_t const* alpha, fcomplex_t const* ap, fcomplex_t const* x,
-        integer_t const* incx, fcomplex_t const* beta, fcomplex_t* y,
-        integer_t const* incy );
-void BLAS_ZHPMV( char const* uplo, integer_t const* n,
-        dcomplex_t const* alpha, dcomplex_t const* ap, dcomplex_t const* x,
-        integer_t const* incx, dcomplex_t const* beta, dcomplex_t* y,
-        integer_t const* incy );
+void BLAS_CHPMV( const char* uplo, const integer_t* n,
+        const fcomplex_t* alpha, const fcomplex_t* ap, const fcomplex_t* x,
+        const integer_t* incx, const fcomplex_t* beta, fcomplex_t* y,
+        const integer_t* incy );
+void BLAS_ZHPMV( const char* uplo, const integer_t* n,
+        const dcomplex_t* alpha, const dcomplex_t* ap, const dcomplex_t* x,
+        const integer_t* incx, const dcomplex_t* beta, dcomplex_t* y,
+        const integer_t* incy );
 
 // Value-type variants of hpr
-void BLAS_CHPR( char const* uplo, integer_t const* n, float const* alpha,
-        fcomplex_t const* x, integer_t const* incx, fcomplex_t* ap );
-void BLAS_ZHPR( char const* uplo, integer_t const* n, double const* alpha,
-        dcomplex_t const* x, integer_t const* incx, dcomplex_t* ap );
+void BLAS_CHPR( const char* uplo, const integer_t* n, const float* alpha,
+        const fcomplex_t* x, const integer_t* incx, fcomplex_t* ap );
+void BLAS_ZHPR( const char* uplo, const integer_t* n, const double* alpha,
+        const dcomplex_t* x, const integer_t* incx, dcomplex_t* ap );
 
 // Value-type variants of hpr2
-void BLAS_CHPR2( char const* uplo, integer_t const* n,
-        fcomplex_t const* alpha, fcomplex_t const* x, integer_t const* incx,
-        fcomplex_t const* y, integer_t const* incy, fcomplex_t* ap );
-void BLAS_ZHPR2( char const* uplo, integer_t const* n,
-        dcomplex_t const* alpha, dcomplex_t const* x, integer_t const* incx,
-        dcomplex_t const* y, integer_t const* incy, dcomplex_t* ap );
+void BLAS_CHPR2( const char* uplo, const integer_t* n,
+        const fcomplex_t* alpha, const fcomplex_t* x, const integer_t* incx,
+        const fcomplex_t* y, const integer_t* incy, fcomplex_t* ap );
+void BLAS_ZHPR2( const char* uplo, const integer_t* n,
+        const dcomplex_t* alpha, const dcomplex_t* x, const integer_t* incx,
+        const dcomplex_t* y, const integer_t* incy, dcomplex_t* ap );
 
 // Value-type variants of sbmv
-void BLAS_SSBMV( char const* uplo, integer_t const* n, integer_t const* k,
-        float const* alpha, float const* a, integer_t const* lda,
-        float const* x, integer_t const* incx, float const* beta, float* y,
-        integer_t const* incy );
-void BLAS_DSBMV( char const* uplo, integer_t const* n, integer_t const* k,
-        double const* alpha, double const* a, integer_t const* lda,
-        double const* x, integer_t const* incx, double const* beta, double* y,
-        integer_t const* incy );
+void BLAS_SSBMV( const char* uplo, const integer_t* n, const integer_t* k,
+        const float* alpha, const float* a, const integer_t* lda,
+        const float* x, const integer_t* incx, const float* beta, float* y,
+        const integer_t* incy );
+void BLAS_DSBMV( const char* uplo, const integer_t* n, const integer_t* k,
+        const double* alpha, const double* a, const integer_t* lda,
+        const double* x, const integer_t* incx, const double* beta, double* y,
+        const integer_t* incy );
 
 // Value-type variants of spmv
-void BLAS_SSPMV( char const* uplo, integer_t const* n, float const* alpha,
-        float const* ap, float const* x, integer_t const* incx,
-        float const* beta, float* y, integer_t const* incy );
-void BLAS_DSPMV( char const* uplo, integer_t const* n, double const* alpha,
-        double const* ap, double const* x, integer_t const* incx,
-        double const* beta, double* y, integer_t const* incy );
+void BLAS_SSPMV( const char* uplo, const integer_t* n, const float* alpha,
+        const float* ap, const float* x, const integer_t* incx,
+        const float* beta, float* y, const integer_t* incy );
+void BLAS_DSPMV( const char* uplo, const integer_t* n, const double* alpha,
+        const double* ap, const double* x, const integer_t* incx,
+        const double* beta, double* y, const integer_t* incy );
 
 // Value-type variants of spr
-void BLAS_SSPR( char const* uplo, integer_t const* n, float const* alpha,
-        float const* x, integer_t const* incx, float* ap );
-void BLAS_DSPR( char const* uplo, integer_t const* n, double const* alpha,
-        double const* x, integer_t const* incx, double* ap );
+void BLAS_SSPR( const char* uplo, const integer_t* n, const float* alpha,
+        const float* x, const integer_t* incx, float* ap );
+void BLAS_DSPR( const char* uplo, const integer_t* n, const double* alpha,
+        const double* x, const integer_t* incx, double* ap );
 
 // Value-type variants of spr2
-void BLAS_SSPR2( char const* uplo, integer_t const* n, float const* alpha,
-        float const* x, integer_t const* incx, float const* y,
-        integer_t const* incy, float* ap );
-void BLAS_DSPR2( char const* uplo, integer_t const* n, double const* alpha,
-        double const* x, integer_t const* incx, double const* y,
-        integer_t const* incy, double* ap );
+void BLAS_SSPR2( const char* uplo, const integer_t* n, const float* alpha,
+        const float* x, const integer_t* incx, const float* y,
+        const integer_t* incy, float* ap );
+void BLAS_DSPR2( const char* uplo, const integer_t* n, const double* alpha,
+        const double* x, const integer_t* incx, const double* y,
+        const integer_t* incy, double* ap );
 
 // Value-type variants of symv
-void BLAS_SSYMV( char const* uplo, integer_t const* n, float const* alpha,
-        float const* a, integer_t const* lda, float const* x,
-        integer_t const* incx, float const* beta, float* y,
-        integer_t const* incy );
-void BLAS_DSYMV( char const* uplo, integer_t const* n, double const* alpha,
-        double const* a, integer_t const* lda, double const* x,
-        integer_t const* incx, double const* beta, double* y,
-        integer_t const* incy );
+void BLAS_SSYMV( const char* uplo, const integer_t* n, const float* alpha,
+        const float* a, const integer_t* lda, const float* x,
+        const integer_t* incx, const float* beta, float* y,
+        const integer_t* incy );
+void BLAS_DSYMV( const char* uplo, const integer_t* n, const double* alpha,
+        const double* a, const integer_t* lda, const double* x,
+        const integer_t* incx, const double* beta, double* y,
+        const integer_t* incy );
 
 // Value-type variants of syr
-void BLAS_SSYR( char const* uplo, integer_t const* n, float const* alpha,
-        float const* x, integer_t const* incx, float* a,
-        integer_t const* lda );
-void BLAS_DSYR( char const* uplo, integer_t const* n, double const* alpha,
-        double const* x, integer_t const* incx, double* a,
-        integer_t const* lda );
+void BLAS_SSYR( const char* uplo, const integer_t* n, const float* alpha,
+        const float* x, const integer_t* incx, float* a,
+        const integer_t* lda );
+void BLAS_DSYR( const char* uplo, const integer_t* n, const double* alpha,
+        const double* x, const integer_t* incx, double* a,
+        const integer_t* lda );
 
 // Value-type variants of syr2
-void BLAS_SSYR2( char const* uplo, integer_t const* n, float const* alpha,
-        float const* x, integer_t const* incx, float const* y,
-        integer_t const* incy, float* a, integer_t const* lda );
-void BLAS_DSYR2( char const* uplo, integer_t const* n, double const* alpha,
-        double const* x, integer_t const* incx, double const* y,
-        integer_t const* incy, double* a, integer_t const* lda );
+void BLAS_SSYR2( const char* uplo, const integer_t* n, const float* alpha,
+        const float* x, const integer_t* incx, const float* y,
+        const integer_t* incy, float* a, const integer_t* lda );
+void BLAS_DSYR2( const char* uplo, const integer_t* n, const double* alpha,
+        const double* x, const integer_t* incx, const double* y,
+        const integer_t* incy, double* a, const integer_t* lda );
 
 // Value-type variants of tbmv
-void BLAS_STBMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, integer_t const* k, float const* a,
-        integer_t const* lda, float* x, integer_t const* incx );
-void BLAS_DTBMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, integer_t const* k, double const* a,
-        integer_t const* lda, double* x, integer_t const* incx );
-void BLAS_CTBMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, integer_t const* k, fcomplex_t const* a,
-        integer_t const* lda, fcomplex_t* x, integer_t const* incx );
-void BLAS_ZTBMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, integer_t const* k, dcomplex_t const* a,
-        integer_t const* lda, dcomplex_t* x, integer_t const* incx );
+void BLAS_STBMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const integer_t* k, const float* a,
+        const integer_t* lda, float* x, const integer_t* incx );
+void BLAS_DTBMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const integer_t* k, const double* a,
+        const integer_t* lda, double* x, const integer_t* incx );
+void BLAS_CTBMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const integer_t* k, const fcomplex_t* a,
+        const integer_t* lda, fcomplex_t* x, const integer_t* incx );
+void BLAS_ZTBMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const integer_t* k, const dcomplex_t* a,
+        const integer_t* lda, dcomplex_t* x, const integer_t* incx );
 
 // Value-type variants of tbsv
-void BLAS_STBSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, integer_t const* k, float const* a,
-        integer_t const* lda, float* x, integer_t const* incx );
-void BLAS_DTBSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, integer_t const* k, double const* a,
-        integer_t const* lda, double* x, integer_t const* incx );
-void BLAS_CTBSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, integer_t const* k, fcomplex_t const* a,
-        integer_t const* lda, fcomplex_t* x, integer_t const* incx );
-void BLAS_ZTBSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, integer_t const* k, dcomplex_t const* a,
-        integer_t const* lda, dcomplex_t* x, integer_t const* incx );
+void BLAS_STBSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const integer_t* k, const float* a,
+        const integer_t* lda, float* x, const integer_t* incx );
+void BLAS_DTBSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const integer_t* k, const double* a,
+        const integer_t* lda, double* x, const integer_t* incx );
+void BLAS_CTBSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const integer_t* k, const fcomplex_t* a,
+        const integer_t* lda, fcomplex_t* x, const integer_t* incx );
+void BLAS_ZTBSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const integer_t* k, const dcomplex_t* a,
+        const integer_t* lda, dcomplex_t* x, const integer_t* incx );
 
 // Value-type variants of tpmv
-void BLAS_STPMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, float const* ap, float* x, integer_t const* incx );
-void BLAS_DTPMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, double const* ap, double* x,
-        integer_t const* incx );
-void BLAS_CTPMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, fcomplex_t const* ap, fcomplex_t* x,
-        integer_t const* incx );
-void BLAS_ZTPMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, dcomplex_t const* ap, dcomplex_t* x,
-        integer_t const* incx );
+void BLAS_STPMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const float* ap, float* x, const integer_t* incx );
+void BLAS_DTPMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const double* ap, double* x,
+        const integer_t* incx );
+void BLAS_CTPMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const fcomplex_t* ap, fcomplex_t* x,
+        const integer_t* incx );
+void BLAS_ZTPMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const dcomplex_t* ap, dcomplex_t* x,
+        const integer_t* incx );
 
 // Value-type variants of tpsv
-void BLAS_STPSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, float const* ap, float* x, integer_t const* incx );
-void BLAS_DTPSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, double const* ap, double* x,
-        integer_t const* incx );
-void BLAS_CTPSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, fcomplex_t const* ap, fcomplex_t* x,
-        integer_t const* incx );
-void BLAS_ZTPSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, dcomplex_t const* ap, dcomplex_t* x,
-        integer_t const* incx );
+void BLAS_STPSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const float* ap, float* x, const integer_t* incx );
+void BLAS_DTPSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const double* ap, double* x,
+        const integer_t* incx );
+void BLAS_CTPSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const fcomplex_t* ap, fcomplex_t* x,
+        const integer_t* incx );
+void BLAS_ZTPSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const dcomplex_t* ap, dcomplex_t* x,
+        const integer_t* incx );
 
 // Value-type variants of trmv
-void BLAS_STRMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, float const* a, integer_t const* lda, float* x,
-        integer_t const* incx );
-void BLAS_DTRMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, double const* a, integer_t const* lda, double* x,
-        integer_t const* incx );
-void BLAS_CTRMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, fcomplex_t const* a, integer_t const* lda,
-        fcomplex_t* x, integer_t const* incx );
-void BLAS_ZTRMV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, dcomplex_t const* a, integer_t const* lda,
-        dcomplex_t* x, integer_t const* incx );
+void BLAS_STRMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const float* a, const integer_t* lda, float* x,
+        const integer_t* incx );
+void BLAS_DTRMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const double* a, const integer_t* lda, double* x,
+        const integer_t* incx );
+void BLAS_CTRMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const fcomplex_t* a, const integer_t* lda,
+        fcomplex_t* x, const integer_t* incx );
+void BLAS_ZTRMV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const dcomplex_t* a, const integer_t* lda,
+        dcomplex_t* x, const integer_t* incx );
 
 // Value-type variants of trsv
-void BLAS_STRSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, float const* a, integer_t const* lda, float* x,
-        integer_t const* incx );
-void BLAS_DTRSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, double const* a, integer_t const* lda, double* x,
-        integer_t const* incx );
-void BLAS_CTRSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, fcomplex_t const* a, integer_t const* lda,
-        fcomplex_t* x, integer_t const* incx );
-void BLAS_ZTRSV( char const* uplo, char const* trans, char const* diag,
-        integer_t const* n, dcomplex_t const* a, integer_t const* lda,
-        dcomplex_t* x, integer_t const* incx );
+void BLAS_STRSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const float* a, const integer_t* lda, float* x,
+        const integer_t* incx );
+void BLAS_DTRSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const double* a, const integer_t* lda, double* x,
+        const integer_t* incx );
+void BLAS_CTRSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const fcomplex_t* a, const integer_t* lda,
+        fcomplex_t* x, const integer_t* incx );
+void BLAS_ZTRSV( const char* uplo, const char* trans, const char* diag,
+        const integer_t* n, const dcomplex_t* a, const integer_t* lda,
+        dcomplex_t* x, const integer_t* incx );
 
 //
 // BLAS level3 routines
 //
 
 // Value-type variants of gemm
-void BLAS_SGEMM( char const* transa, char const* transb, integer_t const* m,
-        integer_t const* n, integer_t const* k, float const* alpha,
-        float const* a, integer_t const* lda, float const* b,
-        integer_t const* ldb, float const* beta, float* c,
-        integer_t const* ldc );
-void BLAS_DGEMM( char const* transa, char const* transb, integer_t const* m,
-        integer_t const* n, integer_t const* k, double const* alpha,
-        double const* a, integer_t const* lda, double const* b,
-        integer_t const* ldb, double const* beta, double* c,
-        integer_t const* ldc );
-void BLAS_CGEMM( char const* transa, char const* transb, integer_t const* m,
-        integer_t const* n, integer_t const* k, fcomplex_t const* alpha,
-        fcomplex_t const* a, integer_t const* lda, fcomplex_t const* b,
-        integer_t const* ldb, fcomplex_t const* beta, fcomplex_t* c,
-        integer_t const* ldc );
-void BLAS_ZGEMM( char const* transa, char const* transb, integer_t const* m,
-        integer_t const* n, integer_t const* k, dcomplex_t const* alpha,
-        dcomplex_t const* a, integer_t const* lda, dcomplex_t const* b,
-        integer_t const* ldb, dcomplex_t const* beta, dcomplex_t* c,
-        integer_t const* ldc );
+void BLAS_SGEMM( const char* transa, const char* transb, const integer_t* m,
+        const integer_t* n, const integer_t* k, const float* alpha,
+        const float* a, const integer_t* lda, const float* b,
+        const integer_t* ldb, const float* beta, float* c,
+        const integer_t* ldc );
+void BLAS_DGEMM( const char* transa, const char* transb, const integer_t* m,
+        const integer_t* n, const integer_t* k, const double* alpha,
+        const double* a, const integer_t* lda, const double* b,
+        const integer_t* ldb, const double* beta, double* c,
+        const integer_t* ldc );
+void BLAS_CGEMM( const char* transa, const char* transb, const integer_t* m,
+        const integer_t* n, const integer_t* k, const fcomplex_t* alpha,
+        const fcomplex_t* a, const integer_t* lda, const fcomplex_t* b,
+        const integer_t* ldb, const fcomplex_t* beta, fcomplex_t* c,
+        const integer_t* ldc );
+void BLAS_ZGEMM( const char* transa, const char* transb, const integer_t* m,
+        const integer_t* n, const integer_t* k, const dcomplex_t* alpha,
+        const dcomplex_t* a, const integer_t* lda, const dcomplex_t* b,
+        const integer_t* ldb, const dcomplex_t* beta, dcomplex_t* c,
+        const integer_t* ldc );
 
 // Value-type variants of hemm
-void BLAS_CHEMM( char const* side, char const* uplo, integer_t const* m,
-        integer_t const* n, fcomplex_t const* alpha, fcomplex_t const* a,
-        integer_t const* lda, fcomplex_t const* b, integer_t const* ldb,
-        fcomplex_t const* beta, fcomplex_t* c, integer_t const* ldc );
-void BLAS_ZHEMM( char const* side, char const* uplo, integer_t const* m,
-        integer_t const* n, dcomplex_t const* alpha, dcomplex_t const* a,
-        integer_t const* lda, dcomplex_t const* b, integer_t const* ldb,
-        dcomplex_t const* beta, dcomplex_t* c, integer_t const* ldc );
+void BLAS_CHEMM( const char* side, const char* uplo, const integer_t* m,
+        const integer_t* n, const fcomplex_t* alpha, const fcomplex_t* a,
+        const integer_t* lda, const fcomplex_t* b, const integer_t* ldb,
+        const fcomplex_t* beta, fcomplex_t* c, const integer_t* ldc );
+void BLAS_ZHEMM( const char* side, const char* uplo, const integer_t* m,
+        const integer_t* n, const dcomplex_t* alpha, const dcomplex_t* a,
+        const integer_t* lda, const dcomplex_t* b, const integer_t* ldb,
+        const dcomplex_t* beta, dcomplex_t* c, const integer_t* ldc );
 
 // Value-type variants of her2k
-void BLAS_CHER2K( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, fcomplex_t const* alpha, fcomplex_t const* a,
-        integer_t const* lda, fcomplex_t const* b, integer_t const* ldb,
-        float const* beta, fcomplex_t* c, integer_t const* ldc );
-void BLAS_ZHER2K( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, dcomplex_t const* alpha, dcomplex_t const* a,
-        integer_t const* lda, dcomplex_t const* b, integer_t const* ldb,
-        double const* beta, dcomplex_t* c, integer_t const* ldc );
+void BLAS_CHER2K( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const fcomplex_t* alpha, const fcomplex_t* a,
+        const integer_t* lda, const fcomplex_t* b, const integer_t* ldb,
+        const float* beta, fcomplex_t* c, const integer_t* ldc );
+void BLAS_ZHER2K( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const dcomplex_t* alpha, const dcomplex_t* a,
+        const integer_t* lda, const dcomplex_t* b, const integer_t* ldb,
+        const double* beta, dcomplex_t* c, const integer_t* ldc );
 
 // Value-type variants of herk
-void BLAS_CHERK( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, float const* alpha, fcomplex_t const* a,
-        integer_t const* lda, float const* beta, fcomplex_t* c,
-        integer_t const* ldc );
-void BLAS_ZHERK( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, double const* alpha, dcomplex_t const* a,
-        integer_t const* lda, double const* beta, dcomplex_t* c,
-        integer_t const* ldc );
+void BLAS_CHERK( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const float* alpha, const fcomplex_t* a,
+        const integer_t* lda, const float* beta, fcomplex_t* c,
+        const integer_t* ldc );
+void BLAS_ZHERK( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const double* alpha, const dcomplex_t* a,
+        const integer_t* lda, const double* beta, dcomplex_t* c,
+        const integer_t* ldc );
 
 // Value-type variants of symm
-void BLAS_SSYMM( char const* side, char const* uplo, integer_t const* m,
-        integer_t const* n, float const* alpha, float const* a,
-        integer_t const* lda, float const* b, integer_t const* ldb,
-        float const* beta, float* c, integer_t const* ldc );
-void BLAS_DSYMM( char const* side, char const* uplo, integer_t const* m,
-        integer_t const* n, double const* alpha, double const* a,
-        integer_t const* lda, double const* b, integer_t const* ldb,
-        double const* beta, double* c, integer_t const* ldc );
-void BLAS_CSYMM( char const* side, char const* uplo, integer_t const* m,
-        integer_t const* n, fcomplex_t const* alpha, fcomplex_t const* a,
-        integer_t const* lda, fcomplex_t const* b, integer_t const* ldb,
-        fcomplex_t const* beta, fcomplex_t* c, integer_t const* ldc );
-void BLAS_ZSYMM( char const* side, char const* uplo, integer_t const* m,
-        integer_t const* n, dcomplex_t const* alpha, dcomplex_t const* a,
-        integer_t const* lda, dcomplex_t const* b, integer_t const* ldb,
-        dcomplex_t const* beta, dcomplex_t* c, integer_t const* ldc );
+void BLAS_SSYMM( const char* side, const char* uplo, const integer_t* m,
+        const integer_t* n, const float* alpha, const float* a,
+        const integer_t* lda, const float* b, const integer_t* ldb,
+        const float* beta, float* c, const integer_t* ldc );
+void BLAS_DSYMM( const char* side, const char* uplo, const integer_t* m,
+        const integer_t* n, const double* alpha, const double* a,
+        const integer_t* lda, const double* b, const integer_t* ldb,
+        const double* beta, double* c, const integer_t* ldc );
+void BLAS_CSYMM( const char* side, const char* uplo, const integer_t* m,
+        const integer_t* n, const fcomplex_t* alpha, const fcomplex_t* a,
+        const integer_t* lda, const fcomplex_t* b, const integer_t* ldb,
+        const fcomplex_t* beta, fcomplex_t* c, const integer_t* ldc );
+void BLAS_ZSYMM( const char* side, const char* uplo, const integer_t* m,
+        const integer_t* n, const dcomplex_t* alpha, const dcomplex_t* a,
+        const integer_t* lda, const dcomplex_t* b, const integer_t* ldb,
+        const dcomplex_t* beta, dcomplex_t* c, const integer_t* ldc );
 
 // Value-type variants of syr2k
-void BLAS_SSYR2K( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, float const* alpha, float const* a,
-        integer_t const* lda, float const* b, integer_t const* ldb,
-        float const* beta, float* c, integer_t const* ldc );
-void BLAS_DSYR2K( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, double const* alpha, double const* a,
-        integer_t const* lda, double const* b, integer_t const* ldb,
-        double const* beta, double* c, integer_t const* ldc );
-void BLAS_CSYR2K( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, fcomplex_t const* alpha, fcomplex_t const* a,
-        integer_t const* lda, fcomplex_t const* b, integer_t const* ldb,
-        fcomplex_t const* beta, fcomplex_t* c, integer_t const* ldc );
-void BLAS_ZSYR2K( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, dcomplex_t const* alpha, dcomplex_t const* a,
-        integer_t const* lda, dcomplex_t const* b, integer_t const* ldb,
-        dcomplex_t const* beta, dcomplex_t* c, integer_t const* ldc );
+void BLAS_SSYR2K( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const float* alpha, const float* a,
+        const integer_t* lda, const float* b, const integer_t* ldb,
+        const float* beta, float* c, const integer_t* ldc );
+void BLAS_DSYR2K( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const double* alpha, const double* a,
+        const integer_t* lda, const double* b, const integer_t* ldb,
+        const double* beta, double* c, const integer_t* ldc );
+void BLAS_CSYR2K( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const fcomplex_t* alpha, const fcomplex_t* a,
+        const integer_t* lda, const fcomplex_t* b, const integer_t* ldb,
+        const fcomplex_t* beta, fcomplex_t* c, const integer_t* ldc );
+void BLAS_ZSYR2K( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const dcomplex_t* alpha, const dcomplex_t* a,
+        const integer_t* lda, const dcomplex_t* b, const integer_t* ldb,
+        const dcomplex_t* beta, dcomplex_t* c, const integer_t* ldc );
 
 // Value-type variants of syrk
-void BLAS_SSYRK( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, float const* alpha, float const* a,
-        integer_t const* lda, float const* beta, float* c,
-        integer_t const* ldc );
-void BLAS_DSYRK( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, double const* alpha, double const* a,
-        integer_t const* lda, double const* beta, double* c,
-        integer_t const* ldc );
-void BLAS_CSYRK( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, fcomplex_t const* alpha, fcomplex_t const* a,
-        integer_t const* lda, fcomplex_t const* beta, fcomplex_t* c,
-        integer_t const* ldc );
-void BLAS_ZSYRK( char const* uplo, char const* trans, integer_t const* n,
-        integer_t const* k, dcomplex_t const* alpha, dcomplex_t const* a,
-        integer_t const* lda, dcomplex_t const* beta, dcomplex_t* c,
-        integer_t const* ldc );
+void BLAS_SSYRK( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const float* alpha, const float* a,
+        const integer_t* lda, const float* beta, float* c,
+        const integer_t* ldc );
+void BLAS_DSYRK( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const double* alpha, const double* a,
+        const integer_t* lda, const double* beta, double* c,
+        const integer_t* ldc );
+void BLAS_CSYRK( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const fcomplex_t* alpha, const fcomplex_t* a,
+        const integer_t* lda, const fcomplex_t* beta, fcomplex_t* c,
+        const integer_t* ldc );
+void BLAS_ZSYRK( const char* uplo, const char* trans, const integer_t* n,
+        const integer_t* k, const dcomplex_t* alpha, const dcomplex_t* a,
+        const integer_t* lda, const dcomplex_t* beta, dcomplex_t* c,
+        const integer_t* ldc );
 
 // Value-type variants of trmm
-void BLAS_STRMM( char const* side, char const* uplo, char const* transa,
-        char const* diag, integer_t const* m, integer_t const* n,
-        float const* alpha, float const* a, integer_t const* lda, float* b,
-        integer_t const* ldb );
-void BLAS_DTRMM( char const* side, char const* uplo, char const* transa,
-        char const* diag, integer_t const* m, integer_t const* n,
-        double const* alpha, double const* a, integer_t const* lda, double* b,
-        integer_t const* ldb );
-void BLAS_CTRMM( char const* side, char const* uplo, char const* transa,
-        char const* diag, integer_t const* m, integer_t const* n,
-        fcomplex_t const* alpha, fcomplex_t const* a, integer_t const* lda,
-        fcomplex_t* b, integer_t const* ldb );
-void BLAS_ZTRMM( char const* side, char const* uplo, char const* transa,
-        char const* diag, integer_t const* m, integer_t const* n,
-        dcomplex_t const* alpha, dcomplex_t const* a, integer_t const* lda,
-        dcomplex_t* b, integer_t const* ldb );
+void BLAS_STRMM( const char* side, const char* uplo, const char* transa,
+        const char* diag, const integer_t* m, const integer_t* n,
+        const float* alpha, const float* a, const integer_t* lda, float* b,
+        const integer_t* ldb );
+void BLAS_DTRMM( const char* side, const char* uplo, const char* transa,
+        const char* diag, const integer_t* m, const integer_t* n,
+        const double* alpha, const double* a, const integer_t* lda, double* b,
+        const integer_t* ldb );
+void BLAS_CTRMM( const char* side, const char* uplo, const char* transa,
+        const char* diag, const integer_t* m, const integer_t* n,
+        const fcomplex_t* alpha, const fcomplex_t* a, const integer_t* lda,
+        fcomplex_t* b, const integer_t* ldb );
+void BLAS_ZTRMM( const char* side, const char* uplo, const char* transa,
+        const char* diag, const integer_t* m, const integer_t* n,
+        const dcomplex_t* alpha, const dcomplex_t* a, const integer_t* lda,
+        dcomplex_t* b, const integer_t* ldb );
 
 // Value-type variants of trsm
-void BLAS_STRSM( char const* side, char const* uplo, char const* transa,
-        char const* diag, integer_t const* m, integer_t const* n,
-        float const* alpha, float const* a, integer_t const* lda, float* b,
-        integer_t const* ldb );
-void BLAS_DTRSM( char const* side, char const* uplo, char const* transa,
-        char const* diag, integer_t const* m, integer_t const* n,
-        double const* alpha, double const* a, integer_t const* lda, double* b,
-        integer_t const* ldb );
-void BLAS_CTRSM( char const* side, char const* uplo, char const* transa,
-        char const* diag, integer_t const* m, integer_t const* n,
-        fcomplex_t const* alpha, fcomplex_t const* a, integer_t const* lda,
-        fcomplex_t* b, integer_t const* ldb );
-void BLAS_ZTRSM( char const* side, char const* uplo, char const* transa,
-        char const* diag, integer_t const* m, integer_t const* n,
-        dcomplex_t const* alpha, dcomplex_t const* a, integer_t const* lda,
-        dcomplex_t* b, integer_t const* ldb );
+void BLAS_STRSM( const char* side, const char* uplo, const char* transa,
+        const char* diag, const integer_t* m, const integer_t* n,
+        const float* alpha, const float* a, const integer_t* lda, float* b,
+        const integer_t* ldb );
+void BLAS_DTRSM( const char* side, const char* uplo, const char* transa,
+        const char* diag, const integer_t* m, const integer_t* n,
+        const double* alpha, const double* a, const integer_t* lda, double* b,
+        const integer_t* ldb );
+void BLAS_CTRSM( const char* side, const char* uplo, const char* transa,
+        const char* diag, const integer_t* m, const integer_t* n,
+        const fcomplex_t* alpha, const fcomplex_t* a, const integer_t* lda,
+        fcomplex_t* b, const integer_t* ldb );
+void BLAS_ZTRSM( const char* side, const char* uplo, const char* transa,
+        const char* diag, const integer_t* m, const integer_t* n,
+        const dcomplex_t* alpha, const dcomplex_t* a, const integer_t* lda,
+        dcomplex_t* b, const integer_t* ldb );
 
 }
 

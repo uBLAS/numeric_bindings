@@ -29,14 +29,14 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void syr2( char const uplo, integer_t const n, float const alpha,
-            float* x, integer_t const incx, float* y, integer_t const incy,
-            float* a, integer_t const lda ) {
+    inline void syr2( const char uplo, const integer_t n, const float alpha,
+            float const* x, const integer_t incx, float const* y,
+            const integer_t incy, float* a, const integer_t lda ) {
         BLAS_SSYR2( &uplo, &n, &alpha, x, &incx, y, &incy, a, &lda );
     }
-    inline void syr2( char const uplo, integer_t const n, double const alpha,
-            double* x, integer_t const incx, double* y, integer_t const incy,
-            double* a, integer_t const lda ) {
+    inline void syr2( const char uplo, const integer_t n, const double alpha,
+            double const* x, const integer_t incx, double const* y,
+            const integer_t incy, double* a, const integer_t lda ) {
         BLAS_DSYR2( &uplo, &n, &alpha, x, &incx, y, &incy, a, &lda );
     }
 }
@@ -51,8 +51,8 @@ struct syr2_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename MatrixA >
-    static return_type invoke( real_type const alpha, VectorX& x, VectorY& y,
-            MatrixA& a ) {
+    static return_type invoke( const real_type alpha, const VectorX& x,
+            const VectorY& y, MatrixA& a ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -71,8 +71,10 @@ struct syr2_impl {
 template< typename VectorX, typename VectorY, typename MatrixA >
 inline typename syr2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-syr2( typename traits::vector_traits< VectorX >::value_type const alpha,
-        VectorX& x, VectorY& y, MatrixA& a ) {
+syr2( const typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorX >::value_type >::real_type alpha, const VectorX& x,
+        const VectorY& y, MatrixA& a ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     syr2_impl< value_type >::invoke( alpha, x, y, a );
 }

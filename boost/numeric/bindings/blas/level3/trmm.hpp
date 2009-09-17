@@ -29,32 +29,32 @@ namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void trmm( char const side, char const uplo, char const transa,
-            char const diag, integer_t const m, integer_t const n,
-            float const alpha, float* a, integer_t const lda, float* b,
-            integer_t const ldb ) {
+    inline void trmm( const char side, const char uplo, const char transa,
+            const char diag, const integer_t m, const integer_t n,
+            const float alpha, float const* a, const integer_t lda, float* b,
+            const integer_t ldb ) {
         BLAS_STRMM( &side, &uplo, &transa, &diag, &m, &n, &alpha, a, &lda, b,
                 &ldb );
     }
-    inline void trmm( char const side, char const uplo, char const transa,
-            char const diag, integer_t const m, integer_t const n,
-            double const alpha, double* a, integer_t const lda, double* b,
-            integer_t const ldb ) {
+    inline void trmm( const char side, const char uplo, const char transa,
+            const char diag, const integer_t m, const integer_t n,
+            const double alpha, double const* a, const integer_t lda,
+            double* b, const integer_t ldb ) {
         BLAS_DTRMM( &side, &uplo, &transa, &diag, &m, &n, &alpha, a, &lda, b,
                 &ldb );
     }
-    inline void trmm( char const side, char const uplo, char const transa,
-            char const diag, integer_t const m, integer_t const n,
-            traits::complex_f const alpha, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* b, integer_t const ldb ) {
+    inline void trmm( const char side, const char uplo, const char transa,
+            const char diag, const integer_t m, const integer_t n,
+            const traits::complex_f alpha, traits::complex_f const* a,
+            const integer_t lda, traits::complex_f* b, const integer_t ldb ) {
         BLAS_CTRMM( &side, &uplo, &transa, &diag, &m, &n,
                 traits::complex_ptr(&alpha), traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb );
     }
-    inline void trmm( char const side, char const uplo, char const transa,
-            char const diag, integer_t const m, integer_t const n,
-            traits::complex_d const alpha, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* b, integer_t const ldb ) {
+    inline void trmm( const char side, const char uplo, const char transa,
+            const char diag, const integer_t m, const integer_t n,
+            const traits::complex_d alpha, traits::complex_d const* a,
+            const integer_t lda, traits::complex_d* b, const integer_t ldb ) {
         BLAS_ZTRMM( &side, &uplo, &transa, &diag, &m, &n,
                 traits::complex_ptr(&alpha), traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb );
@@ -71,8 +71,9 @@ struct trmm_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixB >
-    static return_type invoke( char const side, char const transa,
-            char const diag, value_type const alpha, MatrixA& a, MatrixB& b ) {
+    static return_type invoke( const char side, const char transa,
+            const char diag, const value_type alpha, const MatrixA& a,
+            MatrixB& b ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -88,9 +89,9 @@ struct trmm_impl {
 template< typename MatrixA, typename MatrixB >
 inline typename trmm_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-trmm( char const side, char const transa, char const diag,
-        typename traits::matrix_traits< MatrixA >::value_type const alpha,
-        MatrixA& a, MatrixB& b ) {
+trmm( const char side, const char transa, const char diag,
+        const typename traits::matrix_traits< MatrixA >::value_type alpha,
+        const MatrixA& a, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     trmm_impl< value_type >::invoke( side, transa, diag, alpha, a, b );
 }

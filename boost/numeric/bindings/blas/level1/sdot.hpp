@@ -29,8 +29,8 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline double sdot( integer_t const n, float* sx, integer_t const incx,
-            float* sy, integer_t const incy ) {
+    inline double sdot( const integer_t n, float const* sx,
+            const integer_t incx, float const* sy, const integer_t incy ) {
         return BLAS_DSDOT( &n, sx, &incx, sy, &incy );
     }
 }
@@ -45,8 +45,8 @@ struct sdot_impl {
 
     // templated specialization
     template< typename VectorSX, typename VectorSY >
-    static return_type invoke( integer_t const n, VectorSX& sx,
-            integer_t const incx, VectorSY& sy, integer_t const incy ) {
+    static return_type invoke( const integer_t n, const VectorSX& sx,
+            const integer_t incx, const VectorSY& sy, const integer_t incy ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorSX >::value_type, typename traits::vector_traits<
                 VectorSY >::value_type >::value) );
@@ -59,8 +59,8 @@ struct sdot_impl {
 template< typename VectorSX, typename VectorSY >
 inline typename sdot_impl< typename traits::vector_traits<
         VectorSX >::value_type >::return_type
-sdot( integer_t const n, VectorSX& sx, integer_t const incx,
-        VectorSY& sy, integer_t const incy ) {
+sdot( const integer_t n, const VectorSX& sx, const integer_t incx,
+        const VectorSY& sy, const integer_t incy ) {
     typedef typename traits::vector_traits< VectorSX >::value_type value_type;
     return sdot_impl< value_type >::invoke( n, sx, incx, sy, incy );
 }

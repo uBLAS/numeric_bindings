@@ -29,14 +29,14 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void hpr( char const uplo, integer_t const n, float const alpha,
-            traits::complex_f* x, integer_t const incx,
+    inline void hpr( const char uplo, const integer_t n, const float alpha,
+            traits::complex_f const* x, const integer_t incx,
             traits::complex_f* ap ) {
         BLAS_CHPR( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(ap) );
     }
-    inline void hpr( char const uplo, integer_t const n, double const alpha,
-            traits::complex_d* x, integer_t const incx,
+    inline void hpr( const char uplo, const integer_t n, const double alpha,
+            traits::complex_d const* x, const integer_t incx,
             traits::complex_d* ap ) {
         BLAS_ZHPR( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(ap) );
@@ -53,7 +53,7 @@ struct hpr_impl {
 
     // templated specialization
     template< typename VectorX, typename MatrixAP >
-    static return_type invoke( real_type const alpha, VectorX& x,
+    static return_type invoke( const real_type alpha, const VectorX& x,
             MatrixAP& ap ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::matrix_traits<
@@ -69,8 +69,10 @@ struct hpr_impl {
 template< typename VectorX, typename MatrixAP >
 inline typename hpr_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-hpr( typename traits::vector_traits< VectorX >::value_type const alpha,
-        VectorX& x, MatrixAP& ap ) {
+hpr( const typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorX >::value_type >::real_type alpha, const VectorX& x,
+        MatrixAP& ap ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     hpr_impl< value_type >::invoke( alpha, x, ap );
 }

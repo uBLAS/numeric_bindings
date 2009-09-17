@@ -29,14 +29,16 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void symv( char const uplo, integer_t const n, float const alpha,
-            float* a, integer_t const lda, float* x, integer_t const incx,
-            float const beta, float* y, integer_t const incy ) {
+    inline void symv( const char uplo, const integer_t n, const float alpha,
+            float const* a, const integer_t lda, float const* x,
+            const integer_t incx, const float beta, float* y,
+            const integer_t incy ) {
         BLAS_SSYMV( &uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy );
     }
-    inline void symv( char const uplo, integer_t const n, double const alpha,
-            double* a, integer_t const lda, double* x, integer_t const incx,
-            double const beta, double* y, integer_t const incy ) {
+    inline void symv( const char uplo, const integer_t n, const double alpha,
+            double const* a, const integer_t lda, double const* x,
+            const integer_t incx, const double beta, double* y,
+            const integer_t incy ) {
         BLAS_DSYMV( &uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy );
     }
 }
@@ -51,8 +53,8 @@ struct symv_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type invoke( real_type const alpha, MatrixA& a, VectorX& x,
-            real_type const beta, VectorY& y ) {
+    static return_type invoke( const real_type alpha, const MatrixA& a,
+            const VectorX& x, const real_type beta, VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
@@ -71,9 +73,12 @@ struct symv_impl {
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename symv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-symv( typename traits::matrix_traits< MatrixA >::value_type const alpha,
-        MatrixA& a, VectorX& x, typename traits::matrix_traits<
-        MatrixA >::value_type const beta, VectorY& y ) {
+symv( const typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type alpha, const MatrixA& a,
+        const VectorX& x, const typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type beta, VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     symv_impl< value_type >::invoke( alpha, a, x, beta, y );
 }

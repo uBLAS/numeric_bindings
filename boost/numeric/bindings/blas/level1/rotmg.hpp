@@ -29,11 +29,11 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void rotmg( float& d1, float& d2, float& x1, float const y1,
+    inline void rotmg( float& d1, float& d2, float& x1, const float y1,
             float* sparam ) {
         BLAS_SROTMG( &d1, &d2, &x1, &y1, sparam );
     }
-    inline void rotmg( double& d1, double& d2, double& x1, double const y1,
+    inline void rotmg( double& d1, double& d2, double& x1, const double y1,
             double* dparam ) {
         BLAS_DROTMG( &d1, &d2, &x1, &y1, dparam );
     }
@@ -50,7 +50,7 @@ struct rotmg_impl {
     // templated specialization
     template< typename VectorDPARAM >
     static return_type invoke( real_type& d1, real_type& d2, real_type& x1,
-            real_type const y1, VectorDPARAM& dparam ) {
+            const real_type y1, VectorDPARAM& dparam ) {
         detail::rotmg( d1, d2, x1, y1, traits::vector_storage(dparam) );
     }
 };
@@ -59,11 +59,14 @@ struct rotmg_impl {
 template< typename VectorDPARAM >
 inline typename rotmg_impl< typename traits::vector_traits<
         VectorDPARAM >::value_type >::return_type
-rotmg( typename traits::vector_traits< VectorDPARAM >::value_type& d1,
-        typename traits::vector_traits< VectorDPARAM >::value_type& d2,
-        typename traits::vector_traits< VectorDPARAM >::value_type& x1,
-        typename traits::vector_traits< VectorDPARAM >::value_type const y1,
-        VectorDPARAM& dparam ) {
+rotmg( typename traits::type_traits< typename traits::vector_traits<
+        VectorDPARAM >::value_type >::real_type& d1,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorDPARAM >::value_type >::real_type& d2,
+        typename traits::type_traits< typename traits::vector_traits<
+        VectorDPARAM >::value_type >::real_type& x1,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorDPARAM >::value_type >::real_type y1, VectorDPARAM& dparam ) {
     typedef typename traits::vector_traits<
             VectorDPARAM >::value_type value_type;
     rotmg_impl< value_type >::invoke( d1, d2, x1, y1, dparam );

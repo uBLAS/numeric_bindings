@@ -29,15 +29,15 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void her( char const uplo, integer_t const n, float const alpha,
-            traits::complex_f* x, integer_t const incx, traits::complex_f* a,
-            integer_t const lda ) {
+    inline void her( const char uplo, const integer_t n, const float alpha,
+            traits::complex_f const* x, const integer_t incx,
+            traits::complex_f* a, const integer_t lda ) {
         BLAS_CHER( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(a), &lda );
     }
-    inline void her( char const uplo, integer_t const n, double const alpha,
-            traits::complex_d* x, integer_t const incx, traits::complex_d* a,
-            integer_t const lda ) {
+    inline void her( const char uplo, const integer_t n, const double alpha,
+            traits::complex_d const* x, const integer_t incx,
+            traits::complex_d* a, const integer_t lda ) {
         BLAS_ZHER( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(a), &lda );
     }
@@ -53,7 +53,7 @@ struct her_impl {
 
     // templated specialization
     template< typename VectorX, typename MatrixA >
-    static return_type invoke( real_type const alpha, VectorX& x,
+    static return_type invoke( const real_type alpha, const VectorX& x,
             MatrixA& a ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::matrix_traits<
@@ -69,8 +69,10 @@ struct her_impl {
 template< typename VectorX, typename MatrixA >
 inline typename her_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-her( typename traits::vector_traits< VectorX >::value_type const alpha,
-        VectorX& x, MatrixA& a ) {
+her( const typename traits::type_traits<
+        typename traits::vector_traits<
+        VectorX >::value_type >::real_type alpha, const VectorX& x,
+        MatrixA& a ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     her_impl< value_type >::invoke( alpha, x, a );
 }

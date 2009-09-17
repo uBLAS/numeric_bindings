@@ -29,18 +29,18 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void geru( integer_t const m, integer_t const n,
-            traits::complex_f const alpha, traits::complex_f* x,
-            integer_t const incx, traits::complex_f* y, integer_t const incy,
-            traits::complex_f* a, integer_t const lda ) {
+    inline void geru( const integer_t m, const integer_t n,
+            const traits::complex_f alpha, traits::complex_f const* x,
+            const integer_t incx, traits::complex_f const* y,
+            const integer_t incy, traits::complex_f* a, const integer_t lda ) {
         BLAS_CGERU( &m, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,
                 traits::complex_ptr(a), &lda );
     }
-    inline void geru( integer_t const m, integer_t const n,
-            traits::complex_d const alpha, traits::complex_d* x,
-            integer_t const incx, traits::complex_d* y, integer_t const incy,
-            traits::complex_d* a, integer_t const lda ) {
+    inline void geru( const integer_t m, const integer_t n,
+            const traits::complex_d alpha, traits::complex_d const* x,
+            const integer_t incx, traits::complex_d const* y,
+            const integer_t incy, traits::complex_d* a, const integer_t lda ) {
         BLAS_ZGERU( &m, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,
                 traits::complex_ptr(a), &lda );
@@ -57,8 +57,8 @@ struct geru_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename MatrixA >
-    static return_type invoke( value_type const alpha, VectorX& x, VectorY& y,
-            MatrixA& a ) {
+    static return_type invoke( const value_type alpha, const VectorX& x,
+            const VectorY& y, MatrixA& a ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -77,8 +77,8 @@ struct geru_impl {
 template< typename VectorX, typename VectorY, typename MatrixA >
 inline typename geru_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-geru( typename traits::vector_traits< VectorX >::value_type const alpha,
-        VectorX& x, VectorY& y, MatrixA& a ) {
+geru( const typename traits::vector_traits< VectorX >::value_type alpha,
+        const VectorX& x, const VectorY& y, MatrixA& a ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     geru_impl< value_type >::invoke( alpha, x, y, a );
 }

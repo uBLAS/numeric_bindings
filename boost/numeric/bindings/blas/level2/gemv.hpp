@@ -29,34 +29,34 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void gemv( char const trans, integer_t const m, integer_t const n,
-            float const alpha, float* a, integer_t const lda, float* x,
-            integer_t const incx, float const beta, float* y,
-            integer_t const incy ) {
+    inline void gemv( const char trans, const integer_t m, const integer_t n,
+            const float alpha, float const* a, const integer_t lda,
+            float const* x, const integer_t incx, const float beta, float* y,
+            const integer_t incy ) {
         BLAS_SGEMV( &trans, &m, &n, &alpha, a, &lda, x, &incx, &beta, y,
                 &incy );
     }
-    inline void gemv( char const trans, integer_t const m, integer_t const n,
-            double const alpha, double* a, integer_t const lda, double* x,
-            integer_t const incx, double const beta, double* y,
-            integer_t const incy ) {
+    inline void gemv( const char trans, const integer_t m, const integer_t n,
+            const double alpha, double const* a, const integer_t lda,
+            double const* x, const integer_t incx, const double beta,
+            double* y, const integer_t incy ) {
         BLAS_DGEMV( &trans, &m, &n, &alpha, a, &lda, x, &incx, &beta, y,
                 &incy );
     }
-    inline void gemv( char const trans, integer_t const m, integer_t const n,
-            traits::complex_f const alpha, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* x, integer_t const incx,
-            traits::complex_f const beta, traits::complex_f* y,
-            integer_t const incy ) {
+    inline void gemv( const char trans, const integer_t m, const integer_t n,
+            const traits::complex_f alpha, traits::complex_f const* a,
+            const integer_t lda, traits::complex_f const* x,
+            const integer_t incx, const traits::complex_f beta,
+            traits::complex_f* y, const integer_t incy ) {
         BLAS_CGEMV( &trans, &m, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
     }
-    inline void gemv( char const trans, integer_t const m, integer_t const n,
-            traits::complex_d const alpha, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* x, integer_t const incx,
-            traits::complex_d const beta, traits::complex_d* y,
-            integer_t const incy ) {
+    inline void gemv( const char trans, const integer_t m, const integer_t n,
+            const traits::complex_d alpha, traits::complex_d const* a,
+            const integer_t lda, traits::complex_d const* x,
+            const integer_t incx, const traits::complex_d beta,
+            traits::complex_d* y, const integer_t incy ) {
         BLAS_ZGEMV( &trans, &m, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
@@ -80,8 +80,9 @@ struct gemv_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type invoke( char const trans, value_type const alpha,
-            MatrixA& a, VectorX& x, value_type const beta, VectorY& y ) {
+    static return_type invoke( const char trans, const value_type alpha,
+            const MatrixA& a, const VectorX& x, const value_type beta,
+            VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorX >::value_type >::value) );
@@ -100,9 +101,9 @@ struct gemv_impl {
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename gemv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-gemv( char const trans, typename traits::matrix_traits<
-        MatrixA >::value_type const alpha, MatrixA& a, VectorX& x,
-        typename traits::matrix_traits< MatrixA >::value_type const beta,
+gemv( const char trans, const typename traits::matrix_traits<
+        MatrixA >::value_type alpha, const MatrixA& a, const VectorX& x,
+        const typename traits::matrix_traits< MatrixA >::value_type beta,
         VectorY& y ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     gemv_impl< value_type >::invoke( trans, alpha, a, x, beta, y );

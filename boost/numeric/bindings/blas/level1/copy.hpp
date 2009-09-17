@@ -29,23 +29,23 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void copy( integer_t const n, float* x, integer_t const incx,
-            float* y, integer_t const incy ) {
+    inline void copy( const integer_t n, float const* x, const integer_t incx,
+            float const* y, const integer_t incy ) {
         BLAS_SCOPY( &n, x, &incx, y, &incy );
     }
-    inline void copy( integer_t const n, double* x, integer_t const incx,
-            double* y, integer_t const incy ) {
+    inline void copy( const integer_t n, double const* x,
+            const integer_t incx, double const* y, const integer_t incy ) {
         BLAS_DCOPY( &n, x, &incx, y, &incy );
     }
-    inline void copy( integer_t const n, traits::complex_f* x,
-            integer_t const incx, traits::complex_f* y,
-            integer_t const incy ) {
+    inline void copy( const integer_t n, traits::complex_f const* x,
+            const integer_t incx, traits::complex_f const* y,
+            const integer_t incy ) {
         BLAS_CCOPY( &n, traits::complex_ptr(x), &incx, traits::complex_ptr(y),
                 &incy );
     }
-    inline void copy( integer_t const n, traits::complex_d* x,
-            integer_t const incx, traits::complex_d* y,
-            integer_t const incy ) {
+    inline void copy( const integer_t n, traits::complex_d const* x,
+            const integer_t incx, traits::complex_d const* y,
+            const integer_t incy ) {
         BLAS_ZCOPY( &n, traits::complex_ptr(x), &incx, traits::complex_ptr(y),
                 &incy );
     }
@@ -61,7 +61,7 @@ struct copy_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY >
-    static return_type invoke( VectorX& x, VectorY& y ) {
+    static return_type invoke( const VectorX& x, const VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -75,7 +75,7 @@ struct copy_impl {
 template< typename VectorX, typename VectorY >
 inline typename copy_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-copy( VectorX& x, VectorY& y ) {
+copy( const VectorX& x, const VectorY& y ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     copy_impl< value_type >::invoke( x, y );
 }

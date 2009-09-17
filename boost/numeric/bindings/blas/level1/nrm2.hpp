@@ -29,10 +29,12 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline float nrm2( integer_t const n, float* x, integer_t const incx ) {
+    inline float nrm2( const integer_t n, float const* x,
+            const integer_t incx ) {
         return BLAS_SNRM2( &n, x, &incx );
     }
-    inline double nrm2( integer_t const n, double* x, integer_t const incx ) {
+    inline double nrm2( const integer_t n, double const* x,
+            const integer_t incx ) {
         return BLAS_DNRM2( &n, x, &incx );
     }
 }
@@ -47,7 +49,7 @@ struct nrm2_impl {
 
     // templated specialization
     template< typename VectorX >
-    static return_type invoke( VectorX& x ) {
+    static return_type invoke( const VectorX& x ) {
         return detail::nrm2( traits::vector_size(x),
                 traits::vector_storage(x), traits::vector_stride(x) );
     }
@@ -57,7 +59,7 @@ struct nrm2_impl {
 template< typename VectorX >
 inline typename nrm2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-nrm2( VectorX& x ) {
+nrm2( const VectorX& x ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     return nrm2_impl< value_type >::invoke( x );
 }

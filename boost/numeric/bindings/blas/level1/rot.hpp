@@ -29,12 +29,12 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void rot( integer_t const n, float* x, integer_t const incx,
-            float* y, integer_t const incy, float const c, float const s ) {
+    inline void rot( const integer_t n, float const* x, const integer_t incx,
+            float* y, const integer_t incy, const float c, const float s ) {
         BLAS_SROT( &n, x, &incx, y, &incy, &c, &s );
     }
-    inline void rot( integer_t const n, double* x, integer_t const incx,
-            double* y, integer_t const incy, double const c, double const s ) {
+    inline void rot( const integer_t n, double const* x, const integer_t incx,
+            double* y, const integer_t incy, const double c, const double s ) {
         BLAS_DROT( &n, x, &incx, y, &incy, &c, &s );
     }
 }
@@ -49,8 +49,8 @@ struct rot_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY >
-    static return_type invoke( VectorX& x, VectorY& y, real_type const c,
-            real_type const s ) {
+    static return_type invoke( const VectorX& x, VectorY& y,
+            const real_type c, const real_type s ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -64,9 +64,10 @@ struct rot_impl {
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-rot( VectorX& x, VectorY& y, typename traits::vector_traits<
-        VectorX >::value_type const c, typename traits::vector_traits<
-        VectorX >::value_type const s ) {
+rot( const VectorX& x, VectorY& y, const typename traits::type_traits<
+        typename traits::vector_traits< VectorX >::value_type >::real_type c,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorX >::value_type >::real_type s ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     rot_impl< value_type >::invoke( x, y, c, s );
 }

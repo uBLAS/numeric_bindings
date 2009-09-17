@@ -29,20 +29,20 @@ namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void her2k( char const uplo, char const trans, integer_t const n,
-            integer_t const k, traits::complex_f const alpha,
-            traits::complex_f* a, integer_t const lda, traits::complex_f* b,
-            integer_t const ldb, float const beta, traits::complex_f* c,
-            integer_t const ldc ) {
+    inline void her2k( const char uplo, const char trans, const integer_t n,
+            const integer_t k, const traits::complex_f alpha,
+            traits::complex_f const* a, const integer_t lda,
+            traits::complex_f const* b, const integer_t ldb, const float beta,
+            traits::complex_f* c, const integer_t ldc ) {
         BLAS_CHER2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
                 &beta, traits::complex_ptr(c), &ldc );
     }
-    inline void her2k( char const uplo, char const trans, integer_t const n,
-            integer_t const k, traits::complex_d const alpha,
-            traits::complex_d* a, integer_t const lda, traits::complex_d* b,
-            integer_t const ldb, double const beta, traits::complex_d* c,
-            integer_t const ldc ) {
+    inline void her2k( const char uplo, const char trans, const integer_t n,
+            const integer_t k, const traits::complex_d alpha,
+            traits::complex_d const* a, const integer_t lda,
+            traits::complex_d const* b, const integer_t ldb,
+            const double beta, traits::complex_d* c, const integer_t ldc ) {
         BLAS_ZHER2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
                 &beta, traits::complex_ptr(c), &ldc );
@@ -59,9 +59,9 @@ struct her2k_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static return_type invoke( char const trans, integer_t const k,
-            value_type const alpha, MatrixA& a, MatrixB& b,
-            real_type const beta, MatrixC& c ) {
+    static return_type invoke( const char trans, const integer_t k,
+            const value_type alpha, const MatrixA& a, const MatrixB& b,
+            const real_type beta, MatrixC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -80,10 +80,11 @@ struct her2k_impl {
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename her2k_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-her2k( char const trans, integer_t const k,
-        typename traits::matrix_traits< MatrixA >::value_type const alpha,
-        MatrixA& a, MatrixB& b, typename traits::matrix_traits<
-        MatrixA >::value_type const beta, MatrixC& c ) {
+her2k( const char trans, const integer_t k,
+        const typename traits::matrix_traits< MatrixA >::value_type alpha,
+        const MatrixA& a, const MatrixB& b,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type beta, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     her2k_impl< value_type >::invoke( trans, k, alpha, a, b, beta, c );
 }

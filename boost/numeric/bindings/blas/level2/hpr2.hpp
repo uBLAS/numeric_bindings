@@ -29,18 +29,18 @@ namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void hpr2( char const uplo, integer_t const n,
-            traits::complex_f const alpha, traits::complex_f* x,
-            integer_t const incx, traits::complex_f* y, integer_t const incy,
-            traits::complex_f* ap ) {
+    inline void hpr2( const char uplo, const integer_t n,
+            const traits::complex_f alpha, traits::complex_f const* x,
+            const integer_t incx, traits::complex_f const* y,
+            const integer_t incy, traits::complex_f* ap ) {
         BLAS_CHPR2( &uplo, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,
                 traits::complex_ptr(ap) );
     }
-    inline void hpr2( char const uplo, integer_t const n,
-            traits::complex_d const alpha, traits::complex_d* x,
-            integer_t const incx, traits::complex_d* y, integer_t const incy,
-            traits::complex_d* ap ) {
+    inline void hpr2( const char uplo, const integer_t n,
+            const traits::complex_d alpha, traits::complex_d const* x,
+            const integer_t incx, traits::complex_d const* y,
+            const integer_t incy, traits::complex_d* ap ) {
         BLAS_ZHPR2( &uplo, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,
                 traits::complex_ptr(ap) );
@@ -57,8 +57,8 @@ struct hpr2_impl {
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename MatrixAP >
-    static return_type invoke( value_type const alpha, VectorX& x, VectorY& y,
-            MatrixAP& ap ) {
+    static return_type invoke( const value_type alpha, const VectorX& x,
+            const VectorY& y, MatrixAP& ap ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -77,8 +77,8 @@ struct hpr2_impl {
 template< typename VectorX, typename VectorY, typename MatrixAP >
 inline typename hpr2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
-hpr2( typename traits::vector_traits< VectorX >::value_type const alpha,
-        VectorX& x, VectorY& y, MatrixAP& ap ) {
+hpr2( const typename traits::vector_traits< VectorX >::value_type alpha,
+        const VectorX& x, const VectorY& y, MatrixAP& ap ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     hpr2_impl< value_type >::invoke( alpha, x, y, ap );
 }

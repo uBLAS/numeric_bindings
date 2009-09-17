@@ -50,7 +50,7 @@ def c_type( name, properties ):
 
   result = m_type_map[ properties[ 'value_type' ] ];
   if properties[ 'io' ] == [ 'input' ]:
-    result += ' const'
+    result = 'const ' + result
   result += '*'
   result += ' ' + name.lower()  # is this really needed?
   
@@ -67,15 +67,17 @@ def cpp_type( name, properties ):
   
   if properties[ 'type' ] == 'scalar':
     if properties[ 'io' ] == [ 'input' ]:
-      result += ' const'
+      result = 'const ' + result
     elif properties[ 'io' ] == [ 'external procedure' ]:
       result += '*'
     else:
       result += '&'
     
   if properties[ 'type' ] == 'vector' or properties[ 'type' ] == 'matrix':
+    if properties[ 'io' ] == [ 'input' ]:
+        result += ' const'
     result += '*'
-    
+
   result += ' ' + name.lower()
     
   return result
@@ -136,8 +138,12 @@ def level1_type( name, properties ):
   if not properties.has_key( 'trait_of' ) and 'workspace' not in properties[ 'io' ]:
     if properties[ 'type' ] == 'matrix':
       result = "Matrix" + name + "& " + name.lower()
+      if properties[ 'io' ] == [ 'input' ]:
+        result = 'const ' + result
     elif properties[ 'type' ] == 'vector':
       result = "Vector" + name + "& " + name.lower()
+      if properties[ 'io' ] == [ 'input' ]:
+        result = 'const ' + result
     else:
       result = cpp_type( name, properties )
       if properties[ 'value_type' ] == 'REAL':

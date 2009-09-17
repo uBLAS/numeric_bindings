@@ -36,35 +36,35 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ggsvd( char const jobu, char const jobv, char const jobq,
-            integer_t const m, integer_t const n, integer_t const p,
-            integer_t& k, integer_t& l, float* a, integer_t const lda,
-            float* b, integer_t const ldb, float* alpha, float* beta,
-            float* u, integer_t const ldu, float* v, integer_t const ldv,
-            float* q, integer_t const ldq, float* work, integer_t* iwork,
+    inline void ggsvd( const char jobu, const char jobv, const char jobq,
+            const integer_t m, const integer_t n, const integer_t p,
+            integer_t& k, integer_t& l, float* a, const integer_t lda,
+            float* b, const integer_t ldb, float* alpha, float* beta,
+            float* u, const integer_t ldu, float* v, const integer_t ldv,
+            float* q, const integer_t ldq, float* work, integer_t* iwork,
             integer_t& info ) {
         LAPACK_SGGSVD( &jobu, &jobv, &jobq, &m, &n, &p, &k, &l, a, &lda, b,
                 &ldb, alpha, beta, u, &ldu, v, &ldv, q, &ldq, work, iwork,
                 &info );
     }
-    inline void ggsvd( char const jobu, char const jobv, char const jobq,
-            integer_t const m, integer_t const n, integer_t const p,
-            integer_t& k, integer_t& l, double* a, integer_t const lda,
-            double* b, integer_t const ldb, double* alpha, double* beta,
-            double* u, integer_t const ldu, double* v, integer_t const ldv,
-            double* q, integer_t const ldq, double* work, integer_t* iwork,
+    inline void ggsvd( const char jobu, const char jobv, const char jobq,
+            const integer_t m, const integer_t n, const integer_t p,
+            integer_t& k, integer_t& l, double* a, const integer_t lda,
+            double* b, const integer_t ldb, double* alpha, double* beta,
+            double* u, const integer_t ldu, double* v, const integer_t ldv,
+            double* q, const integer_t ldq, double* work, integer_t* iwork,
             integer_t& info ) {
         LAPACK_DGGSVD( &jobu, &jobv, &jobq, &m, &n, &p, &k, &l, a, &lda, b,
                 &ldb, alpha, beta, u, &ldu, v, &ldv, q, &ldq, work, iwork,
                 &info );
     }
-    inline void ggsvd( char const jobu, char const jobv, char const jobq,
-            integer_t const m, integer_t const n, integer_t const p,
+    inline void ggsvd( const char jobu, const char jobv, const char jobq,
+            const integer_t m, const integer_t n, const integer_t p,
             integer_t& k, integer_t& l, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* b, integer_t const ldb,
+            const integer_t lda, traits::complex_f* b, const integer_t ldb,
             float* alpha, float* beta, traits::complex_f* u,
-            integer_t const ldu, traits::complex_f* v, integer_t const ldv,
-            traits::complex_f* q, integer_t const ldq,
+            const integer_t ldu, traits::complex_f* v, const integer_t ldv,
+            traits::complex_f* q, const integer_t ldq,
             traits::complex_f* work, float* rwork, integer_t* iwork,
             integer_t& info ) {
         LAPACK_CGGSVD( &jobu, &jobv, &jobq, &m, &n, &p, &k, &l,
@@ -73,13 +73,13 @@ namespace detail {
                 traits::complex_ptr(v), &ldv, traits::complex_ptr(q), &ldq,
                 traits::complex_ptr(work), rwork, iwork, &info );
     }
-    inline void ggsvd( char const jobu, char const jobv, char const jobq,
-            integer_t const m, integer_t const n, integer_t const p,
+    inline void ggsvd( const char jobu, const char jobv, const char jobq,
+            const integer_t m, const integer_t n, const integer_t p,
             integer_t& k, integer_t& l, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* b, integer_t const ldb,
+            const integer_t lda, traits::complex_d* b, const integer_t ldb,
             double* alpha, double* beta, traits::complex_d* u,
-            integer_t const ldu, traits::complex_d* v, integer_t const ldv,
-            traits::complex_d* q, integer_t const ldq,
+            const integer_t ldu, traits::complex_d* v, const integer_t ldv,
+            traits::complex_d* q, const integer_t ldq,
             traits::complex_d* work, double* rwork, integer_t* iwork,
             integer_t& info ) {
         LAPACK_ZGGSVD( &jobu, &jobv, &jobq, &m, &n, &p, &k, &l,
@@ -105,7 +105,7 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ, typename WORK, typename IWORK >
-    static void invoke( char const jobu, char const jobv, char const jobq,
+    static void invoke( const char jobu, const char jobv, const char jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, detail::workspace2< WORK,
@@ -161,7 +161,7 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void invoke( char const jobu, char const jobv, char const jobq,
+    static void invoke( const char jobu, const char jobv, const char jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, minimal_workspace work ) {
@@ -178,7 +178,7 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void invoke( char const jobu, char const jobv, char const jobq,
+    static void invoke( const char jobu, const char jobv, const char jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, optimal_workspace work ) {
@@ -186,12 +186,12 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n, integer_t const m,
-            integer_t const p ) {
+    static integer_t min_size_work( const integer_t n, const integer_t m,
+            const integer_t p ) {
         return std::max(3*n,std::max(m,p))+n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -207,7 +207,7 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ, typename WORK, typename RWORK, typename IWORK >
-    static void invoke( char const jobu, char const jobv, char const jobq,
+    static void invoke( const char jobu, const char jobv, const char jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, detail::workspace3< WORK, RWORK,
@@ -263,7 +263,7 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void invoke( char const jobu, char const jobv, char const jobq,
+    static void invoke( const char jobu, const char jobv, const char jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, minimal_workspace work ) {
@@ -282,7 +282,7 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void invoke( char const jobu, char const jobv, char const jobq,
+    static void invoke( const char jobu, const char jobv, const char jobq,
             integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
             VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
             MatrixQ& q, integer_t& info, optimal_workspace work ) {
@@ -290,16 +290,16 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n, integer_t const m,
-            integer_t const p ) {
+    static integer_t min_size_work( const integer_t n, const integer_t m,
+            const integer_t p ) {
         return std::max(3*n,std::max(m,p))+n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -309,8 +309,8 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline integer_t ggsvd( char const jobu, char const jobv,
-        char const jobq, integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
+inline integer_t ggsvd( const char jobu, const char jobv,
+        const char jobq, integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
         MatrixQ& q, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -324,8 +324,8 @@ inline integer_t ggsvd( char const jobu, char const jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline integer_t ggsvd( char const jobu, char const jobv,
-        char const jobq, integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
+inline integer_t ggsvd( const char jobu, const char jobv,
+        const char jobq, integer_t& k, integer_t& l, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixU& u, MatrixV& v,
         MatrixQ& q ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;

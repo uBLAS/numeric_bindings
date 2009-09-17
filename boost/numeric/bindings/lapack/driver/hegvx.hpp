@@ -34,13 +34,13 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hegvx( integer_t const itype, char const jobz,
-            char const range, char const uplo, integer_t const n,
-            traits::complex_f* a, integer_t const lda, traits::complex_f* b,
-            integer_t const ldb, float const vl, float const vu,
-            integer_t const il, integer_t const iu, float const abstol,
-            integer_t& m, float* w, traits::complex_f* z, integer_t const ldz,
-            traits::complex_f* work, integer_t const lwork, float* rwork,
+    inline void hegvx( const integer_t itype, const char jobz,
+            const char range, const char uplo, const integer_t n,
+            traits::complex_f* a, const integer_t lda, traits::complex_f* b,
+            const integer_t ldb, const float vl, const float vu,
+            const integer_t il, const integer_t iu, const float abstol,
+            integer_t& m, float* w, traits::complex_f* z, const integer_t ldz,
+            traits::complex_f* work, const integer_t lwork, float* rwork,
             integer_t* iwork, integer_t* ifail, integer_t& info ) {
         LAPACK_CHEGVX( &itype, &jobz, &range, &uplo, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
@@ -48,14 +48,14 @@ namespace detail {
                 &ldz, traits::complex_ptr(work), &lwork, rwork, iwork, ifail,
                 &info );
     }
-    inline void hegvx( integer_t const itype, char const jobz,
-            char const range, char const uplo, integer_t const n,
-            traits::complex_d* a, integer_t const lda, traits::complex_d* b,
-            integer_t const ldb, double const vl, double const vu,
-            integer_t const il, integer_t const iu, double const abstol,
+    inline void hegvx( const integer_t itype, const char jobz,
+            const char range, const char uplo, const integer_t n,
+            traits::complex_d* a, const integer_t lda, traits::complex_d* b,
+            const integer_t ldb, const double vl, const double vu,
+            const integer_t il, const integer_t iu, const double abstol,
             integer_t& m, double* w, traits::complex_d* z,
-            integer_t const ldz, traits::complex_d* work,
-            integer_t const lwork, double* rwork, integer_t* iwork,
+            const integer_t ldz, traits::complex_d* work,
+            const integer_t lwork, double* rwork, integer_t* iwork,
             integer_t* ifail, integer_t& info ) {
         LAPACK_ZHEGVX( &itype, &jobz, &range, &uplo, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
@@ -76,10 +76,10 @@ struct hegvx_impl {
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename MatrixZ, typename VectorIFAIL, typename WORK,
             typename RWORK, typename IWORK >
-    static void invoke( integer_t const itype, char const jobz,
-            char const range, integer_t const n, MatrixA& a, MatrixB& b,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const integer_t itype, const char jobz,
+            const char range, const integer_t n, MatrixA& a, MatrixB& b,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
             detail::workspace3< WORK, RWORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -117,10 +117,10 @@ struct hegvx_impl {
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
-    static void invoke( integer_t const itype, char const jobz,
-            char const range, integer_t const n, MatrixA& a, MatrixB& b,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const integer_t itype, const char jobz,
+            const char range, const integer_t n, MatrixA& a, MatrixB& b,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
@@ -133,10 +133,10 @@ struct hegvx_impl {
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
-    static void invoke( integer_t const itype, char const jobz,
-            char const range, integer_t const n, MatrixA& a, MatrixB& b,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const integer_t itype, const char jobz,
+            const char range, const integer_t n, MatrixA& a, MatrixB& b,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
             optimal_workspace work ) {
         value_type opt_size_work;
@@ -156,15 +156,15 @@ struct hegvx_impl {
                 ifail, info, workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, 2*n );
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return 7*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return 5*n;
     }
 };
@@ -173,16 +173,16 @@ struct hegvx_impl {
 // template function to call hegvx
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline integer_t hegvx( integer_t const itype, char const jobz,
-        char const range, integer_t const n, MatrixA& a, MatrixB& b,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+inline integer_t hegvx( const integer_t itype, const char jobz,
+        const char range, const integer_t n, MatrixA& a, MatrixB& b,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     hegvx_impl< value_type >::invoke( itype, jobz, range, n, a, b, vl,
@@ -193,16 +193,16 @@ inline integer_t hegvx( integer_t const itype, char const jobz,
 // template function to call hegvx, default workspace type
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline integer_t hegvx( integer_t const itype, char const jobz,
-        char const range, integer_t const n, MatrixA& a, MatrixB& b,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+inline integer_t hegvx( const integer_t itype, const char jobz,
+        const char range, const integer_t n, MatrixA& a, MatrixB& b,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     hegvx_impl< value_type >::invoke( itype, jobz, range, n, a, b, vl,

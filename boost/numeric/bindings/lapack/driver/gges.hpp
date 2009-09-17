@@ -37,36 +37,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gges( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, integer_t const n, float* a,
-            integer_t const lda, float* b, integer_t const ldb,
+    inline void gges( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const integer_t n, float* a,
+            const integer_t lda, float* b, const integer_t ldb,
             integer_t& sdim, float* alphar, float* alphai, float* beta,
-            float* vsl, integer_t const ldvsl, float* vsr,
-            integer_t const ldvsr, float* work, integer_t const lwork,
+            float* vsl, const integer_t ldvsl, float* vsr,
+            const integer_t ldvsr, float* work, const integer_t lwork,
             logical_t* bwork, integer_t& info ) {
         LAPACK_SGGES( &jobvsl, &jobvsr, &sort, &selctg, &n, a, &lda, b, &ldb,
                 &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr, work,
                 &lwork, bwork, &info );
     }
-    inline void gges( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, integer_t const n, double* a,
-            integer_t const lda, double* b, integer_t const ldb,
+    inline void gges( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const integer_t n, double* a,
+            const integer_t lda, double* b, const integer_t ldb,
             integer_t& sdim, double* alphar, double* alphai, double* beta,
-            double* vsl, integer_t const ldvsl, double* vsr,
-            integer_t const ldvsr, double* work, integer_t const lwork,
+            double* vsl, const integer_t ldvsl, double* vsr,
+            const integer_t ldvsr, double* work, const integer_t lwork,
             logical_t* bwork, integer_t& info ) {
         LAPACK_DGGES( &jobvsl, &jobvsr, &sort, &selctg, &n, a, &lda, b, &ldb,
                 &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr, work,
                 &lwork, bwork, &info );
     }
-    inline void gges( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, integer_t const n, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* b, integer_t const ldb,
+    inline void gges( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const integer_t n, traits::complex_f* a,
+            const integer_t lda, traits::complex_f* b, const integer_t ldb,
             integer_t& sdim, traits::complex_f* alpha,
             traits::complex_f* beta, traits::complex_f* vsl,
-            integer_t const ldvsl, traits::complex_f* vsr,
-            integer_t const ldvsr, traits::complex_f* work,
-            integer_t const lwork, float* rwork, logical_t* bwork,
+            const integer_t ldvsl, traits::complex_f* vsr,
+            const integer_t ldvsr, traits::complex_f* work,
+            const integer_t lwork, float* rwork, logical_t* bwork,
             integer_t& info ) {
         LAPACK_CGGES( &jobvsl, &jobvsr, &sort, &selctg, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
@@ -75,14 +75,14 @@ namespace detail {
                 &ldvsr, traits::complex_ptr(work), &lwork, rwork, bwork,
                 &info );
     }
-    inline void gges( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, integer_t const n, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* b, integer_t const ldb,
+    inline void gges( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const integer_t n, traits::complex_d* a,
+            const integer_t lda, traits::complex_d* b, const integer_t ldb,
             integer_t& sdim, traits::complex_d* alpha,
             traits::complex_d* beta, traits::complex_d* vsl,
-            integer_t const ldvsl, traits::complex_d* vsr,
-            integer_t const ldvsr, traits::complex_d* work,
-            integer_t const lwork, double* rwork, logical_t* bwork,
+            const integer_t ldvsl, traits::complex_d* vsr,
+            const integer_t ldvsr, traits::complex_d* work,
+            const integer_t lwork, double* rwork, logical_t* bwork,
             integer_t& info ) {
         LAPACK_ZGGES( &jobvsl, &jobvsr, &sort, &selctg, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
@@ -108,7 +108,7 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR, typename WORK, typename BWORK >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
             logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
             VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
             MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
@@ -164,7 +164,7 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
             logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
             VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
             MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
@@ -181,7 +181,7 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
             logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
             VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
             MatrixVSL& vsl, MatrixVSR& vsr, integer_t& info,
@@ -204,11 +204,11 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
                 beta, vsl, vsr, info, workspace( tmp_work, tmp_bwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, 8*n + 16 );
     }
 
-    static integer_t min_size_bwork( integer_t const n, char const sort ) {
+    static integer_t min_size_bwork( const integer_t n, const char sort ) {
         if ( sort == 'N' )
             return 0;
         else
@@ -227,7 +227,7 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
             typename WORK, typename RWORK, typename BWORK >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
             logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
             VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, integer_t& info, detail::workspace3< WORK, RWORK,
@@ -281,7 +281,7 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
             logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
             VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, integer_t& info, minimal_workspace work ) {
@@ -298,7 +298,7 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
             logical_t* selctg, MatrixA& a, MatrixB& b, integer_t& sdim,
             VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
             MatrixVSR& vsr, integer_t& info, optimal_workspace work ) {
@@ -322,15 +322,15 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
                 vsr, info, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, 2*n );
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return 8*n;
     }
 
-    static integer_t min_size_bwork( integer_t const n, char const sort ) {
+    static integer_t min_size_bwork( const integer_t n, const char sort ) {
         if ( sort == 'N' )
             return 0;
         else
@@ -343,8 +343,8 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename Workspace >
-inline integer_t gges( char const jobvsl, char const jobvsr,
-        char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline integer_t gges( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
         integer_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -358,8 +358,8 @@ inline integer_t gges( char const jobvsl, char const jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR >
-inline integer_t gges( char const jobvsl, char const jobvsr,
-        char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline integer_t gges( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
         integer_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -372,8 +372,8 @@ inline integer_t gges( char const jobvsl, char const jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
         typename Workspace >
-inline integer_t gges( char const jobvsl, char const jobvsr,
-        char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline integer_t gges( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
         integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -386,8 +386,8 @@ inline integer_t gges( char const jobvsl, char const jobvsr,
 // template function to call gges, default workspace type
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR >
-inline integer_t gges( char const jobvsl, char const jobvsr,
-        char const sort, logical_t* selctg, MatrixA& a, MatrixB& b,
+inline integer_t gges( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, MatrixA& a, MatrixB& b,
         integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;

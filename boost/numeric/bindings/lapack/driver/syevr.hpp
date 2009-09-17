@@ -34,23 +34,23 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void syevr( char const jobz, char const range, char const uplo,
-            integer_t const n, float* a, integer_t const lda, float const vl,
-            float const vu, integer_t const il, integer_t const iu,
-            float const abstol, integer_t& m, float* w, float* z,
-            integer_t const ldz, integer_t* isuppz, float* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+    inline void syevr( const char jobz, const char range, const char uplo,
+            const integer_t n, float* a, const integer_t lda, const float vl,
+            const float vu, const integer_t il, const integer_t iu,
+            const float abstol, integer_t& m, float* w, float* z,
+            const integer_t ldz, integer_t* isuppz, float* work,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_SSYEVR( &jobz, &range, &uplo, &n, a, &lda, &vl, &vu, &il, &iu,
                 &abstol, &m, w, z, &ldz, isuppz, work, &lwork, iwork, &liwork,
                 &info );
     }
-    inline void syevr( char const jobz, char const range, char const uplo,
-            integer_t const n, double* a, integer_t const lda,
-            double const vl, double const vu, integer_t const il,
-            integer_t const iu, double const abstol, integer_t& m, double* w,
-            double* z, integer_t const ldz, integer_t* isuppz, double* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+    inline void syevr( const char jobz, const char range, const char uplo,
+            const integer_t n, double* a, const integer_t lda,
+            const double vl, const double vu, const integer_t il,
+            const integer_t iu, const double abstol, integer_t& m, double* w,
+            double* z, const integer_t ldz, integer_t* isuppz, double* work,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_DSYEVR( &jobz, &range, &uplo, &n, a, &lda, &vl, &vu, &il, &iu,
                 &abstol, &m, w, z, &ldz, isuppz, work, &lwork, iwork, &liwork,
@@ -68,9 +68,9 @@ struct syevr_impl {
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ, typename WORK, typename IWORK >
-    static void invoke( char const jobz, char const range, MatrixA& a,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const char jobz, const char range, MatrixA& a,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -107,9 +107,9 @@ struct syevr_impl {
     // minimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ >
-    static void invoke( char const jobz, char const range, MatrixA& a,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const char jobz, const char range, MatrixA& a,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
@@ -123,9 +123,9 @@ struct syevr_impl {
     // optimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ >
-    static void invoke( char const jobz, char const range, MatrixA& a,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const char jobz, const char range, MatrixA& a,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
@@ -143,11 +143,11 @@ struct syevr_impl {
                 workspace( tmp_work, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, 26*n );
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return std::max( 1, 10*n );
     }
 };
@@ -156,15 +156,15 @@ struct syevr_impl {
 // template function to call syevr
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorISUPPZ, typename Workspace >
-inline integer_t syevr( char const jobz, char const range, MatrixA& a,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+inline integer_t syevr( const char jobz, const char range, MatrixA& a,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     syevr_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,
@@ -175,15 +175,15 @@ inline integer_t syevr( char const jobz, char const range, MatrixA& a,
 // template function to call syevr, default workspace type
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorISUPPZ >
-inline integer_t syevr( char const jobz, char const range, MatrixA& a,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+inline integer_t syevr( const char jobz, const char range, MatrixA& a,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     syevr_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,

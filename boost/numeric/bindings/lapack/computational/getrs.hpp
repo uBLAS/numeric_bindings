@@ -31,28 +31,29 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void getrs( char const trans, integer_t const n,
-            integer_t const nrhs, float* a, integer_t const lda,
-            integer_t* ipiv, float* b, integer_t const ldb, integer_t& info ) {
+    inline void getrs( const char trans, const integer_t n,
+            const integer_t nrhs, const float* a, const integer_t lda,
+            const integer_t* ipiv, float* b, const integer_t ldb,
+            integer_t& info ) {
         LAPACK_SGETRS( &trans, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
     }
-    inline void getrs( char const trans, integer_t const n,
-            integer_t const nrhs, double* a, integer_t const lda,
-            integer_t* ipiv, double* b, integer_t const ldb,
+    inline void getrs( const char trans, const integer_t n,
+            const integer_t nrhs, const double* a, const integer_t lda,
+            const integer_t* ipiv, double* b, const integer_t ldb,
             integer_t& info ) {
         LAPACK_DGETRS( &trans, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
     }
-    inline void getrs( char const trans, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, integer_t const lda,
-            integer_t* ipiv, traits::complex_f* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void getrs( const char trans, const integer_t n,
+            const integer_t nrhs, const traits::complex_f* a,
+            const integer_t lda, const integer_t* ipiv, traits::complex_f* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_CGETRS( &trans, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void getrs( char const trans, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, integer_t const lda,
-            integer_t* ipiv, traits::complex_d* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void getrs( const char trans, const integer_t n,
+            const integer_t nrhs, const traits::complex_d* a,
+            const integer_t lda, const integer_t* ipiv, traits::complex_d* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_ZGETRS( &trans, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(b), &ldb, &info );
     }
@@ -67,8 +68,8 @@ struct getrs_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static void invoke( char const trans, MatrixA& a, VectorIPIV& ipiv,
-            MatrixB& b, integer_t& info ) {
+    static void invoke( const char trans, const MatrixA& a,
+            const VectorIPIV& ipiv, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -92,8 +93,8 @@ struct getrs_impl {
 
 // template function to call getrs
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline integer_t getrs( char const trans, MatrixA& a, VectorIPIV& ipiv,
-        MatrixB& b ) {
+inline integer_t getrs( const char trans, const MatrixA& a,
+        const VectorIPIV& ipiv, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     getrs_impl< value_type >::invoke( trans, a, ipiv, b, info );

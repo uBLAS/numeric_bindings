@@ -34,14 +34,14 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sytrd( char const uplo, integer_t const n, float* a,
-            integer_t const lda, float* d, float* e, float* tau, float* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void sytrd( const char uplo, const integer_t n, float* a,
+            const integer_t lda, float* d, float* e, float* tau, float* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_SSYTRD( &uplo, &n, a, &lda, d, e, tau, work, &lwork, &info );
     }
-    inline void sytrd( char const uplo, integer_t const n, double* a,
-            integer_t const lda, double* d, double* e, double* tau,
-            double* work, integer_t const lwork, integer_t& info ) {
+    inline void sytrd( const char uplo, const integer_t n, double* a,
+            const integer_t lda, double* d, double* e, double* tau,
+            double* work, const integer_t lwork, integer_t& info ) {
         LAPACK_DSYTRD( &uplo, &n, a, &lda, d, e, tau, work, &lwork, &info );
     }
 }

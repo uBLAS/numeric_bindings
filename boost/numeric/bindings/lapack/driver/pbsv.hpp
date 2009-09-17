@@ -31,25 +31,25 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pbsv( char const uplo, integer_t const n, integer_t const kd,
-            integer_t const nrhs, float* ab, integer_t const ldab, float* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void pbsv( const char uplo, const integer_t n, const integer_t kd,
+            const integer_t nrhs, float* ab, const integer_t ldab, float* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_SPBSV( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
     }
-    inline void pbsv( char const uplo, integer_t const n, integer_t const kd,
-            integer_t const nrhs, double* ab, integer_t const ldab, double* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void pbsv( const char uplo, const integer_t n, const integer_t kd,
+            const integer_t nrhs, double* ab, const integer_t ldab, double* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_DPBSV( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
     }
-    inline void pbsv( char const uplo, integer_t const n, integer_t const kd,
-            integer_t const nrhs, traits::complex_f* ab, integer_t const ldab,
-            traits::complex_f* b, integer_t const ldb, integer_t& info ) {
+    inline void pbsv( const char uplo, const integer_t n, const integer_t kd,
+            const integer_t nrhs, traits::complex_f* ab, const integer_t ldab,
+            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
         LAPACK_CPBSV( &uplo, &n, &kd, &nrhs, traits::complex_ptr(ab), &ldab,
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void pbsv( char const uplo, integer_t const n, integer_t const kd,
-            integer_t const nrhs, traits::complex_d* ab, integer_t const ldab,
-            traits::complex_d* b, integer_t const ldb, integer_t& info ) {
+    inline void pbsv( const char uplo, const integer_t n, const integer_t kd,
+            const integer_t nrhs, traits::complex_d* ab, const integer_t ldab,
+            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
         LAPACK_ZPBSV( &uplo, &n, &kd, &nrhs, traits::complex_ptr(ab), &ldab,
                 traits::complex_ptr(b), &ldb, &info );
     }
@@ -73,7 +73,7 @@ struct pbsv_impl {
 
     // templated specialization
     template< typename MatrixAB, typename MatrixB >
-    static void invoke( integer_t const kd, MatrixAB& ab, MatrixB& b,
+    static void invoke( const integer_t kd, MatrixAB& ab, MatrixB& b,
             integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
@@ -97,7 +97,7 @@ struct pbsv_impl {
 
 // template function to call pbsv
 template< typename MatrixAB, typename MatrixB >
-inline integer_t pbsv( integer_t const kd, MatrixAB& ab, MatrixB& b ) {
+inline integer_t pbsv( const integer_t kd, MatrixAB& ab, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     pbsv_impl< value_type >::invoke( kd, ab, b, info );

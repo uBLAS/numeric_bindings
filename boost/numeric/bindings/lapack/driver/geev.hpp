@@ -37,37 +37,37 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void geev( char const jobvl, char const jobvr, integer_t const n,
-            float* a, integer_t const lda, float* wr, float* wi, float* vl,
-            integer_t const ldvl, float* vr, integer_t const ldvr,
-            float* work, integer_t const lwork, integer_t& info ) {
+    inline void geev( const char jobvl, const char jobvr, const integer_t n,
+            float* a, const integer_t lda, float* wr, float* wi, float* vl,
+            const integer_t ldvl, float* vr, const integer_t ldvr,
+            float* work, const integer_t lwork, integer_t& info ) {
         LAPACK_SGEEV( &jobvl, &jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr,
                 &ldvr, work, &lwork, &info );
     }
-    inline void geev( char const jobvl, char const jobvr, integer_t const n,
-            double* a, integer_t const lda, double* wr, double* wi,
-            double* vl, integer_t const ldvl, double* vr,
-            integer_t const ldvr, double* work, integer_t const lwork,
+    inline void geev( const char jobvl, const char jobvr, const integer_t n,
+            double* a, const integer_t lda, double* wr, double* wi,
+            double* vl, const integer_t ldvl, double* vr,
+            const integer_t ldvr, double* work, const integer_t lwork,
             integer_t& info ) {
         LAPACK_DGEEV( &jobvl, &jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr,
                 &ldvr, work, &lwork, &info );
     }
-    inline void geev( char const jobvl, char const jobvr, integer_t const n,
-            traits::complex_f* a, integer_t const lda, traits::complex_f* w,
-            traits::complex_f* vl, integer_t const ldvl,
-            traits::complex_f* vr, integer_t const ldvr,
-            traits::complex_f* work, integer_t const lwork, float* rwork,
+    inline void geev( const char jobvl, const char jobvr, const integer_t n,
+            traits::complex_f* a, const integer_t lda, traits::complex_f* w,
+            traits::complex_f* vl, const integer_t ldvl,
+            traits::complex_f* vr, const integer_t ldvr,
+            traits::complex_f* work, const integer_t lwork, float* rwork,
             integer_t& info ) {
         LAPACK_CGEEV( &jobvl, &jobvr, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(w), traits::complex_ptr(vl), &ldvl,
                 traits::complex_ptr(vr), &ldvr, traits::complex_ptr(work),
                 &lwork, rwork, &info );
     }
-    inline void geev( char const jobvl, char const jobvr, integer_t const n,
-            traits::complex_d* a, integer_t const lda, traits::complex_d* w,
-            traits::complex_d* vl, integer_t const ldvl,
-            traits::complex_d* vr, integer_t const ldvr,
-            traits::complex_d* work, integer_t const lwork, double* rwork,
+    inline void geev( const char jobvl, const char jobvr, const integer_t n,
+            traits::complex_d* a, const integer_t lda, traits::complex_d* w,
+            traits::complex_d* vl, const integer_t ldvl,
+            traits::complex_d* vr, const integer_t ldvr,
+            traits::complex_d* work, const integer_t lwork, double* rwork,
             integer_t& info ) {
         LAPACK_ZGEEV( &jobvl, &jobvr, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(w), traits::complex_ptr(vl), &ldvl,
@@ -90,7 +90,7 @@ struct geev_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVL, typename MatrixVR, typename WORK >
-    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
             VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -128,7 +128,7 @@ struct geev_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     // minimal workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVL, typename MatrixVR >
-    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
             VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( jobvl,
@@ -139,7 +139,7 @@ struct geev_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     // optimal workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVL, typename MatrixVR >
-    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
             VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
@@ -154,8 +154,8 @@ struct geev_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
         invoke( jobvl, jobvr, a, wr, wi, vl, vr, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( char const jobvl, char const jobvr,
-            integer_t const n ) {
+    static integer_t min_size_work( const char jobvl, const char jobvr,
+            const integer_t n ) {
         if ( jobvl == 'V' || jobvr == 'V' )
             return std::max( 1, 4*n );
         else
@@ -173,7 +173,7 @@ struct geev_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVL,
             typename MatrixVR, typename WORK, typename RWORK >
-    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
             VectorW& w, MatrixVL& vl, MatrixVR& vr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -209,7 +209,7 @@ struct geev_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     // minimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVL,
             typename MatrixVR >
-    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
             VectorW& w, MatrixVL& vl, MatrixVR& vr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
@@ -223,7 +223,7 @@ struct geev_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     // optimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVL,
             typename MatrixVR >
-    static void invoke( char const jobvl, char const jobvr, MatrixA& a,
+    static void invoke( const char jobvl, const char jobvr, MatrixA& a,
             VectorW& w, MatrixVL& vl, MatrixVR& vr, integer_t& info,
             optimal_workspace work ) {
         value_type opt_size_work;
@@ -241,11 +241,11 @@ struct geev_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
                 tmp_rwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, 2*n );
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return 2*n;
     }
 };
@@ -254,7 +254,7 @@ struct geev_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 // template function to call geev
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR, typename Workspace >
-inline integer_t geev( char const jobvl, char const jobvr, MatrixA& a,
+inline integer_t geev( const char jobvl, const char jobvr, MatrixA& a,
         VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -267,7 +267,7 @@ inline integer_t geev( char const jobvl, char const jobvr, MatrixA& a,
 // template function to call geev, default workspace type
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVL, typename MatrixVR >
-inline integer_t geev( char const jobvl, char const jobvr, MatrixA& a,
+inline integer_t geev( const char jobvl, const char jobvr, MatrixA& a,
         VectorWR& wr, VectorWI& wi, MatrixVL& vl, MatrixVR& vr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -278,7 +278,7 @@ inline integer_t geev( char const jobvl, char const jobvr, MatrixA& a,
 // template function to call geev
 template< typename MatrixA, typename VectorW, typename MatrixVL,
         typename MatrixVR, typename Workspace >
-inline integer_t geev( char const jobvl, char const jobvr, MatrixA& a,
+inline integer_t geev( const char jobvl, const char jobvr, MatrixA& a,
         VectorW& w, MatrixVL& vl, MatrixVR& vr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -290,7 +290,7 @@ inline integer_t geev( char const jobvl, char const jobvr, MatrixA& a,
 // template function to call geev, default workspace type
 template< typename MatrixA, typename VectorW, typename MatrixVL,
         typename MatrixVR >
-inline integer_t geev( char const jobvl, char const jobvr, MatrixA& a,
+inline integer_t geev( const char jobvl, const char jobvr, MatrixA& a,
         VectorW& w, MatrixVL& vl, MatrixVR& vr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);

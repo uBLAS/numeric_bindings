@@ -33,20 +33,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hbgv( char const jobz, char const uplo, integer_t const n,
-            integer_t const ka, integer_t const kb, traits::complex_f* ab,
-            integer_t const ldab, traits::complex_f* bb, integer_t const ldbb,
-            float* w, traits::complex_f* z, integer_t const ldz,
+    inline void hbgv( const char jobz, const char uplo, const integer_t n,
+            const integer_t ka, const integer_t kb, traits::complex_f* ab,
+            const integer_t ldab, traits::complex_f* bb, const integer_t ldbb,
+            float* w, traits::complex_f* z, const integer_t ldz,
             traits::complex_f* work, float* rwork, integer_t& info ) {
         LAPACK_CHBGV( &jobz, &uplo, &n, &ka, &kb, traits::complex_ptr(ab),
                 &ldab, traits::complex_ptr(bb), &ldbb, w,
                 traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
                 rwork, &info );
     }
-    inline void hbgv( char const jobz, char const uplo, integer_t const n,
-            integer_t const ka, integer_t const kb, traits::complex_d* ab,
-            integer_t const ldab, traits::complex_d* bb, integer_t const ldbb,
-            double* w, traits::complex_d* z, integer_t const ldz,
+    inline void hbgv( const char jobz, const char uplo, const integer_t n,
+            const integer_t ka, const integer_t kb, traits::complex_d* ab,
+            const integer_t ldab, traits::complex_d* bb, const integer_t ldbb,
+            double* w, traits::complex_d* z, const integer_t ldz,
             traits::complex_d* work, double* rwork, integer_t& info ) {
         LAPACK_ZHBGV( &jobz, &uplo, &n, &ka, &kb, traits::complex_ptr(ab),
                 &ldab, traits::complex_ptr(bb), &ldbb, w,
@@ -65,8 +65,8 @@ struct hbgv_impl {
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixBB, typename VectorW,
             typename MatrixZ, typename WORK, typename RWORK >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const ka, integer_t const kb, MatrixAB& ab,
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t ka, const integer_t kb, MatrixAB& ab,
             MatrixBB& bb, VectorW& w, MatrixZ& z, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -99,8 +99,8 @@ struct hbgv_impl {
     // minimal workspace specialization
     template< typename MatrixAB, typename MatrixBB, typename VectorW,
             typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const ka, integer_t const kb, MatrixAB& ab,
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t ka, const integer_t kb, MatrixAB& ab,
             MatrixBB& bb, VectorW& w, MatrixZ& z, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
@@ -112,18 +112,18 @@ struct hbgv_impl {
     // optimal workspace specialization
     template< typename MatrixAB, typename MatrixBB, typename VectorW,
             typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const ka, integer_t const kb, MatrixAB& ab,
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t ka, const integer_t kb, MatrixAB& ab,
             MatrixBB& bb, VectorW& w, MatrixZ& z, integer_t& info,
             optimal_workspace work ) {
         invoke( jobz, n, ka, kb, ab, bb, w, z, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return 3*n;
     }
 };
@@ -132,8 +132,8 @@ struct hbgv_impl {
 // template function to call hbgv
 template< typename MatrixAB, typename MatrixBB, typename VectorW,
         typename MatrixZ, typename Workspace >
-inline integer_t hbgv( char const jobz, integer_t const n,
-        integer_t const ka, integer_t const kb, MatrixAB& ab, MatrixBB& bb,
+inline integer_t hbgv( const char jobz, const integer_t n,
+        const integer_t ka, const integer_t kb, MatrixAB& ab, MatrixBB& bb,
         VectorW& w, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
@@ -145,8 +145,8 @@ inline integer_t hbgv( char const jobz, integer_t const n,
 // template function to call hbgv, default workspace type
 template< typename MatrixAB, typename MatrixBB, typename VectorW,
         typename MatrixZ >
-inline integer_t hbgv( char const jobz, integer_t const n,
-        integer_t const ka, integer_t const kb, MatrixAB& ab, MatrixBB& bb,
+inline integer_t hbgv( const char jobz, const integer_t n,
+        const integer_t ka, const integer_t kb, MatrixAB& ab, MatrixBB& bb,
         VectorW& w, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);

@@ -34,18 +34,18 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hetrd( char const uplo, integer_t const n,
-            traits::complex_f* a, integer_t const lda, float* d, float* e,
+    inline void hetrd( const char uplo, const integer_t n,
+            traits::complex_f* a, const integer_t lda, float* d, float* e,
             traits::complex_f* tau, traits::complex_f* work,
-            integer_t const lwork, integer_t& info ) {
+            const integer_t lwork, integer_t& info ) {
         LAPACK_CHETRD( &uplo, &n, traits::complex_ptr(a), &lda, d, e,
                 traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
                 &info );
     }
-    inline void hetrd( char const uplo, integer_t const n,
-            traits::complex_d* a, integer_t const lda, double* d, double* e,
+    inline void hetrd( const char uplo, const integer_t n,
+            traits::complex_d* a, const integer_t lda, double* d, double* e,
             traits::complex_d* tau, traits::complex_d* work,
-            integer_t const lwork, integer_t& info ) {
+            const integer_t lwork, integer_t& info ) {
         LAPACK_ZHETRD( &uplo, &n, traits::complex_ptr(a), &lda, d, e,
                 traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
                 &info );

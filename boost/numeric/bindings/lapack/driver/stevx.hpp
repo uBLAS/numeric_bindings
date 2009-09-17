@@ -33,19 +33,19 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void stevx( char const jobz, char const range, integer_t const n,
-            float* d, float* e, float const vl, float const vu,
-            integer_t const il, integer_t const iu, float const abstol,
-            integer_t& m, float* w, float* z, integer_t const ldz,
+    inline void stevx( const char jobz, const char range, const integer_t n,
+            float* d, float* e, const float vl, const float vu,
+            const integer_t il, const integer_t iu, const float abstol,
+            integer_t& m, float* w, float* z, const integer_t ldz,
             float* work, integer_t* iwork, integer_t* ifail,
             integer_t& info ) {
         LAPACK_SSTEVX( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol,
                 &m, w, z, &ldz, work, iwork, ifail, &info );
     }
-    inline void stevx( char const jobz, char const range, integer_t const n,
-            double* d, double* e, double const vl, double const vu,
-            integer_t const il, integer_t const iu, double const abstol,
-            integer_t& m, double* w, double* z, integer_t const ldz,
+    inline void stevx( const char jobz, const char range, const integer_t n,
+            double* d, double* e, const double vl, const double vu,
+            const integer_t il, const integer_t iu, const double abstol,
+            integer_t& m, double* w, double* z, const integer_t ldz,
             double* work, integer_t* iwork, integer_t* ifail,
             integer_t& info ) {
         LAPACK_DSTEVX( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol,
@@ -64,9 +64,9 @@ struct stevx_impl {
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorIFAIL, typename WORK,
             typename IWORK >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            VectorD& d, VectorE& e, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, real_type const abstol,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, const real_type abstol,
             integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -100,9 +100,9 @@ struct stevx_impl {
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            VectorD& d, VectorE& e, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, real_type const abstol,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, const real_type abstol,
             integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
@@ -114,20 +114,20 @@ struct stevx_impl {
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            VectorD& d, VectorE& e, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, real_type const abstol,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, const real_type abstol,
             integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, optimal_workspace work ) {
         invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, ifail,
                 info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 5*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return 5*n;
     }
 };
@@ -136,16 +136,16 @@ struct stevx_impl {
 // template function to call stevx
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline integer_t stevx( char const jobz, char const range,
-        integer_t const n, VectorD& d, VectorE& e,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+inline integer_t stevx( const char jobz, const char range,
+        const integer_t n, VectorD& d, VectorE& e,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::vector_traits<
-        VectorD >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        VectorD >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     stevx_impl< value_type >::invoke( jobz, range, n, d, e, vl, vu, il,
@@ -156,16 +156,16 @@ inline integer_t stevx( char const jobz, char const range,
 // template function to call stevx, default workspace type
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline integer_t stevx( char const jobz, char const range,
-        integer_t const n, VectorD& d, VectorE& e,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+inline integer_t stevx( const char jobz, const char range,
+        const integer_t n, VectorD& d, VectorE& e,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::vector_traits<
-        VectorD >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        VectorD >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     stevx_impl< value_type >::invoke( jobz, range, n, d, e, vl, vu, il,

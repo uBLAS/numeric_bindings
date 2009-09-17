@@ -33,15 +33,15 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hetrf( char const uplo, integer_t const n,
-            traits::complex_f* a, integer_t const lda, integer_t* ipiv,
-            traits::complex_f* work, integer_t const lwork, integer_t& info ) {
+    inline void hetrf( const char uplo, const integer_t n,
+            traits::complex_f* a, const integer_t lda, integer_t* ipiv,
+            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
         LAPACK_CHETRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(work), &lwork, &info );
     }
-    inline void hetrf( char const uplo, integer_t const n,
-            traits::complex_d* a, integer_t const lda, integer_t* ipiv,
-            traits::complex_d* work, integer_t const lwork, integer_t& info ) {
+    inline void hetrf( const char uplo, const integer_t n,
+            traits::complex_d* a, const integer_t lda, integer_t* ipiv,
+            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
         LAPACK_ZHETRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(work), &lwork, &info );
     }

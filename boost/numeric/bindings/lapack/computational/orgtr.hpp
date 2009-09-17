@@ -34,14 +34,14 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void orgtr( char const uplo, integer_t const n, float* a,
-            integer_t const lda, float* tau, float* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void orgtr( const char uplo, const integer_t n, float* a,
+            const integer_t lda, const float* tau, float* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_SORGTR( &uplo, &n, a, &lda, tau, work, &lwork, &info );
     }
-    inline void orgtr( char const uplo, integer_t const n, double* a,
-            integer_t const lda, double* tau, double* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void orgtr( const char uplo, const integer_t n, double* a,
+            const integer_t lda, const double* tau, double* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_DORGTR( &uplo, &n, a, &lda, tau, work, &lwork, &info );
     }
 }
@@ -55,7 +55,7 @@ struct orgtr_impl {
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void invoke( integer_t const n, MatrixA& a, VectorTAU& tau,
+    static void invoke( const integer_t n, MatrixA& a, const VectorTAU& tau,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -76,7 +76,7 @@ struct orgtr_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const n, MatrixA& a, VectorTAU& tau,
+    static void invoke( const integer_t n, MatrixA& a, const VectorTAU& tau,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         invoke( n, a, tau, info, workspace( tmp_work ) );
@@ -84,7 +84,7 @@ struct orgtr_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const n, MatrixA& a, VectorTAU& tau,
+    static void invoke( const integer_t n, MatrixA& a, const VectorTAU& tau,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         detail::orgtr( traits::matrix_uplo_tag(a), n,
@@ -95,7 +95,7 @@ struct orgtr_impl {
         invoke( n, a, tau, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, n-1 );
     }
 };
@@ -103,8 +103,8 @@ struct orgtr_impl {
 
 // template function to call orgtr
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline integer_t orgtr( integer_t const n, MatrixA& a, VectorTAU& tau,
-        Workspace work ) {
+inline integer_t orgtr( const integer_t n, MatrixA& a,
+        const VectorTAU& tau, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     orgtr_impl< value_type >::invoke( n, a, tau, info, work );
@@ -113,7 +113,8 @@ inline integer_t orgtr( integer_t const n, MatrixA& a, VectorTAU& tau,
 
 // template function to call orgtr, default workspace type
 template< typename MatrixA, typename VectorTAU >
-inline integer_t orgtr( integer_t const n, MatrixA& a, VectorTAU& tau ) {
+inline integer_t orgtr( const integer_t n, MatrixA& a,
+        const VectorTAU& tau ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     orgtr_impl< value_type >::invoke( n, a, tau, info,

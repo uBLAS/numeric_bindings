@@ -31,17 +31,17 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hetrs( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, integer_t const lda,
-            integer_t* ipiv, traits::complex_f* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void hetrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_f* a,
+            const integer_t lda, const integer_t* ipiv, traits::complex_f* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_CHETRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void hetrs( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, integer_t const lda,
-            integer_t* ipiv, traits::complex_d* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void hetrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_d* a,
+            const integer_t lda, const integer_t* ipiv, traits::complex_d* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_ZHETRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(b), &ldb, &info );
     }
@@ -56,8 +56,8 @@ struct hetrs_impl {
 
     // templated specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
-            MatrixB& b, integer_t& info ) {
+    static void invoke( const char uplo, const MatrixA& a,
+            const VectorIPIV& ipiv, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -81,8 +81,8 @@ struct hetrs_impl {
 
 // template function to call hetrs
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline integer_t hetrs( char const uplo, MatrixA& a, VectorIPIV& ipiv,
-        MatrixB& b ) {
+inline integer_t hetrs( const char uplo, const MatrixA& a,
+        const VectorIPIV& ipiv, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     hetrs_impl< value_type >::invoke( uplo, a, ipiv, b, info );

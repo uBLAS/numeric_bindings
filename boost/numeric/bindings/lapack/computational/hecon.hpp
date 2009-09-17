@@ -33,17 +33,17 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hecon( char const uplo, integer_t const n,
-            traits::complex_f* a, integer_t const lda, integer_t* ipiv,
-            float const anorm, float& rcond, traits::complex_f* work,
-            integer_t& info ) {
+    inline void hecon( const char uplo, const integer_t n,
+            const traits::complex_f* a, const integer_t lda,
+            const integer_t* ipiv, const float anorm, float& rcond,
+            traits::complex_f* work, integer_t& info ) {
         LAPACK_CHECON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
                 &rcond, traits::complex_ptr(work), &info );
     }
-    inline void hecon( char const uplo, integer_t const n,
-            traits::complex_d* a, integer_t const lda, integer_t* ipiv,
-            double const anorm, double& rcond, traits::complex_d* work,
-            integer_t& info ) {
+    inline void hecon( const char uplo, const integer_t n,
+            const traits::complex_d* a, const integer_t lda,
+            const integer_t* ipiv, const double anorm, double& rcond,
+            traits::complex_d* work, integer_t& info ) {
         LAPACK_ZHECON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
                 &rcond, traits::complex_ptr(work), &info );
     }
@@ -58,9 +58,9 @@ struct hecon_impl {
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename WORK >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
-            real_type const anorm, real_type& rcond, integer_t& info,
-            detail::workspace1< WORK > work ) {
+    static void invoke( const char uplo, const MatrixA& a,
+            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
+            integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
@@ -77,9 +77,9 @@ struct hecon_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
-            real_type const anorm, real_type& rcond, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( const char uplo, const MatrixA& a,
+            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
+            integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         invoke( uplo, a, ipiv, anorm, rcond, info, workspace( tmp_work ) );
@@ -87,13 +87,13 @@ struct hecon_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
-            real_type const anorm, real_type& rcond, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( const char uplo, const MatrixA& a,
+            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
+            integer_t& info, optimal_workspace work ) {
         invoke( uplo, a, ipiv, anorm, rcond, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 };
@@ -101,9 +101,10 @@ struct hecon_impl {
 
 // template function to call hecon
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline integer_t hecon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const anorm,
+inline integer_t hecon( const char uplo, const MatrixA& a,
+        const VectorIPIV& ipiv, const typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type anorm,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -115,9 +116,10 @@ inline integer_t hecon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
 
 // template function to call hecon, default workspace type
 template< typename MatrixA, typename VectorIPIV >
-inline integer_t hecon( char const uplo, MatrixA& a, VectorIPIV& ipiv,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const anorm,
+inline integer_t hecon( const char uplo, const MatrixA& a,
+        const VectorIPIV& ipiv, const typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type anorm,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;

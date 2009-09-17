@@ -34,30 +34,30 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gebak( char const job, char const side, integer_t const n,
-            integer_t const ilo, integer_t const ihi, float* scale,
-            integer_t const m, float* v, integer_t const ldv,
+    inline void gebak( const char job, const char side, const integer_t n,
+            const integer_t ilo, const integer_t ihi, const float* scale,
+            const integer_t m, float* v, const integer_t ldv,
             integer_t& info ) {
         LAPACK_SGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv,
                 &info );
     }
-    inline void gebak( char const job, char const side, integer_t const n,
-            integer_t const ilo, integer_t const ihi, double* scale,
-            integer_t const m, double* v, integer_t const ldv,
+    inline void gebak( const char job, const char side, const integer_t n,
+            const integer_t ilo, const integer_t ihi, const double* scale,
+            const integer_t m, double* v, const integer_t ldv,
             integer_t& info ) {
         LAPACK_DGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv,
                 &info );
     }
-    inline void gebak( char const job, char const side, integer_t const n,
-            integer_t const ilo, integer_t const ihi, float* scale,
-            integer_t const m, traits::complex_f* v, integer_t const ldv,
+    inline void gebak( const char job, const char side, const integer_t n,
+            const integer_t ilo, const integer_t ihi, const float* scale,
+            const integer_t m, traits::complex_f* v, const integer_t ldv,
             integer_t& info ) {
         LAPACK_CGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m,
                 traits::complex_ptr(v), &ldv, &info );
     }
-    inline void gebak( char const job, char const side, integer_t const n,
-            integer_t const ilo, integer_t const ihi, double* scale,
-            integer_t const m, traits::complex_d* v, integer_t const ldv,
+    inline void gebak( const char job, const char side, const integer_t n,
+            const integer_t ilo, const integer_t ihi, const double* scale,
+            const integer_t m, traits::complex_d* v, const integer_t ldv,
             integer_t& info ) {
         LAPACK_ZGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m,
                 traits::complex_ptr(v), &ldv, &info );
@@ -77,8 +77,8 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename VectorSCALE, typename MatrixV >
-    static void invoke( char const job, char const side, integer_t const ilo,
-            integer_t const ihi, VectorSCALE& scale, MatrixV& v,
+    static void invoke( const char job, const char side, const integer_t ilo,
+            const integer_t ihi, const VectorSCALE& scale, MatrixV& v,
             integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorSCALE >::value_type, typename traits::matrix_traits<
@@ -107,8 +107,8 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // templated specialization
     template< typename VectorSCALE, typename MatrixV >
-    static void invoke( char const job, char const side, integer_t const ilo,
-            integer_t const ihi, VectorSCALE& scale, MatrixV& v,
+    static void invoke( const char job, const char side, const integer_t ilo,
+            const integer_t ihi, const VectorSCALE& scale, MatrixV& v,
             integer_t& info ) {
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( side == 'R' || side == 'L' );
@@ -128,8 +128,8 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call gebak
 template< typename VectorSCALE, typename MatrixV >
-inline integer_t gebak( char const job, char const side,
-        integer_t const ilo, integer_t const ihi, VectorSCALE& scale,
+inline integer_t gebak( const char job, const char side,
+        const integer_t ilo, const integer_t ihi, const VectorSCALE& scale,
         MatrixV& v ) {
     typedef typename traits::matrix_traits< MatrixV >::value_type value_type;
     integer_t info(0);

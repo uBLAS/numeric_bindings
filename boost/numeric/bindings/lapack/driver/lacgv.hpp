@@ -31,12 +31,12 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void lacgv( integer_t const n, traits::complex_f* x,
-            integer_t const incx ) {
+    inline void lacgv( const integer_t n, traits::complex_f* x,
+            const integer_t incx ) {
         LAPACK_CLACGV( &n, traits::complex_ptr(x), &incx );
     }
-    inline void lacgv( integer_t const n, traits::complex_d* x,
-            integer_t const incx ) {
+    inline void lacgv( const integer_t n, traits::complex_d* x,
+            const integer_t incx ) {
         LAPACK_ZLACGV( &n, traits::complex_ptr(x), &incx );
     }
 }
@@ -50,7 +50,7 @@ struct lacgv_impl {
 
     // templated specialization
     template< typename VectorX >
-    static void invoke( integer_t const n, VectorX& x, integer_t const incx ) {
+    static void invoke( const integer_t n, VectorX& x, const integer_t incx ) {
         BOOST_ASSERT( n >= 0 );
         detail::lacgv( n, traits::vector_storage(x), incx );
     }
@@ -59,8 +59,8 @@ struct lacgv_impl {
 
 // template function to call lacgv
 template< typename VectorX >
-inline integer_t lacgv( integer_t const n, VectorX& x,
-        integer_t const incx ) {
+inline integer_t lacgv( const integer_t n, VectorX& x,
+        const integer_t incx ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     integer_t info(0);
     lacgv_impl< value_type >::invoke( n, x, incx );

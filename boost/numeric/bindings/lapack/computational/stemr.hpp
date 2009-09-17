@@ -37,45 +37,45 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void stemr( char const jobz, char const range, integer_t const n,
-            float* d, float* e, float const vl, float const vu,
-            integer_t const il, integer_t const iu, integer_t& m, float* w,
-            float* z, integer_t const ldz, integer_t const nzc,
+    inline void stemr( const char jobz, const char range, const integer_t n,
+            float* d, float* e, const float vl, const float vu,
+            const integer_t il, const integer_t iu, integer_t& m, float* w,
+            float* z, const integer_t ldz, const integer_t nzc,
             integer_t* isuppz, logical_t& tryrac, float* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_SSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
                 &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork,
                 &info );
     }
-    inline void stemr( char const jobz, char const range, integer_t const n,
-            double* d, double* e, double const vl, double const vu,
-            integer_t const il, integer_t const iu, integer_t& m, double* w,
-            double* z, integer_t const ldz, integer_t const nzc,
+    inline void stemr( const char jobz, const char range, const integer_t n,
+            double* d, double* e, const double vl, const double vu,
+            const integer_t il, const integer_t iu, integer_t& m, double* w,
+            double* z, const integer_t ldz, const integer_t nzc,
             integer_t* isuppz, logical_t& tryrac, double* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_DSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
                 &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork,
                 &info );
     }
-    inline void stemr( char const jobz, char const range, integer_t const n,
-            float* d, float* e, float const vl, float const vu,
-            integer_t const il, integer_t const iu, integer_t& m, float* w,
-            traits::complex_f* z, integer_t const ldz, integer_t const nzc,
+    inline void stemr( const char jobz, const char range, const integer_t n,
+            float* d, float* e, const float vl, const float vu,
+            const integer_t il, const integer_t iu, integer_t& m, float* w,
+            traits::complex_f* z, const integer_t ldz, const integer_t nzc,
             integer_t* isuppz, logical_t& tryrac, float* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_CSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w,
                 traits::complex_ptr(z), &ldz, &nzc, isuppz, &tryrac, work,
                 &lwork, iwork, &liwork, &info );
     }
-    inline void stemr( char const jobz, char const range, integer_t const n,
-            double* d, double* e, double const vl, double const vu,
-            integer_t const il, integer_t const iu, integer_t& m, double* w,
-            traits::complex_d* z, integer_t const ldz, integer_t const nzc,
+    inline void stemr( const char jobz, const char range, const integer_t n,
+            double* d, double* e, const double vl, const double vu,
+            const integer_t il, const integer_t iu, integer_t& m, double* w,
+            traits::complex_d* z, const integer_t ldz, const integer_t nzc,
             integer_t* isuppz, logical_t& tryrac, double* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_ZSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w,
                 traits::complex_ptr(z), &ldz, &nzc, isuppz, &tryrac, work,
@@ -98,10 +98,10 @@ struct stemr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ, typename WORK,
             typename IWORK >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            VectorD& d, VectorE& e, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, integer_t& m, VectorW& w,
-            MatrixZ& z, integer_t const nzc, VectorISUPPZ& isuppz,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, integer_t& m, VectorW& w,
+            MatrixZ& z, const integer_t nzc, VectorISUPPZ& isuppz,
             logical_t& tryrac, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -137,10 +137,10 @@ struct stemr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            VectorD& d, VectorE& e, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, integer_t& m, VectorW& w,
-            MatrixZ& z, integer_t const nzc, VectorISUPPZ& isuppz,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, integer_t& m, VectorW& w,
+            MatrixZ& z, const integer_t nzc, VectorISUPPZ& isuppz,
             logical_t& tryrac, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n,
                 jobz ) );
@@ -153,10 +153,10 @@ struct stemr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            VectorD& d, VectorE& e, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, integer_t& m, VectorW& w,
-            MatrixZ& z, integer_t const nzc, VectorISUPPZ& isuppz,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, integer_t& m, VectorW& w,
+            MatrixZ& z, const integer_t nzc, VectorISUPPZ& isuppz,
             logical_t& tryrac, integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         integer_t opt_size_iwork;
@@ -173,7 +173,7 @@ struct stemr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 tryrac, info, workspace( tmp_work, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n, char const jobz ) {
+    static integer_t min_size_work( const integer_t n, const char jobz ) {
         if ( jobz == 'V' ) {
             return std::max( 1, 18*n );
         } else {
@@ -181,7 +181,7 @@ struct stemr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         }
     }
 
-    static integer_t min_size_iwork( integer_t const n, char const jobz ) {
+    static integer_t min_size_iwork( const integer_t n, const char jobz ) {
         if ( jobz == 'V' ) {
             return std::max( 1, 10*n );
         } else {
@@ -201,10 +201,10 @@ struct stemr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ, typename WORK,
             typename IWORK >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            VectorD& d, VectorE& e, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, integer_t& m, VectorW& w,
-            MatrixZ& z, integer_t const nzc, VectorISUPPZ& isuppz,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, integer_t& m, VectorW& w,
+            MatrixZ& z, const integer_t nzc, VectorISUPPZ& isuppz,
             logical_t& tryrac, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -237,10 +237,10 @@ struct stemr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            VectorD& d, VectorE& e, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, integer_t& m, VectorW& w,
-            MatrixZ& z, integer_t const nzc, VectorISUPPZ& isuppz,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, integer_t& m, VectorW& w,
+            MatrixZ& z, const integer_t nzc, VectorISUPPZ& isuppz,
             logical_t& tryrac, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n,
                 jobz ) );
@@ -253,10 +253,10 @@ struct stemr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            VectorD& d, VectorE& e, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, integer_t& m, VectorW& w,
-            MatrixZ& z, integer_t const nzc, VectorISUPPZ& isuppz,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, integer_t& m, VectorW& w,
+            MatrixZ& z, const integer_t nzc, VectorISUPPZ& isuppz,
             logical_t& tryrac, integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         integer_t opt_size_iwork;
@@ -273,7 +273,7 @@ struct stemr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 tryrac, info, workspace( tmp_work, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n, char const jobz ) {
+    static integer_t min_size_work( const integer_t n, const char jobz ) {
         if ( jobz == 'V' ) {
             return std::max( 1, 18*n );
         } else {
@@ -281,7 +281,7 @@ struct stemr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         }
     }
 
-    static integer_t min_size_iwork( integer_t const n, char const jobz ) {
+    static integer_t min_size_iwork( const integer_t n, const char jobz ) {
         if ( jobz == 'V' ) {
             return std::max( 1, 10*n );
         } else {
@@ -294,14 +294,14 @@ struct stemr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call stemr
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorISUPPZ, typename Workspace >
-inline integer_t stemr( char const jobz, char const range,
-        integer_t const n, VectorD& d, VectorE& e,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixZ >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixZ >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, integer_t& m, VectorW& w, MatrixZ& z,
-        integer_t const nzc, VectorISUPPZ& isuppz, logical_t& tryrac,
+inline integer_t stemr( const char jobz, const char range,
+        const integer_t n, VectorD& d, VectorE& e,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixZ >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixZ >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, integer_t& m, VectorW& w, MatrixZ& z,
+        const integer_t nzc, VectorISUPPZ& isuppz, logical_t& tryrac,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);
@@ -313,14 +313,14 @@ inline integer_t stemr( char const jobz, char const range,
 // template function to call stemr, default workspace type
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorISUPPZ >
-inline integer_t stemr( char const jobz, char const range,
-        integer_t const n, VectorD& d, VectorE& e,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixZ >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixZ >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, integer_t& m, VectorW& w, MatrixZ& z,
-        integer_t const nzc, VectorISUPPZ& isuppz, logical_t& tryrac ) {
+inline integer_t stemr( const char jobz, const char range,
+        const integer_t n, VectorD& d, VectorE& e,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixZ >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixZ >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, integer_t& m, VectorW& w, MatrixZ& z,
+        const integer_t nzc, VectorISUPPZ& isuppz, logical_t& tryrac ) {
     typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);
     stemr_impl< value_type >::invoke( jobz, range, n, d, e, vl, vu, il,

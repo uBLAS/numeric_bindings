@@ -34,14 +34,16 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void orglq( integer_t const m, integer_t const n,
-            integer_t const k, float* a, integer_t const lda, float* tau,
-            float* work, integer_t const lwork, integer_t& info ) {
+    inline void orglq( const integer_t m, const integer_t n,
+            const integer_t k, float* a, const integer_t lda,
+            const float* tau, float* work, const integer_t lwork,
+            integer_t& info ) {
         LAPACK_SORGLQ( &m, &n, &k, a, &lda, tau, work, &lwork, &info );
     }
-    inline void orglq( integer_t const m, integer_t const n,
-            integer_t const k, double* a, integer_t const lda, double* tau,
-            double* work, integer_t const lwork, integer_t& info ) {
+    inline void orglq( const integer_t m, const integer_t n,
+            const integer_t k, double* a, const integer_t lda,
+            const double* tau, double* work, const integer_t lwork,
+            integer_t& info ) {
         LAPACK_DORGLQ( &m, &n, &k, a, &lda, tau, work, &lwork, &info );
     }
 }
@@ -55,9 +57,9 @@ struct orglq_impl {
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void invoke( integer_t const m, integer_t const n,
-            integer_t const k, MatrixA& a, VectorTAU& tau, integer_t& info,
-            detail::workspace1< WORK > work ) {
+    static void invoke( const integer_t m, const integer_t n,
+            const integer_t k, MatrixA& a, const VectorTAU& tau,
+            integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -76,18 +78,18 @@ struct orglq_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const m, integer_t const n,
-            integer_t const k, MatrixA& a, VectorTAU& tau, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( const integer_t m, const integer_t n,
+            const integer_t k, MatrixA& a, const VectorTAU& tau,
+            integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( m ) );
         invoke( m, n, k, a, tau, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const m, integer_t const n,
-            integer_t const k, MatrixA& a, VectorTAU& tau, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( const integer_t m, const integer_t n,
+            const integer_t k, MatrixA& a, const VectorTAU& tau,
+            integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         detail::orglq( m, n, k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),
@@ -97,7 +99,7 @@ struct orglq_impl {
         invoke( m, n, k, a, tau, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const m ) {
+    static integer_t min_size_work( const integer_t m ) {
         return std::max( 1, m );
     }
 };
@@ -105,8 +107,8 @@ struct orglq_impl {
 
 // template function to call orglq
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline integer_t orglq( integer_t const m, integer_t const n,
-        integer_t const k, MatrixA& a, VectorTAU& tau, Workspace work ) {
+inline integer_t orglq( const integer_t m, const integer_t n,
+        const integer_t k, MatrixA& a, const VectorTAU& tau, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     orglq_impl< value_type >::invoke( m, n, k, a, tau, info, work );
@@ -115,8 +117,8 @@ inline integer_t orglq( integer_t const m, integer_t const n,
 
 // template function to call orglq, default workspace type
 template< typename MatrixA, typename VectorTAU >
-inline integer_t orglq( integer_t const m, integer_t const n,
-        integer_t const k, MatrixA& a, VectorTAU& tau ) {
+inline integer_t orglq( const integer_t m, const integer_t n,
+        const integer_t k, MatrixA& a, const VectorTAU& tau ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     orglq_impl< value_type >::invoke( m, n, k, a, tau, info,

@@ -34,23 +34,25 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pttrs( integer_t const n, integer_t const nrhs, float* d,
-            float* e, float* b, integer_t const ldb, integer_t& info ) {
+    inline void pttrs( const integer_t n, const integer_t nrhs,
+            const float* d, const float* e, float* b, const integer_t ldb,
+            integer_t& info ) {
         LAPACK_SPTTRS( &n, &nrhs, d, e, b, &ldb, &info );
     }
-    inline void pttrs( integer_t const n, integer_t const nrhs, double* d,
-            double* e, double* b, integer_t const ldb, integer_t& info ) {
+    inline void pttrs( const integer_t n, const integer_t nrhs,
+            const double* d, const double* e, double* b, const integer_t ldb,
+            integer_t& info ) {
         LAPACK_DPTTRS( &n, &nrhs, d, e, b, &ldb, &info );
     }
-    inline void pttrs( char const uplo, integer_t const n,
-            integer_t const nrhs, float* d, traits::complex_f* e,
-            traits::complex_f* b, integer_t const ldb, integer_t& info ) {
+    inline void pttrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const float* d, const traits::complex_f* e,
+            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
         LAPACK_CPTTRS( &uplo, &n, &nrhs, d, traits::complex_ptr(e),
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void pttrs( char const uplo, integer_t const n,
-            integer_t const nrhs, double* d, traits::complex_d* e,
-            traits::complex_d* b, integer_t const ldb, integer_t& info ) {
+    inline void pttrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const double* d, const traits::complex_d* e,
+            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
         LAPACK_ZPTTRS( &uplo, &n, &nrhs, d, traits::complex_ptr(e),
                 traits::complex_ptr(b), &ldb, &info );
     }
@@ -69,8 +71,8 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
-            integer_t& info ) {
+    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
+            MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
                 VectorE >::value_type >::value) );
@@ -98,8 +100,8 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // templated specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( char const uplo, integer_t const n, VectorD& d,
-            VectorE& e, MatrixB& b, integer_t& info ) {
+    static void invoke( const char uplo, const integer_t n, const VectorD& d,
+            const VectorE& e, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorE >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -118,8 +120,8 @@ struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call pttrs
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline integer_t pttrs( integer_t const n, VectorD& d, VectorE& e,
-        MatrixB& b ) {
+inline integer_t pttrs( const integer_t n, const VectorD& d,
+        const VectorE& e, MatrixB& b ) {
     typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     pttrs_impl< value_type >::invoke( n, d, e, b, info );
@@ -127,8 +129,8 @@ inline integer_t pttrs( integer_t const n, VectorD& d, VectorE& e,
 }
 // template function to call pttrs
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline integer_t pttrs( char const uplo, integer_t const n, VectorD& d,
-        VectorE& e, MatrixB& b ) {
+inline integer_t pttrs( const char uplo, const integer_t n,
+        const VectorD& d, const VectorE& e, MatrixB& b ) {
     typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     pttrs_impl< value_type >::invoke( uplo, n, d, e, b, info );

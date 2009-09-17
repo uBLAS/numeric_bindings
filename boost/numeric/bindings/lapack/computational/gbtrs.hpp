@@ -31,31 +31,33 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbtrs( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, integer_t const nrhs,
-            float* ab, integer_t const ldab, integer_t* ipiv, float* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void gbtrs( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const integer_t nrhs,
+            const float* ab, const integer_t ldab, const integer_t* ipiv,
+            float* b, const integer_t ldb, integer_t& info ) {
         LAPACK_SGBTRS( &trans, &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb,
                 &info );
     }
-    inline void gbtrs( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, integer_t const nrhs,
-            double* ab, integer_t const ldab, integer_t* ipiv, double* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void gbtrs( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const integer_t nrhs,
+            const double* ab, const integer_t ldab, const integer_t* ipiv,
+            double* b, const integer_t ldb, integer_t& info ) {
         LAPACK_DGBTRS( &trans, &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb,
                 &info );
     }
-    inline void gbtrs( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, integer_t const nrhs,
-            traits::complex_f* ab, integer_t const ldab, integer_t* ipiv,
-            traits::complex_f* b, integer_t const ldb, integer_t& info ) {
+    inline void gbtrs( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const integer_t nrhs,
+            const traits::complex_f* ab, const integer_t ldab,
+            const integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
+            integer_t& info ) {
         LAPACK_CGBTRS( &trans, &n, &kl, &ku, &nrhs, traits::complex_ptr(ab),
                 &ldab, ipiv, traits::complex_ptr(b), &ldb, &info );
     }
-    inline void gbtrs( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, integer_t const nrhs,
-            traits::complex_d* ab, integer_t const ldab, integer_t* ipiv,
-            traits::complex_d* b, integer_t const ldb, integer_t& info ) {
+    inline void gbtrs( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const integer_t nrhs,
+            const traits::complex_d* ab, const integer_t ldab,
+            const integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
+            integer_t& info ) {
         LAPACK_ZGBTRS( &trans, &n, &kl, &ku, &nrhs, traits::complex_ptr(ab),
                 &ldab, ipiv, traits::complex_ptr(b), &ldb, &info );
     }
@@ -70,9 +72,9 @@ struct gbtrs_impl {
 
     // templated specialization
     template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
-    static void invoke( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            VectorIPIV& ipiv, MatrixB& b, integer_t& info ) {
+    static void invoke( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const VectorIPIV& ipiv, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -94,9 +96,9 @@ struct gbtrs_impl {
 
 // template function to call gbtrs
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
-inline integer_t gbtrs( char const trans, integer_t const n,
-        integer_t const kl, integer_t const ku, MatrixAB& ab,
-        VectorIPIV& ipiv, MatrixB& b ) {
+inline integer_t gbtrs( const char trans, const integer_t n,
+        const integer_t kl, const integer_t ku, const MatrixAB& ab,
+        const VectorIPIV& ipiv, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     gbtrs_impl< value_type >::invoke( trans, n, kl, ku, ab, ipiv, b,

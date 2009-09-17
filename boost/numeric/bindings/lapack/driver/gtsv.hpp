@@ -31,27 +31,27 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gtsv( integer_t const n, integer_t const nrhs, float* dl,
-            float* d, float* du, float* b, integer_t const ldb,
+    inline void gtsv( const integer_t n, const integer_t nrhs, float* dl,
+            float* d, float* du, float* b, const integer_t ldb,
             integer_t& info ) {
         LAPACK_SGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
     }
-    inline void gtsv( integer_t const n, integer_t const nrhs, double* dl,
-            double* d, double* du, double* b, integer_t const ldb,
+    inline void gtsv( const integer_t n, const integer_t nrhs, double* dl,
+            double* d, double* du, double* b, const integer_t ldb,
             integer_t& info ) {
         LAPACK_DGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
     }
-    inline void gtsv( integer_t const n, integer_t const nrhs,
+    inline void gtsv( const integer_t n, const integer_t nrhs,
             traits::complex_f* dl, traits::complex_f* d,
-            traits::complex_f* du, traits::complex_f* b, integer_t const ldb,
+            traits::complex_f* du, traits::complex_f* b, const integer_t ldb,
             integer_t& info ) {
         LAPACK_CGTSV( &n, &nrhs, traits::complex_ptr(dl),
                 traits::complex_ptr(d), traits::complex_ptr(du),
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void gtsv( integer_t const n, integer_t const nrhs,
+    inline void gtsv( const integer_t n, const integer_t nrhs,
             traits::complex_d* dl, traits::complex_d* d,
-            traits::complex_d* du, traits::complex_d* b, integer_t const ldb,
+            traits::complex_d* du, traits::complex_d* b, const integer_t ldb,
             integer_t& info ) {
         LAPACK_ZGTSV( &n, &nrhs, traits::complex_ptr(dl),
                 traits::complex_ptr(d), traits::complex_ptr(du),
@@ -78,7 +78,7 @@ struct gtsv_impl {
     // templated specialization
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename MatrixB >
-    static void invoke( integer_t const n, VectorDL& dl, VectorD& d,
+    static void invoke( const integer_t n, VectorDL& dl, VectorD& d,
             VectorDU& du, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorDL >::value_type, typename traits::vector_traits<
@@ -106,7 +106,7 @@ struct gtsv_impl {
 // template function to call gtsv
 template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
-inline integer_t gtsv( integer_t const n, VectorDL& dl, VectorD& d,
+inline integer_t gtsv( const integer_t n, VectorDL& dl, VectorD& d,
         VectorDU& du, MatrixB& b ) {
     typedef typename traits::vector_traits< VectorDL >::value_type value_type;
     integer_t info(0);

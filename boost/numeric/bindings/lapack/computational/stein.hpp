@@ -36,32 +36,35 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void stein( integer_t const n, float* d, float* e,
-            integer_t const m, float* w, integer_t* iblock, integer_t* isplit,
-            float* z, integer_t const ldz, float* work, integer_t* iwork,
-            integer_t* ifail, integer_t& info ) {
+    inline void stein( const integer_t n, const float* d, const float* e,
+            const integer_t m, const float* w, const integer_t* iblock,
+            const integer_t* isplit, float* z, const integer_t ldz,
+            float* work, integer_t* iwork, integer_t* ifail,
+            integer_t& info ) {
         LAPACK_SSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
                 ifail, &info );
     }
-    inline void stein( integer_t const n, double* d, double* e,
-            integer_t const m, double* w, integer_t* iblock,
-            integer_t* isplit, double* z, integer_t const ldz, double* work,
-            integer_t* iwork, integer_t* ifail, integer_t& info ) {
+    inline void stein( const integer_t n, const double* d, const double* e,
+            const integer_t m, const double* w, const integer_t* iblock,
+            const integer_t* isplit, double* z, const integer_t ldz,
+            double* work, integer_t* iwork, integer_t* ifail,
+            integer_t& info ) {
         LAPACK_DSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
                 ifail, &info );
     }
-    inline void stein( integer_t const n, float* d, float* e,
-            integer_t const m, float* w, integer_t* iblock, integer_t* isplit,
-            traits::complex_f* z, integer_t const ldz, float* work,
-            integer_t* iwork, integer_t* ifail, integer_t& info ) {
+    inline void stein( const integer_t n, const float* d, const float* e,
+            const integer_t m, const float* w, const integer_t* iblock,
+            const integer_t* isplit, traits::complex_f* z,
+            const integer_t ldz, float* work, integer_t* iwork,
+            integer_t* ifail, integer_t& info ) {
         LAPACK_CSTEIN( &n, d, e, &m, w, iblock, isplit,
                 traits::complex_ptr(z), &ldz, work, iwork, ifail, &info );
     }
-    inline void stein( integer_t const n, double* d, double* e,
-            integer_t const m, double* w, integer_t* iblock,
-            integer_t* isplit, traits::complex_d* z, integer_t const ldz,
-            double* work, integer_t* iwork, integer_t* ifail,
-            integer_t& info ) {
+    inline void stein( const integer_t n, const double* d, const double* e,
+            const integer_t m, const double* w, const integer_t* iblock,
+            const integer_t* isplit, traits::complex_d* z,
+            const integer_t ldz, double* work, integer_t* iwork,
+            integer_t* ifail, integer_t& info ) {
         LAPACK_ZSTEIN( &n, d, e, &m, w, iblock, isplit,
                 traits::complex_ptr(z), &ldz, work, iwork, ifail, &info );
     }
@@ -82,9 +85,9 @@ struct stein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL, typename WORK, typename IWORK >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e,
-            integer_t const m, VectorW& w, VectorIBLOCK& iblock,
-            VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
+    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
+            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
+            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
@@ -125,9 +128,9 @@ struct stein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e,
-            integer_t const m, VectorW& w, VectorIBLOCK& iblock,
-            VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
+    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
+            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
+            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
@@ -139,19 +142,19 @@ struct stein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e,
-            integer_t const m, VectorW& w, VectorIBLOCK& iblock,
-            VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
+    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
+            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
+            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, optimal_workspace work ) {
         invoke( n, d, e, m, w, iblock, isplit, z, ifail, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 5*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -167,9 +170,9 @@ struct stein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL, typename WORK, typename IWORK >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e,
-            integer_t const m, VectorW& w, VectorIBLOCK& iblock,
-            VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
+    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
+            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
+            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
@@ -207,9 +210,9 @@ struct stein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e,
-            integer_t const m, VectorW& w, VectorIBLOCK& iblock,
-            VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
+    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
+            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
+            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
@@ -221,19 +224,19 @@ struct stein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e,
-            integer_t const m, VectorW& w, VectorIBLOCK& iblock,
-            VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
+    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
+            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
+            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, optimal_workspace work ) {
         invoke( n, d, e, m, w, iblock, isplit, z, ifail, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 5*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -243,10 +246,10 @@ struct stein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename VectorD, typename VectorE, typename VectorW,
         typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline integer_t stein( integer_t const n, VectorD& d, VectorE& e,
-        integer_t const m, VectorW& w, VectorIBLOCK& iblock,
-        VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
+inline integer_t stein( const integer_t n, const VectorD& d,
+        const VectorE& e, const integer_t m, const VectorW& w,
+        const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
+        VectorIFAIL& ifail, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);
     stein_impl< value_type >::invoke( n, d, e, m, w, iblock, isplit, z,
@@ -258,9 +261,10 @@ inline integer_t stein( integer_t const n, VectorD& d, VectorE& e,
 template< typename VectorD, typename VectorE, typename VectorW,
         typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
         typename VectorIFAIL >
-inline integer_t stein( integer_t const n, VectorD& d, VectorE& e,
-        integer_t const m, VectorW& w, VectorIBLOCK& iblock,
-        VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail ) {
+inline integer_t stein( const integer_t n, const VectorD& d,
+        const VectorE& e, const integer_t m, const VectorW& w,
+        const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
+        VectorIFAIL& ifail ) {
     typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);
     stein_impl< value_type >::invoke( n, d, e, m, w, iblock, isplit, z,

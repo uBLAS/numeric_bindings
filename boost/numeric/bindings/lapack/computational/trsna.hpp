@@ -36,39 +36,44 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trsna( char const job, char const howmny, logical_t* select,
-            integer_t const n, float* t, integer_t const ldt, float* vl,
-            integer_t const ldvl, float* vr, integer_t const ldvr, float* s,
-            float* sep, integer_t const mm, integer_t& m, float* work,
-            integer_t const ldwork, integer_t* iwork, integer_t& info ) {
+    inline void trsna( const char job, const char howmny,
+            const logical_t* select, const integer_t n, const float* t,
+            const integer_t ldt, const float* vl, const integer_t ldvl,
+            const float* vr, const integer_t ldvr, float* s, float* sep,
+            const integer_t mm, integer_t& m, float* work,
+            const integer_t ldwork, integer_t* iwork, integer_t& info ) {
         LAPACK_STRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr,
                 &ldvr, s, sep, &mm, &m, work, &ldwork, iwork, &info );
     }
-    inline void trsna( char const job, char const howmny, logical_t* select,
-            integer_t const n, double* t, integer_t const ldt, double* vl,
-            integer_t const ldvl, double* vr, integer_t const ldvr, double* s,
-            double* sep, integer_t const mm, integer_t& m, double* work,
-            integer_t const ldwork, integer_t* iwork, integer_t& info ) {
+    inline void trsna( const char job, const char howmny,
+            const logical_t* select, const integer_t n, const double* t,
+            const integer_t ldt, const double* vl, const integer_t ldvl,
+            const double* vr, const integer_t ldvr, double* s, double* sep,
+            const integer_t mm, integer_t& m, double* work,
+            const integer_t ldwork, integer_t* iwork, integer_t& info ) {
         LAPACK_DTRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr,
                 &ldvr, s, sep, &mm, &m, work, &ldwork, iwork, &info );
     }
-    inline void trsna( char const job, char const howmny, logical_t* select,
-            integer_t const n, traits::complex_f* t, integer_t const ldt,
-            traits::complex_f* vl, integer_t const ldvl,
-            traits::complex_f* vr, integer_t const ldvr, float* s, float* sep,
-            integer_t const mm, integer_t& m, traits::complex_f* work,
-            integer_t const ldwork, float* rwork, integer_t& info ) {
+    inline void trsna( const char job, const char howmny,
+            const logical_t* select, const integer_t n,
+            const traits::complex_f* t, const integer_t ldt,
+            const traits::complex_f* vl, const integer_t ldvl,
+            const traits::complex_f* vr, const integer_t ldvr, float* s,
+            float* sep, const integer_t mm, integer_t& m,
+            traits::complex_f* work, const integer_t ldwork, float* rwork,
+            integer_t& info ) {
         LAPACK_CTRSNA( &job, &howmny, select, &n, traits::complex_ptr(t),
                 &ldt, traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
                 &ldvr, s, sep, &mm, &m, traits::complex_ptr(work), &ldwork,
                 rwork, &info );
     }
-    inline void trsna( char const job, char const howmny, logical_t* select,
-            integer_t const n, traits::complex_d* t, integer_t const ldt,
-            traits::complex_d* vl, integer_t const ldvl,
-            traits::complex_d* vr, integer_t const ldvr, double* s,
-            double* sep, integer_t const mm, integer_t& m,
-            traits::complex_d* work, integer_t const ldwork, double* rwork,
+    inline void trsna( const char job, const char howmny,
+            const logical_t* select, const integer_t n,
+            const traits::complex_d* t, const integer_t ldt,
+            const traits::complex_d* vl, const integer_t ldvl,
+            const traits::complex_d* vr, const integer_t ldvr, double* s,
+            double* sep, const integer_t mm, integer_t& m,
+            traits::complex_d* work, const integer_t ldwork, double* rwork,
             integer_t& info ) {
         LAPACK_ZTRSNA( &job, &howmny, select, &n, traits::complex_ptr(t),
                 &ldt, traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
@@ -92,10 +97,11 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP,
             typename WORK, typename IWORK >
-    static void invoke( char const job, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
-            integer_t& info, detail::workspace2< WORK, IWORK > work ) {
+    static void invoke( const char job, const char howmny,
+            const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorSEP& sep,
+            const integer_t mm, integer_t& m, integer_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixT >::value_type, typename traits::matrix_traits<
                 MatrixVL >::value_type >::value) );
@@ -131,10 +137,11 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void invoke( char const job, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
-            integer_t& info, minimal_workspace work ) {
+    static void invoke( const char job, const char howmny,
+            const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorSEP& sep,
+            const integer_t mm, integer_t& m, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
@@ -146,10 +153,11 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // optimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void invoke( char const job, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
-            integer_t& info, optimal_workspace work ) {
+    static void invoke( const char job, const char howmny,
+            const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorSEP& sep,
+            const integer_t mm, integer_t& m, integer_t& info,
+            optimal_workspace work ) {
         invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
                 minimal_workspace() );
     }
@@ -174,10 +182,11 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP,
             typename WORK, typename RWORK >
-    static void invoke( char const job, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
-            integer_t& info, detail::workspace2< WORK, RWORK > work ) {
+    static void invoke( const char job, const char howmny,
+            const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorSEP& sep,
+            const integer_t mm, integer_t& m, integer_t& info,
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorS >::value_type, typename traits::vector_traits<
                 VectorSEP >::value_type >::value) );
@@ -210,10 +219,11 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void invoke( char const job, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
-            integer_t& info, minimal_workspace work ) {
+    static void invoke( const char job, const char howmny,
+            const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorSEP& sep,
+            const integer_t mm, integer_t& m, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
@@ -225,10 +235,11 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // optimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename VectorS, typename VectorSEP >
-    static void invoke( char const job, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
-            integer_t& info, optimal_workspace work ) {
+    static void invoke( const char job, const char howmny,
+            const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorSEP& sep,
+            const integer_t mm, integer_t& m, integer_t& info,
+            optimal_workspace work ) {
         invoke( job, howmny, select, t, vl, vr, s, sep, mm, m, info,
                 minimal_workspace() );
     }
@@ -247,10 +258,10 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename VectorS, typename VectorSEP,
         typename Workspace >
-inline integer_t trsna( char const job, char const howmny,
-        VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-        VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m,
-        Workspace work ) {
+inline integer_t trsna( const char job, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, VectorS& s, VectorSEP& sep, const integer_t mm,
+        integer_t& m, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
     integer_t info(0);
     trsna_impl< value_type >::invoke( job, howmny, select, t, vl, vr, s,
@@ -261,9 +272,10 @@ inline integer_t trsna( char const job, char const howmny,
 // template function to call trsna, default workspace type
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename VectorS, typename VectorSEP >
-inline integer_t trsna( char const job, char const howmny,
-        VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-        VectorS& s, VectorSEP& sep, integer_t const mm, integer_t& m ) {
+inline integer_t trsna( const char job, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, VectorS& s, VectorSEP& sep, const integer_t mm,
+        integer_t& m ) {
     typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
     integer_t info(0);
     trsna_impl< value_type >::invoke( job, howmny, select, t, vl, vr, s,

@@ -36,29 +36,29 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trcon( char const norm, char const uplo, char const diag,
-            integer_t const n, float* a, integer_t const lda, float& rcond,
-            float* work, integer_t* iwork, integer_t& info ) {
+    inline void trcon( const char norm, const char uplo, const char diag,
+            const integer_t n, const float* a, const integer_t lda,
+            float& rcond, float* work, integer_t* iwork, integer_t& info ) {
         LAPACK_STRCON( &norm, &uplo, &diag, &n, a, &lda, &rcond, work, iwork,
                 &info );
     }
-    inline void trcon( char const norm, char const uplo, char const diag,
-            integer_t const n, double* a, integer_t const lda, double& rcond,
-            double* work, integer_t* iwork, integer_t& info ) {
+    inline void trcon( const char norm, const char uplo, const char diag,
+            const integer_t n, const double* a, const integer_t lda,
+            double& rcond, double* work, integer_t* iwork, integer_t& info ) {
         LAPACK_DTRCON( &norm, &uplo, &diag, &n, a, &lda, &rcond, work, iwork,
                 &info );
     }
-    inline void trcon( char const norm, char const uplo, char const diag,
-            integer_t const n, traits::complex_f* a, integer_t const lda,
-            float& rcond, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
+    inline void trcon( const char norm, const char uplo, const char diag,
+            const integer_t n, const traits::complex_f* a,
+            const integer_t lda, float& rcond, traits::complex_f* work,
+            float* rwork, integer_t& info ) {
         LAPACK_CTRCON( &norm, &uplo, &diag, &n, traits::complex_ptr(a), &lda,
                 &rcond, traits::complex_ptr(work), rwork, &info );
     }
-    inline void trcon( char const norm, char const uplo, char const diag,
-            integer_t const n, traits::complex_d* a, integer_t const lda,
-            double& rcond, traits::complex_d* work, double* rwork,
-            integer_t& info ) {
+    inline void trcon( const char norm, const char uplo, const char diag,
+            const integer_t n, const traits::complex_d* a,
+            const integer_t lda, double& rcond, traits::complex_d* work,
+            double* rwork, integer_t& info ) {
         LAPACK_ZTRCON( &norm, &uplo, &diag, &n, traits::complex_ptr(a), &lda,
                 &rcond, traits::complex_ptr(work), rwork, &info );
     }
@@ -77,9 +77,9 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // user-defined workspace specialization
     template< typename MatrixA, typename WORK, typename IWORK >
-    static void invoke( char const norm, char const uplo, char const diag,
-            MatrixA& a, real_type& rcond, integer_t& info, detail::workspace2<
-            WORK, IWORK > work ) {
+    static void invoke( const char norm, const char uplo, const char diag,
+            const MatrixA& a, real_type& rcond, integer_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
@@ -98,8 +98,8 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixA >
-    static void invoke( char const norm, char const uplo, char const diag,
-            MatrixA& a, real_type& rcond, integer_t& info,
+    static void invoke( const char norm, const char uplo, const char diag,
+            const MatrixA& a, real_type& rcond, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
@@ -111,17 +111,17 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // optimal workspace specialization
     template< typename MatrixA >
-    static void invoke( char const norm, char const uplo, char const diag,
-            MatrixA& a, real_type& rcond, integer_t& info,
+    static void invoke( const char norm, const char uplo, const char diag,
+            const MatrixA& a, real_type& rcond, integer_t& info,
             optimal_workspace work ) {
         invoke( norm, uplo, diag, a, rcond, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -135,9 +135,9 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // user-defined workspace specialization
     template< typename MatrixA, typename WORK, typename RWORK >
-    static void invoke( char const norm, char const uplo, char const diag,
-            MatrixA& a, real_type& rcond, integer_t& info, detail::workspace2<
-            WORK, RWORK > work ) {
+    static void invoke( const char norm, const char uplo, const char diag,
+            const MatrixA& a, real_type& rcond, integer_t& info,
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
@@ -156,8 +156,8 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA >
-    static void invoke( char const norm, char const uplo, char const diag,
-            MatrixA& a, real_type& rcond, integer_t& info,
+    static void invoke( const char norm, const char uplo, const char diag,
+            const MatrixA& a, real_type& rcond, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
@@ -169,17 +169,17 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // optimal workspace specialization
     template< typename MatrixA >
-    static void invoke( char const norm, char const uplo, char const diag,
-            MatrixA& a, real_type& rcond, integer_t& info,
+    static void invoke( const char norm, const char uplo, const char diag,
+            const MatrixA& a, real_type& rcond, integer_t& info,
             optimal_workspace work ) {
         invoke( norm, uplo, diag, a, rcond, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -187,8 +187,8 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call trcon
 template< typename MatrixA, typename Workspace >
-inline integer_t trcon( char const norm, char const uplo,
-        char const diag, MatrixA& a, typename traits::type_traits<
+inline integer_t trcon( const char norm, const char uplo,
+        const char diag, const MatrixA& a, typename traits::type_traits<
         typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -200,8 +200,8 @@ inline integer_t trcon( char const norm, char const uplo,
 
 // template function to call trcon, default workspace type
 template< typename MatrixA >
-inline integer_t trcon( char const norm, char const uplo,
-        char const diag, MatrixA& a, typename traits::type_traits<
+inline integer_t trcon( const char norm, const char uplo,
+        const char diag, const MatrixA& a, typename traits::type_traits<
         typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;

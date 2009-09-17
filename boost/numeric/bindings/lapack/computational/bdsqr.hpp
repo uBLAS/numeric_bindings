@@ -36,36 +36,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void bdsqr( char const uplo, integer_t const n,
-            integer_t const ncvt, integer_t const nru, integer_t const ncc,
-            float* d, float* e, float* vt, integer_t const ldvt, float* u,
-            integer_t const ldu, float* c, integer_t const ldc, float* work,
+    inline void bdsqr( const char uplo, const integer_t n,
+            const integer_t ncvt, const integer_t nru, const integer_t ncc,
+            float* d, float* e, float* vt, const integer_t ldvt, float* u,
+            const integer_t ldu, float* c, const integer_t ldc, float* work,
             integer_t& info ) {
         LAPACK_SBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu,
                 c, &ldc, work, &info );
     }
-    inline void bdsqr( char const uplo, integer_t const n,
-            integer_t const ncvt, integer_t const nru, integer_t const ncc,
-            double* d, double* e, double* vt, integer_t const ldvt, double* u,
-            integer_t const ldu, double* c, integer_t const ldc, double* work,
+    inline void bdsqr( const char uplo, const integer_t n,
+            const integer_t ncvt, const integer_t nru, const integer_t ncc,
+            double* d, double* e, double* vt, const integer_t ldvt, double* u,
+            const integer_t ldu, double* c, const integer_t ldc, double* work,
             integer_t& info ) {
         LAPACK_DBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu,
                 c, &ldc, work, &info );
     }
-    inline void bdsqr( char const uplo, integer_t const n,
-            integer_t const ncvt, integer_t const nru, integer_t const ncc,
-            float* d, float* e, traits::complex_f* vt, integer_t const ldvt,
-            traits::complex_f* u, integer_t const ldu, traits::complex_f* c,
-            integer_t const ldc, float* rwork, integer_t& info ) {
+    inline void bdsqr( const char uplo, const integer_t n,
+            const integer_t ncvt, const integer_t nru, const integer_t ncc,
+            float* d, float* e, traits::complex_f* vt, const integer_t ldvt,
+            traits::complex_f* u, const integer_t ldu, traits::complex_f* c,
+            const integer_t ldc, float* rwork, integer_t& info ) {
         LAPACK_CBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e,
                 traits::complex_ptr(vt), &ldvt, traits::complex_ptr(u), &ldu,
                 traits::complex_ptr(c), &ldc, rwork, &info );
     }
-    inline void bdsqr( char const uplo, integer_t const n,
-            integer_t const ncvt, integer_t const nru, integer_t const ncc,
-            double* d, double* e, traits::complex_d* vt, integer_t const ldvt,
-            traits::complex_d* u, integer_t const ldu, traits::complex_d* c,
-            integer_t const ldc, double* rwork, integer_t& info ) {
+    inline void bdsqr( const char uplo, const integer_t n,
+            const integer_t ncvt, const integer_t nru, const integer_t ncc,
+            double* d, double* e, traits::complex_d* vt, const integer_t ldvt,
+            traits::complex_d* u, const integer_t ldu, traits::complex_d* c,
+            const integer_t ldc, double* rwork, integer_t& info ) {
         LAPACK_ZBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e,
                 traits::complex_ptr(vt), &ldvt, traits::complex_ptr(u), &ldu,
                 traits::complex_ptr(c), &ldc, rwork, &info );
@@ -86,7 +86,7 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC, typename WORK >
-    static void invoke( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( const char uplo, const integer_t n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -123,7 +123,7 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void invoke( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( const char uplo, const integer_t n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n,
@@ -135,14 +135,14 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void invoke( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( const char uplo, const integer_t n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             optimal_workspace work ) {
         invoke( uplo, n, d, e, vt, u, c, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n, integer_t const ncvt,
-            integer_t const nru, integer_t const ncc ) {
+    static integer_t min_size_work( const integer_t n, const integer_t ncvt,
+            const integer_t nru, const integer_t ncc ) {
         if ( ncvt == 0 && nru == 0 && ncc == 0 )
             return 2*n;
         else
@@ -160,7 +160,7 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC, typename RWORK >
-    static void invoke( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( const char uplo, const integer_t n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             detail::workspace1< RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -194,7 +194,7 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void invoke( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( const char uplo, const integer_t n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n,
@@ -206,14 +206,14 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixVT,
             typename MatrixU, typename MatrixC >
-    static void invoke( char const uplo, integer_t const n, VectorD& d,
+    static void invoke( const char uplo, const integer_t n, VectorD& d,
             VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, integer_t& info,
             optimal_workspace work ) {
         invoke( uplo, n, d, e, vt, u, c, info, minimal_workspace() );
     }
 
-    static integer_t min_size_rwork( integer_t const n, integer_t const ncvt,
-            integer_t const nru, integer_t const ncc ) {
+    static integer_t min_size_rwork( const integer_t n, const integer_t ncvt,
+            const integer_t nru, const integer_t ncc ) {
         if ( ncvt == 0 && nru == 0 && ncc == 0 )
             return 2*n;
         else
@@ -225,7 +225,7 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call bdsqr
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC, typename Workspace >
-inline integer_t bdsqr( char const uplo, integer_t const n, VectorD& d,
+inline integer_t bdsqr( const char uplo, const integer_t n, VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixVT >::value_type value_type;
     integer_t info(0);
@@ -237,7 +237,7 @@ inline integer_t bdsqr( char const uplo, integer_t const n, VectorD& d,
 // template function to call bdsqr, default workspace type
 template< typename VectorD, typename VectorE, typename MatrixVT,
         typename MatrixU, typename MatrixC >
-inline integer_t bdsqr( char const uplo, integer_t const n, VectorD& d,
+inline integer_t bdsqr( const char uplo, const integer_t n, VectorD& d,
         VectorE& e, MatrixVT& vt, MatrixU& u, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixVT >::value_type value_type;
     integer_t info(0);

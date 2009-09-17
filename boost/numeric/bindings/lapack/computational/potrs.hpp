@@ -31,25 +31,27 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void potrs( char const uplo, integer_t const n,
-            integer_t const nrhs, float* a, integer_t const lda, float* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void potrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const float* a, const integer_t lda,
+            float* b, const integer_t ldb, integer_t& info ) {
         LAPACK_SPOTRS( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
     }
-    inline void potrs( char const uplo, integer_t const n,
-            integer_t const nrhs, double* a, integer_t const lda, double* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void potrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const double* a, const integer_t lda,
+            double* b, const integer_t ldb, integer_t& info ) {
         LAPACK_DPOTRS( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
     }
-    inline void potrs( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* b, integer_t const ldb, integer_t& info ) {
+    inline void potrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_f* a,
+            const integer_t lda, traits::complex_f* b, const integer_t ldb,
+            integer_t& info ) {
         LAPACK_CPOTRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void potrs( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* b, integer_t const ldb, integer_t& info ) {
+    inline void potrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_d* a,
+            const integer_t lda, traits::complex_d* b, const integer_t ldb,
+            integer_t& info ) {
         LAPACK_ZPOTRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, &info );
     }
@@ -64,7 +66,7 @@ struct potrs_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixB >
-    static void invoke( MatrixA& a, MatrixB& b, integer_t& info ) {
+    static void invoke( const MatrixA& a, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -87,7 +89,7 @@ struct potrs_impl {
 
 // template function to call potrs
 template< typename MatrixA, typename MatrixB >
-inline integer_t potrs( MatrixA& a, MatrixB& b ) {
+inline integer_t potrs( const MatrixA& a, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     potrs_impl< value_type >::invoke( a, b, info );

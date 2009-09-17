@@ -34,20 +34,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hpevd( char const jobz, char const uplo, integer_t const n,
+    inline void hpevd( const char jobz, const char uplo, const integer_t n,
             traits::complex_f* ap, float* w, traits::complex_f* z,
-            integer_t const ldz, traits::complex_f* work,
-            integer_t const lwork, float* rwork, integer_t const lrwork,
-            integer_t* iwork, integer_t const liwork, integer_t& info ) {
+            const integer_t ldz, traits::complex_f* work,
+            const integer_t lwork, float* rwork, const integer_t lrwork,
+            integer_t* iwork, const integer_t liwork, integer_t& info ) {
         LAPACK_CHPEVD( &jobz, &uplo, &n, traits::complex_ptr(ap), w,
                 traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
                 &lwork, rwork, &lrwork, iwork, &liwork, &info );
     }
-    inline void hpevd( char const jobz, char const uplo, integer_t const n,
+    inline void hpevd( const char jobz, const char uplo, const integer_t n,
             traits::complex_d* ap, double* w, traits::complex_d* z,
-            integer_t const ldz, traits::complex_d* work,
-            integer_t const lwork, double* rwork, integer_t const lrwork,
-            integer_t* iwork, integer_t const liwork, integer_t& info ) {
+            const integer_t ldz, traits::complex_d* work,
+            const integer_t lwork, double* rwork, const integer_t lrwork,
+            integer_t* iwork, const integer_t liwork, integer_t& info ) {
         LAPACK_ZHPEVD( &jobz, &uplo, &n, traits::complex_ptr(ap), w,
                 traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
                 &lwork, rwork, &lrwork, iwork, &liwork, &info );
@@ -64,7 +64,7 @@ struct hpevd_impl {
     // user-defined workspace specialization
     template< typename MatrixAP, typename VectorW, typename MatrixZ,
             typename WORK, typename RWORK, typename IWORK >
-    static void invoke( char const jobz, integer_t const n, MatrixAP& ap,
+    static void invoke( const char jobz, const integer_t n, MatrixAP& ap,
             VectorW& w, MatrixZ& z, integer_t& info, detail::workspace3< WORK,
             RWORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -93,7 +93,7 @@ struct hpevd_impl {
 
     // minimal workspace specialization
     template< typename MatrixAP, typename VectorW, typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n, MatrixAP& ap,
+    static void invoke( const char jobz, const integer_t n, MatrixAP& ap,
             VectorW& w, MatrixZ& z, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( jobz,
                 n ) );
@@ -107,7 +107,7 @@ struct hpevd_impl {
 
     // optimal workspace specialization
     template< typename MatrixAP, typename VectorW, typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n, MatrixAP& ap,
+    static void invoke( const char jobz, const integer_t n, MatrixAP& ap,
             VectorW& w, MatrixZ& z, integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         real_type opt_size_rwork;
@@ -126,7 +126,7 @@ struct hpevd_impl {
                 tmp_iwork ) );
     }
 
-    static integer_t min_size_work( char const jobz, integer_t const n ) {
+    static integer_t min_size_work( const char jobz, const integer_t n ) {
         if ( n < 2 )
             return 1;
         else {
@@ -137,7 +137,7 @@ struct hpevd_impl {
         }
     }
 
-    static integer_t min_size_rwork( char const jobz, integer_t const n ) {
+    static integer_t min_size_rwork( const char jobz, const integer_t n ) {
         if ( n < 2 )
             return 1;
         else {
@@ -148,7 +148,7 @@ struct hpevd_impl {
         }
     }
 
-    static integer_t min_size_iwork( char const jobz, integer_t const n ) {
+    static integer_t min_size_iwork( const char jobz, const integer_t n ) {
         if ( jobz == 'N' || n < 2 )
             return 1;
         else
@@ -160,7 +160,7 @@ struct hpevd_impl {
 // template function to call hpevd
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline integer_t hpevd( char const jobz, integer_t const n, MatrixAP& ap,
+inline integer_t hpevd( const char jobz, const integer_t n, MatrixAP& ap,
         VectorW& w, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
@@ -170,7 +170,7 @@ inline integer_t hpevd( char const jobz, integer_t const n, MatrixAP& ap,
 
 // template function to call hpevd, default workspace type
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
-inline integer_t hpevd( char const jobz, integer_t const n, MatrixAP& ap,
+inline integer_t hpevd( const char jobz, const integer_t n, MatrixAP& ap,
         VectorW& w, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);

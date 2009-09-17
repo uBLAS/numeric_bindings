@@ -34,19 +34,19 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sbgvd( char const jobz, char const uplo, integer_t const n,
-            integer_t const ka, integer_t const kb, float* ab,
-            integer_t const ldab, float* bb, integer_t const ldbb, float* w,
-            float* z, integer_t const ldz, float* work, integer_t const lwork,
-            integer_t* iwork, integer_t const liwork, integer_t& info ) {
+    inline void sbgvd( const char jobz, const char uplo, const integer_t n,
+            const integer_t ka, const integer_t kb, float* ab,
+            const integer_t ldab, float* bb, const integer_t ldbb, float* w,
+            float* z, const integer_t ldz, float* work, const integer_t lwork,
+            integer_t* iwork, const integer_t liwork, integer_t& info ) {
         LAPACK_SSBGVD( &jobz, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, w, z,
                 &ldz, work, &lwork, iwork, &liwork, &info );
     }
-    inline void sbgvd( char const jobz, char const uplo, integer_t const n,
-            integer_t const ka, integer_t const kb, double* ab,
-            integer_t const ldab, double* bb, integer_t const ldbb, double* w,
-            double* z, integer_t const ldz, double* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+    inline void sbgvd( const char jobz, const char uplo, const integer_t n,
+            const integer_t ka, const integer_t kb, double* ab,
+            const integer_t ldab, double* bb, const integer_t ldbb, double* w,
+            double* z, const integer_t ldz, double* work,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_DSBGVD( &jobz, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, w, z,
                 &ldz, work, &lwork, iwork, &liwork, &info );
@@ -63,8 +63,8 @@ struct sbgvd_impl {
     // user-defined workspace specialization
     template< typename MatrixAB, typename MatrixBB, typename VectorW,
             typename MatrixZ, typename WORK, typename IWORK >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const ka, integer_t const kb, MatrixAB& ab,
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t ka, const integer_t kb, MatrixAB& ab,
             MatrixBB& bb, VectorW& w, MatrixZ& z, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -102,8 +102,8 @@ struct sbgvd_impl {
     // minimal workspace specialization
     template< typename MatrixAB, typename MatrixBB, typename VectorW,
             typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const ka, integer_t const kb, MatrixAB& ab,
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t ka, const integer_t kb, MatrixAB& ab,
             MatrixBB& bb, VectorW& w, MatrixZ& z, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( jobz,
@@ -117,8 +117,8 @@ struct sbgvd_impl {
     // optimal workspace specialization
     template< typename MatrixAB, typename MatrixBB, typename VectorW,
             typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const ka, integer_t const kb, MatrixAB& ab,
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t ka, const integer_t kb, MatrixAB& ab,
             MatrixBB& bb, VectorW& w, MatrixZ& z, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
@@ -136,7 +136,7 @@ struct sbgvd_impl {
                 tmp_iwork ) );
     }
 
-    static integer_t min_size_work( char const jobz, integer_t const n ) {
+    static integer_t min_size_work( const char jobz, const integer_t n ) {
         if ( n < 2 )
             return 1;
         else {
@@ -147,7 +147,7 @@ struct sbgvd_impl {
         }
     }
 
-    static integer_t min_size_iwork( char const jobz, integer_t const n ) {
+    static integer_t min_size_iwork( const char jobz, const integer_t n ) {
         if ( jobz == 'N' || n < 2 )
             return 1;
         else
@@ -159,8 +159,8 @@ struct sbgvd_impl {
 // template function to call sbgvd
 template< typename MatrixAB, typename MatrixBB, typename VectorW,
         typename MatrixZ, typename Workspace >
-inline integer_t sbgvd( char const jobz, integer_t const n,
-        integer_t const ka, integer_t const kb, MatrixAB& ab, MatrixBB& bb,
+inline integer_t sbgvd( const char jobz, const integer_t n,
+        const integer_t ka, const integer_t kb, MatrixAB& ab, MatrixBB& bb,
         VectorW& w, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
@@ -172,8 +172,8 @@ inline integer_t sbgvd( char const jobz, integer_t const n,
 // template function to call sbgvd, default workspace type
 template< typename MatrixAB, typename MatrixBB, typename VectorW,
         typename MatrixZ >
-inline integer_t sbgvd( char const jobz, integer_t const n,
-        integer_t const ka, integer_t const kb, MatrixAB& ab, MatrixBB& bb,
+inline integer_t sbgvd( const char jobz, const integer_t n,
+        const integer_t ka, const integer_t kb, MatrixAB& ab, MatrixBB& bb,
         VectorW& w, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);

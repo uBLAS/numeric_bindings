@@ -31,36 +31,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gghrd( char const compq, char const compz, integer_t const n,
-            integer_t const ilo, integer_t const ihi, float* a,
-            integer_t const lda, float* b, integer_t const ldb, float* q,
-            integer_t const ldq, float* z, integer_t const ldz,
+    inline void gghrd( const char compq, const char compz, const integer_t n,
+            const integer_t ilo, const integer_t ihi, float* a,
+            const integer_t lda, float* b, const integer_t ldb, float* q,
+            const integer_t ldq, float* z, const integer_t ldz,
             integer_t& info ) {
         LAPACK_SGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q,
                 &ldq, z, &ldz, &info );
     }
-    inline void gghrd( char const compq, char const compz, integer_t const n,
-            integer_t const ilo, integer_t const ihi, double* a,
-            integer_t const lda, double* b, integer_t const ldb, double* q,
-            integer_t const ldq, double* z, integer_t const ldz,
+    inline void gghrd( const char compq, const char compz, const integer_t n,
+            const integer_t ilo, const integer_t ihi, double* a,
+            const integer_t lda, double* b, const integer_t ldb, double* q,
+            const integer_t ldq, double* z, const integer_t ldz,
             integer_t& info ) {
         LAPACK_DGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q,
                 &ldq, z, &ldz, &info );
     }
-    inline void gghrd( char const compq, char const compz, integer_t const n,
-            integer_t const ilo, integer_t const ihi, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* b, integer_t const ldb,
-            traits::complex_f* q, integer_t const ldq, traits::complex_f* z,
-            integer_t const ldz, integer_t& info ) {
+    inline void gghrd( const char compq, const char compz, const integer_t n,
+            const integer_t ilo, const integer_t ihi, traits::complex_f* a,
+            const integer_t lda, traits::complex_f* b, const integer_t ldb,
+            traits::complex_f* q, const integer_t ldq, traits::complex_f* z,
+            const integer_t ldz, integer_t& info ) {
         LAPACK_CGGHRD( &compq, &compz, &n, &ilo, &ihi, traits::complex_ptr(a),
                 &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(q),
                 &ldq, traits::complex_ptr(z), &ldz, &info );
     }
-    inline void gghrd( char const compq, char const compz, integer_t const n,
-            integer_t const ilo, integer_t const ihi, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* b, integer_t const ldb,
-            traits::complex_d* q, integer_t const ldq, traits::complex_d* z,
-            integer_t const ldz, integer_t& info ) {
+    inline void gghrd( const char compq, const char compz, const integer_t n,
+            const integer_t ilo, const integer_t ihi, traits::complex_d* a,
+            const integer_t lda, traits::complex_d* b, const integer_t ldb,
+            traits::complex_d* q, const integer_t ldq, traits::complex_d* z,
+            const integer_t ldz, integer_t& info ) {
         LAPACK_ZGGHRD( &compq, &compz, &n, &ilo, &ihi, traits::complex_ptr(a),
                 &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(q),
                 &ldq, traits::complex_ptr(z), &ldz, &info );
@@ -77,8 +77,8 @@ struct gghrd_impl {
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixQ,
             typename MatrixZ >
-    static void invoke( char const compq, char const compz, integer_t const n,
-            integer_t const ilo, MatrixA& a, MatrixB& b, MatrixQ& q,
+    static void invoke( const char compq, const char compz, const integer_t n,
+            const integer_t ilo, MatrixA& a, MatrixB& b, MatrixQ& q,
             MatrixZ& z, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -107,8 +107,8 @@ struct gghrd_impl {
 // template function to call gghrd
 template< typename MatrixA, typename MatrixB, typename MatrixQ,
         typename MatrixZ >
-inline integer_t gghrd( char const compq, char const compz,
-        integer_t const n, integer_t const ilo, MatrixA& a, MatrixB& b,
+inline integer_t gghrd( const char compq, const char compz,
+        const integer_t n, const integer_t ilo, MatrixA& a, MatrixB& b,
         MatrixQ& q, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);

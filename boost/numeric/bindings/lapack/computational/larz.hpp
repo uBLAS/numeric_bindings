@@ -36,28 +36,30 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void larz( char const side, integer_t const m, integer_t const n,
-            integer_t const l, float* v, integer_t const incv,
-            float const tau, float* c, integer_t const ldc, float* work ) {
+    inline void larz( const char side, const integer_t m, const integer_t n,
+            const integer_t l, const float* v, const integer_t incv,
+            const float tau, float* c, const integer_t ldc, float* work ) {
         LAPACK_SLARZ( &side, &m, &n, &l, v, &incv, &tau, c, &ldc, work );
     }
-    inline void larz( char const side, integer_t const m, integer_t const n,
-            integer_t const l, double* v, integer_t const incv,
-            double const tau, double* c, integer_t const ldc, double* work ) {
+    inline void larz( const char side, const integer_t m, const integer_t n,
+            const integer_t l, const double* v, const integer_t incv,
+            const double tau, double* c, const integer_t ldc, double* work ) {
         LAPACK_DLARZ( &side, &m, &n, &l, v, &incv, &tau, c, &ldc, work );
     }
-    inline void larz( char const side, integer_t const m, integer_t const n,
-            integer_t const l, traits::complex_f* v, integer_t const incv,
-            traits::complex_f const tau, traits::complex_f* c,
-            integer_t const ldc, traits::complex_f* work ) {
+    inline void larz( const char side, const integer_t m, const integer_t n,
+            const integer_t l, const traits::complex_f* v,
+            const integer_t incv, const traits::complex_f tau,
+            traits::complex_f* c, const integer_t ldc,
+            traits::complex_f* work ) {
         LAPACK_CLARZ( &side, &m, &n, &l, traits::complex_ptr(v), &incv,
                 traits::complex_ptr(&tau), traits::complex_ptr(c), &ldc,
                 traits::complex_ptr(work) );
     }
-    inline void larz( char const side, integer_t const m, integer_t const n,
-            integer_t const l, traits::complex_d* v, integer_t const incv,
-            traits::complex_d const tau, traits::complex_d* c,
-            integer_t const ldc, traits::complex_d* work ) {
+    inline void larz( const char side, const integer_t m, const integer_t n,
+            const integer_t l, const traits::complex_d* v,
+            const integer_t incv, const traits::complex_d tau,
+            traits::complex_d* c, const integer_t ldc,
+            traits::complex_d* work ) {
         LAPACK_ZLARZ( &side, &m, &n, &l, traits::complex_ptr(v), &incv,
                 traits::complex_ptr(&tau), traits::complex_ptr(c), &ldc,
                 traits::complex_ptr(work) );
@@ -77,8 +79,8 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     // user-defined workspace specialization
     template< typename VectorV, typename MatrixC, typename WORK >
-    static void invoke( char const side, integer_t const l, VectorV& v,
-            integer_t const incv, real_type const tau, MatrixC& c,
+    static void invoke( const char side, const integer_t l, const VectorV& v,
+            const integer_t incv, const real_type tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorV >::value_type, typename traits::matrix_traits<
@@ -98,8 +100,8 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     // minimal workspace specialization
     template< typename VectorV, typename MatrixC >
-    static void invoke( char const side, integer_t const l, VectorV& v,
-            integer_t const incv, real_type const tau, MatrixC& c,
+    static void invoke( const char side, const integer_t l, const VectorV& v,
+            const integer_t incv, const real_type tau, MatrixC& c,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( side,
                 traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
@@ -108,14 +110,14 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     // optimal workspace specialization
     template< typename VectorV, typename MatrixC >
-    static void invoke( char const side, integer_t const l, VectorV& v,
-            integer_t const incv, real_type const tau, MatrixC& c,
+    static void invoke( const char side, const integer_t l, const VectorV& v,
+            const integer_t incv, const real_type tau, MatrixC& c,
             optimal_workspace work ) {
         invoke( side, l, v, incv, tau, c, minimal_workspace() );
     }
 
-    static integer_t min_size_work( char const side, integer_t const m,
-            integer_t const n ) {
+    static integer_t min_size_work( const char side, const integer_t m,
+            const integer_t n ) {
         if ( side == 'L' )
             return n;
         else
@@ -132,8 +134,8 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     // user-defined workspace specialization
     template< typename VectorV, typename MatrixC, typename WORK >
-    static void invoke( char const side, integer_t const l, VectorV& v,
-            integer_t const incv, value_type const tau, MatrixC& c,
+    static void invoke( const char side, const integer_t l, const VectorV& v,
+            const integer_t incv, const value_type tau, MatrixC& c,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorV >::value_type, typename traits::matrix_traits<
@@ -153,8 +155,8 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     // minimal workspace specialization
     template< typename VectorV, typename MatrixC >
-    static void invoke( char const side, integer_t const l, VectorV& v,
-            integer_t const incv, value_type const tau, MatrixC& c,
+    static void invoke( const char side, const integer_t l, const VectorV& v,
+            const integer_t incv, const value_type tau, MatrixC& c,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( side,
                 traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
@@ -163,14 +165,14 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     // optimal workspace specialization
     template< typename VectorV, typename MatrixC >
-    static void invoke( char const side, integer_t const l, VectorV& v,
-            integer_t const incv, value_type const tau, MatrixC& c,
+    static void invoke( const char side, const integer_t l, const VectorV& v,
+            const integer_t incv, const value_type tau, MatrixC& c,
             optimal_workspace work ) {
         invoke( side, l, v, incv, tau, c, minimal_workspace() );
     }
 
-    static integer_t min_size_work( char const side, integer_t const m,
-            integer_t const n ) {
+    static integer_t min_size_work( const char side, const integer_t m,
+            const integer_t n ) {
         if ( side == 'L' )
             return n;
         else
@@ -181,11 +183,10 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
 // template function to call larz
 template< typename VectorV, typename MatrixC, typename Workspace >
-inline integer_t larz( char const side, integer_t const l, VectorV& v,
-        integer_t const incv, typename traits::type_traits<
-        typename traits::vector_traits<
-        VectorV >::value_type >::real_type const tau, MatrixC& c,
-        Workspace work ) {
+inline integer_t larz( const char side, const integer_t l,
+        const VectorV& v, const integer_t incv,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorV >::value_type >::real_type tau, MatrixC& c, Workspace work ) {
     typedef typename traits::vector_traits< VectorV >::value_type value_type;
     integer_t info(0);
     larz_impl< value_type >::invoke( side, l, v, incv, tau, c, work );
@@ -194,10 +195,10 @@ inline integer_t larz( char const side, integer_t const l, VectorV& v,
 
 // template function to call larz, default workspace type
 template< typename VectorV, typename MatrixC >
-inline integer_t larz( char const side, integer_t const l, VectorV& v,
-        integer_t const incv, typename traits::type_traits<
-        typename traits::vector_traits<
-        VectorV >::value_type >::real_type const tau, MatrixC& c ) {
+inline integer_t larz( const char side, const integer_t l,
+        const VectorV& v, const integer_t incv,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorV >::value_type >::real_type tau, MatrixC& c ) {
     typedef typename traits::vector_traits< VectorV >::value_type value_type;
     integer_t info(0);
     larz_impl< value_type >::invoke( side, l, v, incv, tau, c,
@@ -206,9 +207,10 @@ inline integer_t larz( char const side, integer_t const l, VectorV& v,
 }
 // template function to call larz
 template< typename VectorV, typename MatrixC, typename Workspace >
-inline integer_t larz( char const side, integer_t const l, VectorV& v,
-        integer_t const incv, typename traits::vector_traits<
-        VectorV >::value_type const tau, MatrixC& c, Workspace work ) {
+inline integer_t larz( const char side, const integer_t l,
+        const VectorV& v, const integer_t incv,
+        const typename traits::vector_traits< VectorV >::value_type tau,
+        MatrixC& c, Workspace work ) {
     typedef typename traits::vector_traits< VectorV >::value_type value_type;
     integer_t info(0);
     larz_impl< value_type >::invoke( side, l, v, incv, tau, c, work );
@@ -217,9 +219,10 @@ inline integer_t larz( char const side, integer_t const l, VectorV& v,
 
 // template function to call larz, default workspace type
 template< typename VectorV, typename MatrixC >
-inline integer_t larz( char const side, integer_t const l, VectorV& v,
-        integer_t const incv, typename traits::vector_traits<
-        VectorV >::value_type const tau, MatrixC& c ) {
+inline integer_t larz( const char side, const integer_t l,
+        const VectorV& v, const integer_t incv,
+        const typename traits::vector_traits< VectorV >::value_type tau,
+        MatrixC& c ) {
     typedef typename traits::vector_traits< VectorV >::value_type value_type;
     integer_t info(0);
     larz_impl< value_type >::invoke( side, l, v, incv, tau, c,

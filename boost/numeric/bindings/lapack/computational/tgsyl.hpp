@@ -37,35 +37,38 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tgsyl( char const trans, integer_t const ijob,
-            integer_t const m, integer_t const n, float* a,
-            integer_t const lda, float* b, integer_t const ldb, float* c,
-            integer_t const ldc, float* d, integer_t const ldd, float* e,
-            integer_t const lde, float* f, integer_t const ldf, float& scale,
-            float& dif, float* work, integer_t const lwork, integer_t* iwork,
+    inline void tgsyl( const char trans, const integer_t ijob,
+            const integer_t m, const integer_t n, const float* a,
+            const integer_t lda, const float* b, const integer_t ldb,
+            float* c, const integer_t ldc, const float* d,
+            const integer_t ldd, const float* e, const integer_t lde,
+            float* f, const integer_t ldf, float& scale, float& dif,
+            float* work, const integer_t lwork, integer_t* iwork,
             integer_t& info ) {
         LAPACK_STGSYL( &trans, &ijob, &m, &n, a, &lda, b, &ldb, c, &ldc, d,
                 &ldd, e, &lde, f, &ldf, &scale, &dif, work, &lwork, iwork,
                 &info );
     }
-    inline void tgsyl( char const trans, integer_t const ijob,
-            integer_t const m, integer_t const n, double* a,
-            integer_t const lda, double* b, integer_t const ldb, double* c,
-            integer_t const ldc, double* d, integer_t const ldd, double* e,
-            integer_t const lde, double* f, integer_t const ldf,
-            double& scale, double& dif, double* work, integer_t const lwork,
-            integer_t* iwork, integer_t& info ) {
+    inline void tgsyl( const char trans, const integer_t ijob,
+            const integer_t m, const integer_t n, const double* a,
+            const integer_t lda, const double* b, const integer_t ldb,
+            double* c, const integer_t ldc, const double* d,
+            const integer_t ldd, const double* e, const integer_t lde,
+            double* f, const integer_t ldf, double& scale, double& dif,
+            double* work, const integer_t lwork, integer_t* iwork,
+            integer_t& info ) {
         LAPACK_DTGSYL( &trans, &ijob, &m, &n, a, &lda, b, &ldb, c, &ldc, d,
                 &ldd, e, &lde, f, &ldf, &scale, &dif, work, &lwork, iwork,
                 &info );
     }
-    inline void tgsyl( char const trans, integer_t const ijob,
-            integer_t const m, integer_t const n, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* b, integer_t const ldb,
-            traits::complex_f* c, integer_t const ldc, traits::complex_f* d,
-            integer_t const ldd, traits::complex_f* e, integer_t const lde,
-            traits::complex_f* f, integer_t const ldf, float& scale,
-            float& dif, traits::complex_f* work, integer_t const lwork,
+    inline void tgsyl( const char trans, const integer_t ijob,
+            const integer_t m, const integer_t n, const traits::complex_f* a,
+            const integer_t lda, const traits::complex_f* b,
+            const integer_t ldb, traits::complex_f* c, const integer_t ldc,
+            const traits::complex_f* d, const integer_t ldd,
+            const traits::complex_f* e, const integer_t lde,
+            traits::complex_f* f, const integer_t ldf, float& scale,
+            float& dif, traits::complex_f* work, const integer_t lwork,
             integer_t* iwork, integer_t& info ) {
         LAPACK_CTGSYL( &trans, &ijob, &m, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(c), &ldc,
@@ -73,13 +76,14 @@ namespace detail {
                 traits::complex_ptr(f), &ldf, &scale, &dif,
                 traits::complex_ptr(work), &lwork, iwork, &info );
     }
-    inline void tgsyl( char const trans, integer_t const ijob,
-            integer_t const m, integer_t const n, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* b, integer_t const ldb,
-            traits::complex_d* c, integer_t const ldc, traits::complex_d* d,
-            integer_t const ldd, traits::complex_d* e, integer_t const lde,
-            traits::complex_d* f, integer_t const ldf, double& scale,
-            double& dif, traits::complex_d* work, integer_t const lwork,
+    inline void tgsyl( const char trans, const integer_t ijob,
+            const integer_t m, const integer_t n, const traits::complex_d* a,
+            const integer_t lda, const traits::complex_d* b,
+            const integer_t ldb, traits::complex_d* c, const integer_t ldc,
+            const traits::complex_d* d, const integer_t ldd,
+            const traits::complex_d* e, const integer_t lde,
+            traits::complex_d* f, const integer_t ldf, double& scale,
+            double& dif, traits::complex_d* work, const integer_t lwork,
             integer_t* iwork, integer_t& info ) {
         LAPACK_ZTGSYL( &trans, &ijob, &m, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(c), &ldc,
@@ -104,11 +108,11 @@ struct tgsyl_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename MatrixC,
             typename MatrixD, typename MatrixE, typename MatrixF,
             typename WORK, typename IWORK >
-    static void invoke( char const trans, integer_t const ijob,
-            integer_t const m, integer_t const n, MatrixA& a, MatrixB& b,
-            MatrixC& c, MatrixD& d, MatrixE& e, MatrixF& f, real_type& scale,
-            real_type& dif, integer_t& info, detail::workspace2< WORK,
-            IWORK > work ) {
+    static void invoke( const char trans, const integer_t ijob,
+            const integer_t m, const integer_t n, const MatrixA& a,
+            const MatrixB& b, MatrixC& c, const MatrixD& d, const MatrixE& e,
+            MatrixF& f, real_type& scale, real_type& dif, integer_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -144,10 +148,11 @@ struct tgsyl_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC,
             typename MatrixD, typename MatrixE, typename MatrixF >
-    static void invoke( char const trans, integer_t const ijob,
-            integer_t const m, integer_t const n, MatrixA& a, MatrixB& b,
-            MatrixC& c, MatrixD& d, MatrixE& e, MatrixF& f, real_type& scale,
-            real_type& dif, integer_t& info, minimal_workspace work ) {
+    static void invoke( const char trans, const integer_t ijob,
+            const integer_t m, const integer_t n, const MatrixA& a,
+            const MatrixB& b, MatrixC& c, const MatrixD& d, const MatrixE& e,
+            MatrixF& f, real_type& scale, real_type& dif, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( m, n ) );
@@ -158,10 +163,11 @@ struct tgsyl_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC,
             typename MatrixD, typename MatrixE, typename MatrixF >
-    static void invoke( char const trans, integer_t const ijob,
-            integer_t const m, integer_t const n, MatrixA& a, MatrixB& b,
-            MatrixC& c, MatrixD& d, MatrixE& e, MatrixF& f, real_type& scale,
-            real_type& dif, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char trans, const integer_t ijob,
+            const integer_t m, const integer_t n, const MatrixA& a,
+            const MatrixB& b, MatrixC& c, const MatrixD& d, const MatrixE& e,
+            MatrixF& f, real_type& scale, real_type& dif, integer_t& info,
+            optimal_workspace work ) {
         real_type opt_size_work;
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( m, n ) );
         detail::tgsyl( trans, ijob, m, n, traits::matrix_storage(a),
@@ -182,7 +188,7 @@ struct tgsyl_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         $MIN_SIZE
     }
 
-    static integer_t min_size_iwork( integer_t const m, integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t m, const integer_t n ) {
         return m+n+6;
     }
 };
@@ -198,11 +204,11 @@ struct tgsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename MatrixC,
             typename MatrixD, typename MatrixE, typename MatrixF,
             typename WORK, typename IWORK >
-    static void invoke( char const trans, integer_t const ijob,
-            integer_t const m, integer_t const n, MatrixA& a, MatrixB& b,
-            MatrixC& c, MatrixD& d, MatrixE& e, MatrixF& f, real_type& scale,
-            real_type& dif, integer_t& info, detail::workspace2< WORK,
-            IWORK > work ) {
+    static void invoke( const char trans, const integer_t ijob,
+            const integer_t m, const integer_t n, const MatrixA& a,
+            const MatrixB& b, MatrixC& c, const MatrixD& d, const MatrixE& e,
+            MatrixF& f, real_type& scale, real_type& dif, integer_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -238,10 +244,11 @@ struct tgsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC,
             typename MatrixD, typename MatrixE, typename MatrixF >
-    static void invoke( char const trans, integer_t const ijob,
-            integer_t const m, integer_t const n, MatrixA& a, MatrixB& b,
-            MatrixC& c, MatrixD& d, MatrixE& e, MatrixF& f, real_type& scale,
-            real_type& dif, integer_t& info, minimal_workspace work ) {
+    static void invoke( const char trans, const integer_t ijob,
+            const integer_t m, const integer_t n, const MatrixA& a,
+            const MatrixB& b, MatrixC& c, const MatrixD& d, const MatrixE& e,
+            MatrixF& f, real_type& scale, real_type& dif, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( m, n ) );
@@ -252,10 +259,11 @@ struct tgsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC,
             typename MatrixD, typename MatrixE, typename MatrixF >
-    static void invoke( char const trans, integer_t const ijob,
-            integer_t const m, integer_t const n, MatrixA& a, MatrixB& b,
-            MatrixC& c, MatrixD& d, MatrixE& e, MatrixF& f, real_type& scale,
-            real_type& dif, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char trans, const integer_t ijob,
+            const integer_t m, const integer_t n, const MatrixA& a,
+            const MatrixB& b, MatrixC& c, const MatrixD& d, const MatrixE& e,
+            MatrixF& f, real_type& scale, real_type& dif, integer_t& info,
+            optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( m, n ) );
         detail::tgsyl( trans, ijob, m, n, traits::matrix_storage(a),
@@ -276,7 +284,7 @@ struct tgsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         $MIN_SIZE
     }
 
-    static integer_t min_size_iwork( integer_t const m, integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t m, const integer_t n ) {
         return m+n+2;
     }
 };
@@ -286,10 +294,11 @@ struct tgsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF,
         typename Workspace >
-inline integer_t tgsyl( char const trans, integer_t const ijob,
-        integer_t const m, integer_t const n, MatrixA& a, MatrixB& b,
-        MatrixC& c, MatrixD& d, MatrixE& e, MatrixF& f,
-        typename traits::type_traits< typename traits::matrix_traits<
+inline integer_t tgsyl( const char trans, const integer_t ijob,
+        const integer_t m, const integer_t n, const MatrixA& a,
+        const MatrixB& b, MatrixC& c, const MatrixD& d, const MatrixE& e,
+        MatrixF& f, typename traits::type_traits<
+        typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& scale,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& dif, Workspace work ) {
@@ -303,10 +312,11 @@ inline integer_t tgsyl( char const trans, integer_t const ijob,
 // template function to call tgsyl, default workspace type
 template< typename MatrixA, typename MatrixB, typename MatrixC,
         typename MatrixD, typename MatrixE, typename MatrixF >
-inline integer_t tgsyl( char const trans, integer_t const ijob,
-        integer_t const m, integer_t const n, MatrixA& a, MatrixB& b,
-        MatrixC& c, MatrixD& d, MatrixE& e, MatrixF& f,
-        typename traits::type_traits< typename traits::matrix_traits<
+inline integer_t tgsyl( const char trans, const integer_t ijob,
+        const integer_t m, const integer_t n, const MatrixA& a,
+        const MatrixB& b, MatrixC& c, const MatrixD& d, const MatrixE& e,
+        MatrixF& f, typename traits::type_traits<
+        typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& scale,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& dif ) {

@@ -36,29 +36,33 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gtrfs( char const trans, integer_t const n,
-            integer_t const nrhs, float* dl, float* d, float* du, float* dlf,
-            float* df, float* duf, float* du2, integer_t* ipiv, float* b,
-            integer_t const ldb, float* x, integer_t const ldx, float* ferr,
-            float* berr, float* work, integer_t* iwork, integer_t& info ) {
+    inline void gtrfs( const char trans, const integer_t n,
+            const integer_t nrhs, const float* dl, const float* d,
+            const float* du, const float* dlf, const float* df,
+            const float* duf, const float* du2, const integer_t* ipiv,
+            const float* b, const integer_t ldb, float* x,
+            const integer_t ldx, float* ferr, float* berr, float* work,
+            integer_t* iwork, integer_t& info ) {
         LAPACK_SGTRFS( &trans, &n, &nrhs, dl, d, du, dlf, df, duf, du2, ipiv,
                 b, &ldb, x, &ldx, ferr, berr, work, iwork, &info );
     }
-    inline void gtrfs( char const trans, integer_t const n,
-            integer_t const nrhs, double* dl, double* d, double* du,
-            double* dlf, double* df, double* duf, double* du2,
-            integer_t* ipiv, double* b, integer_t const ldb, double* x,
-            integer_t const ldx, double* ferr, double* berr, double* work,
+    inline void gtrfs( const char trans, const integer_t n,
+            const integer_t nrhs, const double* dl, const double* d,
+            const double* du, const double* dlf, const double* df,
+            const double* duf, const double* du2, const integer_t* ipiv,
+            const double* b, const integer_t ldb, double* x,
+            const integer_t ldx, double* ferr, double* berr, double* work,
             integer_t* iwork, integer_t& info ) {
         LAPACK_DGTRFS( &trans, &n, &nrhs, dl, d, du, dlf, df, duf, du2, ipiv,
                 b, &ldb, x, &ldx, ferr, berr, work, iwork, &info );
     }
-    inline void gtrfs( char const trans, integer_t const n,
-            integer_t const nrhs, traits::complex_f* dl, traits::complex_f* d,
-            traits::complex_f* du, traits::complex_f* dlf,
-            traits::complex_f* df, traits::complex_f* duf,
-            traits::complex_f* du2, integer_t* ipiv, traits::complex_f* b,
-            integer_t const ldb, traits::complex_f* x, integer_t const ldx,
+    inline void gtrfs( const char trans, const integer_t n,
+            const integer_t nrhs, const traits::complex_f* dl,
+            const traits::complex_f* d, const traits::complex_f* du,
+            const traits::complex_f* dlf, const traits::complex_f* df,
+            const traits::complex_f* duf, const traits::complex_f* du2,
+            const integer_t* ipiv, const traits::complex_f* b,
+            const integer_t ldb, traits::complex_f* x, const integer_t ldx,
             float* ferr, float* berr, traits::complex_f* work, float* rwork,
             integer_t& info ) {
         LAPACK_CGTRFS( &trans, &n, &nrhs, traits::complex_ptr(dl),
@@ -68,12 +72,13 @@ namespace detail {
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
                 ferr, berr, traits::complex_ptr(work), rwork, &info );
     }
-    inline void gtrfs( char const trans, integer_t const n,
-            integer_t const nrhs, traits::complex_d* dl, traits::complex_d* d,
-            traits::complex_d* du, traits::complex_d* dlf,
-            traits::complex_d* df, traits::complex_d* duf,
-            traits::complex_d* du2, integer_t* ipiv, traits::complex_d* b,
-            integer_t const ldb, traits::complex_d* x, integer_t const ldx,
+    inline void gtrfs( const char trans, const integer_t n,
+            const integer_t nrhs, const traits::complex_d* dl,
+            const traits::complex_d* d, const traits::complex_d* du,
+            const traits::complex_d* dlf, const traits::complex_d* df,
+            const traits::complex_d* duf, const traits::complex_d* du2,
+            const integer_t* ipiv, const traits::complex_d* b,
+            const integer_t ldb, traits::complex_d* x, const integer_t ldx,
             double* ferr, double* berr, traits::complex_d* work,
             double* rwork, integer_t& info ) {
         LAPACK_ZGTRFS( &trans, &n, &nrhs, traits::complex_ptr(dl),
@@ -102,9 +107,10 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename IWORK >
-    static void invoke( char const trans, integer_t const n, VectorDL& dl,
-            VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
-            VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( const char trans, const integer_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -173,9 +179,10 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( char const trans, integer_t const n, VectorDL& dl,
-            VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
-            VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( const char trans, const integer_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
@@ -189,20 +196,21 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( char const trans, integer_t const n, VectorDL& dl,
-            VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
-            VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( const char trans, const integer_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
         invoke( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
                 berr, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -220,9 +228,10 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename RWORK >
-    static void invoke( char const trans, integer_t const n, VectorDL& dl,
-            VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
-            VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( const char trans, const integer_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -288,9 +297,10 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( char const trans, integer_t const n, VectorDL& dl,
-            VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
-            VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( const char trans, const integer_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
@@ -304,20 +314,21 @@ struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( char const trans, integer_t const n, VectorDL& dl,
-            VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
-            VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
+    static void invoke( const char trans, const integer_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
             MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
         invoke( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
                 berr, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -329,9 +340,10 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline integer_t gtrfs( char const trans, integer_t const n,
-        VectorDL& dl, VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
-        VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
+inline integer_t gtrfs( const char trans, const integer_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::vector_traits< VectorDL >::value_type value_type;
     integer_t info(0);
@@ -345,9 +357,10 @@ template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDLF, typename VectorDF, typename VectorDUF,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline integer_t gtrfs( char const trans, integer_t const n,
-        VectorDL& dl, VectorD& d, VectorDU& du, VectorDLF& dlf, VectorDF& df,
-        VectorDUF& duf, VectorDU2& du2, VectorIPIV& ipiv, MatrixB& b,
+inline integer_t gtrfs( const char trans, const integer_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
     typedef typename traits::vector_traits< VectorDL >::value_type value_type;
     integer_t info(0);

@@ -36,43 +36,45 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbrfs( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, integer_t const nrhs,
-            float* ab, integer_t const ldab, float* afb,
-            integer_t const ldafb, integer_t* ipiv, float* b,
-            integer_t const ldb, float* x, integer_t const ldx, float* ferr,
+    inline void gbrfs( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const integer_t nrhs,
+            const float* ab, const integer_t ldab, const float* afb,
+            const integer_t ldafb, const integer_t* ipiv, const float* b,
+            const integer_t ldb, float* x, const integer_t ldx, float* ferr,
             float* berr, float* work, integer_t* iwork, integer_t& info ) {
         LAPACK_SGBRFS( &trans, &n, &kl, &ku, &nrhs, ab, &ldab, afb, &ldafb,
                 ipiv, b, &ldb, x, &ldx, ferr, berr, work, iwork, &info );
     }
-    inline void gbrfs( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, integer_t const nrhs,
-            double* ab, integer_t const ldab, double* afb,
-            integer_t const ldafb, integer_t* ipiv, double* b,
-            integer_t const ldb, double* x, integer_t const ldx, double* ferr,
+    inline void gbrfs( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const integer_t nrhs,
+            const double* ab, const integer_t ldab, const double* afb,
+            const integer_t ldafb, const integer_t* ipiv, const double* b,
+            const integer_t ldb, double* x, const integer_t ldx, double* ferr,
             double* berr, double* work, integer_t* iwork, integer_t& info ) {
         LAPACK_DGBRFS( &trans, &n, &kl, &ku, &nrhs, ab, &ldab, afb, &ldafb,
                 ipiv, b, &ldb, x, &ldx, ferr, berr, work, iwork, &info );
     }
-    inline void gbrfs( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, integer_t const nrhs,
-            traits::complex_f* ab, integer_t const ldab,
-            traits::complex_f* afb, integer_t const ldafb, integer_t* ipiv,
-            traits::complex_f* b, integer_t const ldb, traits::complex_f* x,
-            integer_t const ldx, float* ferr, float* berr,
-            traits::complex_f* work, float* rwork, integer_t& info ) {
+    inline void gbrfs( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const integer_t nrhs,
+            const traits::complex_f* ab, const integer_t ldab,
+            const traits::complex_f* afb, const integer_t ldafb,
+            const integer_t* ipiv, const traits::complex_f* b,
+            const integer_t ldb, traits::complex_f* x, const integer_t ldx,
+            float* ferr, float* berr, traits::complex_f* work, float* rwork,
+            integer_t& info ) {
         LAPACK_CGBRFS( &trans, &n, &kl, &ku, &nrhs, traits::complex_ptr(ab),
                 &ldab, traits::complex_ptr(afb), &ldafb, ipiv,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
                 ferr, berr, traits::complex_ptr(work), rwork, &info );
     }
-    inline void gbrfs( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, integer_t const nrhs,
-            traits::complex_d* ab, integer_t const ldab,
-            traits::complex_d* afb, integer_t const ldafb, integer_t* ipiv,
-            traits::complex_d* b, integer_t const ldb, traits::complex_d* x,
-            integer_t const ldx, double* ferr, double* berr,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
+    inline void gbrfs( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const integer_t nrhs,
+            const traits::complex_d* ab, const integer_t ldab,
+            const traits::complex_d* afb, const integer_t ldafb,
+            const integer_t* ipiv, const traits::complex_d* b,
+            const integer_t ldb, traits::complex_d* x, const integer_t ldx,
+            double* ferr, double* berr, traits::complex_d* work,
+            double* rwork, integer_t& info ) {
         LAPACK_ZGBRFS( &trans, &n, &kl, &ku, &nrhs, traits::complex_ptr(ab),
                 &ldab, traits::complex_ptr(afb), &ldafb, ipiv,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
@@ -95,10 +97,10 @@ struct gbrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename IWORK >
-    static void invoke( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            MatrixAFB& afb, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const MatrixAFB& afb, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
@@ -146,10 +148,10 @@ struct gbrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            MatrixAFB& afb, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const MatrixAFB& afb, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
@@ -161,20 +163,20 @@ struct gbrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            MatrixAFB& afb, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const MatrixAFB& afb, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
         invoke( trans, n, kl, ku, ab, afb, ipiv, b, x, ferr, berr, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -190,10 +192,10 @@ struct gbrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void invoke( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            MatrixAFB& afb, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const MatrixAFB& afb, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorFERR >::value_type, typename traits::vector_traits<
@@ -238,10 +240,10 @@ struct gbrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            MatrixAFB& afb, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const MatrixAFB& afb, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
@@ -253,20 +255,20 @@ struct gbrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const trans, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            MatrixAFB& afb, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const char trans, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const MatrixAFB& afb, const VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
         invoke( trans, n, kl, ku, ab, afb, ipiv, b, x, ferr, berr, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -276,10 +278,10 @@ struct gbrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline integer_t gbrfs( char const trans, integer_t const n,
-        integer_t const kl, integer_t const ku, MatrixAB& ab, MatrixAFB& afb,
-        VectorIPIV& ipiv, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
+inline integer_t gbrfs( const char trans, const integer_t n,
+        const integer_t kl, const integer_t ku, const MatrixAB& ab,
+        const MatrixAFB& afb, const VectorIPIV& ipiv, const MatrixB& b,
+        MatrixX& x, VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     gbrfs_impl< value_type >::invoke( trans, n, kl, ku, ab, afb, ipiv, b,
@@ -291,10 +293,10 @@ inline integer_t gbrfs( char const trans, integer_t const n,
 template< typename MatrixAB, typename MatrixAFB, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline integer_t gbrfs( char const trans, integer_t const n,
-        integer_t const kl, integer_t const ku, MatrixAB& ab, MatrixAFB& afb,
-        VectorIPIV& ipiv, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr ) {
+inline integer_t gbrfs( const char trans, const integer_t n,
+        const integer_t kl, const integer_t ku, const MatrixAB& ab,
+        const MatrixAFB& afb, const VectorIPIV& ipiv, const MatrixB& b,
+        MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     gbrfs_impl< value_type >::invoke( trans, n, kl, ku, ab, afb, ipiv, b,

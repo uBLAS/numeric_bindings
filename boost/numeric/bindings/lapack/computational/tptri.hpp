@@ -31,19 +31,19 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tptri( char const uplo, char const diag, integer_t const n,
+    inline void tptri( const char uplo, const char diag, const integer_t n,
             float* ap, integer_t& info ) {
         LAPACK_STPTRI( &uplo, &diag, &n, ap, &info );
     }
-    inline void tptri( char const uplo, char const diag, integer_t const n,
+    inline void tptri( const char uplo, const char diag, const integer_t n,
             double* ap, integer_t& info ) {
         LAPACK_DTPTRI( &uplo, &diag, &n, ap, &info );
     }
-    inline void tptri( char const uplo, char const diag, integer_t const n,
+    inline void tptri( const char uplo, const char diag, const integer_t n,
             traits::complex_f* ap, integer_t& info ) {
         LAPACK_CTPTRI( &uplo, &diag, &n, traits::complex_ptr(ap), &info );
     }
-    inline void tptri( char const uplo, char const diag, integer_t const n,
+    inline void tptri( const char uplo, const char diag, const integer_t n,
             traits::complex_d* ap, integer_t& info ) {
         LAPACK_ZTPTRI( &uplo, &diag, &n, traits::complex_ptr(ap), &info );
     }
@@ -58,7 +58,7 @@ struct tptri_impl {
 
     // templated specialization
     template< typename MatrixAP >
-    static void invoke( char const diag, MatrixAP& ap, integer_t& info ) {
+    static void invoke( const char diag, MatrixAP& ap, integer_t& info ) {
         BOOST_ASSERT( traits::matrix_uplo_tag(ap) == 'U' ||
                 traits::matrix_uplo_tag(ap) == 'L' );
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
@@ -72,7 +72,7 @@ struct tptri_impl {
 
 // template function to call tptri
 template< typename MatrixAP >
-inline integer_t tptri( char const diag, MatrixAP& ap ) {
+inline integer_t tptri( const char diag, MatrixAP& ap ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     tptri_impl< value_type >::invoke( diag, ap, info );

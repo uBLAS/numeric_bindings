@@ -34,20 +34,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trsen( char const job, char const compq, logical_t* select,
-            integer_t const n, traits::complex_f* t, integer_t const ldt,
-            traits::complex_f* q, integer_t const ldq, traits::complex_f* w,
-            integer_t& m, float& s, float& sep, traits::complex_f* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void trsen( const char job, const char compq,
+            const logical_t* select, const integer_t n, traits::complex_f* t,
+            const integer_t ldt, traits::complex_f* q, const integer_t ldq,
+            traits::complex_f* w, integer_t& m, float& s, float& sep,
+            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
         LAPACK_CTRSEN( &job, &compq, select, &n, traits::complex_ptr(t), &ldt,
                 traits::complex_ptr(q), &ldq, traits::complex_ptr(w), &m, &s,
                 &sep, traits::complex_ptr(work), &lwork, &info );
     }
-    inline void trsen( char const job, char const compq, logical_t* select,
-            integer_t const n, traits::complex_d* t, integer_t const ldt,
-            traits::complex_d* q, integer_t const ldq, traits::complex_d* w,
-            integer_t& m, double& s, double& sep, traits::complex_d* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void trsen( const char job, const char compq,
+            const logical_t* select, const integer_t n, traits::complex_d* t,
+            const integer_t ldt, traits::complex_d* q, const integer_t ldq,
+            traits::complex_d* w, integer_t& m, double& s, double& sep,
+            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
         LAPACK_ZTRSEN( &job, &compq, select, &n, traits::complex_ptr(t), &ldt,
                 traits::complex_ptr(q), &ldq, traits::complex_ptr(w), &m, &s,
                 &sep, traits::complex_ptr(work), &lwork, &info );
@@ -64,8 +64,8 @@ struct trsen_impl {
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
             typename VectorW, typename WORK >
-    static void invoke( char const job, char const compq,
-            VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
+    static void invoke( const char job, const char compq,
+            const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             integer_t& m, real_type& s, real_type& sep, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -96,8 +96,8 @@ struct trsen_impl {
     // minimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
             typename VectorW >
-    static void invoke( char const job, char const compq,
-            VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
+    static void invoke( const char job, const char compq,
+            const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             integer_t& m, real_type& s, real_type& sep, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
@@ -109,8 +109,8 @@ struct trsen_impl {
     // optimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
             typename VectorW >
-    static void invoke( char const job, char const compq,
-            VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
+    static void invoke( const char job, const char compq,
+            const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
             integer_t& m, real_type& s, real_type& sep, integer_t& info,
             optimal_workspace work ) {
         value_type opt_size_work;
@@ -134,8 +134,8 @@ struct trsen_impl {
 // template function to call trsen
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW, typename Workspace >
-inline integer_t trsen( char const job, char const compq,
-        VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
+inline integer_t trsen( const char job, const char compq,
+        const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
         integer_t& m, typename traits::type_traits<
         typename traits::vector_traits<
         VectorSELECT >::value_type >::real_type& s,
@@ -152,8 +152,8 @@ inline integer_t trsen( char const job, char const compq,
 // template function to call trsen, default workspace type
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
         typename VectorW >
-inline integer_t trsen( char const job, char const compq,
-        VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
+inline integer_t trsen( const char job, const char compq,
+        const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
         integer_t& m, typename traits::type_traits<
         typename traits::vector_traits<
         VectorSELECT >::value_type >::real_type& s,

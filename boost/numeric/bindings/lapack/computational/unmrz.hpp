@@ -34,20 +34,22 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void unmrz( char const side, char const trans, integer_t const m,
-            integer_t const n, integer_t const k, integer_t const l,
-            traits::complex_f* a, integer_t const lda, traits::complex_f* tau,
-            traits::complex_f* c, integer_t const ldc,
-            traits::complex_f* work, integer_t const lwork, integer_t& info ) {
+    inline void unmrz( const char side, const char trans, const integer_t m,
+            const integer_t n, const integer_t k, const integer_t l,
+            const traits::complex_f* a, const integer_t lda,
+            const traits::complex_f* tau, traits::complex_f* c,
+            const integer_t ldc, traits::complex_f* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_CUNMRZ( &side, &trans, &m, &n, &k, &l, traits::complex_ptr(a),
                 &lda, traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
                 traits::complex_ptr(work), &lwork, &info );
     }
-    inline void unmrz( char const side, char const trans, integer_t const m,
-            integer_t const n, integer_t const k, integer_t const l,
-            traits::complex_d* a, integer_t const lda, traits::complex_d* tau,
-            traits::complex_d* c, integer_t const ldc,
-            traits::complex_d* work, integer_t const lwork, integer_t& info ) {
+    inline void unmrz( const char side, const char trans, const integer_t m,
+            const integer_t n, const integer_t k, const integer_t l,
+            const traits::complex_d* a, const integer_t lda,
+            const traits::complex_d* tau, traits::complex_d* c,
+            const integer_t ldc, traits::complex_d* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_ZUNMRZ( &side, &trans, &m, &n, &k, &l, traits::complex_ptr(a),
                 &lda, traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
                 traits::complex_ptr(work), &lwork, &info );
@@ -64,9 +66,9 @@ struct unmrz_impl {
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static void invoke( char const side, char const trans, integer_t const k,
-            MatrixA& a, VectorTAU& tau, MatrixC& c, integer_t& info,
-            detail::workspace1< WORK > work ) {
+    static void invoke( const char side, const char trans, const integer_t k,
+            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -94,9 +96,9 @@ struct unmrz_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const trans, integer_t const k,
-            MatrixA& a, VectorTAU& tau, MatrixC& c, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( const char side, const char trans, const integer_t k,
+            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         invoke( side, trans, k, a, tau, c, info, workspace( tmp_work ) );
@@ -104,9 +106,9 @@ struct unmrz_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const trans, integer_t const k,
-            MatrixA& a, VectorTAU& tau, MatrixC& c, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( const char side, const char trans, const integer_t k,
+            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         detail::unmrz( side, trans, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c), k,
@@ -128,8 +130,8 @@ struct unmrz_impl {
 // template function to call unmrz
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline integer_t unmrz( char const side, char const trans,
-        integer_t const k, MatrixA& a, VectorTAU& tau, MatrixC& c,
+inline integer_t unmrz( const char side, const char trans,
+        const integer_t k, const MatrixA& a, const VectorTAU& tau, MatrixC& c,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -140,8 +142,9 @@ inline integer_t unmrz( char const side, char const trans,
 
 // template function to call unmrz, default workspace type
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline integer_t unmrz( char const side, char const trans,
-        integer_t const k, MatrixA& a, VectorTAU& tau, MatrixC& c ) {
+inline integer_t unmrz( const char side, const char trans,
+        const integer_t k, const MatrixA& a, const VectorTAU& tau,
+        MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     unmrz_impl< value_type >::invoke( side, trans, k, a, tau, c, info,

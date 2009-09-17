@@ -34,17 +34,19 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ormtr( char const side, char const uplo, char const trans,
-            integer_t const m, integer_t const n, float* a,
-            integer_t const lda, float* tau, float* c, integer_t const ldc,
-            float* work, integer_t const lwork, integer_t& info ) {
+    inline void ormtr( const char side, const char uplo, const char trans,
+            const integer_t m, const integer_t n, const float* a,
+            const integer_t lda, const float* tau, float* c,
+            const integer_t ldc, float* work, const integer_t lwork,
+            integer_t& info ) {
         LAPACK_SORMTR( &side, &uplo, &trans, &m, &n, a, &lda, tau, c, &ldc,
                 work, &lwork, &info );
     }
-    inline void ormtr( char const side, char const uplo, char const trans,
-            integer_t const m, integer_t const n, double* a,
-            integer_t const lda, double* tau, double* c, integer_t const ldc,
-            double* work, integer_t const lwork, integer_t& info ) {
+    inline void ormtr( const char side, const char uplo, const char trans,
+            const integer_t m, const integer_t n, const double* a,
+            const integer_t lda, const double* tau, double* c,
+            const integer_t ldc, double* work, const integer_t lwork,
+            integer_t& info ) {
         LAPACK_DORMTR( &side, &uplo, &trans, &m, &n, a, &lda, tau, c, &ldc,
                 work, &lwork, &info );
     }
@@ -60,9 +62,9 @@ struct ormtr_impl {
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static void invoke( char const side, char const trans, MatrixA& a,
-            VectorTAU& tau, MatrixC& c, integer_t& info, detail::workspace1<
-            WORK > work ) {
+    static void invoke( const char side, const char trans, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, integer_t& info,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -91,8 +93,8 @@ struct ormtr_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const trans, MatrixA& a,
-            VectorTAU& tau, MatrixC& c, integer_t& info,
+    static void invoke( const char side, const char trans, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( side,
                 traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
@@ -101,8 +103,8 @@ struct ormtr_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const trans, MatrixA& a,
-            VectorTAU& tau, MatrixC& c, integer_t& info,
+    static void invoke( const char side, const char trans, const MatrixA& a,
+            const VectorTAU& tau, MatrixC& c, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
         detail::ormtr( side, traits::matrix_uplo_tag(a), trans,
@@ -115,8 +117,8 @@ struct ormtr_impl {
         invoke( side, trans, a, tau, c, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( char const side, integer_t const m,
-            integer_t const n ) {
+    static integer_t min_size_work( const char side, const integer_t m,
+            const integer_t n ) {
         if ( side == 'L' )
             return std::max( 1, n );
         else
@@ -128,8 +130,8 @@ struct ormtr_impl {
 // template function to call ormtr
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline integer_t ormtr( char const side, char const trans, MatrixA& a,
-        VectorTAU& tau, MatrixC& c, Workspace work ) {
+inline integer_t ormtr( const char side, const char trans,
+        const MatrixA& a, const VectorTAU& tau, MatrixC& c, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ormtr_impl< value_type >::invoke( side, trans, a, tau, c, info,
@@ -139,8 +141,8 @@ inline integer_t ormtr( char const side, char const trans, MatrixA& a,
 
 // template function to call ormtr, default workspace type
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline integer_t ormtr( char const side, char const trans, MatrixA& a,
-        VectorTAU& tau, MatrixC& c ) {
+inline integer_t ormtr( const char side, const char trans,
+        const MatrixA& a, const VectorTAU& tau, MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ormtr_impl< value_type >::invoke( side, trans, a, tau, c, info,

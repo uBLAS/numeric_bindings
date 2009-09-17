@@ -37,39 +37,39 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tgsen( integer_t const ijob, logical_t const wantq,
-            logical_t const wantz, logical_t* select, integer_t const n,
-            float* a, integer_t const lda, float* b, integer_t const ldb,
+    inline void tgsen( const integer_t ijob, const logical_t wantq,
+            const logical_t wantz, const logical_t* select, const integer_t n,
+            float* a, const integer_t lda, float* b, const integer_t ldb,
             float* alphar, float* alphai, float* beta, float* q,
-            integer_t const ldq, float* z, integer_t const ldz, integer_t& m,
+            const integer_t ldq, float* z, const integer_t ldz, integer_t& m,
             float& pl, float& pr, float* dif, float* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_STGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb,
                 alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif,
                 work, &lwork, iwork, &liwork, &info );
     }
-    inline void tgsen( integer_t const ijob, logical_t const wantq,
-            logical_t const wantz, logical_t* select, integer_t const n,
-            double* a, integer_t const lda, double* b, integer_t const ldb,
+    inline void tgsen( const integer_t ijob, const logical_t wantq,
+            const logical_t wantz, const logical_t* select, const integer_t n,
+            double* a, const integer_t lda, double* b, const integer_t ldb,
             double* alphar, double* alphai, double* beta, double* q,
-            integer_t const ldq, double* z, integer_t const ldz, integer_t& m,
+            const integer_t ldq, double* z, const integer_t ldz, integer_t& m,
             double& pl, double& pr, double* dif, double* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_DTGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb,
                 alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif,
                 work, &lwork, iwork, &liwork, &info );
     }
-    inline void tgsen( integer_t const ijob, logical_t const wantq,
-            logical_t const wantz, logical_t* select, integer_t const n,
-            traits::complex_f* a, integer_t const lda, traits::complex_f* b,
-            integer_t const ldb, traits::complex_f* alpha,
+    inline void tgsen( const integer_t ijob, const logical_t wantq,
+            const logical_t wantz, const logical_t* select, const integer_t n,
+            traits::complex_f* a, const integer_t lda, traits::complex_f* b,
+            const integer_t ldb, traits::complex_f* alpha,
             traits::complex_f* beta, traits::complex_f* q,
-            integer_t const ldq, traits::complex_f* z, integer_t const ldz,
+            const integer_t ldq, traits::complex_f* z, const integer_t ldz,
             integer_t& m, float& pl, float& pr, float* dif,
-            traits::complex_f* work, integer_t const lwork, integer_t* iwork,
-            integer_t const liwork, integer_t& info ) {
+            traits::complex_f* work, const integer_t lwork, integer_t* iwork,
+            const integer_t liwork, integer_t& info ) {
         LAPACK_CTGSEN( &ijob, &wantq, &wantz, select, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
                 traits::complex_ptr(alpha), traits::complex_ptr(beta),
@@ -77,15 +77,15 @@ namespace detail {
                 &m, &pl, &pr, dif, traits::complex_ptr(work), &lwork, iwork,
                 &liwork, &info );
     }
-    inline void tgsen( integer_t const ijob, logical_t const wantq,
-            logical_t const wantz, logical_t* select, integer_t const n,
-            traits::complex_d* a, integer_t const lda, traits::complex_d* b,
-            integer_t const ldb, traits::complex_d* alpha,
+    inline void tgsen( const integer_t ijob, const logical_t wantq,
+            const logical_t wantz, const logical_t* select, const integer_t n,
+            traits::complex_d* a, const integer_t lda, traits::complex_d* b,
+            const integer_t ldb, traits::complex_d* alpha,
             traits::complex_d* beta, traits::complex_d* q,
-            integer_t const ldq, traits::complex_d* z, integer_t const ldz,
+            const integer_t ldq, traits::complex_d* z, const integer_t ldz,
             integer_t& m, double& pl, double& pr, double* dif,
-            traits::complex_d* work, integer_t const lwork, integer_t* iwork,
-            integer_t const liwork, integer_t& info ) {
+            traits::complex_d* work, const integer_t lwork, integer_t* iwork,
+            const integer_t liwork, integer_t& info ) {
         LAPACK_ZTGSEN( &ijob, &wantq, &wantz, select, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
                 traits::complex_ptr(alpha), traits::complex_ptr(beta),
@@ -111,9 +111,9 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
             typename MatrixQ, typename MatrixZ, typename VectorDIF,
             typename WORK, typename IWORK >
-    static void invoke( integer_t const ijob, logical_t const wantq,
-            logical_t const wantz, VectorSELECT& select, integer_t const n,
-            MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+    static void invoke( const integer_t ijob, const logical_t wantq,
+            const logical_t wantz, const VectorSELECT& select,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& m, real_type& pl, real_type& pr, VectorDIF& dif,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
@@ -166,9 +166,9 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
             typename MatrixQ, typename MatrixZ, typename VectorDIF >
-    static void invoke( integer_t const ijob, logical_t const wantq,
-            logical_t const wantz, VectorSELECT& select, integer_t const n,
-            MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+    static void invoke( const integer_t ijob, const logical_t wantq,
+            const logical_t wantz, const VectorSELECT& select,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& m, real_type& pl, real_type& pr, VectorDIF& dif,
             integer_t& info, minimal_workspace work ) {
@@ -184,9 +184,9 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
             typename MatrixQ, typename MatrixZ, typename VectorDIF >
-    static void invoke( integer_t const ijob, logical_t const wantq,
-            logical_t const wantz, VectorSELECT& select, integer_t const n,
-            MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+    static void invoke( const integer_t ijob, const logical_t wantq,
+            const logical_t wantz, const VectorSELECT& select,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& m, real_type& pl, real_type& pr, VectorDIF& dif,
             integer_t& info, optimal_workspace work ) {
@@ -229,11 +229,11 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorALPHA, typename VectorBETA, typename MatrixQ,
             typename MatrixZ, typename VectorDIF, typename WORK,
             typename IWORK >
-    static void invoke( integer_t const ijob, logical_t const wantq,
-            logical_t const wantz, VectorSELECT& select, integer_t const n,
-            MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-            MatrixQ& q, MatrixZ& z, integer_t& m, real_type& pl,
-            real_type& pr, VectorDIF& dif, integer_t& info,
+    static void invoke( const integer_t ijob, const logical_t wantq,
+            const logical_t wantz, const VectorSELECT& select,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorALPHA& alpha,
+            VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& m,
+            real_type& pl, real_type& pr, VectorDIF& dif, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -276,11 +276,11 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename VectorALPHA, typename VectorBETA, typename MatrixQ,
             typename MatrixZ, typename VectorDIF >
-    static void invoke( integer_t const ijob, logical_t const wantq,
-            logical_t const wantz, VectorSELECT& select, integer_t const n,
-            MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-            MatrixQ& q, MatrixZ& z, integer_t& m, real_type& pl,
-            real_type& pr, VectorDIF& dif, integer_t& info,
+    static void invoke( const integer_t ijob, const logical_t wantq,
+            const logical_t wantz, const VectorSELECT& select,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorALPHA& alpha,
+            VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& m,
+            real_type& pl, real_type& pr, VectorDIF& dif, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -294,11 +294,11 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename VectorALPHA, typename VectorBETA, typename MatrixQ,
             typename MatrixZ, typename VectorDIF >
-    static void invoke( integer_t const ijob, logical_t const wantq,
-            logical_t const wantz, VectorSELECT& select, integer_t const n,
-            MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
-            MatrixQ& q, MatrixZ& z, integer_t& m, real_type& pl,
-            real_type& pr, VectorDIF& dif, integer_t& info,
+    static void invoke( const integer_t ijob, const logical_t wantq,
+            const logical_t wantz, const VectorSELECT& select,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorALPHA& alpha,
+            VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& m,
+            real_type& pl, real_type& pr, VectorDIF& dif, integer_t& info,
             optimal_workspace work ) {
         value_type opt_size_work;
         integer_t opt_size_iwork;
@@ -333,8 +333,8 @@ template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
         typename MatrixQ, typename MatrixZ, typename VectorDIF,
         typename Workspace >
-inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
-        logical_t const wantz, VectorSELECT& select, integer_t const n,
+inline integer_t tgsen( const integer_t ijob, const logical_t wantq,
+        const logical_t wantz, const VectorSELECT& select, const integer_t n,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& m,
         typename traits::type_traits< typename traits::matrix_traits<
@@ -353,8 +353,8 @@ inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
 template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename VectorALPHAR, typename VectorALPHAI, typename VectorBETA,
         typename MatrixQ, typename MatrixZ, typename VectorDIF >
-inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
-        logical_t const wantz, VectorSELECT& select, integer_t const n,
+inline integer_t tgsen( const integer_t ijob, const logical_t wantq,
+        const logical_t wantz, const VectorSELECT& select, const integer_t n,
         MatrixA& a, MatrixB& b, VectorALPHAR& alphar, VectorALPHAI& alphai,
         VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& m,
         typename traits::type_traits< typename traits::matrix_traits<
@@ -372,8 +372,8 @@ inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
 template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename VectorALPHA, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename VectorDIF, typename Workspace >
-inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
-        logical_t const wantz, VectorSELECT& select, integer_t const n,
+inline integer_t tgsen( const integer_t ijob, const logical_t wantq,
+        const logical_t wantz, const VectorSELECT& select, const integer_t n,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, integer_t& m, typename traits::type_traits<
         typename traits::matrix_traits<
@@ -392,8 +392,8 @@ inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
 template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename VectorALPHA, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename VectorDIF >
-inline integer_t tgsen( integer_t const ijob, logical_t const wantq,
-        logical_t const wantz, VectorSELECT& select, integer_t const n,
+inline integer_t tgsen( const integer_t ijob, const logical_t wantq,
+        const logical_t wantz, const VectorSELECT& select, const integer_t n,
         MatrixA& a, MatrixB& b, VectorALPHA& alpha, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, integer_t& m, typename traits::type_traits<
         typename traits::matrix_traits<

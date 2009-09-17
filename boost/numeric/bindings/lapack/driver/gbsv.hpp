@@ -32,29 +32,29 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbsv( integer_t const n, integer_t const kl,
-            integer_t const ku, integer_t const nrhs, float* ab,
-            integer_t const ldab, integer_t* ipiv, float* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void gbsv( const integer_t n, const integer_t kl,
+            const integer_t ku, const integer_t nrhs, float* ab,
+            const integer_t ldab, integer_t* ipiv, float* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_SGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
     }
-    inline void gbsv( integer_t const n, integer_t const kl,
-            integer_t const ku, integer_t const nrhs, double* ab,
-            integer_t const ldab, integer_t* ipiv, double* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void gbsv( const integer_t n, const integer_t kl,
+            const integer_t ku, const integer_t nrhs, double* ab,
+            const integer_t ldab, integer_t* ipiv, double* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_DGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
     }
-    inline void gbsv( integer_t const n, integer_t const kl,
-            integer_t const ku, integer_t const nrhs, traits::complex_f* ab,
-            integer_t const ldab, integer_t* ipiv, traits::complex_f* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void gbsv( const integer_t n, const integer_t kl,
+            const integer_t ku, const integer_t nrhs, traits::complex_f* ab,
+            const integer_t ldab, integer_t* ipiv, traits::complex_f* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_CGBSV( &n, &kl, &ku, &nrhs, traits::complex_ptr(ab), &ldab,
                 ipiv, traits::complex_ptr(b), &ldb, &info );
     }
-    inline void gbsv( integer_t const n, integer_t const kl,
-            integer_t const ku, integer_t const nrhs, traits::complex_d* ab,
-            integer_t const ldab, integer_t* ipiv, traits::complex_d* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void gbsv( const integer_t n, const integer_t kl,
+            const integer_t ku, const integer_t nrhs, traits::complex_d* ab,
+            const integer_t ldab, integer_t* ipiv, traits::complex_d* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_ZGBSV( &n, &kl, &ku, &nrhs, traits::complex_ptr(ab), &ldab,
                 ipiv, traits::complex_ptr(b), &ldb, &info );
     }
@@ -86,7 +86,7 @@ struct gbsv_impl {
 
     // templated specialization
     template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
-    static void invoke( integer_t const kl, integer_t const ku, MatrixAB& ab,
+    static void invoke( const integer_t kl, const integer_t ku, MatrixAB& ab,
             VectorIPIV& ipiv, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
@@ -111,7 +111,7 @@ struct gbsv_impl {
 
 // template function to call gbsv
 template< typename MatrixAB, typename VectorIPIV, typename MatrixB >
-inline integer_t gbsv( integer_t const kl, integer_t const ku,
+inline integer_t gbsv( const integer_t kl, const integer_t ku,
         MatrixAB& ab, VectorIPIV& ipiv, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);

@@ -36,24 +36,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void latrz( integer_t const m, integer_t const n,
-            integer_t const l, float* a, integer_t const lda, float* tau,
+    inline void latrz( const integer_t m, const integer_t n,
+            const integer_t l, float* a, const integer_t lda, float* tau,
             float* work ) {
         LAPACK_SLATRZ( &m, &n, &l, a, &lda, tau, work );
     }
-    inline void latrz( integer_t const m, integer_t const n,
-            integer_t const l, double* a, integer_t const lda, double* tau,
+    inline void latrz( const integer_t m, const integer_t n,
+            const integer_t l, double* a, const integer_t lda, double* tau,
             double* work ) {
         LAPACK_DLATRZ( &m, &n, &l, a, &lda, tau, work );
     }
-    inline void latrz( integer_t const m, integer_t const n,
-            integer_t const l, traits::complex_f* a, integer_t const lda,
+    inline void latrz( const integer_t m, const integer_t n,
+            const integer_t l, traits::complex_f* a, const integer_t lda,
             traits::complex_f* tau, traits::complex_f* work ) {
         LAPACK_CLATRZ( &m, &n, &l, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(tau), traits::complex_ptr(work) );
     }
-    inline void latrz( integer_t const m, integer_t const n,
-            integer_t const l, traits::complex_d* a, integer_t const lda,
+    inline void latrz( const integer_t m, const integer_t n,
+            const integer_t l, traits::complex_d* a, const integer_t lda,
             traits::complex_d* tau, traits::complex_d* work ) {
         LAPACK_ZLATRZ( &m, &n, &l, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(tau), traits::complex_ptr(work) );
@@ -107,7 +107,7 @@ struct latrz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         invoke( a, tau, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const m ) {
+    static integer_t min_size_work( const integer_t m ) {
         return m;
     }
 };
@@ -155,7 +155,7 @@ struct latrz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         invoke( a, tau, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const m ) {
+    static integer_t min_size_work( const integer_t m ) {
         return m;
     }
 };

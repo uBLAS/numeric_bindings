@@ -31,20 +31,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void potrf( char const uplo, integer_t const n, float* a,
-            integer_t const lda, integer_t& info ) {
+    inline void potrf( const char uplo, const integer_t n, float* a,
+            const integer_t lda, integer_t& info ) {
         LAPACK_SPOTRF( &uplo, &n, a, &lda, &info );
     }
-    inline void potrf( char const uplo, integer_t const n, double* a,
-            integer_t const lda, integer_t& info ) {
+    inline void potrf( const char uplo, const integer_t n, double* a,
+            const integer_t lda, integer_t& info ) {
         LAPACK_DPOTRF( &uplo, &n, a, &lda, &info );
     }
-    inline void potrf( char const uplo, integer_t const n,
-            traits::complex_f* a, integer_t const lda, integer_t& info ) {
+    inline void potrf( const char uplo, const integer_t n,
+            traits::complex_f* a, const integer_t lda, integer_t& info ) {
         LAPACK_CPOTRF( &uplo, &n, traits::complex_ptr(a), &lda, &info );
     }
-    inline void potrf( char const uplo, integer_t const n,
-            traits::complex_d* a, integer_t const lda, integer_t& info ) {
+    inline void potrf( const char uplo, const integer_t n,
+            traits::complex_d* a, const integer_t lda, integer_t& info ) {
         LAPACK_ZPOTRF( &uplo, &n, traits::complex_ptr(a), &lda, &info );
     }
 }

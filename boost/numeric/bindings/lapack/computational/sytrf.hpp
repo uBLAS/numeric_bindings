@@ -37,25 +37,25 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sytrf( char const uplo, integer_t const n, float* a,
-            integer_t const lda, integer_t* ipiv, float* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void sytrf( const char uplo, const integer_t n, float* a,
+            const integer_t lda, integer_t* ipiv, float* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_SSYTRF( &uplo, &n, a, &lda, ipiv, work, &lwork, &info );
     }
-    inline void sytrf( char const uplo, integer_t const n, double* a,
-            integer_t const lda, integer_t* ipiv, double* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void sytrf( const char uplo, const integer_t n, double* a,
+            const integer_t lda, integer_t* ipiv, double* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_DSYTRF( &uplo, &n, a, &lda, ipiv, work, &lwork, &info );
     }
-    inline void sytrf( char const uplo, integer_t const n,
-            traits::complex_f* a, integer_t const lda, integer_t* ipiv,
-            traits::complex_f* work, integer_t const lwork, integer_t& info ) {
+    inline void sytrf( const char uplo, const integer_t n,
+            traits::complex_f* a, const integer_t lda, integer_t* ipiv,
+            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
         LAPACK_CSYTRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(work), &lwork, &info );
     }
-    inline void sytrf( char const uplo, integer_t const n,
-            traits::complex_d* a, integer_t const lda, integer_t* ipiv,
-            traits::complex_d* work, integer_t const lwork, integer_t& info ) {
+    inline void sytrf( const char uplo, const integer_t n,
+            traits::complex_d* a, const integer_t lda, integer_t* ipiv,
+            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
         LAPACK_ZSYTRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(work), &lwork, &info );
     }

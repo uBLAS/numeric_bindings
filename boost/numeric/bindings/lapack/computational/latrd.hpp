@@ -34,27 +34,27 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void latrd( char const uplo, integer_t const n, integer_t const nb,
-            float* a, integer_t const lda, float* e, float* tau, float* w,
-            integer_t const ldw ) {
+    inline void latrd( const char uplo, const integer_t n, const integer_t nb,
+            float* a, const integer_t lda, float* e, float* tau, float* w,
+            const integer_t ldw ) {
         LAPACK_SLATRD( &uplo, &n, &nb, a, &lda, e, tau, w, &ldw );
     }
-    inline void latrd( char const uplo, integer_t const n, integer_t const nb,
-            double* a, integer_t const lda, double* e, double* tau, double* w,
-            integer_t const ldw ) {
+    inline void latrd( const char uplo, const integer_t n, const integer_t nb,
+            double* a, const integer_t lda, double* e, double* tau, double* w,
+            const integer_t ldw ) {
         LAPACK_DLATRD( &uplo, &n, &nb, a, &lda, e, tau, w, &ldw );
     }
-    inline void latrd( char const uplo, integer_t const n, integer_t const nb,
-            traits::complex_f* a, integer_t const lda, float* e,
+    inline void latrd( const char uplo, const integer_t n, const integer_t nb,
+            traits::complex_f* a, const integer_t lda, float* e,
             traits::complex_f* tau, traits::complex_f* w,
-            integer_t const ldw ) {
+            const integer_t ldw ) {
         LAPACK_CLATRD( &uplo, &n, &nb, traits::complex_ptr(a), &lda, e,
                 traits::complex_ptr(tau), traits::complex_ptr(w), &ldw );
     }
-    inline void latrd( char const uplo, integer_t const n, integer_t const nb,
-            traits::complex_d* a, integer_t const lda, double* e,
+    inline void latrd( const char uplo, const integer_t n, const integer_t nb,
+            traits::complex_d* a, const integer_t lda, double* e,
             traits::complex_d* tau, traits::complex_d* w,
-            integer_t const ldw ) {
+            const integer_t ldw ) {
         LAPACK_ZLATRD( &uplo, &n, &nb, traits::complex_ptr(a), &lda, e,
                 traits::complex_ptr(tau), traits::complex_ptr(w), &ldw );
     }
@@ -74,7 +74,7 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // templated specialization
     template< typename MatrixA, typename VectorE, typename VectorTAU,
             typename MatrixW >
-    static void invoke( integer_t const nb, MatrixA& a, VectorE& e,
+    static void invoke( const integer_t nb, MatrixA& a, VectorE& e,
             VectorTAU& tau, MatrixW& w ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -108,7 +108,7 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // templated specialization
     template< typename MatrixA, typename VectorE, typename VectorTAU,
             typename MatrixW >
-    static void invoke( integer_t const nb, MatrixA& a, VectorE& e,
+    static void invoke( const integer_t nb, MatrixA& a, VectorE& e,
             VectorTAU& tau, MatrixW& w ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -134,7 +134,7 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call latrd
 template< typename MatrixA, typename VectorE, typename VectorTAU,
         typename MatrixW >
-inline integer_t latrd( integer_t const nb, MatrixA& a, VectorE& e,
+inline integer_t latrd( const integer_t nb, MatrixA& a, VectorE& e,
         VectorTAU& tau, MatrixW& w ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);

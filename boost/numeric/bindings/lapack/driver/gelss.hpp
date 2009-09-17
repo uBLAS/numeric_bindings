@@ -37,35 +37,35 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gelss( integer_t const m, integer_t const n,
-            integer_t const nrhs, float* a, integer_t const lda, float* b,
-            integer_t const ldb, float* s, float const rcond, integer_t& rank,
-            float* work, integer_t const lwork, integer_t& info ) {
+    inline void gelss( const integer_t m, const integer_t n,
+            const integer_t nrhs, float* a, const integer_t lda, float* b,
+            const integer_t ldb, float* s, const float rcond, integer_t& rank,
+            float* work, const integer_t lwork, integer_t& info ) {
         LAPACK_SGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank,
                 work, &lwork, &info );
     }
-    inline void gelss( integer_t const m, integer_t const n,
-            integer_t const nrhs, double* a, integer_t const lda, double* b,
-            integer_t const ldb, double* s, double const rcond,
-            integer_t& rank, double* work, integer_t const lwork,
+    inline void gelss( const integer_t m, const integer_t n,
+            const integer_t nrhs, double* a, const integer_t lda, double* b,
+            const integer_t ldb, double* s, const double rcond,
+            integer_t& rank, double* work, const integer_t lwork,
             integer_t& info ) {
         LAPACK_DGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank,
                 work, &lwork, &info );
     }
-    inline void gelss( integer_t const m, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* b, integer_t const ldb, float* s,
-            float const rcond, integer_t& rank, traits::complex_f* work,
-            integer_t const lwork, float* rwork, integer_t& info ) {
+    inline void gelss( const integer_t m, const integer_t n,
+            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
+            traits::complex_f* b, const integer_t ldb, float* s,
+            const float rcond, integer_t& rank, traits::complex_f* work,
+            const integer_t lwork, float* rwork, integer_t& info ) {
         LAPACK_CGELSS( &m, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, s, &rcond, &rank,
                 traits::complex_ptr(work), &lwork, rwork, &info );
     }
-    inline void gelss( integer_t const m, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* b, integer_t const ldb, double* s,
-            double const rcond, integer_t& rank, traits::complex_d* work,
-            integer_t const lwork, double* rwork, integer_t& info ) {
+    inline void gelss( const integer_t m, const integer_t n,
+            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
+            traits::complex_d* b, const integer_t ldb, double* s,
+            const double rcond, integer_t& rank, traits::complex_d* work,
+            const integer_t lwork, double* rwork, integer_t& info ) {
         LAPACK_ZGELSS( &m, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, s, &rcond, &rank,
                 traits::complex_ptr(work), &lwork, rwork, &info );
@@ -87,7 +87,7 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorS,
             typename WORK >
     static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
-            real_type const rcond, integer_t& rank, integer_t& info,
+            const real_type rcond, integer_t& rank, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -122,7 +122,7 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorS >
     static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
-            real_type const rcond, integer_t& rank, integer_t& info,
+            const real_type rcond, integer_t& rank, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_rows(a), traits::matrix_num_columns(a),
@@ -133,7 +133,7 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorS >
     static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
-            real_type const rcond, integer_t& rank, integer_t& info,
+            const real_type rcond, integer_t& rank, integer_t& info,
             optimal_workspace work ) {
         real_type opt_size_work;
         detail::gelss( traits::matrix_num_rows(a),
@@ -147,8 +147,8 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         invoke( a, b, s, rcond, rank, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const m, integer_t const n,
-            integer_t const nrhs ) {
+    static integer_t min_size_work( const integer_t m, const integer_t n,
+            const integer_t nrhs ) {
         integer_t minmn = std::min( m, n );
         return std::max( 1, 3*minmn + std::max( std::max( 2*minmn, std::max(m,
                 n) ), nrhs ) );
@@ -166,7 +166,7 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorS,
             typename WORK, typename RWORK >
     static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
-            real_type const rcond, integer_t& rank, integer_t& info,
+            const real_type rcond, integer_t& rank, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -203,7 +203,7 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorS >
     static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
-            real_type const rcond, integer_t& rank, integer_t& info,
+            const real_type rcond, integer_t& rank, integer_t& info,
             minimal_workspace work ) {
         integer_t minmn = std::min( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a) );
@@ -218,7 +218,7 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorS >
     static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
-            real_type const rcond, integer_t& rank, integer_t& info,
+            const real_type rcond, integer_t& rank, integer_t& info,
             optimal_workspace work ) {
         integer_t minmn = std::min( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a) );
@@ -236,12 +236,12 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         invoke( a, b, s, rcond, rank, info, workspace( tmp_work, tmp_rwork ) );
     }
 
-    static integer_t min_size_work( integer_t const m, integer_t const n,
-            integer_t const nrhs, integer_t const minmn ) {
+    static integer_t min_size_work( const integer_t m, const integer_t n,
+            const integer_t nrhs, const integer_t minmn ) {
         return std::max( 1, 2*minmn + std::max( std::max( m,n ), nrhs ) );
     }
 
-    static integer_t min_size_rwork( integer_t const minmn ) {
+    static integer_t min_size_rwork( const integer_t minmn ) {
         return 5*minmn;
     }
 };
@@ -251,8 +251,8 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename MatrixB, typename VectorS,
         typename Workspace >
 inline integer_t gelss( MatrixA& a, MatrixB& b, VectorS& s,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const rcond, integer_t& rank,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type rcond, integer_t& rank,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -263,8 +263,8 @@ inline integer_t gelss( MatrixA& a, MatrixB& b, VectorS& s,
 // template function to call gelss, default workspace type
 template< typename MatrixA, typename MatrixB, typename VectorS >
 inline integer_t gelss( MatrixA& a, MatrixB& b, VectorS& s,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const rcond, integer_t& rank ) {
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type rcond, integer_t& rank ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gelss_impl< value_type >::invoke( a, b, s, rcond, rank, info,

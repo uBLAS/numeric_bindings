@@ -33,22 +33,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void laebz( integer_t const ijob, integer_t const nitmax,
-            integer_t const n, integer_t const mmax, integer_t const minp,
-            integer_t const nbmin, float const abstol, float const reltol,
-            float const pivmin, float* d, float* e, float* e2,
-            integer_t* nval, float* ab, float* c, integer_t& mout,
-            integer_t* nab, float* work, integer_t* iwork, integer_t& info ) {
+    inline void laebz( const integer_t ijob, const integer_t nitmax,
+            const integer_t n, const integer_t mmax, const integer_t minp,
+            const integer_t nbmin, const float abstol, const float reltol,
+            const float pivmin, const float* d, const float* e,
+            const float* e2, integer_t* nval, float* ab, float* c,
+            integer_t& mout, integer_t* nab, float* work, integer_t* iwork,
+            integer_t& info ) {
         LAPACK_SLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol,
                 &reltol, &pivmin, d, e, e2, nval, ab, c, &mout, nab, work,
                 iwork, &info );
     }
-    inline void laebz( integer_t const ijob, integer_t const nitmax,
-            integer_t const n, integer_t const mmax, integer_t const minp,
-            integer_t const nbmin, double const abstol, double const reltol,
-            double const pivmin, double* d, double* e, double* e2,
-            integer_t* nval, double* ab, double* c, integer_t& mout,
-            integer_t* nab, double* work, integer_t* iwork, integer_t& info ) {
+    inline void laebz( const integer_t ijob, const integer_t nitmax,
+            const integer_t n, const integer_t mmax, const integer_t minp,
+            const integer_t nbmin, const double abstol, const double reltol,
+            const double pivmin, const double* d, const double* e,
+            const double* e2, integer_t* nval, double* ab, double* c,
+            integer_t& mout, integer_t* nab, double* work, integer_t* iwork,
+            integer_t& info ) {
         LAPACK_DLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol,
                 &reltol, &pivmin, d, e, e2, nval, ab, c, &mout, nab, work,
                 iwork, &info );
@@ -66,13 +68,13 @@ struct laebz_impl {
     template< typename VectorD, typename VectorE, typename VectorE2,
             typename VectorNVAL, typename MatrixAB, typename VectorC,
             typename MatrixNAB, typename WORK, typename IWORK >
-    static void invoke( integer_t const ijob, integer_t const nitmax,
-            integer_t const n, integer_t const minp, integer_t const nbmin,
-            real_type const abstol, real_type const reltol,
-            real_type const pivmin, VectorD& d, VectorE& e, VectorE2& e2,
-            VectorNVAL& nval, MatrixAB& ab, VectorC& c, integer_t& mout,
-            MatrixNAB& nab, integer_t& info, detail::workspace2< WORK,
-            IWORK > work ) {
+    static void invoke( const integer_t ijob, const integer_t nitmax,
+            const integer_t n, const integer_t minp, const integer_t nbmin,
+            const real_type abstol, const real_type reltol,
+            const real_type pivmin, const VectorD& d, const VectorE& e,
+            const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
+            integer_t& mout, MatrixNAB& nab, integer_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
                 VectorE >::value_type >::value) );
@@ -108,12 +110,13 @@ struct laebz_impl {
     template< typename VectorD, typename VectorE, typename VectorE2,
             typename VectorNVAL, typename MatrixAB, typename VectorC,
             typename MatrixNAB >
-    static void invoke( integer_t const ijob, integer_t const nitmax,
-            integer_t const n, integer_t const minp, integer_t const nbmin,
-            real_type const abstol, real_type const reltol,
-            real_type const pivmin, VectorD& d, VectorE& e, VectorE2& e2,
-            VectorNVAL& nval, MatrixAB& ab, VectorC& c, integer_t& mout,
-            MatrixNAB& nab, integer_t& info, minimal_workspace work ) {
+    static void invoke( const integer_t ijob, const integer_t nitmax,
+            const integer_t n, const integer_t minp, const integer_t nbmin,
+            const real_type abstol, const real_type reltol,
+            const real_type pivmin, const VectorD& d, const VectorE& e,
+            const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
+            integer_t& mout, MatrixNAB& nab, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::leading_dimension(ab) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
@@ -127,21 +130,22 @@ struct laebz_impl {
     template< typename VectorD, typename VectorE, typename VectorE2,
             typename VectorNVAL, typename MatrixAB, typename VectorC,
             typename MatrixNAB >
-    static void invoke( integer_t const ijob, integer_t const nitmax,
-            integer_t const n, integer_t const minp, integer_t const nbmin,
-            real_type const abstol, real_type const reltol,
-            real_type const pivmin, VectorD& d, VectorE& e, VectorE2& e2,
-            VectorNVAL& nval, MatrixAB& ab, VectorC& c, integer_t& mout,
-            MatrixNAB& nab, integer_t& info, optimal_workspace work ) {
+    static void invoke( const integer_t ijob, const integer_t nitmax,
+            const integer_t n, const integer_t minp, const integer_t nbmin,
+            const real_type abstol, const real_type reltol,
+            const real_type pivmin, const VectorD& d, const VectorE& e,
+            const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
+            integer_t& mout, MatrixNAB& nab, integer_t& info,
+            optimal_workspace work ) {
         invoke( ijob, nitmax, n, minp, nbmin, abstol, reltol, pivmin, d, e,
                 e2, nval, ab, c, mout, nab, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const mmax ) {
+    static integer_t min_size_work( const integer_t mmax ) {
         return mmax;
     }
 
-    static integer_t min_size_iwork( integer_t const mmax ) {
+    static integer_t min_size_iwork( const integer_t mmax ) {
         return mmax;
     }
 };
@@ -151,16 +155,16 @@ struct laebz_impl {
 template< typename VectorD, typename VectorE, typename VectorE2,
         typename VectorNVAL, typename MatrixAB, typename VectorC,
         typename MatrixNAB, typename Workspace >
-inline integer_t laebz( integer_t const ijob, integer_t const nitmax,
-        integer_t const n, integer_t const minp, integer_t const nbmin,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const abstol,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const reltol,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const pivmin, VectorD& d,
-        VectorE& e, VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-        integer_t& mout, MatrixNAB& nab, Workspace work ) {
+inline integer_t laebz( const integer_t ijob, const integer_t nitmax,
+        const integer_t n, const integer_t minp, const integer_t nbmin,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type abstol,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type reltol,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type pivmin, const VectorD& d,
+        const VectorE& e, const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
+        VectorC& c, integer_t& mout, MatrixNAB& nab, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     laebz_impl< value_type >::invoke( ijob, nitmax, n, minp, nbmin,
@@ -173,16 +177,16 @@ inline integer_t laebz( integer_t const ijob, integer_t const nitmax,
 template< typename VectorD, typename VectorE, typename VectorE2,
         typename VectorNVAL, typename MatrixAB, typename VectorC,
         typename MatrixNAB >
-inline integer_t laebz( integer_t const ijob, integer_t const nitmax,
-        integer_t const n, integer_t const minp, integer_t const nbmin,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const abstol,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const reltol,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const pivmin, VectorD& d,
-        VectorE& e, VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-        integer_t& mout, MatrixNAB& nab ) {
+inline integer_t laebz( const integer_t ijob, const integer_t nitmax,
+        const integer_t n, const integer_t minp, const integer_t nbmin,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type abstol,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type reltol,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type pivmin, const VectorD& d,
+        const VectorE& e, const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab,
+        VectorC& c, integer_t& mout, MatrixNAB& nab ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     laebz_impl< value_type >::invoke( ijob, nitmax, n, minp, nbmin,

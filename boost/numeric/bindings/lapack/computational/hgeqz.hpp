@@ -37,31 +37,31 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hgeqz( char const job, char const compq, char const compz,
-            integer_t const n, integer_t const ilo, integer_t const ihi,
-            float* h, integer_t const ldh, float* t, integer_t const ldt,
+    inline void hgeqz( const char job, const char compq, const char compz,
+            const integer_t n, const integer_t ilo, const integer_t ihi,
+            float* h, const integer_t ldh, float* t, const integer_t ldt,
             float* alphar, float* alphai, float* beta, float* q,
-            integer_t const ldq, float* z, integer_t const ldz, float* work,
-            integer_t const lwork, integer_t& info ) {
+            const integer_t ldq, float* z, const integer_t ldz, float* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_SHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
                 alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
     }
-    inline void hgeqz( char const job, char const compq, char const compz,
-            integer_t const n, integer_t const ilo, integer_t const ihi,
-            double* h, integer_t const ldh, double* t, integer_t const ldt,
+    inline void hgeqz( const char job, const char compq, const char compz,
+            const integer_t n, const integer_t ilo, const integer_t ihi,
+            double* h, const integer_t ldh, double* t, const integer_t ldt,
             double* alphar, double* alphai, double* beta, double* q,
-            integer_t const ldq, double* z, integer_t const ldz, double* work,
-            integer_t const lwork, integer_t& info ) {
+            const integer_t ldq, double* z, const integer_t ldz, double* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_DHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
                 alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
     }
-    inline void hgeqz( char const job, char const compq, char const compz,
-            integer_t const n, integer_t const ilo, integer_t const ihi,
-            traits::complex_f* h, integer_t const ldh, traits::complex_f* t,
-            integer_t const ldt, traits::complex_f* alpha,
+    inline void hgeqz( const char job, const char compq, const char compz,
+            const integer_t n, const integer_t ilo, const integer_t ihi,
+            traits::complex_f* h, const integer_t ldh, traits::complex_f* t,
+            const integer_t ldt, traits::complex_f* alpha,
             traits::complex_f* beta, traits::complex_f* q,
-            integer_t const ldq, traits::complex_f* z, integer_t const ldz,
-            traits::complex_f* work, integer_t const lwork, float* rwork,
+            const integer_t ldq, traits::complex_f* z, const integer_t ldz,
+            traits::complex_f* work, const integer_t lwork, float* rwork,
             integer_t& info ) {
         LAPACK_CHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi,
                 traits::complex_ptr(h), &ldh, traits::complex_ptr(t), &ldt,
@@ -69,13 +69,13 @@ namespace detail {
                 traits::complex_ptr(q), &ldq, traits::complex_ptr(z), &ldz,
                 traits::complex_ptr(work), &lwork, rwork, &info );
     }
-    inline void hgeqz( char const job, char const compq, char const compz,
-            integer_t const n, integer_t const ilo, integer_t const ihi,
-            traits::complex_d* h, integer_t const ldh, traits::complex_d* t,
-            integer_t const ldt, traits::complex_d* alpha,
+    inline void hgeqz( const char job, const char compq, const char compz,
+            const integer_t n, const integer_t ilo, const integer_t ihi,
+            traits::complex_d* h, const integer_t ldh, traits::complex_d* t,
+            const integer_t ldt, traits::complex_d* alpha,
             traits::complex_d* beta, traits::complex_d* q,
-            integer_t const ldq, traits::complex_d* z, integer_t const ldz,
-            traits::complex_d* work, integer_t const lwork, double* rwork,
+            const integer_t ldq, traits::complex_d* z, const integer_t ldz,
+            traits::complex_d* work, const integer_t lwork, double* rwork,
             integer_t& info ) {
         LAPACK_ZHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi,
                 traits::complex_ptr(h), &ldh, traits::complex_ptr(t), &ldt,
@@ -100,8 +100,8 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
             typename MatrixZ, typename WORK >
-    static void invoke( char const job, char const compq, char const compz,
-            integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
+    static void invoke( const char job, const char compq, const char compz,
+            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -147,8 +147,8 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
             typename MatrixZ >
-    static void invoke( char const job, char const compq, char const compz,
-            integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
+    static void invoke( const char job, const char compq, const char compz,
+            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
@@ -161,8 +161,8 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
             typename MatrixZ >
-    static void invoke( char const job, char const compq, char const compz,
-            integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
+    static void invoke( const char job, const char compq, const char compz,
+            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
@@ -180,7 +180,7 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, n );
     }
 };
@@ -196,8 +196,8 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixH, typename MatrixT, typename VectorALPHA,
             typename VectorBETA, typename MatrixQ, typename MatrixZ,
             typename WORK, typename RWORK >
-    static void invoke( char const job, char const compq, char const compz,
-            integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
+    static void invoke( const char job, const char compq, const char compz,
+            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
             VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -242,8 +242,8 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixH, typename MatrixT, typename VectorALPHA,
             typename VectorBETA, typename MatrixQ, typename MatrixZ >
-    static void invoke( char const job, char const compq, char const compz,
-            integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
+    static void invoke( const char job, const char compq, const char compz,
+            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
             VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
@@ -257,8 +257,8 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // optimal workspace specialization
     template< typename MatrixH, typename MatrixT, typename VectorALPHA,
             typename VectorBETA, typename MatrixQ, typename MatrixZ >
-    static void invoke( char const job, char const compq, char const compz,
-            integer_t const ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
+    static void invoke( const char job, const char compq, const char compz,
+            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
             VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& info,
             optimal_workspace work ) {
         value_type opt_size_work;
@@ -278,11 +278,11 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 workspace( tmp_work, tmp_rwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, n );
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -292,8 +292,8 @@ struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline integer_t hgeqz( char const job, char const compq,
-        char const compz, integer_t const ilo, MatrixH& h, MatrixT& t,
+inline integer_t hgeqz( const char job, const char compq,
+        const char compz, const integer_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
@@ -307,8 +307,8 @@ inline integer_t hgeqz( char const job, char const compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline integer_t hgeqz( char const job, char const compq,
-        char const compz, integer_t const ilo, MatrixH& h, MatrixT& t,
+inline integer_t hgeqz( const char job, const char compq,
+        const char compz, const integer_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
@@ -321,8 +321,8 @@ inline integer_t hgeqz( char const job, char const compq,
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ,
         typename Workspace >
-inline integer_t hgeqz( char const job, char const compq,
-        char const compz, integer_t const ilo, MatrixH& h, MatrixT& t,
+inline integer_t hgeqz( const char job, const char compq,
+        const char compz, const integer_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
@@ -335,8 +335,8 @@ inline integer_t hgeqz( char const job, char const compq,
 // template function to call hgeqz, default workspace type
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline integer_t hgeqz( char const job, char const compq,
-        char const compz, integer_t const ilo, MatrixH& h, MatrixT& t,
+inline integer_t hgeqz( const char job, const char compq,
+        const char compz, const integer_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);

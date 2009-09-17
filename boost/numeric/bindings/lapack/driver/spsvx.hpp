@@ -36,39 +36,41 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void spsvx( char const fact, char const uplo, integer_t const n,
-            integer_t const nrhs, float* ap, float* afp, integer_t* ipiv,
-            float* b, integer_t const ldb, float* x, integer_t const ldx,
-            float& rcond, float* ferr, float* berr, float* work,
-            integer_t* iwork, integer_t& info ) {
+    inline void spsvx( const char fact, const char uplo, const integer_t n,
+            const integer_t nrhs, const float* ap, float* afp,
+            integer_t* ipiv, const float* b, const integer_t ldb, float* x,
+            const integer_t ldx, float& rcond, float* ferr, float* berr,
+            float* work, integer_t* iwork, integer_t& info ) {
         LAPACK_SSPSVX( &fact, &uplo, &n, &nrhs, ap, afp, ipiv, b, &ldb, x,
                 &ldx, &rcond, ferr, berr, work, iwork, &info );
     }
-    inline void spsvx( char const fact, char const uplo, integer_t const n,
-            integer_t const nrhs, double* ap, double* afp, integer_t* ipiv,
-            double* b, integer_t const ldb, double* x, integer_t const ldx,
-            double& rcond, double* ferr, double* berr, double* work,
-            integer_t* iwork, integer_t& info ) {
+    inline void spsvx( const char fact, const char uplo, const integer_t n,
+            const integer_t nrhs, const double* ap, double* afp,
+            integer_t* ipiv, const double* b, const integer_t ldb, double* x,
+            const integer_t ldx, double& rcond, double* ferr, double* berr,
+            double* work, integer_t* iwork, integer_t& info ) {
         LAPACK_DSPSVX( &fact, &uplo, &n, &nrhs, ap, afp, ipiv, b, &ldb, x,
                 &ldx, &rcond, ferr, berr, work, iwork, &info );
     }
-    inline void spsvx( char const fact, char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* ap,
-            traits::complex_f* afp, integer_t* ipiv, traits::complex_f* b,
-            integer_t const ldb, traits::complex_f* x, integer_t const ldx,
-            float& rcond, float* ferr, float* berr, traits::complex_f* work,
-            float* rwork, integer_t& info ) {
+    inline void spsvx( const char fact, const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_f* ap,
+            traits::complex_f* afp, integer_t* ipiv,
+            const traits::complex_f* b, const integer_t ldb,
+            traits::complex_f* x, const integer_t ldx, float& rcond,
+            float* ferr, float* berr, traits::complex_f* work, float* rwork,
+            integer_t& info ) {
         LAPACK_CSPSVX( &fact, &uplo, &n, &nrhs, traits::complex_ptr(ap),
                 traits::complex_ptr(afp), ipiv, traits::complex_ptr(b), &ldb,
                 traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
                 traits::complex_ptr(work), rwork, &info );
     }
-    inline void spsvx( char const fact, char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* ap,
-            traits::complex_d* afp, integer_t* ipiv, traits::complex_d* b,
-            integer_t const ldb, traits::complex_d* x, integer_t const ldx,
-            double& rcond, double* ferr, double* berr,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
+    inline void spsvx( const char fact, const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_d* ap,
+            traits::complex_d* afp, integer_t* ipiv,
+            const traits::complex_d* b, const integer_t ldb,
+            traits::complex_d* x, const integer_t ldx, double& rcond,
+            double* ferr, double* berr, traits::complex_d* work,
+            double* rwork, integer_t& info ) {
         LAPACK_ZSPSVX( &fact, &uplo, &n, &nrhs, traits::complex_ptr(ap),
                 traits::complex_ptr(afp), ipiv, traits::complex_ptr(b), &ldb,
                 traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
@@ -91,8 +93,8 @@ struct spsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename IWORK >
-    static void invoke( char const fact, MatrixAP& ap, MatrixAFP& afp,
-            VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
+    static void invoke( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -140,8 +142,8 @@ struct spsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, MatrixAP& ap, MatrixAFP& afp,
-            VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
+    static void invoke( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
@@ -156,19 +158,19 @@ struct spsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, MatrixAP& ap, MatrixAFP& afp,
-            VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
+    static void invoke( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
         invoke( fact, ap, afp, ipiv, b, x, rcond, ferr, berr, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -184,8 +186,8 @@ struct spsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void invoke( char const fact, MatrixAP& ap, MatrixAFP& afp,
-            VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
+    static void invoke( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -230,8 +232,8 @@ struct spsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, MatrixAP& ap, MatrixAFP& afp,
-            VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
+    static void invoke( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
@@ -246,19 +248,19 @@ struct spsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, MatrixAP& ap, MatrixAFP& afp,
-            VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
+    static void invoke( const char fact, const MatrixAP& ap, MatrixAFP& afp,
+            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
         invoke( fact, ap, afp, ipiv, b, x, rcond, ferr, berr, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -268,8 +270,8 @@ struct spsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline integer_t spsvx( char const fact, MatrixAP& ap, MatrixAFP& afp,
-        VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
+inline integer_t spsvx( const char fact, const MatrixAP& ap,
+        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixAP >::value_type >::real_type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -284,8 +286,8 @@ inline integer_t spsvx( char const fact, MatrixAP& ap, MatrixAFP& afp,
 template< typename MatrixAP, typename MatrixAFP, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline integer_t spsvx( char const fact, MatrixAP& ap, MatrixAFP& afp,
-        VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
+inline integer_t spsvx( const char fact, const MatrixAP& ap,
+        MatrixAFP& afp, VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixAP >::value_type >::real_type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {

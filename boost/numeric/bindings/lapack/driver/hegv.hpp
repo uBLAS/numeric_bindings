@@ -34,19 +34,19 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hegv( integer_t const itype, char const jobz, char const uplo,
-            integer_t const n, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* b, integer_t const ldb, float* w,
-            traits::complex_f* work, integer_t const lwork, float* rwork,
+    inline void hegv( const integer_t itype, const char jobz, const char uplo,
+            const integer_t n, traits::complex_f* a, const integer_t lda,
+            traits::complex_f* b, const integer_t ldb, float* w,
+            traits::complex_f* work, const integer_t lwork, float* rwork,
             integer_t& info ) {
         LAPACK_CHEGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, w, traits::complex_ptr(work),
                 &lwork, rwork, &info );
     }
-    inline void hegv( integer_t const itype, char const jobz, char const uplo,
-            integer_t const n, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* b, integer_t const ldb, double* w,
-            traits::complex_d* work, integer_t const lwork, double* rwork,
+    inline void hegv( const integer_t itype, const char jobz, const char uplo,
+            const integer_t n, traits::complex_d* a, const integer_t lda,
+            traits::complex_d* b, const integer_t ldb, double* w,
+            traits::complex_d* work, const integer_t lwork, double* rwork,
             integer_t& info ) {
         LAPACK_ZHEGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, w, traits::complex_ptr(work),
@@ -64,8 +64,8 @@ struct hegv_impl {
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename WORK, typename RWORK >
-    static void invoke( integer_t const itype, char const jobz,
-            integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
+    static void invoke( const integer_t itype, const char jobz,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorW& w,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -91,8 +91,8 @@ struct hegv_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW >
-    static void invoke( integer_t const itype, char const jobz,
-            integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
+    static void invoke( const integer_t itype, const char jobz,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorW& w,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
@@ -102,8 +102,8 @@ struct hegv_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW >
-    static void invoke( integer_t const itype, char const jobz,
-            integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
+    static void invoke( const integer_t itype, const char jobz,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorW& w,
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
@@ -118,11 +118,11 @@ struct hegv_impl {
                 tmp_rwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, 2*n-1 );
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return std::max( 1, 3*n-2 );
     }
 };
@@ -131,8 +131,8 @@ struct hegv_impl {
 // template function to call hegv
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-inline integer_t hegv( integer_t const itype, char const jobz,
-        integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
+inline integer_t hegv( const integer_t itype, const char jobz,
+        const integer_t n, MatrixA& a, MatrixB& b, VectorW& w,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -143,8 +143,8 @@ inline integer_t hegv( integer_t const itype, char const jobz,
 
 // template function to call hegv, default workspace type
 template< typename MatrixA, typename MatrixB, typename VectorW >
-inline integer_t hegv( integer_t const itype, char const jobz,
-        integer_t const n, MatrixA& a, MatrixB& b, VectorW& w ) {
+inline integer_t hegv( const integer_t itype, const char jobz,
+        const integer_t n, MatrixA& a, MatrixB& b, VectorW& w ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     hegv_impl< value_type >::invoke( itype, jobz, n, a, b, w, info,

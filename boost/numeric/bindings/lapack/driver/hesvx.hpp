@@ -34,25 +34,25 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hesvx( char const fact, char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* af, integer_t const ldaf, integer_t* ipiv,
-            traits::complex_f* b, integer_t const ldb, traits::complex_f* x,
-            integer_t const ldx, float& rcond, float* ferr, float* berr,
-            traits::complex_f* work, integer_t const lwork, float* rwork,
-            integer_t& info ) {
+    inline void hesvx( const char fact, const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_f* a,
+            const integer_t lda, traits::complex_f* af, const integer_t ldaf,
+            integer_t* ipiv, const traits::complex_f* b, const integer_t ldb,
+            traits::complex_f* x, const integer_t ldx, float& rcond,
+            float* ferr, float* berr, traits::complex_f* work,
+            const integer_t lwork, float* rwork, integer_t& info ) {
         LAPACK_CHESVX( &fact, &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
                 &ldb, traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
                 traits::complex_ptr(work), &lwork, rwork, &info );
     }
-    inline void hesvx( char const fact, char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* af, integer_t const ldaf, integer_t* ipiv,
-            traits::complex_d* b, integer_t const ldb, traits::complex_d* x,
-            integer_t const ldx, double& rcond, double* ferr, double* berr,
-            traits::complex_d* work, integer_t const lwork, double* rwork,
-            integer_t& info ) {
+    inline void hesvx( const char fact, const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_d* a,
+            const integer_t lda, traits::complex_d* af, const integer_t ldaf,
+            integer_t* ipiv, const traits::complex_d* b, const integer_t ldb,
+            traits::complex_d* x, const integer_t ldx, double& rcond,
+            double* ferr, double* berr, traits::complex_d* work,
+            const integer_t lwork, double* rwork, integer_t& info ) {
         LAPACK_ZHESVX( &fact, &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
                 &ldb, traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
@@ -71,8 +71,8 @@ struct hesvx_impl {
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
-            VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
+    static void invoke( const char fact, const MatrixA& a, MatrixAF& af,
+            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -123,8 +123,8 @@ struct hesvx_impl {
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
-            VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
+    static void invoke( const char fact, const MatrixA& a, MatrixAF& af,
+            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
@@ -139,8 +139,8 @@ struct hesvx_impl {
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
-            VectorIPIV& ipiv, MatrixB& b, MatrixX& x, real_type& rcond,
+    static void invoke( const char fact, const MatrixA& a, MatrixAF& af,
+            VectorIPIV& ipiv, const MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
         value_type opt_size_work;
@@ -161,11 +161,11 @@ struct hesvx_impl {
                 workspace( tmp_work, tmp_rwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, 2*n );
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -175,8 +175,8 @@ struct hesvx_impl {
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline integer_t hesvx( char const fact, MatrixA& a, MatrixAF& af,
-        VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
+inline integer_t hesvx( const char fact, const MatrixA& a, MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond, VectorFERR& ferr,
         VectorBERR& berr, Workspace work ) {
@@ -191,8 +191,8 @@ inline integer_t hesvx( char const fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline integer_t hesvx( char const fact, MatrixA& a, MatrixAF& af,
-        VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
+inline integer_t hesvx( const char fact, const MatrixA& a, MatrixAF& af,
+        VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond, VectorFERR& ferr,
         VectorBERR& berr ) {

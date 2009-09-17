@@ -31,25 +31,25 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ppsv( char const uplo, integer_t const n,
-            integer_t const nrhs, float* ap, float* b, integer_t const ldb,
+    inline void ppsv( const char uplo, const integer_t n,
+            const integer_t nrhs, float* ap, float* b, const integer_t ldb,
             integer_t& info ) {
         LAPACK_SPPSV( &uplo, &n, &nrhs, ap, b, &ldb, &info );
     }
-    inline void ppsv( char const uplo, integer_t const n,
-            integer_t const nrhs, double* ap, double* b, integer_t const ldb,
+    inline void ppsv( const char uplo, const integer_t n,
+            const integer_t nrhs, double* ap, double* b, const integer_t ldb,
             integer_t& info ) {
         LAPACK_DPPSV( &uplo, &n, &nrhs, ap, b, &ldb, &info );
     }
-    inline void ppsv( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* ap, traits::complex_f* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void ppsv( const char uplo, const integer_t n,
+            const integer_t nrhs, traits::complex_f* ap, traits::complex_f* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_CPPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap),
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void ppsv( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* ap, traits::complex_d* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void ppsv( const char uplo, const integer_t n,
+            const integer_t nrhs, traits::complex_d* ap, traits::complex_d* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_ZPPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap),
                 traits::complex_ptr(b), &ldb, &info );
     }

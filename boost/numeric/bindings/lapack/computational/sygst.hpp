@@ -31,14 +31,14 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sygst( integer_t const itype, char const uplo,
-            integer_t const n, float* a, integer_t const lda, float* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void sygst( const integer_t itype, const char uplo,
+            const integer_t n, float* a, const integer_t lda, const float* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_SSYGST( &itype, &uplo, &n, a, &lda, b, &ldb, &info );
     }
-    inline void sygst( integer_t const itype, char const uplo,
-            integer_t const n, double* a, integer_t const lda, double* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void sygst( const integer_t itype, const char uplo,
+            const integer_t n, double* a, const integer_t lda,
+            const double* b, const integer_t ldb, integer_t& info ) {
         LAPACK_DSYGST( &itype, &uplo, &n, a, &lda, b, &ldb, &info );
     }
 }
@@ -52,8 +52,8 @@ struct sygst_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixB >
-    static void invoke( integer_t const itype, integer_t const n, MatrixA& a,
-            MatrixB& b, integer_t& info ) {
+    static void invoke( const integer_t itype, const integer_t n, MatrixA& a,
+            const MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -72,8 +72,8 @@ struct sygst_impl {
 
 // template function to call sygst
 template< typename MatrixA, typename MatrixB >
-inline integer_t sygst( integer_t const itype, integer_t const n,
-        MatrixA& a, MatrixB& b ) {
+inline integer_t sygst( const integer_t itype, const integer_t n,
+        MatrixA& a, const MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     sygst_impl< value_type >::invoke( itype, n, a, b, info );

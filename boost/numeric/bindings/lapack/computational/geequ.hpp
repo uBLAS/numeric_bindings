@@ -34,25 +34,27 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void geequ( integer_t const m, integer_t const n, float* a,
-            integer_t const lda, float* r, float* c, float& rowcnd,
+    inline void geequ( const integer_t m, const integer_t n, const float* a,
+            const integer_t lda, float* r, float* c, float& rowcnd,
             float& colcnd, float& amax, integer_t& info ) {
         LAPACK_SGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
     }
-    inline void geequ( integer_t const m, integer_t const n, double* a,
-            integer_t const lda, double* r, double* c, double& rowcnd,
+    inline void geequ( const integer_t m, const integer_t n, const double* a,
+            const integer_t lda, double* r, double* c, double& rowcnd,
             double& colcnd, double& amax, integer_t& info ) {
         LAPACK_DGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
     }
-    inline void geequ( integer_t const m, integer_t const n,
-            traits::complex_f* a, integer_t const lda, float* r, float* c,
-            float& rowcnd, float& colcnd, float& amax, integer_t& info ) {
+    inline void geequ( const integer_t m, const integer_t n,
+            const traits::complex_f* a, const integer_t lda, float* r,
+            float* c, float& rowcnd, float& colcnd, float& amax,
+            integer_t& info ) {
         LAPACK_CGEEQU( &m, &n, traits::complex_ptr(a), &lda, r, c, &rowcnd,
                 &colcnd, &amax, &info );
     }
-    inline void geequ( integer_t const m, integer_t const n,
-            traits::complex_d* a, integer_t const lda, double* r, double* c,
-            double& rowcnd, double& colcnd, double& amax, integer_t& info ) {
+    inline void geequ( const integer_t m, const integer_t n,
+            const traits::complex_d* a, const integer_t lda, double* r,
+            double* c, double& rowcnd, double& colcnd, double& amax,
+            integer_t& info ) {
         LAPACK_ZGEEQU( &m, &n, traits::complex_ptr(a), &lda, r, c, &rowcnd,
                 &colcnd, &amax, &info );
     }
@@ -71,8 +73,9 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename MatrixA, typename VectorR, typename VectorC >
-    static void invoke( MatrixA& a, VectorR& r, VectorC& c, real_type& rowcnd,
-            real_type& colcnd, real_type& amax, integer_t& info ) {
+    static void invoke( const MatrixA& a, VectorR& r, VectorC& c,
+            real_type& rowcnd, real_type& colcnd, real_type& amax,
+            integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorR >::value_type >::value) );
@@ -99,8 +102,9 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // templated specialization
     template< typename MatrixA, typename VectorR, typename VectorC >
-    static void invoke( MatrixA& a, VectorR& r, VectorC& c, real_type& rowcnd,
-            real_type& colcnd, real_type& amax, integer_t& info ) {
+    static void invoke( const MatrixA& a, VectorR& r, VectorC& c,
+            real_type& rowcnd, real_type& colcnd, real_type& amax,
+            integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorR >::value_type, typename traits::vector_traits<
                 VectorC >::value_type >::value) );
@@ -118,7 +122,7 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call geequ
 template< typename MatrixA, typename VectorR, typename VectorC >
-inline integer_t geequ( MatrixA& a, VectorR& r, VectorC& c,
+inline integer_t geequ( const MatrixA& a, VectorR& r, VectorC& c,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rowcnd,
         typename traits::type_traits< typename traits::matrix_traits<

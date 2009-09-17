@@ -36,38 +36,38 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbbrd( char const vect, integer_t const m, integer_t const n,
-            integer_t const ncc, integer_t const kl, integer_t const ku,
-            float* ab, integer_t const ldab, float* d, float* e, float* q,
-            integer_t const ldq, float* pt, integer_t const ldpt, float* c,
-            integer_t const ldc, float* work, integer_t& info ) {
+    inline void gbbrd( const char vect, const integer_t m, const integer_t n,
+            const integer_t ncc, const integer_t kl, const integer_t ku,
+            float* ab, const integer_t ldab, float* d, float* e, float* q,
+            const integer_t ldq, float* pt, const integer_t ldpt, float* c,
+            const integer_t ldc, float* work, integer_t& info ) {
         LAPACK_SGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q,
                 &ldq, pt, &ldpt, c, &ldc, work, &info );
     }
-    inline void gbbrd( char const vect, integer_t const m, integer_t const n,
-            integer_t const ncc, integer_t const kl, integer_t const ku,
-            double* ab, integer_t const ldab, double* d, double* e, double* q,
-            integer_t const ldq, double* pt, integer_t const ldpt, double* c,
-            integer_t const ldc, double* work, integer_t& info ) {
+    inline void gbbrd( const char vect, const integer_t m, const integer_t n,
+            const integer_t ncc, const integer_t kl, const integer_t ku,
+            double* ab, const integer_t ldab, double* d, double* e, double* q,
+            const integer_t ldq, double* pt, const integer_t ldpt, double* c,
+            const integer_t ldc, double* work, integer_t& info ) {
         LAPACK_DGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q,
                 &ldq, pt, &ldpt, c, &ldc, work, &info );
     }
-    inline void gbbrd( char const vect, integer_t const m, integer_t const n,
-            integer_t const ncc, integer_t const kl, integer_t const ku,
-            traits::complex_f* ab, integer_t const ldab, float* d, float* e,
-            traits::complex_f* q, integer_t const ldq, traits::complex_f* pt,
-            integer_t const ldpt, traits::complex_f* c, integer_t const ldc,
+    inline void gbbrd( const char vect, const integer_t m, const integer_t n,
+            const integer_t ncc, const integer_t kl, const integer_t ku,
+            traits::complex_f* ab, const integer_t ldab, float* d, float* e,
+            traits::complex_f* q, const integer_t ldq, traits::complex_f* pt,
+            const integer_t ldpt, traits::complex_f* c, const integer_t ldc,
             traits::complex_f* work, float* rwork, integer_t& info ) {
         LAPACK_CGBBRD( &vect, &m, &n, &ncc, &kl, &ku, traits::complex_ptr(ab),
                 &ldab, d, e, traits::complex_ptr(q), &ldq,
                 traits::complex_ptr(pt), &ldpt, traits::complex_ptr(c), &ldc,
                 traits::complex_ptr(work), rwork, &info );
     }
-    inline void gbbrd( char const vect, integer_t const m, integer_t const n,
-            integer_t const ncc, integer_t const kl, integer_t const ku,
-            traits::complex_d* ab, integer_t const ldab, double* d, double* e,
-            traits::complex_d* q, integer_t const ldq, traits::complex_d* pt,
-            integer_t const ldpt, traits::complex_d* c, integer_t const ldc,
+    inline void gbbrd( const char vect, const integer_t m, const integer_t n,
+            const integer_t ncc, const integer_t kl, const integer_t ku,
+            traits::complex_d* ab, const integer_t ldab, double* d, double* e,
+            traits::complex_d* q, const integer_t ldq, traits::complex_d* pt,
+            const integer_t ldpt, traits::complex_d* c, const integer_t ldc,
             traits::complex_d* work, double* rwork, integer_t& info ) {
         LAPACK_ZGBBRD( &vect, &m, &n, &ncc, &kl, &ku, traits::complex_ptr(ab),
                 &ldab, d, e, traits::complex_ptr(q), &ldq,
@@ -91,8 +91,8 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC,
             typename WORK >
-    static void invoke( char const vect, integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+    static void invoke( const char vect, const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -134,8 +134,8 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( char const vect, integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+    static void invoke( const char vect, const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( m, n ) );
@@ -146,15 +146,15 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // optimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( char const vect, integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+    static void invoke( const char vect, const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
             optimal_workspace work ) {
         invoke( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const m, integer_t const n ) {
+    static integer_t min_size_work( const integer_t m, const integer_t n ) {
         return 2*std::max(m,n);
     }
 };
@@ -170,8 +170,8 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC,
             typename WORK, typename RWORK >
-    static void invoke( char const vect, integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+    static void invoke( const char vect, const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -213,8 +213,8 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( char const vect, integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+    static void invoke( const char vect, const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( m, n ) );
@@ -226,19 +226,19 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // optimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( char const vect, integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorD& d,
+    static void invoke( const char vect, const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
             VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
             optimal_workspace work ) {
         invoke( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const m, integer_t const n ) {
+    static integer_t min_size_work( const integer_t m, const integer_t n ) {
         return std::max(m,n);
     }
 
-    static integer_t min_size_rwork( integer_t const m, integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t m, const integer_t n ) {
         return std::max(m,n);
     }
 };
@@ -248,8 +248,8 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC,
         typename Workspace >
-inline integer_t gbbrd( char const vect, integer_t const m,
-        integer_t const n, integer_t const kl, integer_t const ku,
+inline integer_t gbbrd( const char vect, const integer_t m,
+        const integer_t n, const integer_t kl, const integer_t ku,
         MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
         MatrixC& c, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
@@ -262,8 +262,8 @@ inline integer_t gbbrd( char const vect, integer_t const m,
 // template function to call gbbrd, default workspace type
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
-inline integer_t gbbrd( char const vect, integer_t const m,
-        integer_t const n, integer_t const kl, integer_t const ku,
+inline integer_t gbbrd( const char vect, const integer_t m,
+        const integer_t n, const integer_t kl, const integer_t ku,
         MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
         MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;

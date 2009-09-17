@@ -31,25 +31,27 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pbtrs( char const uplo, integer_t const n, integer_t const kd,
-            integer_t const nrhs, float* ab, integer_t const ldab, float* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void pbtrs( const char uplo, const integer_t n, const integer_t kd,
+            const integer_t nrhs, const float* ab, const integer_t ldab,
+            float* b, const integer_t ldb, integer_t& info ) {
         LAPACK_SPBTRS( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
     }
-    inline void pbtrs( char const uplo, integer_t const n, integer_t const kd,
-            integer_t const nrhs, double* ab, integer_t const ldab, double* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void pbtrs( const char uplo, const integer_t n, const integer_t kd,
+            const integer_t nrhs, const double* ab, const integer_t ldab,
+            double* b, const integer_t ldb, integer_t& info ) {
         LAPACK_DPBTRS( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
     }
-    inline void pbtrs( char const uplo, integer_t const n, integer_t const kd,
-            integer_t const nrhs, traits::complex_f* ab, integer_t const ldab,
-            traits::complex_f* b, integer_t const ldb, integer_t& info ) {
+    inline void pbtrs( const char uplo, const integer_t n, const integer_t kd,
+            const integer_t nrhs, const traits::complex_f* ab,
+            const integer_t ldab, traits::complex_f* b, const integer_t ldb,
+            integer_t& info ) {
         LAPACK_CPBTRS( &uplo, &n, &kd, &nrhs, traits::complex_ptr(ab), &ldab,
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void pbtrs( char const uplo, integer_t const n, integer_t const kd,
-            integer_t const nrhs, traits::complex_d* ab, integer_t const ldab,
-            traits::complex_d* b, integer_t const ldb, integer_t& info ) {
+    inline void pbtrs( const char uplo, const integer_t n, const integer_t kd,
+            const integer_t nrhs, const traits::complex_d* ab,
+            const integer_t ldab, traits::complex_d* b, const integer_t ldb,
+            integer_t& info ) {
         LAPACK_ZPBTRS( &uplo, &n, &kd, &nrhs, traits::complex_ptr(ab), &ldab,
                 traits::complex_ptr(b), &ldb, &info );
     }
@@ -64,8 +66,9 @@ struct pbtrs_impl {
 
     // templated specialization
     template< typename MatrixAB, typename MatrixB >
-    static void invoke( char const uplo, integer_t const n,
-            integer_t const kd, MatrixAB& ab, MatrixB& b, integer_t& info ) {
+    static void invoke( const char uplo, const integer_t n,
+            const integer_t kd, const MatrixAB& ab, MatrixB& b,
+            integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -85,8 +88,8 @@ struct pbtrs_impl {
 
 // template function to call pbtrs
 template< typename MatrixAB, typename MatrixB >
-inline integer_t pbtrs( char const uplo, integer_t const n,
-        integer_t const kd, MatrixAB& ab, MatrixB& b ) {
+inline integer_t pbtrs( const char uplo, const integer_t n,
+        const integer_t kd, const MatrixAB& ab, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     pbtrs_impl< value_type >::invoke( uplo, n, kd, ab, b, info );

@@ -37,36 +37,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gesdd( char const jobz, integer_t const m, integer_t const n,
-            float* a, integer_t const lda, float* s, float* u,
-            integer_t const ldu, float* vt, integer_t const ldvt, float* work,
-            integer_t const lwork, integer_t* iwork, integer_t& info ) {
+    inline void gesdd( const char jobz, const integer_t m, const integer_t n,
+            float* a, const integer_t lda, float* s, float* u,
+            const integer_t ldu, float* vt, const integer_t ldvt, float* work,
+            const integer_t lwork, integer_t* iwork, integer_t& info ) {
         LAPACK_SGESDD( &jobz, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt, work,
                 &lwork, iwork, &info );
     }
-    inline void gesdd( char const jobz, integer_t const m, integer_t const n,
-            double* a, integer_t const lda, double* s, double* u,
-            integer_t const ldu, double* vt, integer_t const ldvt,
-            double* work, integer_t const lwork, integer_t* iwork,
+    inline void gesdd( const char jobz, const integer_t m, const integer_t n,
+            double* a, const integer_t lda, double* s, double* u,
+            const integer_t ldu, double* vt, const integer_t ldvt,
+            double* work, const integer_t lwork, integer_t* iwork,
             integer_t& info ) {
         LAPACK_DGESDD( &jobz, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt, work,
                 &lwork, iwork, &info );
     }
-    inline void gesdd( char const jobz, integer_t const m, integer_t const n,
-            traits::complex_f* a, integer_t const lda, float* s,
-            traits::complex_f* u, integer_t const ldu, traits::complex_f* vt,
-            integer_t const ldvt, traits::complex_f* work,
-            integer_t const lwork, float* rwork, integer_t* iwork,
+    inline void gesdd( const char jobz, const integer_t m, const integer_t n,
+            traits::complex_f* a, const integer_t lda, float* s,
+            traits::complex_f* u, const integer_t ldu, traits::complex_f* vt,
+            const integer_t ldvt, traits::complex_f* work,
+            const integer_t lwork, float* rwork, integer_t* iwork,
             integer_t& info ) {
         LAPACK_CGESDD( &jobz, &m, &n, traits::complex_ptr(a), &lda, s,
                 traits::complex_ptr(u), &ldu, traits::complex_ptr(vt), &ldvt,
                 traits::complex_ptr(work), &lwork, rwork, iwork, &info );
     }
-    inline void gesdd( char const jobz, integer_t const m, integer_t const n,
-            traits::complex_d* a, integer_t const lda, double* s,
-            traits::complex_d* u, integer_t const ldu, traits::complex_d* vt,
-            integer_t const ldvt, traits::complex_d* work,
-            integer_t const lwork, double* rwork, integer_t* iwork,
+    inline void gesdd( const char jobz, const integer_t m, const integer_t n,
+            traits::complex_d* a, const integer_t lda, double* s,
+            traits::complex_d* u, const integer_t ldu, traits::complex_d* vt,
+            const integer_t ldvt, traits::complex_d* work,
+            const integer_t lwork, double* rwork, integer_t* iwork,
             integer_t& info ) {
         LAPACK_ZGESDD( &jobz, &m, &n, traits::complex_ptr(a), &lda, s,
                 traits::complex_ptr(u), &ldu, traits::complex_ptr(vt), &ldvt,
@@ -88,7 +88,7 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT, typename WORK, typename IWORK >
-    static void invoke( char const jobz, MatrixA& a, VectorS& s, MatrixU& u,
+    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
             MatrixVT& vt, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -129,7 +129,7 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
-    static void invoke( char const jobz, MatrixA& a, VectorS& s, MatrixU& u,
+    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
             MatrixVT& vt, integer_t& info, minimal_workspace work ) {
         integer_t minmn = std::min( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a) );
@@ -144,13 +144,13 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // optimal workspace specialization
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
-    static void invoke( char const jobz, MatrixA& a, VectorS& s, MatrixU& u,
+    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
             MatrixVT& vt, integer_t& info, optimal_workspace work ) {
         invoke( jobz, a, s, u, vt, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const m, integer_t const n,
-            char const jobz, integer_t const minmn ) {
+    static integer_t min_size_work( const integer_t m, const integer_t n,
+            const char jobz, const integer_t minmn ) {
         if ( n == 0 ) return 1;
         if ( jobz == 'N' ) return 3*minmn + std::max( std::max(m,n), 7*minmn );
         if ( jobz == 'O' ) return 3*minmn*minmn + std::max( std::max( m,n ),
@@ -159,7 +159,7 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 4*minmn );
     }
 
-    static integer_t min_size_iwork( integer_t const minmn ) {
+    static integer_t min_size_iwork( const integer_t minmn ) {
             return 8*minmn;
     }
 };
@@ -174,7 +174,7 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT, typename WORK, typename RWORK, typename IWORK >
-    static void invoke( char const jobz, MatrixA& a, VectorS& s, MatrixU& u,
+    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
             MatrixVT& vt, integer_t& info, detail::workspace3< WORK, RWORK,
             IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -215,7 +215,7 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
-    static void invoke( char const jobz, MatrixA& a, VectorS& s, MatrixU& u,
+    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
             MatrixVT& vt, integer_t& info, minimal_workspace work ) {
         integer_t minmn = std::min( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a) );
@@ -233,7 +233,7 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // optimal workspace specialization
     template< typename MatrixA, typename VectorS, typename MatrixU,
             typename MatrixVT >
-    static void invoke( char const jobz, MatrixA& a, VectorS& s, MatrixU& u,
+    static void invoke( const char jobz, MatrixA& a, VectorS& s, MatrixU& u,
             MatrixVT& vt, integer_t& info, optimal_workspace work ) {
         integer_t minmn = std::min( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a) );
@@ -255,20 +255,20 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 tmp_iwork ) );
     }
 
-    static integer_t min_size_work( integer_t const m, integer_t const n,
-            char const jobz, integer_t const minmn ) {
+    static integer_t min_size_work( const integer_t m, const integer_t n,
+            const char jobz, const integer_t minmn ) {
         if ( n == 0 ) return 1;
         if ( jobz == 'N' ) return 2*minmn + std::max( m,n );
         if ( jobz == 'O' ) return 2*(minmn*minmn + minmn) + std::max( m, n );
         return minmn*minmn + 2*minmn + std::max( m, n );
     }
 
-    static integer_t min_size_rwork( integer_t const minmn, char const jobz ) {
+    static integer_t min_size_rwork( const integer_t minmn, const char jobz ) {
         if ( jobz == 'N' ) return 5*minmn;
         return 5*minmn*minmn + 7*minmn;
     }
 
-    static integer_t min_size_iwork( integer_t const minmn ) {
+    static integer_t min_size_iwork( const integer_t minmn ) {
             return 8*minmn;
     }
 };
@@ -277,7 +277,7 @@ struct gesdd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call gesdd
 template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT, typename Workspace >
-inline integer_t gesdd( char const jobz, MatrixA& a, VectorS& s,
+inline integer_t gesdd( const char jobz, MatrixA& a, VectorS& s,
         MatrixU& u, MatrixVT& vt, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -288,7 +288,7 @@ inline integer_t gesdd( char const jobz, MatrixA& a, VectorS& s,
 // template function to call gesdd, default workspace type
 template< typename MatrixA, typename VectorS, typename MatrixU,
         typename MatrixVT >
-inline integer_t gesdd( char const jobz, MatrixA& a, VectorS& s,
+inline integer_t gesdd( const char jobz, MatrixA& a, VectorS& s,
         MatrixU& u, MatrixVT& vt ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);

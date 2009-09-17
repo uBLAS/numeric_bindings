@@ -34,24 +34,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void largv( integer_t const n, float* x, integer_t const incx,
-            float* y, integer_t const incy, float* c, integer_t const incc ) {
+    inline void largv( const integer_t n, float* x, const integer_t incx,
+            float* y, const integer_t incy, float* c, const integer_t incc ) {
         LAPACK_SLARGV( &n, x, &incx, y, &incy, c, &incc );
     }
-    inline void largv( integer_t const n, double* x, integer_t const incx,
-            double* y, integer_t const incy, double* c,
-            integer_t const incc ) {
+    inline void largv( const integer_t n, double* x, const integer_t incx,
+            double* y, const integer_t incy, double* c,
+            const integer_t incc ) {
         LAPACK_DLARGV( &n, x, &incx, y, &incy, c, &incc );
     }
-    inline void largv( integer_t const n, traits::complex_f* x,
-            integer_t const incx, traits::complex_f* y, integer_t const incy,
-            float* c, integer_t const incc ) {
+    inline void largv( const integer_t n, traits::complex_f* x,
+            const integer_t incx, traits::complex_f* y, const integer_t incy,
+            float* c, const integer_t incc ) {
         LAPACK_CLARGV( &n, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(y), &incy, c, &incc );
     }
-    inline void largv( integer_t const n, traits::complex_d* x,
-            integer_t const incx, traits::complex_d* y, integer_t const incy,
-            double* c, integer_t const incc ) {
+    inline void largv( const integer_t n, traits::complex_d* x,
+            const integer_t incx, traits::complex_d* y, const integer_t incy,
+            double* c, const integer_t incc ) {
         LAPACK_ZLARGV( &n, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(y), &incy, c, &incc );
     }
@@ -70,9 +70,9 @@ struct largv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename VectorC >
-    static void invoke( integer_t const n, VectorX& x, integer_t const incx,
-            VectorY& y, integer_t const incy, VectorC& c,
-            integer_t const incc ) {
+    static void invoke( const integer_t n, VectorX& x, const integer_t incx,
+            VectorY& y, const integer_t incy, VectorC& c,
+            const integer_t incc ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -97,9 +97,9 @@ struct largv_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // templated specialization
     template< typename VectorX, typename VectorY, typename VectorC >
-    static void invoke( integer_t const n, VectorX& x, integer_t const incx,
-            VectorY& y, integer_t const incy, VectorC& c,
-            integer_t const incc ) {
+    static void invoke( const integer_t n, VectorX& x, const integer_t incx,
+            VectorY& y, const integer_t incy, VectorC& c,
+            const integer_t incc ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorX >::value_type, typename traits::vector_traits<
                 VectorY >::value_type >::value) );
@@ -115,9 +115,9 @@ struct largv_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call largv
 template< typename VectorX, typename VectorY, typename VectorC >
-inline integer_t largv( integer_t const n, VectorX& x,
-        integer_t const incx, VectorY& y, integer_t const incy, VectorC& c,
-        integer_t const incc ) {
+inline integer_t largv( const integer_t n, VectorX& x,
+        const integer_t incx, VectorY& y, const integer_t incy, VectorC& c,
+        const integer_t incc ) {
     typedef typename traits::vector_traits< VectorX >::value_type value_type;
     integer_t info(0);
     largv_impl< value_type >::invoke( n, x, incx, y, incy, c, incc );

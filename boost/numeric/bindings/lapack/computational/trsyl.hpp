@@ -34,34 +34,38 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trsyl( char const trana, char const tranb,
-            integer_t const isgn, integer_t const m, integer_t const n,
-            float* a, integer_t const lda, float* b, integer_t const ldb,
-            float* c, integer_t const ldc, float& scale, integer_t& info ) {
+    inline void trsyl( const char trana, const char tranb,
+            const integer_t isgn, const integer_t m, const integer_t n,
+            const float* a, const integer_t lda, const float* b,
+            const integer_t ldb, float* c, const integer_t ldc, float& scale,
+            integer_t& info ) {
         LAPACK_STRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c,
                 &ldc, &scale, &info );
     }
-    inline void trsyl( char const trana, char const tranb,
-            integer_t const isgn, integer_t const m, integer_t const n,
-            double* a, integer_t const lda, double* b, integer_t const ldb,
-            double* c, integer_t const ldc, double& scale, integer_t& info ) {
+    inline void trsyl( const char trana, const char tranb,
+            const integer_t isgn, const integer_t m, const integer_t n,
+            const double* a, const integer_t lda, const double* b,
+            const integer_t ldb, double* c, const integer_t ldc,
+            double& scale, integer_t& info ) {
         LAPACK_DTRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c,
                 &ldc, &scale, &info );
     }
-    inline void trsyl( char const trana, char const tranb,
-            integer_t const isgn, integer_t const m, integer_t const n,
-            traits::complex_f* a, integer_t const lda, traits::complex_f* b,
-            integer_t const ldb, traits::complex_f* c, integer_t const ldc,
-            float& scale, integer_t& info ) {
+    inline void trsyl( const char trana, const char tranb,
+            const integer_t isgn, const integer_t m, const integer_t n,
+            const traits::complex_f* a, const integer_t lda,
+            const traits::complex_f* b, const integer_t ldb,
+            traits::complex_f* c, const integer_t ldc, float& scale,
+            integer_t& info ) {
         LAPACK_CTRSYL( &trana, &tranb, &isgn, &m, &n, traits::complex_ptr(a),
                 &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(c),
                 &ldc, &scale, &info );
     }
-    inline void trsyl( char const trana, char const tranb,
-            integer_t const isgn, integer_t const m, integer_t const n,
-            traits::complex_d* a, integer_t const lda, traits::complex_d* b,
-            integer_t const ldb, traits::complex_d* c, integer_t const ldc,
-            double& scale, integer_t& info ) {
+    inline void trsyl( const char trana, const char tranb,
+            const integer_t isgn, const integer_t m, const integer_t n,
+            const traits::complex_d* a, const integer_t lda,
+            const traits::complex_d* b, const integer_t ldb,
+            traits::complex_d* c, const integer_t ldc, double& scale,
+            integer_t& info ) {
         LAPACK_ZTRSYL( &trana, &tranb, &isgn, &m, &n, traits::complex_ptr(a),
                 &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(c),
                 &ldc, &scale, &info );
@@ -81,9 +85,9 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static void invoke( char const trana, char const tranb,
-            integer_t const isgn, integer_t const m, integer_t const n,
-            MatrixA& a, MatrixB& b, MatrixC& c, real_type& scale,
+    static void invoke( const char trana, const char tranb,
+            const integer_t isgn, const integer_t m, const integer_t n,
+            const MatrixA& a, const MatrixB& b, MatrixC& c, real_type& scale,
             integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -114,9 +118,9 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static void invoke( char const trana, char const tranb,
-            integer_t const isgn, integer_t const m, integer_t const n,
-            MatrixA& a, MatrixB& b, MatrixC& c, real_type& scale,
+    static void invoke( const char trana, const char tranb,
+            const integer_t isgn, const integer_t m, const integer_t n,
+            const MatrixA& a, const MatrixB& b, MatrixC& c, real_type& scale,
             integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -141,10 +145,10 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call trsyl
 template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline integer_t trsyl( char const trana, char const tranb,
-        integer_t const isgn, integer_t const m, integer_t const n,
-        MatrixA& a, MatrixB& b, MatrixC& c, typename traits::type_traits<
-        typename traits::matrix_traits<
+inline integer_t trsyl( const char trana, const char tranb,
+        const integer_t isgn, const integer_t m, const integer_t n,
+        const MatrixA& a, const MatrixB& b, MatrixC& c,
+        typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& scale ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);

@@ -33,13 +33,13 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void spev( char const jobz, char const uplo, integer_t const n,
-            float* ap, float* w, float* z, integer_t const ldz, float* work,
+    inline void spev( const char jobz, const char uplo, const integer_t n,
+            float* ap, float* w, float* z, const integer_t ldz, float* work,
             integer_t& info ) {
         LAPACK_SSPEV( &jobz, &uplo, &n, ap, w, z, &ldz, work, &info );
     }
-    inline void spev( char const jobz, char const uplo, integer_t const n,
-            double* ap, double* w, double* z, integer_t const ldz,
+    inline void spev( const char jobz, const char uplo, const integer_t n,
+            double* ap, double* w, double* z, const integer_t ldz,
             double* work, integer_t& info ) {
         LAPACK_DSPEV( &jobz, &uplo, &n, ap, w, z, &ldz, work, &info );
     }
@@ -55,7 +55,7 @@ struct spev_impl {
     // user-defined workspace specialization
     template< typename MatrixAP, typename VectorW, typename MatrixZ,
             typename WORK >
-    static void invoke( char const jobz, integer_t const n, MatrixAP& ap,
+    static void invoke( const char jobz, const integer_t n, MatrixAP& ap,
             VectorW& w, MatrixZ& z, integer_t& info, detail::workspace1<
             WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -78,7 +78,7 @@ struct spev_impl {
 
     // minimal workspace specialization
     template< typename MatrixAP, typename VectorW, typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n, MatrixAP& ap,
+    static void invoke( const char jobz, const integer_t n, MatrixAP& ap,
             VectorW& w, MatrixZ& z, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         invoke( jobz, n, ap, w, z, info, workspace( tmp_work ) );
@@ -86,12 +86,12 @@ struct spev_impl {
 
     // optimal workspace specialization
     template< typename MatrixAP, typename VectorW, typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n, MatrixAP& ap,
+    static void invoke( const char jobz, const integer_t n, MatrixAP& ap,
             VectorW& w, MatrixZ& z, integer_t& info, optimal_workspace work ) {
         invoke( jobz, n, ap, w, z, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 };
@@ -100,7 +100,7 @@ struct spev_impl {
 // template function to call spev
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline integer_t spev( char const jobz, integer_t const n, MatrixAP& ap,
+inline integer_t spev( const char jobz, const integer_t n, MatrixAP& ap,
         VectorW& w, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
@@ -110,7 +110,7 @@ inline integer_t spev( char const jobz, integer_t const n, MatrixAP& ap,
 
 // template function to call spev, default workspace type
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
-inline integer_t spev( char const jobz, integer_t const n, MatrixAP& ap,
+inline integer_t spev( const char jobz, const integer_t n, MatrixAP& ap,
         VectorW& w, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);

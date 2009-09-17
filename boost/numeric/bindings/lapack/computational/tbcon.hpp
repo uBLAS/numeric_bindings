@@ -36,31 +36,31 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tbcon( char const norm, char const uplo, char const diag,
-            integer_t const n, integer_t const kd, float* ab,
-            integer_t const ldab, float& rcond, float* work, integer_t* iwork,
+    inline void tbcon( const char norm, const char uplo, const char diag,
+            const integer_t n, const integer_t kd, const float* ab,
+            const integer_t ldab, float& rcond, float* work, integer_t* iwork,
             integer_t& info ) {
         LAPACK_STBCON( &norm, &uplo, &diag, &n, &kd, ab, &ldab, &rcond, work,
                 iwork, &info );
     }
-    inline void tbcon( char const norm, char const uplo, char const diag,
-            integer_t const n, integer_t const kd, double* ab,
-            integer_t const ldab, double& rcond, double* work,
+    inline void tbcon( const char norm, const char uplo, const char diag,
+            const integer_t n, const integer_t kd, const double* ab,
+            const integer_t ldab, double& rcond, double* work,
             integer_t* iwork, integer_t& info ) {
         LAPACK_DTBCON( &norm, &uplo, &diag, &n, &kd, ab, &ldab, &rcond, work,
                 iwork, &info );
     }
-    inline void tbcon( char const norm, char const uplo, char const diag,
-            integer_t const n, integer_t const kd, traits::complex_f* ab,
-            integer_t const ldab, float& rcond, traits::complex_f* work,
-            float* rwork, integer_t& info ) {
+    inline void tbcon( const char norm, const char uplo, const char diag,
+            const integer_t n, const integer_t kd,
+            const traits::complex_f* ab, const integer_t ldab, float& rcond,
+            traits::complex_f* work, float* rwork, integer_t& info ) {
         LAPACK_CTBCON( &norm, &uplo, &diag, &n, &kd, traits::complex_ptr(ab),
                 &ldab, &rcond, traits::complex_ptr(work), rwork, &info );
     }
-    inline void tbcon( char const norm, char const uplo, char const diag,
-            integer_t const n, integer_t const kd, traits::complex_d* ab,
-            integer_t const ldab, double& rcond, traits::complex_d* work,
-            double* rwork, integer_t& info ) {
+    inline void tbcon( const char norm, const char uplo, const char diag,
+            const integer_t n, const integer_t kd,
+            const traits::complex_d* ab, const integer_t ldab, double& rcond,
+            traits::complex_d* work, double* rwork, integer_t& info ) {
         LAPACK_ZTBCON( &norm, &uplo, &diag, &n, &kd, traits::complex_ptr(ab),
                 &ldab, &rcond, traits::complex_ptr(work), rwork, &info );
     }
@@ -79,8 +79,8 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename WORK, typename IWORK >
-    static void invoke( char const norm, char const uplo, char const diag,
-            integer_t const n, integer_t const kd, MatrixAB& ab,
+    static void invoke( const char norm, const char uplo, const char diag,
+            const integer_t n, const integer_t kd, const MatrixAB& ab,
             real_type& rcond, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
@@ -101,8 +101,8 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixAB >
-    static void invoke( char const norm, char const uplo, char const diag,
-            integer_t const n, integer_t const kd, MatrixAB& ab,
+    static void invoke( const char norm, const char uplo, const char diag,
+            const integer_t n, const integer_t kd, const MatrixAB& ab,
             real_type& rcond, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
@@ -112,18 +112,18 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // optimal workspace specialization
     template< typename MatrixAB >
-    static void invoke( char const norm, char const uplo, char const diag,
-            integer_t const n, integer_t const kd, MatrixAB& ab,
+    static void invoke( const char norm, const char uplo, const char diag,
+            const integer_t n, const integer_t kd, const MatrixAB& ab,
             real_type& rcond, integer_t& info, optimal_workspace work ) {
         invoke( norm, uplo, diag, n, kd, ab, rcond, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -137,8 +137,8 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // user-defined workspace specialization
     template< typename MatrixAB, typename WORK, typename RWORK >
-    static void invoke( char const norm, char const uplo, char const diag,
-            integer_t const n, integer_t const kd, MatrixAB& ab,
+    static void invoke( const char norm, const char uplo, const char diag,
+            const integer_t n, const integer_t kd, const MatrixAB& ab,
             real_type& rcond, integer_t& info, detail::workspace2< WORK,
             RWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
@@ -159,8 +159,8 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixAB >
-    static void invoke( char const norm, char const uplo, char const diag,
-            integer_t const n, integer_t const kd, MatrixAB& ab,
+    static void invoke( const char norm, const char uplo, const char diag,
+            const integer_t n, const integer_t kd, const MatrixAB& ab,
             real_type& rcond, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
@@ -170,18 +170,18 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // optimal workspace specialization
     template< typename MatrixAB >
-    static void invoke( char const norm, char const uplo, char const diag,
-            integer_t const n, integer_t const kd, MatrixAB& ab,
+    static void invoke( const char norm, const char uplo, const char diag,
+            const integer_t n, const integer_t kd, const MatrixAB& ab,
             real_type& rcond, integer_t& info, optimal_workspace work ) {
         invoke( norm, uplo, diag, n, kd, ab, rcond, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -189,9 +189,10 @@ struct tbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call tbcon
 template< typename MatrixAB, typename Workspace >
-inline integer_t tbcon( char const norm, char const uplo,
-        char const diag, integer_t const n, integer_t const kd, MatrixAB& ab,
-        typename traits::type_traits< typename traits::matrix_traits<
+inline integer_t tbcon( const char norm, const char uplo,
+        const char diag, const integer_t n, const integer_t kd,
+        const MatrixAB& ab, typename traits::type_traits<
+        typename traits::matrix_traits<
         MatrixAB >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
@@ -202,9 +203,10 @@ inline integer_t tbcon( char const norm, char const uplo,
 
 // template function to call tbcon, default workspace type
 template< typename MatrixAB >
-inline integer_t tbcon( char const norm, char const uplo,
-        char const diag, integer_t const n, integer_t const kd, MatrixAB& ab,
-        typename traits::type_traits< typename traits::matrix_traits<
+inline integer_t tbcon( const char norm, const char uplo,
+        const char diag, const integer_t n, const integer_t kd,
+        const MatrixAB& ab, typename traits::type_traits<
+        typename traits::matrix_traits<
         MatrixAB >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);

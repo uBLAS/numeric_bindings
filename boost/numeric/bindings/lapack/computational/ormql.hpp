@@ -34,17 +34,19 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ormql( char const side, char const trans, integer_t const m,
-            integer_t const n, integer_t const k, float* a,
-            integer_t const lda, float* tau, float* c, integer_t const ldc,
-            float* work, integer_t const lwork, integer_t& info ) {
+    inline void ormql( const char side, const char trans, const integer_t m,
+            const integer_t n, const integer_t k, const float* a,
+            const integer_t lda, const float* tau, float* c,
+            const integer_t ldc, float* work, const integer_t lwork,
+            integer_t& info ) {
         LAPACK_SORMQL( &side, &trans, &m, &n, &k, a, &lda, tau, c, &ldc, work,
                 &lwork, &info );
     }
-    inline void ormql( char const side, char const trans, integer_t const m,
-            integer_t const n, integer_t const k, double* a,
-            integer_t const lda, double* tau, double* c, integer_t const ldc,
-            double* work, integer_t const lwork, integer_t& info ) {
+    inline void ormql( const char side, const char trans, const integer_t m,
+            const integer_t n, const integer_t k, const double* a,
+            const integer_t lda, const double* tau, double* c,
+            const integer_t ldc, double* work, const integer_t lwork,
+            integer_t& info ) {
         LAPACK_DORMQL( &side, &trans, &m, &n, &k, a, &lda, tau, c, &ldc, work,
                 &lwork, &info );
     }
@@ -60,9 +62,9 @@ struct ormql_impl {
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static void invoke( char const side, char const trans, integer_t const k,
-            MatrixA& a, VectorTAU& tau, MatrixC& c, integer_t& info,
-            detail::workspace1< WORK > work ) {
+    static void invoke( const char side, const char trans, const integer_t k,
+            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -89,9 +91,9 @@ struct ormql_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const trans, integer_t const k,
-            MatrixA& a, VectorTAU& tau, MatrixC& c, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( const char side, const char trans, const integer_t k,
+            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( side,
                 traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
         invoke( side, trans, k, a, tau, c, info, workspace( tmp_work ) );
@@ -99,9 +101,9 @@ struct ormql_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const trans, integer_t const k,
-            MatrixA& a, VectorTAU& tau, MatrixC& c, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( const char side, const char trans, const integer_t k,
+            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         detail::ormql( side, trans, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c), k, traits::matrix_storage(a),
@@ -113,8 +115,8 @@ struct ormql_impl {
         invoke( side, trans, k, a, tau, c, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( char const side, integer_t const m,
-            integer_t const n ) {
+    static integer_t min_size_work( const char side, const integer_t m,
+            const integer_t n ) {
         if ( side == 'L' )
             return std::max( 1, n );
         else
@@ -126,8 +128,8 @@ struct ormql_impl {
 // template function to call ormql
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline integer_t ormql( char const side, char const trans,
-        integer_t const k, MatrixA& a, VectorTAU& tau, MatrixC& c,
+inline integer_t ormql( const char side, const char trans,
+        const integer_t k, const MatrixA& a, const VectorTAU& tau, MatrixC& c,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -138,8 +140,9 @@ inline integer_t ormql( char const side, char const trans,
 
 // template function to call ormql, default workspace type
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline integer_t ormql( char const side, char const trans,
-        integer_t const k, MatrixA& a, VectorTAU& tau, MatrixC& c ) {
+inline integer_t ormql( const char side, const char trans,
+        const integer_t k, const MatrixA& a, const VectorTAU& tau,
+        MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ormql_impl< value_type >::invoke( side, trans, k, a, tau, c, info,

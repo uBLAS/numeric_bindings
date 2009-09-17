@@ -36,29 +36,29 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gecon( char const norm, integer_t const n, float* a,
-            integer_t const lda, float const anorm, float& rcond, float* work,
+    inline void gecon( const char norm, const integer_t n, const float* a,
+            const integer_t lda, const float anorm, float& rcond, float* work,
             integer_t* iwork, integer_t& info ) {
         LAPACK_SGECON( &norm, &n, a, &lda, &anorm, &rcond, work, iwork,
                 &info );
     }
-    inline void gecon( char const norm, integer_t const n, double* a,
-            integer_t const lda, double const anorm, double& rcond,
+    inline void gecon( const char norm, const integer_t n, const double* a,
+            const integer_t lda, const double anorm, double& rcond,
             double* work, integer_t* iwork, integer_t& info ) {
         LAPACK_DGECON( &norm, &n, a, &lda, &anorm, &rcond, work, iwork,
                 &info );
     }
-    inline void gecon( char const norm, integer_t const n,
-            traits::complex_f* a, integer_t const lda, float const anorm,
-            float& rcond, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
+    inline void gecon( const char norm, const integer_t n,
+            const traits::complex_f* a, const integer_t lda,
+            const float anorm, float& rcond, traits::complex_f* work,
+            float* rwork, integer_t& info ) {
         LAPACK_CGECON( &norm, &n, traits::complex_ptr(a), &lda, &anorm,
                 &rcond, traits::complex_ptr(work), rwork, &info );
     }
-    inline void gecon( char const norm, integer_t const n,
-            traits::complex_d* a, integer_t const lda, double const anorm,
-            double& rcond, traits::complex_d* work, double* rwork,
-            integer_t& info ) {
+    inline void gecon( const char norm, const integer_t n,
+            const traits::complex_d* a, const integer_t lda,
+            const double anorm, double& rcond, traits::complex_d* work,
+            double* rwork, integer_t& info ) {
         LAPACK_ZGECON( &norm, &n, traits::complex_ptr(a), &lda, &anorm,
                 &rcond, traits::complex_ptr(work), rwork, &info );
     }
@@ -77,9 +77,9 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // user-defined workspace specialization
     template< typename MatrixA, typename WORK, typename IWORK >
-    static void invoke( char const norm, MatrixA& a, real_type const anorm,
-            real_type& rcond, integer_t& info, detail::workspace2< WORK,
-            IWORK > work ) {
+    static void invoke( const char norm, const MatrixA& a,
+            const real_type anorm, real_type& rcond, integer_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
@@ -97,8 +97,9 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixA >
-    static void invoke( char const norm, MatrixA& a, real_type const anorm,
-            real_type& rcond, integer_t& info, minimal_workspace work ) {
+    static void invoke( const char norm, const MatrixA& a,
+            const real_type anorm, real_type& rcond, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
@@ -109,16 +110,17 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // optimal workspace specialization
     template< typename MatrixA >
-    static void invoke( char const norm, MatrixA& a, real_type const anorm,
-            real_type& rcond, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char norm, const MatrixA& a,
+            const real_type anorm, real_type& rcond, integer_t& info,
+            optimal_workspace work ) {
         invoke( norm, a, anorm, rcond, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 4*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -132,9 +134,9 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // user-defined workspace specialization
     template< typename MatrixA, typename WORK, typename RWORK >
-    static void invoke( char const norm, MatrixA& a, real_type const anorm,
-            real_type& rcond, integer_t& info, detail::workspace2< WORK,
-            RWORK > work ) {
+    static void invoke( const char norm, const MatrixA& a,
+            const real_type anorm, real_type& rcond, integer_t& info,
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
@@ -152,8 +154,9 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA >
-    static void invoke( char const norm, MatrixA& a, real_type const anorm,
-            real_type& rcond, integer_t& info, minimal_workspace work ) {
+    static void invoke( const char norm, const MatrixA& a,
+            const real_type anorm, real_type& rcond, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
@@ -164,16 +167,17 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // optimal workspace specialization
     template< typename MatrixA >
-    static void invoke( char const norm, MatrixA& a, real_type const anorm,
-            real_type& rcond, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char norm, const MatrixA& a,
+            const real_type anorm, real_type& rcond, integer_t& info,
+            optimal_workspace work ) {
         invoke( norm, a, anorm, rcond, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return 2*n;
     }
 };
@@ -181,9 +185,9 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call gecon
 template< typename MatrixA, typename Workspace >
-inline integer_t gecon( char const norm, MatrixA& a,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const anorm,
+inline integer_t gecon( const char norm, const MatrixA& a,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type anorm,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -194,9 +198,9 @@ inline integer_t gecon( char const norm, MatrixA& a,
 
 // template function to call gecon, default workspace type
 template< typename MatrixA >
-inline integer_t gecon( char const norm, MatrixA& a,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const anorm,
+inline integer_t gecon( const char norm, const MatrixA& a,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type anorm,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;

@@ -37,42 +37,42 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ggevx( char const balanc, char const jobvl, char const jobvr,
-            char const sense, integer_t const n, float* a,
-            integer_t const lda, float* b, integer_t const ldb, float* alphar,
-            float* alphai, float* beta, float* vl, integer_t const ldvl,
-            float* vr, integer_t const ldvr, integer_t& ilo, integer_t& ihi,
+    inline void ggevx( const char balanc, const char jobvl, const char jobvr,
+            const char sense, const integer_t n, float* a,
+            const integer_t lda, float* b, const integer_t ldb, float* alphar,
+            float* alphai, float* beta, float* vl, const integer_t ldvl,
+            float* vr, const integer_t ldvr, integer_t& ilo, integer_t& ihi,
             float* lscale, float* rscale, float& abnrm, float& bbnrm,
-            float* rconde, float* rcondv, float* work, integer_t const lwork,
+            float* rconde, float* rcondv, float* work, const integer_t lwork,
             integer_t* iwork, logical_t* bwork, integer_t& info ) {
         LAPACK_SGGEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, b, &ldb,
                 alphar, alphai, beta, vl, &ldvl, vr, &ldvr, &ilo, &ihi,
                 lscale, rscale, &abnrm, &bbnrm, rconde, rcondv, work, &lwork,
                 iwork, bwork, &info );
     }
-    inline void ggevx( char const balanc, char const jobvl, char const jobvr,
-            char const sense, integer_t const n, double* a,
-            integer_t const lda, double* b, integer_t const ldb,
+    inline void ggevx( const char balanc, const char jobvl, const char jobvr,
+            const char sense, const integer_t n, double* a,
+            const integer_t lda, double* b, const integer_t ldb,
             double* alphar, double* alphai, double* beta, double* vl,
-            integer_t const ldvl, double* vr, integer_t const ldvr,
+            const integer_t ldvl, double* vr, const integer_t ldvr,
             integer_t& ilo, integer_t& ihi, double* lscale, double* rscale,
             double& abnrm, double& bbnrm, double* rconde, double* rcondv,
-            double* work, integer_t const lwork, integer_t* iwork,
+            double* work, const integer_t lwork, integer_t* iwork,
             logical_t* bwork, integer_t& info ) {
         LAPACK_DGGEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, b, &ldb,
                 alphar, alphai, beta, vl, &ldvl, vr, &ldvr, &ilo, &ihi,
                 lscale, rscale, &abnrm, &bbnrm, rconde, rcondv, work, &lwork,
                 iwork, bwork, &info );
     }
-    inline void ggevx( char const balanc, char const jobvl, char const jobvr,
-            char const sense, integer_t const n, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* b, integer_t const ldb,
+    inline void ggevx( const char balanc, const char jobvl, const char jobvr,
+            const char sense, const integer_t n, traits::complex_f* a,
+            const integer_t lda, traits::complex_f* b, const integer_t ldb,
             traits::complex_f* alpha, traits::complex_f* beta,
-            traits::complex_f* vl, integer_t const ldvl,
-            traits::complex_f* vr, integer_t const ldvr, integer_t& ilo,
+            traits::complex_f* vl, const integer_t ldvl,
+            traits::complex_f* vr, const integer_t ldvr, integer_t& ilo,
             integer_t& ihi, float* lscale, float* rscale, float& abnrm,
             float& bbnrm, float* rconde, float* rcondv,
-            traits::complex_f* work, integer_t const lwork, float* rwork,
+            traits::complex_f* work, const integer_t lwork, float* rwork,
             integer_t* iwork, logical_t* bwork, integer_t& info ) {
         LAPACK_CGGEVX( &balanc, &jobvl, &jobvr, &sense, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
@@ -82,15 +82,15 @@ namespace detail {
                 rcondv, traits::complex_ptr(work), &lwork, rwork, iwork,
                 bwork, &info );
     }
-    inline void ggevx( char const balanc, char const jobvl, char const jobvr,
-            char const sense, integer_t const n, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* b, integer_t const ldb,
+    inline void ggevx( const char balanc, const char jobvl, const char jobvr,
+            const char sense, const integer_t n, traits::complex_d* a,
+            const integer_t lda, traits::complex_d* b, const integer_t ldb,
             traits::complex_d* alpha, traits::complex_d* beta,
-            traits::complex_d* vl, integer_t const ldvl,
-            traits::complex_d* vr, integer_t const ldvr, integer_t& ilo,
+            traits::complex_d* vl, const integer_t ldvl,
+            traits::complex_d* vr, const integer_t ldvr, integer_t& ilo,
             integer_t& ihi, double* lscale, double* rscale, double& abnrm,
             double& bbnrm, double* rconde, double* rcondv,
-            traits::complex_d* work, integer_t const lwork, double* rwork,
+            traits::complex_d* work, const integer_t lwork, double* rwork,
             integer_t* iwork, logical_t* bwork, integer_t& info ) {
         LAPACK_ZGGEVX( &balanc, &jobvl, &jobvr, &sense, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
@@ -119,8 +119,8 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename MatrixVR, typename VectorLSCALE, typename VectorRSCALE,
             typename VectorRCONDE, typename VectorRCONDV, typename WORK,
             typename IWORK, typename BWORK >
-    static void invoke( char const balanc, char const jobvl, char const jobvr,
-            char const sense, MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+    static void invoke( const char balanc, const char jobvl, const char jobvr,
+            const char sense, MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
             MatrixVR& vr, integer_t& ilo, integer_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale, real_type& abnrm,
@@ -200,8 +200,8 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename VectorALPHAI, typename VectorBETA, typename MatrixVL,
             typename MatrixVR, typename VectorLSCALE, typename VectorRSCALE,
             typename VectorRCONDE, typename VectorRCONDV >
-    static void invoke( char const balanc, char const jobvl, char const jobvr,
-            char const sense, MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+    static void invoke( const char balanc, const char jobvl, const char jobvr,
+            const char sense, MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
             MatrixVR& vr, integer_t& ilo, integer_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale, real_type& abnrm,
@@ -223,8 +223,8 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename VectorALPHAI, typename VectorBETA, typename MatrixVL,
             typename MatrixVR, typename VectorLSCALE, typename VectorRSCALE,
             typename VectorRCONDE, typename VectorRCONDV >
-    static void invoke( char const balanc, char const jobvl, char const jobvr,
-            char const sense, MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
+    static void invoke( const char balanc, const char jobvl, const char jobvr,
+            const char sense, MatrixA& a, MatrixB& b, VectorALPHAR& alphar,
             VectorALPHAI& alphai, VectorBETA& beta, MatrixVL& vl,
             MatrixVR& vr, integer_t& ilo, integer_t& ihi,
             VectorLSCALE& lscale, VectorRSCALE& rscale, real_type& abnrm,
@@ -255,8 +255,8 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 info, workspace( tmp_work, tmp_iwork, tmp_bwork ) );
     }
 
-    static integer_t min_size_work( char const balanc, char const jobvl,
-            char const jobvr, char const sense, integer_t const n ) {
+    static integer_t min_size_work( const char balanc, const char jobvl,
+            const char jobvr, const char sense, const integer_t n ) {
         if ( balanc == 'S' || balanc == 'B' || jobvl == 'V' || jobvr == 'V' )
             return std::max( 1, 6*n );
         if ( sense == 'E' )
@@ -266,14 +266,14 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         return std::max( 1, 2*n );
     }
 
-    static integer_t min_size_iwork( char const sense, integer_t const n ) {
+    static integer_t min_size_iwork( const char sense, const integer_t n ) {
         if ( sense == 'E' )
           return 0;
         else
           return n+6;
     }
 
-    static integer_t min_size_bwork( char const sense, integer_t const n ) {
+    static integer_t min_size_bwork( const char sense, const integer_t n ) {
         if ( sense == 'N' )
           return 0;
         else
@@ -294,8 +294,8 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorLSCALE, typename VectorRSCALE,
             typename VectorRCONDE, typename VectorRCONDV, typename WORK,
             typename RWORK, typename IWORK, typename BWORK >
-    static void invoke( char const balanc, char const jobvl, char const jobvr,
-            char const sense, MatrixA& a, MatrixB& b, VectorALPHA& alpha,
+    static void invoke( const char balanc, const char jobvl, const char jobvr,
+            const char sense, MatrixA& a, MatrixB& b, VectorALPHA& alpha,
             VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, integer_t& ilo,
             integer_t& ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
             real_type& abnrm, real_type& bbnrm, VectorRCONDE& rconde,
@@ -371,8 +371,8 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorBETA, typename MatrixVL, typename MatrixVR,
             typename VectorLSCALE, typename VectorRSCALE,
             typename VectorRCONDE, typename VectorRCONDV >
-    static void invoke( char const balanc, char const jobvl, char const jobvr,
-            char const sense, MatrixA& a, MatrixB& b, VectorALPHA& alpha,
+    static void invoke( const char balanc, const char jobvl, const char jobvr,
+            const char sense, MatrixA& a, MatrixB& b, VectorALPHA& alpha,
             VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, integer_t& ilo,
             integer_t& ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
             real_type& abnrm, real_type& bbnrm, VectorRCONDE& rconde,
@@ -395,8 +395,8 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorBETA, typename MatrixVL, typename MatrixVR,
             typename VectorLSCALE, typename VectorRSCALE,
             typename VectorRCONDE, typename VectorRCONDV >
-    static void invoke( char const balanc, char const jobvl, char const jobvr,
-            char const sense, MatrixA& a, MatrixB& b, VectorALPHA& alpha,
+    static void invoke( const char balanc, const char jobvl, const char jobvr,
+            const char sense, MatrixA& a, MatrixB& b, VectorALPHA& alpha,
             VectorBETA& beta, MatrixVL& vl, MatrixVR& vr, integer_t& ilo,
             integer_t& ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
             real_type& abnrm, real_type& bbnrm, VectorRCONDE& rconde,
@@ -429,7 +429,7 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 workspace( tmp_work, tmp_rwork, tmp_iwork, tmp_bwork ) );
     }
 
-    static integer_t min_size_work( char const sense, integer_t const n ) {
+    static integer_t min_size_work( const char sense, const integer_t n ) {
         if ( sense == 'N' )
             return std::max( 1, 2*n );
         else {
@@ -440,21 +440,21 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         }
     }
 
-    static integer_t min_size_rwork( char const balanc, integer_t const n ) {
+    static integer_t min_size_rwork( const char balanc, const integer_t n ) {
         if ( balanc == 'S' || balanc == 'B' )
             return std::max( 1, 6*n );
         else
             return std::max( 1, 2*n );
     }
 
-    static integer_t min_size_iwork( char const sense, integer_t const n ) {
+    static integer_t min_size_iwork( const char sense, const integer_t n ) {
         if ( sense == 'E' )
           return 0;
         else
           return n+2;
     }
 
-    static integer_t min_size_bwork( char const sense, integer_t const n ) {
+    static integer_t min_size_bwork( const char sense, const integer_t n ) {
         if ( sense == 'N' )
           return 0;
         else
@@ -468,8 +468,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVL,
         typename MatrixVR, typename VectorLSCALE, typename VectorRSCALE,
         typename VectorRCONDE, typename VectorRCONDV, typename Workspace >
-inline integer_t ggevx( char const balanc, char const jobvl,
-        char const jobvr, char const sense, MatrixA& a, MatrixB& b,
+inline integer_t ggevx( const char balanc, const char jobvl,
+        const char jobvr, const char sense, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
         VectorLSCALE& lscale, VectorRSCALE& rscale,
@@ -491,8 +491,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVL,
         typename MatrixVR, typename VectorLSCALE, typename VectorRSCALE,
         typename VectorRCONDE, typename VectorRCONDV >
-inline integer_t ggevx( char const balanc, char const jobvl,
-        char const jobvr, char const sense, MatrixA& a, MatrixB& b,
+inline integer_t ggevx( const char balanc, const char jobvl,
+        const char jobvr, const char sense, MatrixA& a, MatrixB& b,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixVL& vl, MatrixVR& vr, integer_t& ilo, integer_t& ihi,
         VectorLSCALE& lscale, VectorRSCALE& rscale,
@@ -513,8 +513,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVL, typename MatrixVR,
         typename VectorLSCALE, typename VectorRSCALE, typename VectorRCONDE,
         typename VectorRCONDV, typename Workspace >
-inline integer_t ggevx( char const balanc, char const jobvl,
-        char const jobvr, char const sense, MatrixA& a, MatrixB& b,
+inline integer_t ggevx( const char balanc, const char jobvl,
+        const char jobvr, const char sense, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         integer_t& ilo, integer_t& ihi, VectorLSCALE& lscale,
         VectorRSCALE& rscale, typename traits::type_traits<
@@ -536,8 +536,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVL, typename MatrixVR,
         typename VectorLSCALE, typename VectorRSCALE, typename VectorRCONDE,
         typename VectorRCONDV >
-inline integer_t ggevx( char const balanc, char const jobvl,
-        char const jobvr, char const sense, MatrixA& a, MatrixB& b,
+inline integer_t ggevx( const char balanc, const char jobvl,
+        const char jobvr, const char sense, MatrixA& a, MatrixB& b,
         VectorALPHA& alpha, VectorBETA& beta, MatrixVL& vl, MatrixVR& vr,
         integer_t& ilo, integer_t& ihi, VectorLSCALE& lscale,
         VectorRSCALE& rscale, typename traits::type_traits<

@@ -31,25 +31,27 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tptrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, float* ap, float* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void tptrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs, const float* ap,
+            float* b, const integer_t ldb, integer_t& info ) {
         LAPACK_STPTRS( &uplo, &trans, &diag, &n, &nrhs, ap, b, &ldb, &info );
     }
-    inline void tptrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, double* ap, double* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void tptrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs, const double* ap,
+            double* b, const integer_t ldb, integer_t& info ) {
         LAPACK_DTPTRS( &uplo, &trans, &diag, &n, &nrhs, ap, b, &ldb, &info );
     }
-    inline void tptrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, traits::complex_f* ap,
-            traits::complex_f* b, integer_t const ldb, integer_t& info ) {
+    inline void tptrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs,
+            const traits::complex_f* ap, traits::complex_f* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_CTPTRS( &uplo, &trans, &diag, &n, &nrhs,
                 traits::complex_ptr(ap), traits::complex_ptr(b), &ldb, &info );
     }
-    inline void tptrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, traits::complex_d* ap,
-            traits::complex_d* b, integer_t const ldb, integer_t& info ) {
+    inline void tptrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs,
+            const traits::complex_d* ap, traits::complex_d* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_ZTPTRS( &uplo, &trans, &diag, &n, &nrhs,
                 traits::complex_ptr(ap), traits::complex_ptr(b), &ldb, &info );
     }
@@ -64,8 +66,9 @@ struct tptrs_impl {
 
     // templated specialization
     template< typename MatrixAP, typename MatrixB >
-    static void invoke( char const uplo, char const trans, char const diag,
-            integer_t const n, MatrixAP& ap, MatrixB& b, integer_t& info ) {
+    static void invoke( const char uplo, const char trans, const char diag,
+            const integer_t n, const MatrixAP& ap, MatrixB& b,
+            integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAP >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -84,8 +87,8 @@ struct tptrs_impl {
 
 // template function to call tptrs
 template< typename MatrixAP, typename MatrixB >
-inline integer_t tptrs( char const uplo, char const trans,
-        char const diag, integer_t const n, MatrixAP& ap, MatrixB& b ) {
+inline integer_t tptrs( const char uplo, const char trans,
+        const char diag, const integer_t n, const MatrixAP& ap, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     tptrs_impl< value_type >::invoke( uplo, trans, diag, n, ap, b, info );

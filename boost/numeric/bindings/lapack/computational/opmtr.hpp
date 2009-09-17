@@ -33,15 +33,17 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void opmtr( char const side, char const uplo, char const trans,
-            integer_t const m, integer_t const n, float* ap, float* tau,
-            float* c, integer_t const ldc, float* work, integer_t& info ) {
+    inline void opmtr( const char side, const char uplo, const char trans,
+            const integer_t m, const integer_t n, const float* ap,
+            const float* tau, float* c, const integer_t ldc, float* work,
+            integer_t& info ) {
         LAPACK_SOPMTR( &side, &uplo, &trans, &m, &n, ap, tau, c, &ldc, work,
                 &info );
     }
-    inline void opmtr( char const side, char const uplo, char const trans,
-            integer_t const m, integer_t const n, double* ap, double* tau,
-            double* c, integer_t const ldc, double* work, integer_t& info ) {
+    inline void opmtr( const char side, const char uplo, const char trans,
+            const integer_t m, const integer_t n, const double* ap,
+            const double* tau, double* c, const integer_t ldc, double* work,
+            integer_t& info ) {
         LAPACK_DOPMTR( &side, &uplo, &trans, &m, &n, ap, tau, c, &ldc, work,
                 &info );
     }
@@ -57,9 +59,9 @@ struct opmtr_impl {
     // user-defined workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static void invoke( char const side, char const uplo, char const trans,
-            VectorAP& ap, VectorTAU& tau, MatrixC& c, integer_t& info,
-            detail::workspace1< WORK > work ) {
+    static void invoke( const char side, const char uplo, const char trans,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorAP >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -85,9 +87,9 @@ struct opmtr_impl {
 
     // minimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const uplo, char const trans,
-            VectorAP& ap, VectorTAU& tau, MatrixC& c, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( const char side, const char uplo, const char trans,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( side,
                 traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
         invoke( side, uplo, trans, ap, tau, c, info, workspace( tmp_work ) );
@@ -95,14 +97,14 @@ struct opmtr_impl {
 
     // optimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const uplo, char const trans,
-            VectorAP& ap, VectorTAU& tau, MatrixC& c, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( const char side, const char uplo, const char trans,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, optimal_workspace work ) {
         invoke( side, uplo, trans, ap, tau, c, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( char const side, integer_t const m,
-            integer_t const n ) {
+    static integer_t min_size_work( const char side, const integer_t m,
+            const integer_t n ) {
         if ( side == 'L' )
             return n;
         else
@@ -114,9 +116,9 @@ struct opmtr_impl {
 // template function to call opmtr
 template< typename VectorAP, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline integer_t opmtr( char const side, char const uplo,
-        char const trans, VectorAP& ap, VectorTAU& tau, MatrixC& c,
-        Workspace work ) {
+inline integer_t opmtr( const char side, const char uplo,
+        const char trans, const VectorAP& ap, const VectorTAU& tau,
+        MatrixC& c, Workspace work ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
     opmtr_impl< value_type >::invoke( side, uplo, trans, ap, tau, c,
@@ -126,8 +128,9 @@ inline integer_t opmtr( char const side, char const uplo,
 
 // template function to call opmtr, default workspace type
 template< typename VectorAP, typename VectorTAU, typename MatrixC >
-inline integer_t opmtr( char const side, char const uplo,
-        char const trans, VectorAP& ap, VectorTAU& tau, MatrixC& c ) {
+inline integer_t opmtr( const char side, const char uplo,
+        const char trans, const VectorAP& ap, const VectorTAU& tau,
+        MatrixC& c ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
     opmtr_impl< value_type >::invoke( side, uplo, trans, ap, tau, c,

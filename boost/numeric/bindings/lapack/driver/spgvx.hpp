@@ -33,20 +33,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void spgvx( integer_t const itype, char const jobz,
-            char const range, char const uplo, integer_t const n, float* ap,
-            float* bp, float const vl, float const vu, integer_t const il,
-            integer_t const iu, float const abstol, integer_t& m, float* w,
-            float* z, integer_t const ldz, float* work, integer_t* iwork,
+    inline void spgvx( const integer_t itype, const char jobz,
+            const char range, const char uplo, const integer_t n, float* ap,
+            float* bp, const float vl, const float vu, const integer_t il,
+            const integer_t iu, const float abstol, integer_t& m, float* w,
+            float* z, const integer_t ldz, float* work, integer_t* iwork,
             integer_t* ifail, integer_t& info ) {
         LAPACK_SSPGVX( &itype, &jobz, &range, &uplo, &n, ap, bp, &vl, &vu,
                 &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail, &info );
     }
-    inline void spgvx( integer_t const itype, char const jobz,
-            char const range, char const uplo, integer_t const n, double* ap,
-            double* bp, double const vl, double const vu, integer_t const il,
-            integer_t const iu, double const abstol, integer_t& m, double* w,
-            double* z, integer_t const ldz, double* work, integer_t* iwork,
+    inline void spgvx( const integer_t itype, const char jobz,
+            const char range, const char uplo, const integer_t n, double* ap,
+            double* bp, const double vl, const double vu, const integer_t il,
+            const integer_t iu, const double abstol, integer_t& m, double* w,
+            double* z, const integer_t ldz, double* work, integer_t* iwork,
             integer_t* ifail, integer_t& info ) {
         LAPACK_DSPGVX( &itype, &jobz, &range, &uplo, &n, ap, bp, &vl, &vu,
                 &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail, &info );
@@ -64,10 +64,10 @@ struct spgvx_impl {
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ, typename VectorIFAIL, typename WORK,
             typename IWORK >
-    static void invoke( integer_t const itype, char const jobz,
-            char const range, integer_t const n, MatrixAP& ap, MatrixBP& bp,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const integer_t itype, const char jobz,
+            const char range, const integer_t n, MatrixAP& ap, MatrixBP& bp,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -101,10 +101,10 @@ struct spgvx_impl {
     // minimal workspace specialization
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
-    static void invoke( integer_t const itype, char const jobz,
-            char const range, integer_t const n, MatrixAP& ap, MatrixBP& bp,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const integer_t itype, const char jobz,
+            const char range, const integer_t n, MatrixAP& ap, MatrixBP& bp,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
@@ -116,21 +116,21 @@ struct spgvx_impl {
     // optimal workspace specialization
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ, typename VectorIFAIL >
-    static void invoke( integer_t const itype, char const jobz,
-            char const range, integer_t const n, MatrixAP& ap, MatrixBP& bp,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const integer_t itype, const char jobz,
+            const char range, const integer_t n, MatrixAP& ap, MatrixBP& bp,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
             optimal_workspace work ) {
         invoke( itype, jobz, range, n, ap, bp, vl, vu, il, iu, abstol, m, w,
                 z, ifail, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 8*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return 5*n;
     }
 };
@@ -139,16 +139,16 @@ struct spgvx_impl {
 // template function to call spgvx
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline integer_t spgvx( integer_t const itype, char const jobz,
-        char const range, integer_t const n, MatrixAP& ap, MatrixBP& bp,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+inline integer_t spgvx( const integer_t itype, const char jobz,
+        const char range, const integer_t n, MatrixAP& ap, MatrixBP& bp,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAP >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     spgvx_impl< value_type >::invoke( itype, jobz, range, n, ap, bp, vl,
@@ -159,16 +159,16 @@ inline integer_t spgvx( integer_t const itype, char const jobz,
 // template function to call spgvx, default workspace type
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename VectorIFAIL >
-inline integer_t spgvx( integer_t const itype, char const jobz,
-        char const range, integer_t const n, MatrixAP& ap, MatrixBP& bp,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+inline integer_t spgvx( const integer_t itype, const char jobz,
+        const char range, const integer_t n, MatrixAP& ap, MatrixBP& bp,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAP >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     spgvx_impl< value_type >::invoke( itype, jobz, range, n, ap, bp, vl,

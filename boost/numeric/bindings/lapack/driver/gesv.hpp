@@ -32,25 +32,25 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gesv( integer_t const n, integer_t const nrhs, float* a,
-            integer_t const lda, integer_t* ipiv, float* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void gesv( const integer_t n, const integer_t nrhs, float* a,
+            const integer_t lda, integer_t* ipiv, float* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_SGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
     }
-    inline void gesv( integer_t const n, integer_t const nrhs, double* a,
-            integer_t const lda, integer_t* ipiv, double* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void gesv( const integer_t n, const integer_t nrhs, double* a,
+            const integer_t lda, integer_t* ipiv, double* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_DGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
     }
-    inline void gesv( integer_t const n, integer_t const nrhs,
-            traits::complex_f* a, integer_t const lda, integer_t* ipiv,
-            traits::complex_f* b, integer_t const ldb, integer_t& info ) {
+    inline void gesv( const integer_t n, const integer_t nrhs,
+            traits::complex_f* a, const integer_t lda, integer_t* ipiv,
+            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
         LAPACK_CGESV( &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void gesv( integer_t const n, integer_t const nrhs,
-            traits::complex_d* a, integer_t const lda, integer_t* ipiv,
-            traits::complex_d* b, integer_t const ldb, integer_t& info ) {
+    inline void gesv( const integer_t n, const integer_t nrhs,
+            traits::complex_d* a, const integer_t lda, integer_t* ipiv,
+            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
         LAPACK_ZGESV( &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(b), &ldb, &info );
     }

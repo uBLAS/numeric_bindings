@@ -33,16 +33,16 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void bdsdc( char const uplo, char const compq, integer_t const n,
-            float* d, float* e, float* u, integer_t const ldu, float* vt,
-            integer_t const ldvt, float* q, integer_t* iq, float* work,
+    inline void bdsdc( const char uplo, const char compq, const integer_t n,
+            float* d, float* e, float* u, const integer_t ldu, float* vt,
+            const integer_t ldvt, float* q, integer_t* iq, float* work,
             integer_t* iwork, integer_t& info ) {
         LAPACK_SBDSDC( &uplo, &compq, &n, d, e, u, &ldu, vt, &ldvt, q, iq,
                 work, iwork, &info );
     }
-    inline void bdsdc( char const uplo, char const compq, integer_t const n,
-            double* d, double* e, double* u, integer_t const ldu, double* vt,
-            integer_t const ldvt, double* q, integer_t* iq, double* work,
+    inline void bdsdc( const char uplo, const char compq, const integer_t n,
+            double* d, double* e, double* u, const integer_t ldu, double* vt,
+            const integer_t ldvt, double* q, integer_t* iq, double* work,
             integer_t* iwork, integer_t& info ) {
         LAPACK_DBDSDC( &uplo, &compq, &n, d, e, u, &ldu, vt, &ldvt, q, iq,
                 work, iwork, &info );
@@ -60,7 +60,7 @@ struct bdsdc_impl {
     template< typename VectorD, typename VectorE, typename MatrixU,
             typename MatrixVT, typename VectorQ, typename VectorIQ,
             typename WORK, typename IWORK >
-    static void invoke( char const uplo, char const compq, integer_t const n,
+    static void invoke( const char uplo, const char compq, const integer_t n,
             VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
             VectorIQ& iq, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
@@ -96,7 +96,7 @@ struct bdsdc_impl {
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixU,
             typename MatrixVT, typename VectorQ, typename VectorIQ >
-    static void invoke( char const uplo, char const compq, integer_t const n,
+    static void invoke( const char uplo, const char compq, const integer_t n,
             VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
             VectorIQ& iq, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( compq,
@@ -109,14 +109,14 @@ struct bdsdc_impl {
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixU,
             typename MatrixVT, typename VectorQ, typename VectorIQ >
-    static void invoke( char const uplo, char const compq, integer_t const n,
+    static void invoke( const char uplo, const char compq, const integer_t n,
             VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt, VectorQ& q,
             VectorIQ& iq, integer_t& info, optimal_workspace work ) {
         invoke( uplo, compq, n, d, e, u, vt, q, iq, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( char const compq, integer_t const n ) {
+    static integer_t min_size_work( const char compq, const integer_t n ) {
         switch ( compq ) {
             case 'N': return 4*n;
             case 'P': return 6*n;
@@ -124,7 +124,7 @@ struct bdsdc_impl {
         }
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return 8*n;
     }
 };
@@ -134,8 +134,8 @@ struct bdsdc_impl {
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ,
         typename Workspace >
-inline integer_t bdsdc( char const uplo, char const compq,
-        integer_t const n, VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
+inline integer_t bdsdc( const char uplo, const char compq,
+        const integer_t n, VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
         VectorQ& q, VectorIQ& iq, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
@@ -147,8 +147,8 @@ inline integer_t bdsdc( char const uplo, char const compq,
 // template function to call bdsdc, default workspace type
 template< typename VectorD, typename VectorE, typename MatrixU,
         typename MatrixVT, typename VectorQ, typename VectorIQ >
-inline integer_t bdsdc( char const uplo, char const compq,
-        integer_t const n, VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
+inline integer_t bdsdc( const char uplo, const char compq,
+        const integer_t n, VectorD& d, VectorE& e, MatrixU& u, MatrixVT& vt,
         VectorQ& q, VectorIQ& iq ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);

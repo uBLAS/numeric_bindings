@@ -34,22 +34,23 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void poequ( integer_t const n, float* a, integer_t const lda,
+    inline void poequ( const integer_t n, const float* a, const integer_t lda,
             float* s, float& scond, float& amax, integer_t& info ) {
         LAPACK_SPOEQU( &n, a, &lda, s, &scond, &amax, &info );
     }
-    inline void poequ( integer_t const n, double* a, integer_t const lda,
-            double* s, double& scond, double& amax, integer_t& info ) {
+    inline void poequ( const integer_t n, const double* a,
+            const integer_t lda, double* s, double& scond, double& amax,
+            integer_t& info ) {
         LAPACK_DPOEQU( &n, a, &lda, s, &scond, &amax, &info );
     }
-    inline void poequ( integer_t const n, traits::complex_f* a,
-            integer_t const lda, float* s, float& scond, float& amax,
+    inline void poequ( const integer_t n, const traits::complex_f* a,
+            const integer_t lda, float* s, float& scond, float& amax,
             integer_t& info ) {
         LAPACK_CPOEQU( &n, traits::complex_ptr(a), &lda, s, &scond, &amax,
                 &info );
     }
-    inline void poequ( integer_t const n, traits::complex_d* a,
-            integer_t const lda, double* s, double& scond, double& amax,
+    inline void poequ( const integer_t n, const traits::complex_d* a,
+            const integer_t lda, double* s, double& scond, double& amax,
             integer_t& info ) {
         LAPACK_ZPOEQU( &n, traits::complex_ptr(a), &lda, s, &scond, &amax,
                 &info );
@@ -69,7 +70,7 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename MatrixA, typename VectorS >
-    static void invoke( MatrixA& a, VectorS& s, real_type& scond,
+    static void invoke( const MatrixA& a, VectorS& s, real_type& scond,
             real_type& amax, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -92,7 +93,7 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // templated specialization
     template< typename MatrixA, typename VectorS >
-    static void invoke( MatrixA& a, VectorS& s, real_type& scond,
+    static void invoke( const MatrixA& a, VectorS& s, real_type& scond,
             real_type& amax, integer_t& info ) {
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
@@ -106,7 +107,7 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call poequ
 template< typename MatrixA, typename VectorS >
-inline integer_t poequ( MatrixA& a, VectorS& s,
+inline integer_t poequ( const MatrixA& a, VectorS& s,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& scond,
         typename traits::type_traits< typename traits::matrix_traits<

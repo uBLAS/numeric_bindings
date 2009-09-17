@@ -34,25 +34,25 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pftrs( char const transr, char const uplo, integer_t const n,
-            integer_t const nrhs, float* a, float* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void pftrs( const char transr, const char uplo, const integer_t n,
+            const integer_t nrhs, const float* a, float* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_SPFTRS( &transr, &uplo, &n, &nrhs, a, b, &ldb, &info );
     }
-    inline void pftrs( char const transr, char const uplo, integer_t const n,
-            integer_t const nrhs, double* a, double* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void pftrs( const char transr, const char uplo, const integer_t n,
+            const integer_t nrhs, const double* a, double* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_DPFTRS( &transr, &uplo, &n, &nrhs, a, b, &ldb, &info );
     }
-    inline void pftrs( char const transr, char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, traits::complex_f* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void pftrs( const char transr, const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_f* a,
+            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
         LAPACK_CPFTRS( &transr, &uplo, &n, &nrhs, traits::complex_ptr(a),
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void pftrs( char const transr, char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, traits::complex_d* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void pftrs( const char transr, const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_d* a,
+            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
         LAPACK_ZPFTRS( &transr, &uplo, &n, &nrhs, traits::complex_ptr(a),
                 traits::complex_ptr(b), &ldb, &info );
     }
@@ -71,8 +71,8 @@ struct pftrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename VectorA, typename MatrixB >
-    static void invoke( char const transr, integer_t const n, VectorA& a,
-            MatrixB& b, integer_t& info ) {
+    static void invoke( const char transr, const integer_t n,
+            const VectorA& a, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -99,8 +99,8 @@ struct pftrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // templated specialization
     template< typename VectorA, typename MatrixB >
-    static void invoke( char const transr, integer_t const n, VectorA& a,
-            MatrixB& b, integer_t& info ) {
+    static void invoke( const char transr, const integer_t n,
+            const VectorA& a, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -121,8 +121,8 @@ struct pftrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call pftrs
 template< typename VectorA, typename MatrixB >
-inline integer_t pftrs( char const transr, integer_t const n, VectorA& a,
-        MatrixB& b ) {
+inline integer_t pftrs( const char transr, const integer_t n,
+        const VectorA& a, MatrixB& b ) {
     typedef typename traits::vector_traits< VectorA >::value_type value_type;
     integer_t info(0);
     pftrs_impl< value_type >::invoke( transr, n, a, b, info );

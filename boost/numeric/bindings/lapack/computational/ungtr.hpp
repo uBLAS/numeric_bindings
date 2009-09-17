@@ -34,16 +34,18 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ungtr( char const uplo, integer_t const n,
-            traits::complex_f* a, integer_t const lda, traits::complex_f* tau,
-            traits::complex_f* work, integer_t const lwork, integer_t& info ) {
+    inline void ungtr( const char uplo, const integer_t n,
+            traits::complex_f* a, const integer_t lda,
+            const traits::complex_f* tau, traits::complex_f* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_CUNGTR( &uplo, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
                 &info );
     }
-    inline void ungtr( char const uplo, integer_t const n,
-            traits::complex_d* a, integer_t const lda, traits::complex_d* tau,
-            traits::complex_d* work, integer_t const lwork, integer_t& info ) {
+    inline void ungtr( const char uplo, const integer_t n,
+            traits::complex_d* a, const integer_t lda,
+            const traits::complex_d* tau, traits::complex_d* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_ZUNGTR( &uplo, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
                 &info );
@@ -59,7 +61,7 @@ struct ungtr_impl {
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void invoke( integer_t const n, MatrixA& a, VectorTAU& tau,
+    static void invoke( const integer_t n, MatrixA& a, const VectorTAU& tau,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -80,7 +82,7 @@ struct ungtr_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const n, MatrixA& a, VectorTAU& tau,
+    static void invoke( const integer_t n, MatrixA& a, const VectorTAU& tau,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( side, m,
                 n ) );
@@ -89,7 +91,7 @@ struct ungtr_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const n, MatrixA& a, VectorTAU& tau,
+    static void invoke( const integer_t n, MatrixA& a, const VectorTAU& tau,
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         detail::ungtr( traits::matrix_uplo_tag(a), n,
@@ -100,8 +102,8 @@ struct ungtr_impl {
         invoke( n, a, tau, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const side, integer_t const m,
-            integer_t const n ) {
+    static integer_t min_size_work( const integer_t side, const integer_t m,
+            const integer_t n ) {
         if ( side == 'L' )
             return std::max( 1, n );
         else
@@ -112,8 +114,8 @@ struct ungtr_impl {
 
 // template function to call ungtr
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline integer_t ungtr( integer_t const n, MatrixA& a, VectorTAU& tau,
-        Workspace work ) {
+inline integer_t ungtr( const integer_t n, MatrixA& a,
+        const VectorTAU& tau, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ungtr_impl< value_type >::invoke( n, a, tau, info, work );
@@ -122,7 +124,8 @@ inline integer_t ungtr( integer_t const n, MatrixA& a, VectorTAU& tau,
 
 // template function to call ungtr, default workspace type
 template< typename MatrixA, typename VectorTAU >
-inline integer_t ungtr( integer_t const n, MatrixA& a, VectorTAU& tau ) {
+inline integer_t ungtr( const integer_t n, MatrixA& a,
+        const VectorTAU& tau ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ungtr_impl< value_type >::invoke( n, a, tau, info,

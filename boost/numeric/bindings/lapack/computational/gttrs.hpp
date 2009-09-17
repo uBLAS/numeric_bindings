@@ -31,32 +31,35 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gttrs( char const trans, integer_t const n,
-            integer_t const nrhs, float* dl, float* d, float* du, float* du2,
-            integer_t* ipiv, float* b, integer_t const ldb, integer_t& info ) {
+    inline void gttrs( const char trans, const integer_t n,
+            const integer_t nrhs, const float* dl, const float* d,
+            const float* du, const float* du2, const integer_t* ipiv,
+            float* b, const integer_t ldb, integer_t& info ) {
         LAPACK_SGTTRS( &trans, &n, &nrhs, dl, d, du, du2, ipiv, b, &ldb,
                 &info );
     }
-    inline void gttrs( char const trans, integer_t const n,
-            integer_t const nrhs, double* dl, double* d, double* du,
-            double* du2, integer_t* ipiv, double* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void gttrs( const char trans, const integer_t n,
+            const integer_t nrhs, const double* dl, const double* d,
+            const double* du, const double* du2, const integer_t* ipiv,
+            double* b, const integer_t ldb, integer_t& info ) {
         LAPACK_DGTTRS( &trans, &n, &nrhs, dl, d, du, du2, ipiv, b, &ldb,
                 &info );
     }
-    inline void gttrs( char const trans, integer_t const n,
-            integer_t const nrhs, traits::complex_f* dl, traits::complex_f* d,
-            traits::complex_f* du, traits::complex_f* du2, integer_t* ipiv,
-            traits::complex_f* b, integer_t const ldb, integer_t& info ) {
+    inline void gttrs( const char trans, const integer_t n,
+            const integer_t nrhs, const traits::complex_f* dl,
+            const traits::complex_f* d, const traits::complex_f* du,
+            const traits::complex_f* du2, const integer_t* ipiv,
+            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
         LAPACK_CGTTRS( &trans, &n, &nrhs, traits::complex_ptr(dl),
                 traits::complex_ptr(d), traits::complex_ptr(du),
                 traits::complex_ptr(du2), ipiv, traits::complex_ptr(b), &ldb,
                 &info );
     }
-    inline void gttrs( char const trans, integer_t const n,
-            integer_t const nrhs, traits::complex_d* dl, traits::complex_d* d,
-            traits::complex_d* du, traits::complex_d* du2, integer_t* ipiv,
-            traits::complex_d* b, integer_t const ldb, integer_t& info ) {
+    inline void gttrs( const char trans, const integer_t n,
+            const integer_t nrhs, const traits::complex_d* dl,
+            const traits::complex_d* d, const traits::complex_d* du,
+            const traits::complex_d* du2, const integer_t* ipiv,
+            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
         LAPACK_ZGTTRS( &trans, &n, &nrhs, traits::complex_ptr(dl),
                 traits::complex_ptr(d), traits::complex_ptr(du),
                 traits::complex_ptr(du2), ipiv, traits::complex_ptr(b), &ldb,
@@ -74,9 +77,10 @@ struct gttrs_impl {
     // templated specialization
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDU2, typename VectorIPIV, typename MatrixB >
-    static void invoke( char const trans, integer_t const n, VectorDL& dl,
-            VectorD& d, VectorDU& du, VectorDU2& du2, VectorIPIV& ipiv,
-            MatrixB& b, integer_t& info ) {
+    static void invoke( const char trans, const integer_t n,
+            const VectorDL& dl, const VectorD& d, const VectorDU& du,
+            const VectorDU2& du2, const VectorIPIV& ipiv, MatrixB& b,
+            integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorDL >::value_type, typename traits::vector_traits<
                 VectorD >::value_type >::value) );
@@ -109,9 +113,9 @@ struct gttrs_impl {
 // template function to call gttrs
 template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDU2, typename VectorIPIV, typename MatrixB >
-inline integer_t gttrs( char const trans, integer_t const n,
-        VectorDL& dl, VectorD& d, VectorDU& du, VectorDU2& du2,
-        VectorIPIV& ipiv, MatrixB& b ) {
+inline integer_t gttrs( const char trans, const integer_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDU2& du2, const VectorIPIV& ipiv, MatrixB& b ) {
     typedef typename traits::vector_traits< VectorDL >::value_type value_type;
     integer_t info(0);
     gttrs_impl< value_type >::invoke( trans, n, dl, d, du, du2, ipiv, b,

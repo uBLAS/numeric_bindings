@@ -31,25 +31,25 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void posv( char const uplo, integer_t const n,
-            integer_t const nrhs, float* a, integer_t const lda, float* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void posv( const char uplo, const integer_t n,
+            const integer_t nrhs, float* a, const integer_t lda, float* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_SPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
     }
-    inline void posv( char const uplo, integer_t const n,
-            integer_t const nrhs, double* a, integer_t const lda, double* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void posv( const char uplo, const integer_t n,
+            const integer_t nrhs, double* a, const integer_t lda, double* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_DPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
     }
-    inline void posv( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* b, integer_t const ldb, integer_t& info ) {
+    inline void posv( const char uplo, const integer_t n,
+            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
+            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
         LAPACK_CPOSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void posv( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* b, integer_t const ldb, integer_t& info ) {
+    inline void posv( const char uplo, const integer_t n,
+            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
+            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
         LAPACK_ZPOSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, &info );
     }

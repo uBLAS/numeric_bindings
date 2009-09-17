@@ -33,9 +33,9 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sgesv( integer_t const n, integer_t const nrhs, double* a,
-            integer_t const lda, integer_t* ipiv, double* b,
-            integer_t const ldb, double* x, integer_t const ldx, double* work,
+    inline void sgesv( const integer_t n, const integer_t nrhs, double* a,
+            const integer_t lda, integer_t* ipiv, const double* b,
+            const integer_t ldb, double* x, const integer_t ldx, double* work,
             float* swork, integer_t& iter, integer_t& info ) {
         LAPACK_DSGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, x, &ldx, work,
                 swork, &iter, &info );
@@ -52,9 +52,9 @@ struct sgesv_impl {
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename WORK, typename SWORK >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            integer_t& iter, integer_t& info, detail::workspace2< WORK,
-            SWORK > work ) {
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, integer_t& iter, integer_t& info, detail::workspace2<
+            WORK, SWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -88,8 +88,9 @@ struct sgesv_impl {
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            integer_t& iter, integer_t& info, minimal_workspace work ) {
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, integer_t& iter, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         traits::detail::array< real_type > tmp_swork( min_size_swork(
@@ -101,8 +102,9 @@ struct sgesv_impl {
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            integer_t& iter, integer_t& info, optimal_workspace work ) {
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, integer_t& iter, integer_t& info,
+            optimal_workspace work ) {
         invoke( a, ipiv, b, x, iter, info, minimal_workspace() );
     }
 
@@ -110,8 +112,8 @@ struct sgesv_impl {
         $MIN_SIZE
     }
 
-    static integer_t min_size_swork( integer_t const n,
-            integer_t const nrhs ) {
+    static integer_t min_size_swork( const integer_t n,
+            const integer_t nrhs ) {
         return n*(n+nrhs);
     }
 };
@@ -120,7 +122,7 @@ struct sgesv_impl {
 // template function to call sgesv
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename Workspace >
-inline integer_t sgesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+inline integer_t sgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, integer_t& iter, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -131,7 +133,7 @@ inline integer_t sgesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
 // template function to call sgesv, default workspace type
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
-inline integer_t sgesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+inline integer_t sgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, integer_t& iter ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);

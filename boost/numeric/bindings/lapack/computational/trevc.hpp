@@ -36,34 +36,35 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trevc( char const side, char const howmny, logical_t* select,
-            integer_t const n, float* t, integer_t const ldt, float* vl,
-            integer_t const ldvl, float* vr, integer_t const ldvr,
-            integer_t const mm, integer_t& m, float* work, integer_t& info ) {
+    inline void trevc( const char side, const char howmny, logical_t* select,
+            const integer_t n, const float* t, const integer_t ldt, float* vl,
+            const integer_t ldvl, float* vr, const integer_t ldvr,
+            const integer_t mm, integer_t& m, float* work, integer_t& info ) {
         LAPACK_STREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr,
                 &ldvr, &mm, &m, work, &info );
     }
-    inline void trevc( char const side, char const howmny, logical_t* select,
-            integer_t const n, double* t, integer_t const ldt, double* vl,
-            integer_t const ldvl, double* vr, integer_t const ldvr,
-            integer_t const mm, integer_t& m, double* work, integer_t& info ) {
+    inline void trevc( const char side, const char howmny, logical_t* select,
+            const integer_t n, const double* t, const integer_t ldt,
+            double* vl, const integer_t ldvl, double* vr,
+            const integer_t ldvr, const integer_t mm, integer_t& m,
+            double* work, integer_t& info ) {
         LAPACK_DTREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr,
                 &ldvr, &mm, &m, work, &info );
     }
-    inline void trevc( char const side, char const howmny, logical_t* select,
-            integer_t const n, traits::complex_f* t, integer_t const ldt,
-            traits::complex_f* vl, integer_t const ldvl,
-            traits::complex_f* vr, integer_t const ldvr, integer_t const mm,
+    inline void trevc( const char side, const char howmny,
+            const logical_t* select, const integer_t n, traits::complex_f* t,
+            const integer_t ldt, traits::complex_f* vl, const integer_t ldvl,
+            traits::complex_f* vr, const integer_t ldvr, const integer_t mm,
             integer_t& m, traits::complex_f* work, float* rwork,
             integer_t& info ) {
         LAPACK_CTREVC( &side, &howmny, select, &n, traits::complex_ptr(t),
                 &ldt, traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
                 &ldvr, &mm, &m, traits::complex_ptr(work), rwork, &info );
     }
-    inline void trevc( char const side, char const howmny, logical_t* select,
-            integer_t const n, traits::complex_d* t, integer_t const ldt,
-            traits::complex_d* vl, integer_t const ldvl,
-            traits::complex_d* vr, integer_t const ldvr, integer_t const mm,
+    inline void trevc( const char side, const char howmny,
+            const logical_t* select, const integer_t n, traits::complex_d* t,
+            const integer_t ldt, traits::complex_d* vl, const integer_t ldvl,
+            traits::complex_d* vr, const integer_t ldvr, const integer_t mm,
             integer_t& m, traits::complex_d* work, double* rwork,
             integer_t& info ) {
         LAPACK_ZTREVC( &side, &howmny, select, &n, traits::complex_ptr(t),
@@ -86,9 +87,9 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename WORK >
-    static void invoke( char const side, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            integer_t const mm, integer_t& m, integer_t& info,
+    static void invoke( const char side, const char howmny,
+            VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixT >::value_type, typename traits::matrix_traits<
@@ -115,9 +116,9 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR >
-    static void invoke( char const side, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            integer_t const mm, integer_t& m, integer_t& info,
+    static void invoke( const char side, const char howmny,
+            VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(t) ) );
@@ -128,15 +129,15 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // optimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR >
-    static void invoke( char const side, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            integer_t const mm, integer_t& m, integer_t& info,
+    static void invoke( const char side, const char howmny,
+            VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
             optimal_workspace work ) {
         invoke( side, howmny, select, t, vl, vr, mm, m, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 };
@@ -151,9 +152,9 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // user-defined workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename WORK, typename RWORK >
-    static void invoke( char const side, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            integer_t const mm, integer_t& m, integer_t& info,
+    static void invoke( const char side, const char howmny,
+            const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
+            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixT >::value_type, typename traits::matrix_traits<
@@ -183,9 +184,9 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR >
-    static void invoke( char const side, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            integer_t const mm, integer_t& m, integer_t& info,
+    static void invoke( const char side, const char howmny,
+            const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
+            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(t) ) );
@@ -198,19 +199,19 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // optimal workspace specialization
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR >
-    static void invoke( char const side, char const howmny,
-            VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-            integer_t const mm, integer_t& m, integer_t& info,
+    static void invoke( const char side, const char howmny,
+            const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
+            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
             optimal_workspace work ) {
         invoke( side, howmny, select, t, vl, vr, mm, m, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -219,9 +220,9 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call trevc
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename Workspace >
-inline integer_t trevc( char const side, char const howmny,
-        VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-        integer_t const mm, integer_t& m, Workspace work ) {
+inline integer_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const integer_t mm, integer_t& m, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
     integer_t info(0);
     trevc_impl< value_type >::invoke( side, howmny, select, t, vl, vr,
@@ -232,9 +233,34 @@ inline integer_t trevc( char const side, char const howmny,
 // template function to call trevc, default workspace type
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR >
-inline integer_t trevc( char const side, char const howmny,
-        VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-        integer_t const mm, integer_t& m ) {
+inline integer_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const integer_t mm, integer_t& m ) {
+    typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
+    integer_t info(0);
+    trevc_impl< value_type >::invoke( side, howmny, select, t, vl, vr,
+            mm, m, info, optimal_workspace() );
+    return info;
+}
+// template function to call trevc
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline integer_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const integer_t mm, integer_t& m, Workspace work ) {
+    typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
+    integer_t info(0);
+    trevc_impl< value_type >::invoke( side, howmny, select, t, vl, vr,
+            mm, m, info, work );
+    return info;
+}
+
+// template function to call trevc, default workspace type
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline integer_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const integer_t mm, integer_t& m ) {
     typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
     integer_t info(0);
     trevc_impl< value_type >::invoke( side, howmny, select, t, vl, vr,

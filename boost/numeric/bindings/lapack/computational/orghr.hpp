@@ -34,14 +34,16 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void orghr( integer_t const n, integer_t const ilo,
-            integer_t const ihi, float* a, integer_t const lda, float* tau,
-            float* work, integer_t const lwork, integer_t& info ) {
+    inline void orghr( const integer_t n, const integer_t ilo,
+            const integer_t ihi, float* a, const integer_t lda,
+            const float* tau, float* work, const integer_t lwork,
+            integer_t& info ) {
         LAPACK_SORGHR( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
     }
-    inline void orghr( integer_t const n, integer_t const ilo,
-            integer_t const ihi, double* a, integer_t const lda, double* tau,
-            double* work, integer_t const lwork, integer_t& info ) {
+    inline void orghr( const integer_t n, const integer_t ilo,
+            const integer_t ihi, double* a, const integer_t lda,
+            const double* tau, double* work, const integer_t lwork,
+            integer_t& info ) {
         LAPACK_DORGHR( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
     }
 }
@@ -55,9 +57,9 @@ struct orghr_impl {
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void invoke( integer_t const n, integer_t const ilo,
-            integer_t const ihi, MatrixA& a, VectorTAU& tau, integer_t& info,
-            detail::workspace1< WORK > work ) {
+    static void invoke( const integer_t n, const integer_t ilo,
+            const integer_t ihi, MatrixA& a, const VectorTAU& tau,
+            integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -74,9 +76,9 @@ struct orghr_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const n, integer_t const ilo,
-            integer_t const ihi, MatrixA& a, VectorTAU& tau, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( const integer_t n, const integer_t ilo,
+            const integer_t ihi, MatrixA& a, const VectorTAU& tau,
+            integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         invoke( n, ilo, ihi, a, tau, info, workspace( tmp_work ) );
@@ -84,9 +86,9 @@ struct orghr_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const n, integer_t const ilo,
-            integer_t const ihi, MatrixA& a, VectorTAU& tau, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( const integer_t n, const integer_t ilo,
+            const integer_t ihi, MatrixA& a, const VectorTAU& tau,
+            integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         detail::orghr( n, ilo, ihi, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),
@@ -104,8 +106,9 @@ struct orghr_impl {
 
 // template function to call orghr
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline integer_t orghr( integer_t const n, integer_t const ilo,
-        integer_t const ihi, MatrixA& a, VectorTAU& tau, Workspace work ) {
+inline integer_t orghr( const integer_t n, const integer_t ilo,
+        const integer_t ihi, MatrixA& a, const VectorTAU& tau,
+        Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     orghr_impl< value_type >::invoke( n, ilo, ihi, a, tau, info, work );
@@ -114,8 +117,8 @@ inline integer_t orghr( integer_t const n, integer_t const ilo,
 
 // template function to call orghr, default workspace type
 template< typename MatrixA, typename VectorTAU >
-inline integer_t orghr( integer_t const n, integer_t const ilo,
-        integer_t const ihi, MatrixA& a, VectorTAU& tau ) {
+inline integer_t orghr( const integer_t n, const integer_t ilo,
+        const integer_t ihi, MatrixA& a, const VectorTAU& tau ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     orghr_impl< value_type >::invoke( n, ilo, ihi, a, tau, info,

@@ -34,24 +34,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pbequ( char const uplo, integer_t const n, integer_t const kd,
-            float* ab, integer_t const ldab, float* s, float& scond,
+    inline void pbequ( const char uplo, const integer_t n, const integer_t kd,
+            const float* ab, const integer_t ldab, float* s, float& scond,
             float& amax, integer_t& info ) {
         LAPACK_SPBEQU( &uplo, &n, &kd, ab, &ldab, s, &scond, &amax, &info );
     }
-    inline void pbequ( char const uplo, integer_t const n, integer_t const kd,
-            double* ab, integer_t const ldab, double* s, double& scond,
+    inline void pbequ( const char uplo, const integer_t n, const integer_t kd,
+            const double* ab, const integer_t ldab, double* s, double& scond,
             double& amax, integer_t& info ) {
         LAPACK_DPBEQU( &uplo, &n, &kd, ab, &ldab, s, &scond, &amax, &info );
     }
-    inline void pbequ( char const uplo, integer_t const n, integer_t const kd,
-            traits::complex_f* ab, integer_t const ldab, float* s,
+    inline void pbequ( const char uplo, const integer_t n, const integer_t kd,
+            const traits::complex_f* ab, const integer_t ldab, float* s,
             float& scond, float& amax, integer_t& info ) {
         LAPACK_CPBEQU( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, s,
                 &scond, &amax, &info );
     }
-    inline void pbequ( char const uplo, integer_t const n, integer_t const kd,
-            traits::complex_d* ab, integer_t const ldab, double* s,
+    inline void pbequ( const char uplo, const integer_t n, const integer_t kd,
+            const traits::complex_d* ab, const integer_t ldab, double* s,
             double& scond, double& amax, integer_t& info ) {
         LAPACK_ZPBEQU( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, s,
                 &scond, &amax, &info );
@@ -71,8 +71,9 @@ struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename MatrixAB, typename VectorS >
-    static void invoke( integer_t const n, integer_t const kd, MatrixAB& ab,
-            VectorS& s, real_type& scond, real_type& amax, integer_t& info ) {
+    static void invoke( const integer_t n, const integer_t kd,
+            const MatrixAB& ab, VectorS& s, real_type& scond, real_type& amax,
+            integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::vector_traits<
                 VectorS >::value_type >::value) );
@@ -96,8 +97,9 @@ struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // templated specialization
     template< typename MatrixAB, typename VectorS >
-    static void invoke( integer_t const n, integer_t const kd, MatrixAB& ab,
-            VectorS& s, real_type& scond, real_type& amax, integer_t& info ) {
+    static void invoke( const integer_t n, const integer_t kd,
+            const MatrixAB& ab, VectorS& s, real_type& scond, real_type& amax,
+            integer_t& info ) {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( n >= 0 );
@@ -112,8 +114,8 @@ struct pbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call pbequ
 template< typename MatrixAB, typename VectorS >
-inline integer_t pbequ( integer_t const n, integer_t const kd,
-        MatrixAB& ab, VectorS& s, typename traits::type_traits<
+inline integer_t pbequ( const integer_t n, const integer_t kd,
+        const MatrixAB& ab, VectorS& s, typename traits::type_traits<
         typename traits::matrix_traits<
         MatrixAB >::value_type >::real_type& scond,
         typename traits::type_traits< typename traits::matrix_traits<

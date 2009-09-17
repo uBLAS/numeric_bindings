@@ -33,12 +33,12 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void cgesv( integer_t const n, integer_t const nrhs,
-            traits::complex_d* a, integer_t const lda, integer_t* ipiv,
-            traits::complex_d* b, integer_t const ldb, traits::complex_d* x,
-            integer_t const ldx, traits::complex_d* work,
-            traits::complex_f* swork, double* rwork, integer_t& iter,
-            integer_t& info ) {
+    inline void cgesv( const integer_t n, const integer_t nrhs,
+            traits::complex_d* a, const integer_t lda, integer_t* ipiv,
+            const traits::complex_d* b, const integer_t ldb,
+            traits::complex_d* x, const integer_t ldx,
+            traits::complex_d* work, traits::complex_f* swork, double* rwork,
+            integer_t& iter, integer_t& info ) {
         LAPACK_ZCGESV( &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
                 traits::complex_ptr(work), traits::complex_ptr(swork), rwork,
@@ -56,9 +56,9 @@ struct cgesv_impl {
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename WORK, typename SWORK, typename RWORK >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            integer_t& iter, integer_t& info, detail::workspace3< WORK, SWORK,
-            RWORK > work ) {
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, integer_t& iter, integer_t& info, detail::workspace3<
+            WORK, SWORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -95,8 +95,9 @@ struct cgesv_impl {
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            integer_t& iter, integer_t& info, minimal_workspace work ) {
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, integer_t& iter, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         traits::detail::array< value_type > tmp_swork( min_size_swork(
@@ -111,8 +112,9 @@ struct cgesv_impl {
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename MatrixX >
-    static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b, MatrixX& x,
-            integer_t& iter, integer_t& info, optimal_workspace work ) {
+    static void invoke( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
+            MatrixX& x, integer_t& iter, integer_t& info,
+            optimal_workspace work ) {
         invoke( a, ipiv, b, x, iter, info, minimal_workspace() );
     }
 
@@ -120,12 +122,12 @@ struct cgesv_impl {
         return n*nrhs;
     }
 
-    static integer_t min_size_swork( integer_t const n,
-            integer_t const nrhs ) {
+    static integer_t min_size_swork( const integer_t n,
+            const integer_t nrhs ) {
         return n*(n+nrhs);
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -134,7 +136,7 @@ struct cgesv_impl {
 // template function to call cgesv
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename Workspace >
-inline integer_t cgesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+inline integer_t cgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, integer_t& iter, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -145,7 +147,7 @@ inline integer_t cgesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
 // template function to call cgesv, default workspace type
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
-inline integer_t cgesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+inline integer_t cgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, integer_t& iter ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);

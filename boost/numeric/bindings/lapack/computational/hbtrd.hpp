@@ -33,17 +33,17 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hbtrd( char const vect, char const uplo, integer_t const n,
-            integer_t const kd, traits::complex_f* ab, integer_t const ldab,
-            float* d, float* e, traits::complex_f* q, integer_t const ldq,
+    inline void hbtrd( const char vect, const char uplo, const integer_t n,
+            const integer_t kd, traits::complex_f* ab, const integer_t ldab,
+            float* d, float* e, traits::complex_f* q, const integer_t ldq,
             traits::complex_f* work, integer_t& info ) {
         LAPACK_CHBTRD( &vect, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab,
                 d, e, traits::complex_ptr(q), &ldq, traits::complex_ptr(work),
                 &info );
     }
-    inline void hbtrd( char const vect, char const uplo, integer_t const n,
-            integer_t const kd, traits::complex_d* ab, integer_t const ldab,
-            double* d, double* e, traits::complex_d* q, integer_t const ldq,
+    inline void hbtrd( const char vect, const char uplo, const integer_t n,
+            const integer_t kd, traits::complex_d* ab, const integer_t ldab,
+            double* d, double* e, traits::complex_d* q, const integer_t ldq,
             traits::complex_d* work, integer_t& info ) {
         LAPACK_ZHBTRD( &vect, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab,
                 d, e, traits::complex_ptr(q), &ldq, traits::complex_ptr(work),
@@ -61,8 +61,8 @@ struct hbtrd_impl {
     // user-defined workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename WORK >
-    static void invoke( char const vect, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorD& d, VectorE& e,
+    static void invoke( const char vect, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
             MatrixQ& q, integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
@@ -89,8 +89,8 @@ struct hbtrd_impl {
     // minimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ >
-    static void invoke( char const vect, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorD& d, VectorE& e,
+    static void invoke( const char vect, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
             MatrixQ& q, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         invoke( vect, n, kd, ab, d, e, q, info, workspace( tmp_work ) );
@@ -99,13 +99,13 @@ struct hbtrd_impl {
     // optimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ >
-    static void invoke( char const vect, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorD& d, VectorE& e,
+    static void invoke( const char vect, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
             MatrixQ& q, integer_t& info, optimal_workspace work ) {
         invoke( vect, n, kd, ab, d, e, q, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return n;
     }
 };
@@ -114,8 +114,8 @@ struct hbtrd_impl {
 // template function to call hbtrd
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline integer_t hbtrd( char const vect, integer_t const n,
-        integer_t const kd, MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
+inline integer_t hbtrd( const char vect, const integer_t n,
+        const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
@@ -127,8 +127,8 @@ inline integer_t hbtrd( char const vect, integer_t const n,
 // template function to call hbtrd, default workspace type
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline integer_t hbtrd( char const vect, integer_t const n,
-        integer_t const kd, MatrixAB& ab, VectorD& d, VectorE& e,
+inline integer_t hbtrd( const char vect, const integer_t n,
+        const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
         MatrixQ& q ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);

@@ -33,17 +33,17 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hbev( char const jobz, char const uplo, integer_t const n,
-            integer_t const kd, traits::complex_f* ab, integer_t const ldab,
-            float* w, traits::complex_f* z, integer_t const ldz,
+    inline void hbev( const char jobz, const char uplo, const integer_t n,
+            const integer_t kd, traits::complex_f* ab, const integer_t ldab,
+            float* w, traits::complex_f* z, const integer_t ldz,
             traits::complex_f* work, float* rwork, integer_t& info ) {
         LAPACK_CHBEV( &jobz, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab,
                 w, traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
                 rwork, &info );
     }
-    inline void hbev( char const jobz, char const uplo, integer_t const n,
-            integer_t const kd, traits::complex_d* ab, integer_t const ldab,
-            double* w, traits::complex_d* z, integer_t const ldz,
+    inline void hbev( const char jobz, const char uplo, const integer_t n,
+            const integer_t kd, traits::complex_d* ab, const integer_t ldab,
+            double* w, traits::complex_d* z, const integer_t ldz,
             traits::complex_d* work, double* rwork, integer_t& info ) {
         LAPACK_ZHBEV( &jobz, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab,
                 w, traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
@@ -61,8 +61,8 @@ struct hbev_impl {
     // user-defined workspace specialization
     template< typename MatrixAB, typename VectorW, typename MatrixZ,
             typename WORK, typename RWORK >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
@@ -87,8 +87,8 @@ struct hbev_impl {
 
     // minimal workspace specialization
     template< typename MatrixAB, typename VectorW, typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
@@ -98,17 +98,17 @@ struct hbev_impl {
 
     // optimal workspace specialization
     template< typename MatrixAB, typename VectorW, typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
             integer_t& info, optimal_workspace work ) {
         invoke( jobz, n, kd, ab, w, z, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return std::max(1,3*n-2);
     }
 };
@@ -117,8 +117,8 @@ struct hbev_impl {
 // template function to call hbev
 template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline integer_t hbev( char const jobz, integer_t const n,
-        integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+inline integer_t hbev( const char jobz, const integer_t n,
+        const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
@@ -128,8 +128,8 @@ inline integer_t hbev( char const jobz, integer_t const n,
 
 // template function to call hbev, default workspace type
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline integer_t hbev( char const jobz, integer_t const n,
-        integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z ) {
+inline integer_t hbev( const char jobz, const integer_t n,
+        const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     hbev_impl< value_type >::invoke( jobz, n, kd, ab, w, z, info,

@@ -34,17 +34,17 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sbevd( char const jobz, char const uplo, integer_t const n,
-            integer_t const kd, float* ab, integer_t const ldab, float* w,
-            float* z, integer_t const ldz, float* work, integer_t const lwork,
-            integer_t* iwork, integer_t const liwork, integer_t& info ) {
+    inline void sbevd( const char jobz, const char uplo, const integer_t n,
+            const integer_t kd, float* ab, const integer_t ldab, float* w,
+            float* z, const integer_t ldz, float* work, const integer_t lwork,
+            integer_t* iwork, const integer_t liwork, integer_t& info ) {
         LAPACK_SSBEVD( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work,
                 &lwork, iwork, &liwork, &info );
     }
-    inline void sbevd( char const jobz, char const uplo, integer_t const n,
-            integer_t const kd, double* ab, integer_t const ldab, double* w,
-            double* z, integer_t const ldz, double* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+    inline void sbevd( const char jobz, const char uplo, const integer_t n,
+            const integer_t kd, double* ab, const integer_t ldab, double* w,
+            double* z, const integer_t ldz, double* work,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_DSBEVD( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work,
                 &lwork, iwork, &liwork, &info );
@@ -61,9 +61,9 @@ struct sbevd_impl {
     // user-defined workspace specialization
     template< typename MatrixAB, typename VectorW, typename MatrixZ,
             typename WORK, typename IWORK >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
-            integer_t const liwork, integer_t& info, detail::workspace2< WORK,
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+            const integer_t liwork, integer_t& info, detail::workspace2< WORK,
             IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::vector_traits<
@@ -93,9 +93,9 @@ struct sbevd_impl {
 
     // minimal workspace specialization
     template< typename MatrixAB, typename VectorW, typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
-            integer_t const liwork, integer_t& info, minimal_workspace work ) {
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+            const integer_t liwork, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( jobz,
                 n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( jobz,
@@ -106,9 +106,9 @@ struct sbevd_impl {
 
     // optimal workspace specialization
     template< typename MatrixAB, typename VectorW, typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
-            integer_t const liwork, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char jobz, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+            const integer_t liwork, integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         integer_t opt_size_iwork;
         detail::sbevd( jobz, traits::matrix_uplo_tag(ab), n, kd,
@@ -123,7 +123,7 @@ struct sbevd_impl {
                 tmp_iwork ) );
     }
 
-    static integer_t min_size_work( char const jobz, integer_t const n ) {
+    static integer_t min_size_work( const char jobz, const integer_t n ) {
         if ( n < 2 )
             return 1;
         else {
@@ -134,7 +134,7 @@ struct sbevd_impl {
         }
     }
 
-    static integer_t min_size_iwork( char const jobz, integer_t const n ) {
+    static integer_t min_size_iwork( const char jobz, const integer_t n ) {
         if ( jobz == 'N' || n < 2 )
             return 1;
         else
@@ -146,9 +146,9 @@ struct sbevd_impl {
 // template function to call sbevd
 template< typename MatrixAB, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline integer_t sbevd( char const jobz, integer_t const n,
-        integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
-        integer_t const liwork, Workspace work ) {
+inline integer_t sbevd( const char jobz, const integer_t n,
+        const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+        const integer_t liwork, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     sbevd_impl< value_type >::invoke( jobz, n, kd, ab, w, z, liwork,
@@ -158,9 +158,9 @@ inline integer_t sbevd( char const jobz, integer_t const n,
 
 // template function to call sbevd, default workspace type
 template< typename MatrixAB, typename VectorW, typename MatrixZ >
-inline integer_t sbevd( char const jobz, integer_t const n,
-        integer_t const kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
-        integer_t const liwork ) {
+inline integer_t sbevd( const char jobz, const integer_t n,
+        const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+        const integer_t liwork ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     sbevd_impl< value_type >::invoke( jobz, n, kd, ab, w, z, liwork,

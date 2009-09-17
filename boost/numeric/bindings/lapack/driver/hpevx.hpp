@@ -33,21 +33,21 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hpevx( char const jobz, char const range, char const uplo,
-            integer_t const n, traits::complex_f* ap, float const vl,
-            float const vu, integer_t const il, integer_t const iu,
-            float const abstol, integer_t& m, float* w, traits::complex_f* z,
-            integer_t const ldz, traits::complex_f* work, float* rwork,
+    inline void hpevx( const char jobz, const char range, const char uplo,
+            const integer_t n, traits::complex_f* ap, const float vl,
+            const float vu, const integer_t il, const integer_t iu,
+            const float abstol, integer_t& m, float* w, traits::complex_f* z,
+            const integer_t ldz, traits::complex_f* work, float* rwork,
             integer_t* iwork, integer_t* ifail, integer_t& info ) {
         LAPACK_CHPEVX( &jobz, &range, &uplo, &n, traits::complex_ptr(ap), &vl,
                 &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z), &ldz,
                 traits::complex_ptr(work), rwork, iwork, ifail, &info );
     }
-    inline void hpevx( char const jobz, char const range, char const uplo,
-            integer_t const n, traits::complex_d* ap, double const vl,
-            double const vu, integer_t const il, integer_t const iu,
-            double const abstol, integer_t& m, double* w,
-            traits::complex_d* z, integer_t const ldz,
+    inline void hpevx( const char jobz, const char range, const char uplo,
+            const integer_t n, traits::complex_d* ap, const double vl,
+            const double vu, const integer_t il, const integer_t iu,
+            const double abstol, integer_t& m, double* w,
+            traits::complex_d* z, const integer_t ldz,
             traits::complex_d* work, double* rwork, integer_t* iwork,
             integer_t* ifail, integer_t& info ) {
         LAPACK_ZHPEVX( &jobz, &range, &uplo, &n, traits::complex_ptr(ap), &vl,
@@ -67,9 +67,9 @@ struct hpevx_impl {
     template< typename MatrixAP, typename VectorW, typename MatrixZ,
             typename VectorIFAIL, typename WORK, typename RWORK,
             typename IWORK >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            MatrixAP& ap, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, real_type const abstol,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            MatrixAP& ap, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, const real_type abstol,
             integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, detail::workspace3< WORK, RWORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -99,9 +99,9 @@ struct hpevx_impl {
     // minimal workspace specialization
     template< typename MatrixAP, typename VectorW, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            MatrixAP& ap, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, real_type const abstol,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            MatrixAP& ap, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, const real_type abstol,
             integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
@@ -114,24 +114,24 @@ struct hpevx_impl {
     // optimal workspace specialization
     template< typename MatrixAP, typename VectorW, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( char const jobz, char const range, integer_t const n,
-            MatrixAP& ap, real_type const vl, real_type const vu,
-            integer_t const il, integer_t const iu, real_type const abstol,
+    static void invoke( const char jobz, const char range, const integer_t n,
+            MatrixAP& ap, const real_type vl, const real_type vu,
+            const integer_t il, const integer_t iu, const real_type abstol,
             integer_t& m, VectorW& w, MatrixZ& z, VectorIFAIL& ifail,
             integer_t& info, optimal_workspace work ) {
         invoke( jobz, range, n, ap, vl, vu, il, iu, abstol, m, w, z, ifail,
                 info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return 7*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return 5*n;
     }
 };
@@ -140,16 +140,16 @@ struct hpevx_impl {
 // template function to call hpevx
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline integer_t hpevx( char const jobz, char const range,
-        integer_t const n, MatrixAP& ap, typename traits::type_traits<
+inline integer_t hpevx( const char jobz, const char range,
+        const integer_t n, MatrixAP& ap, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+        MatrixAP >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+        MatrixAP >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     hpevx_impl< value_type >::invoke( jobz, range, n, ap, vl, vu, il, iu,
@@ -160,16 +160,16 @@ inline integer_t hpevx( char const jobz, char const range,
 // template function to call hpevx, default workspace type
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline integer_t hpevx( char const jobz, char const range,
-        integer_t const n, MatrixAP& ap, typename traits::type_traits<
+inline integer_t hpevx( const char jobz, const char range,
+        const integer_t n, MatrixAP& ap, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+        MatrixAP >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAP >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixAP >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+        MatrixAP >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
     hpevx_impl< value_type >::invoke( jobz, range, n, ap, vl, vu, il, iu,

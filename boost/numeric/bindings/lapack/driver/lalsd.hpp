@@ -36,33 +36,33 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void lalsd( char const uplo, integer_t const smlsiz,
-            integer_t const n, integer_t const nrhs, float* d, float* e,
-            float* b, integer_t const ldb, float const rcond, integer_t& rank,
+    inline void lalsd( const char uplo, const integer_t smlsiz,
+            const integer_t n, const integer_t nrhs, float* d, float* e,
+            float* b, const integer_t ldb, const float rcond, integer_t& rank,
             float* work, integer_t* iwork, integer_t& info ) {
         LAPACK_SLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond,
                 &rank, work, iwork, &info );
     }
-    inline void lalsd( char const uplo, integer_t const smlsiz,
-            integer_t const n, integer_t const nrhs, double* d, double* e,
-            double* b, integer_t const ldb, double const rcond,
+    inline void lalsd( const char uplo, const integer_t smlsiz,
+            const integer_t n, const integer_t nrhs, double* d, double* e,
+            double* b, const integer_t ldb, const double rcond,
             integer_t& rank, double* work, integer_t* iwork,
             integer_t& info ) {
         LAPACK_DLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond,
                 &rank, work, iwork, &info );
     }
-    inline void lalsd( char const uplo, integer_t const smlsiz,
-            integer_t const n, integer_t const nrhs, float* d, float* e,
-            traits::complex_f* b, integer_t const ldb, float const rcond,
+    inline void lalsd( const char uplo, const integer_t smlsiz,
+            const integer_t n, const integer_t nrhs, float* d, float* e,
+            traits::complex_f* b, const integer_t ldb, const float rcond,
             integer_t& rank, traits::complex_f* work, float* rwork,
             integer_t* iwork, integer_t& info ) {
         LAPACK_CLALSD( &uplo, &smlsiz, &n, &nrhs, d, e,
                 traits::complex_ptr(b), &ldb, &rcond, &rank,
                 traits::complex_ptr(work), rwork, iwork, &info );
     }
-    inline void lalsd( char const uplo, integer_t const smlsiz,
-            integer_t const n, integer_t const nrhs, double* d, double* e,
-            traits::complex_d* b, integer_t const ldb, double const rcond,
+    inline void lalsd( const char uplo, const integer_t smlsiz,
+            const integer_t n, const integer_t nrhs, double* d, double* e,
+            traits::complex_d* b, const integer_t ldb, const double rcond,
             integer_t& rank, traits::complex_d* work, double* rwork,
             integer_t* iwork, integer_t& info ) {
         LAPACK_ZLALSD( &uplo, &smlsiz, &n, &nrhs, d, e,
@@ -85,9 +85,9 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB,
             typename WORK, typename IWORK >
-    static void invoke( char const uplo, integer_t const smlsiz,
-            integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
-            real_type const rcond, integer_t& rank, integer_t& info,
+    static void invoke( const char uplo, const integer_t smlsiz,
+            const integer_t n, VectorD& d, VectorE& e, MatrixB& b,
+            const real_type rcond, integer_t& rank, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
@@ -118,9 +118,9 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( char const uplo, integer_t const smlsiz,
-            integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
-            real_type const rcond, integer_t& rank, integer_t& info,
+    static void invoke( const char uplo, const integer_t smlsiz,
+            const integer_t n, VectorD& d, VectorE& e, MatrixB& b,
+            const real_type rcond, integer_t& rank, integer_t& info,
             minimal_workspace work ) {
         integer_t nlvl = std::max( 0, static_cast<integer_t>(
             std::log(static_cast<real_type>(n)/static_cast<real_type>(smlsiz+
@@ -136,23 +136,23 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( char const uplo, integer_t const smlsiz,
-            integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
-            real_type const rcond, integer_t& rank, integer_t& info,
+    static void invoke( const char uplo, const integer_t smlsiz,
+            const integer_t n, VectorD& d, VectorE& e, MatrixB& b,
+            const real_type rcond, integer_t& rank, integer_t& info,
             optimal_workspace work ) {
         invoke( uplo, smlsiz, n, d, e, b, rcond, rank, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n, integer_t const smlsiz,
-            integer_t const nlvl, integer_t const nrhs ) {
+    static integer_t min_size_work( const integer_t n, const integer_t smlsiz,
+            const integer_t nlvl, const integer_t nrhs ) {
         integer_t smlsiz_plus_one = smlsiz + 1;
         return 9*n + 2*n*smlsiz + 8*n*nlvl + n*nrhs +
                 smlsiz_plus_one * smlsiz_plus_one;
     }
 
-    static integer_t min_size_iwork( integer_t const n,
-            integer_t const nlvl ) {
+    static integer_t min_size_iwork( const integer_t n,
+            const integer_t nlvl ) {
         return 3*n*nlvl + 11*n;
     }
 };
@@ -167,9 +167,9 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB,
             typename WORK, typename RWORK, typename IWORK >
-    static void invoke( char const uplo, integer_t const smlsiz,
-            integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
-            real_type const rcond, integer_t& rank, integer_t& info,
+    static void invoke( const char uplo, const integer_t smlsiz,
+            const integer_t n, VectorD& d, VectorE& e, MatrixB& b,
+            const real_type rcond, integer_t& rank, integer_t& info,
             detail::workspace3< WORK, RWORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
@@ -202,9 +202,9 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( char const uplo, integer_t const smlsiz,
-            integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
-            real_type const rcond, integer_t& rank, integer_t& info,
+    static void invoke( const char uplo, const integer_t smlsiz,
+            const integer_t n, VectorD& d, VectorE& e, MatrixB& b,
+            const real_type rcond, integer_t& rank, integer_t& info,
             minimal_workspace work ) {
         integer_t nlvl = std::max( 0, static_cast<integer_t>(
             std::log(static_cast<real_type>(std::min(traits::matrix_size2(b),
@@ -223,28 +223,28 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( char const uplo, integer_t const smlsiz,
-            integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
-            real_type const rcond, integer_t& rank, integer_t& info,
+    static void invoke( const char uplo, const integer_t smlsiz,
+            const integer_t n, VectorD& d, VectorE& e, MatrixB& b,
+            const real_type rcond, integer_t& rank, integer_t& info,
             optimal_workspace work ) {
         invoke( uplo, smlsiz, n, d, e, b, rcond, rank, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n, integer_t const nrhs ) {
+    static integer_t min_size_work( const integer_t n, const integer_t nrhs ) {
         return n*nrhs;
     }
 
-    static integer_t min_size_rwork( integer_t const n,
-            integer_t const smlsiz, integer_t const nlvl,
-            integer_t const nrhs ) {
+    static integer_t min_size_rwork( const integer_t n,
+            const integer_t smlsiz, const integer_t nlvl,
+            const integer_t nrhs ) {
         integer_t smlsiz_plus_one = smlsiz + 1;
         return 9*n + 2*n*smlsiz + 8*n*nlvl + 3*smlsiz*nrhs +
                 smlsiz_plus_one * smlsiz_plus_one;
     }
 
-    static integer_t min_size_iwork( integer_t const n,
-            integer_t const nlvl ) {
+    static integer_t min_size_iwork( const integer_t n,
+            const integer_t nlvl ) {
         return 3*n*nlvl+11*n;
     }
 };
@@ -253,10 +253,10 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call lalsd
 template< typename VectorD, typename VectorE, typename MatrixB,
         typename Workspace >
-inline integer_t lalsd( char const uplo, integer_t const smlsiz,
-        integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixB >::value_type >::real_type const rcond, integer_t& rank,
+inline integer_t lalsd( const char uplo, const integer_t smlsiz,
+        const integer_t n, VectorD& d, VectorE& e, MatrixB& b,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixB >::value_type >::real_type rcond, integer_t& rank,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixB >::value_type value_type;
     integer_t info(0);
@@ -267,10 +267,10 @@ inline integer_t lalsd( char const uplo, integer_t const smlsiz,
 
 // template function to call lalsd, default workspace type
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline integer_t lalsd( char const uplo, integer_t const smlsiz,
-        integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixB >::value_type >::real_type const rcond, integer_t& rank ) {
+inline integer_t lalsd( const char uplo, const integer_t smlsiz,
+        const integer_t n, VectorD& d, VectorE& e, MatrixB& b,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixB >::value_type >::real_type rcond, integer_t& rank ) {
     typedef typename traits::matrix_traits< MatrixB >::value_type value_type;
     integer_t info(0);
     lalsd_impl< value_type >::invoke( uplo, smlsiz, n, d, e, b, rcond,

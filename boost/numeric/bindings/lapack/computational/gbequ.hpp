@@ -34,31 +34,33 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbequ( integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, float* ab,
-            integer_t const ldab, float* r, float* c, float& rowcnd,
+    inline void gbequ( const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, const float* ab,
+            const integer_t ldab, float* r, float* c, float& rowcnd,
             float& colcnd, float& amax, integer_t& info ) {
         LAPACK_SGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd,
                 &amax, &info );
     }
-    inline void gbequ( integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, double* ab,
-            integer_t const ldab, double* r, double* c, double& rowcnd,
+    inline void gbequ( const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, const double* ab,
+            const integer_t ldab, double* r, double* c, double& rowcnd,
             double& colcnd, double& amax, integer_t& info ) {
         LAPACK_DGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd,
                 &amax, &info );
     }
-    inline void gbequ( integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, traits::complex_f* ab,
-            integer_t const ldab, float* r, float* c, float& rowcnd,
-            float& colcnd, float& amax, integer_t& info ) {
+    inline void gbequ( const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku,
+            const traits::complex_f* ab, const integer_t ldab, float* r,
+            float* c, float& rowcnd, float& colcnd, float& amax,
+            integer_t& info ) {
         LAPACK_CGBEQU( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, r, c,
                 &rowcnd, &colcnd, &amax, &info );
     }
-    inline void gbequ( integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, traits::complex_d* ab,
-            integer_t const ldab, double* r, double* c, double& rowcnd,
-            double& colcnd, double& amax, integer_t& info ) {
+    inline void gbequ( const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku,
+            const traits::complex_d* ab, const integer_t ldab, double* r,
+            double* c, double& rowcnd, double& colcnd, double& amax,
+            integer_t& info ) {
         LAPACK_ZGBEQU( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, r, c,
                 &rowcnd, &colcnd, &amax, &info );
     }
@@ -77,10 +79,10 @@ struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename MatrixAB, typename VectorR, typename VectorC >
-    static void invoke( integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorR& r,
-            VectorC& c, real_type& rowcnd, real_type& colcnd, real_type& amax,
-            integer_t& info ) {
+    static void invoke( const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            VectorR& r, VectorC& c, real_type& rowcnd, real_type& colcnd,
+            real_type& amax, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::vector_traits<
                 VectorR >::value_type >::value) );
@@ -107,10 +109,10 @@ struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // templated specialization
     template< typename MatrixAB, typename VectorR, typename VectorC >
-    static void invoke( integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab, VectorR& r,
-            VectorC& c, real_type& rowcnd, real_type& colcnd, real_type& amax,
-            integer_t& info ) {
+    static void invoke( const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            VectorR& r, VectorC& c, real_type& rowcnd, real_type& colcnd,
+            real_type& amax, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorR >::value_type, typename traits::vector_traits<
                 VectorC >::value_type >::value) );
@@ -128,9 +130,9 @@ struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call gbequ
 template< typename MatrixAB, typename VectorR, typename VectorC >
-inline integer_t gbequ( integer_t const m, integer_t const n,
-        integer_t const kl, integer_t const ku, MatrixAB& ab, VectorR& r,
-        VectorC& c, typename traits::type_traits<
+inline integer_t gbequ( const integer_t m, const integer_t n,
+        const integer_t kl, const integer_t ku, const MatrixAB& ab,
+        VectorR& r, VectorC& c, typename traits::type_traits<
         typename traits::matrix_traits<
         MatrixAB >::value_type >::real_type& rowcnd,
         typename traits::type_traits< typename traits::matrix_traits<

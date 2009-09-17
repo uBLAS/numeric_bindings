@@ -34,31 +34,31 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void latrs( char const uplo, char const trans, char const diag,
-            char const normin, integer_t const n, float* a,
-            integer_t const lda, float* x, float& scale, float* cnorm,
+    inline void latrs( const char uplo, const char trans, const char diag,
+            const char normin, const integer_t n, const float* a,
+            const integer_t lda, float* x, float& scale, float* cnorm,
             integer_t& info ) {
         LAPACK_SLATRS( &uplo, &trans, &diag, &normin, &n, a, &lda, x, &scale,
                 cnorm, &info );
     }
-    inline void latrs( char const uplo, char const trans, char const diag,
-            char const normin, integer_t const n, double* a,
-            integer_t const lda, double* x, double& scale, double* cnorm,
+    inline void latrs( const char uplo, const char trans, const char diag,
+            const char normin, const integer_t n, const double* a,
+            const integer_t lda, double* x, double& scale, double* cnorm,
             integer_t& info ) {
         LAPACK_DLATRS( &uplo, &trans, &diag, &normin, &n, a, &lda, x, &scale,
                 cnorm, &info );
     }
-    inline void latrs( char const uplo, char const trans, char const diag,
-            char const normin, integer_t const n, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* x, float& scale,
+    inline void latrs( const char uplo, const char trans, const char diag,
+            const char normin, const integer_t n, const traits::complex_f* a,
+            const integer_t lda, traits::complex_f* x, float& scale,
             float* cnorm, integer_t& info ) {
         LAPACK_CLATRS( &uplo, &trans, &diag, &normin, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(x), &scale,
                 cnorm, &info );
     }
-    inline void latrs( char const uplo, char const trans, char const diag,
-            char const normin, integer_t const n, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* x, double& scale,
+    inline void latrs( const char uplo, const char trans, const char diag,
+            const char normin, const integer_t n, const traits::complex_d* a,
+            const integer_t lda, traits::complex_d* x, double& scale,
             double* cnorm, integer_t& info ) {
         LAPACK_ZLATRS( &uplo, &trans, &diag, &normin, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(x), &scale,
@@ -79,8 +79,8 @@ struct latrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorCNORM >
-    static void invoke( char const uplo, char const trans, char const diag,
-            char const normin, MatrixA& a, VectorX& x, real_type& scale,
+    static void invoke( const char uplo, const char trans, const char diag,
+            const char normin, const MatrixA& a, VectorX& x, real_type& scale,
             VectorCNORM& cnorm, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -112,8 +112,8 @@ struct latrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // templated specialization
     template< typename MatrixA, typename VectorX, typename VectorCNORM >
-    static void invoke( char const uplo, char const trans, char const diag,
-            char const normin, MatrixA& a, VectorX& x, real_type& scale,
+    static void invoke( const char uplo, const char trans, const char diag,
+            const char normin, const MatrixA& a, VectorX& x, real_type& scale,
             VectorCNORM& cnorm, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -136,8 +136,8 @@ struct latrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call latrs
 template< typename MatrixA, typename VectorX, typename VectorCNORM >
-inline integer_t latrs( char const uplo, char const trans,
-        char const diag, char const normin, MatrixA& a, VectorX& x,
+inline integer_t latrs( const char uplo, const char trans,
+        const char diag, const char normin, const MatrixA& a, VectorX& x,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& scale, VectorCNORM& cnorm ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;

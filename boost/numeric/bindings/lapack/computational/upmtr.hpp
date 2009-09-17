@@ -33,18 +33,18 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void upmtr( char const side, char const uplo, char const trans,
-            integer_t const m, integer_t const n, traits::complex_f* ap,
-            traits::complex_f* tau, traits::complex_f* c, integer_t const ldc,
-            traits::complex_f* work, integer_t& info ) {
+    inline void upmtr( const char side, const char uplo, const char trans,
+            const integer_t m, const integer_t n, const traits::complex_f* ap,
+            const traits::complex_f* tau, traits::complex_f* c,
+            const integer_t ldc, traits::complex_f* work, integer_t& info ) {
         LAPACK_CUPMTR( &side, &uplo, &trans, &m, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
                 traits::complex_ptr(work), &info );
     }
-    inline void upmtr( char const side, char const uplo, char const trans,
-            integer_t const m, integer_t const n, traits::complex_d* ap,
-            traits::complex_d* tau, traits::complex_d* c, integer_t const ldc,
-            traits::complex_d* work, integer_t& info ) {
+    inline void upmtr( const char side, const char uplo, const char trans,
+            const integer_t m, const integer_t n, const traits::complex_d* ap,
+            const traits::complex_d* tau, traits::complex_d* c,
+            const integer_t ldc, traits::complex_d* work, integer_t& info ) {
         LAPACK_ZUPMTR( &side, &uplo, &trans, &m, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
                 traits::complex_ptr(work), &info );
@@ -61,9 +61,9 @@ struct upmtr_impl {
     // user-defined workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static void invoke( char const side, char const uplo, char const trans,
-            VectorAP& ap, VectorTAU& tau, MatrixC& c, integer_t& info,
-            detail::workspace1< WORK > work ) {
+    static void invoke( const char side, const char uplo, const char trans,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorAP >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -88,9 +88,9 @@ struct upmtr_impl {
 
     // minimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const uplo, char const trans,
-            VectorAP& ap, VectorTAU& tau, MatrixC& c, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( const char side, const char uplo, const char trans,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         invoke( side, uplo, trans, ap, tau, c, info, workspace( tmp_work ) );
@@ -98,9 +98,9 @@ struct upmtr_impl {
 
     // optimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const uplo, char const trans,
-            VectorAP& ap, VectorTAU& tau, MatrixC& c, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( const char side, const char uplo, const char trans,
+            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, optimal_workspace work ) {
         invoke( side, uplo, trans, ap, tau, c, info, minimal_workspace() );
     }
 
@@ -113,9 +113,9 @@ struct upmtr_impl {
 // template function to call upmtr
 template< typename VectorAP, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline integer_t upmtr( char const side, char const uplo,
-        char const trans, VectorAP& ap, VectorTAU& tau, MatrixC& c,
-        Workspace work ) {
+inline integer_t upmtr( const char side, const char uplo,
+        const char trans, const VectorAP& ap, const VectorTAU& tau,
+        MatrixC& c, Workspace work ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
     upmtr_impl< value_type >::invoke( side, uplo, trans, ap, tau, c,
@@ -125,8 +125,9 @@ inline integer_t upmtr( char const side, char const uplo,
 
 // template function to call upmtr, default workspace type
 template< typename VectorAP, typename VectorTAU, typename MatrixC >
-inline integer_t upmtr( char const side, char const uplo,
-        char const trans, VectorAP& ap, VectorTAU& tau, MatrixC& c ) {
+inline integer_t upmtr( const char side, const char uplo,
+        const char trans, const VectorAP& ap, const VectorTAU& tau,
+        MatrixC& c ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
     upmtr_impl< value_type >::invoke( side, uplo, trans, ap, tau, c,

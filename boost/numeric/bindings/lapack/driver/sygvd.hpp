@@ -34,19 +34,19 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sygvd( integer_t const itype, char const jobz,
-            char const uplo, integer_t const n, float* a, integer_t const lda,
-            float* b, integer_t const ldb, float* w, float* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+    inline void sygvd( const integer_t itype, const char jobz,
+            const char uplo, const integer_t n, float* a, const integer_t lda,
+            float* b, const integer_t ldb, float* w, float* work,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_SSYGVD( &itype, &jobz, &uplo, &n, a, &lda, b, &ldb, w, work,
                 &lwork, iwork, &liwork, &info );
     }
-    inline void sygvd( integer_t const itype, char const jobz,
-            char const uplo, integer_t const n, double* a,
-            integer_t const lda, double* b, integer_t const ldb, double* w,
-            double* work, integer_t const lwork, integer_t* iwork,
-            integer_t const liwork, integer_t& info ) {
+    inline void sygvd( const integer_t itype, const char jobz,
+            const char uplo, const integer_t n, double* a,
+            const integer_t lda, double* b, const integer_t ldb, double* w,
+            double* work, const integer_t lwork, integer_t* iwork,
+            const integer_t liwork, integer_t& info ) {
         LAPACK_DSYGVD( &itype, &jobz, &uplo, &n, a, &lda, b, &ldb, w, work,
                 &lwork, iwork, &liwork, &info );
     }
@@ -62,8 +62,8 @@ struct sygvd_impl {
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW,
             typename WORK, typename IWORK >
-    static void invoke( integer_t const itype, char const jobz,
-            integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
+    static void invoke( const integer_t itype, const char jobz,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorW& w,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -93,8 +93,8 @@ struct sygvd_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW >
-    static void invoke( integer_t const itype, char const jobz,
-            integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
+    static void invoke( const integer_t itype, const char jobz,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorW& w,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( jobz,
                 n ) );
@@ -106,8 +106,8 @@ struct sygvd_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename VectorW >
-    static void invoke( integer_t const itype, char const jobz,
-            integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
+    static void invoke( const integer_t itype, const char jobz,
+            const integer_t n, MatrixA& a, MatrixB& b, VectorW& w,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         integer_t opt_size_iwork;
@@ -123,7 +123,7 @@ struct sygvd_impl {
                 tmp_iwork ) );
     }
 
-    static integer_t min_size_work( char const jobz, integer_t const n ) {
+    static integer_t min_size_work( const char jobz, const integer_t n ) {
         if ( n < 2 )
             return 1;
         else {
@@ -134,7 +134,7 @@ struct sygvd_impl {
         }
     }
 
-    static integer_t min_size_iwork( char const jobz, integer_t const n ) {
+    static integer_t min_size_iwork( const char jobz, const integer_t n ) {
         if ( jobz == 'N' || n < 2 )
             return 1;
         else
@@ -146,8 +146,8 @@ struct sygvd_impl {
 // template function to call sygvd
 template< typename MatrixA, typename MatrixB, typename VectorW,
         typename Workspace >
-inline integer_t sygvd( integer_t const itype, char const jobz,
-        integer_t const n, MatrixA& a, MatrixB& b, VectorW& w,
+inline integer_t sygvd( const integer_t itype, const char jobz,
+        const integer_t n, MatrixA& a, MatrixB& b, VectorW& w,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -158,8 +158,8 @@ inline integer_t sygvd( integer_t const itype, char const jobz,
 
 // template function to call sygvd, default workspace type
 template< typename MatrixA, typename MatrixB, typename VectorW >
-inline integer_t sygvd( integer_t const itype, char const jobz,
-        integer_t const n, MatrixA& a, MatrixB& b, VectorW& w ) {
+inline integer_t sygvd( const integer_t itype, const char jobz,
+        const integer_t n, MatrixA& a, MatrixB& b, VectorW& w ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     sygvd_impl< value_type >::invoke( itype, jobz, n, a, b, w, info,

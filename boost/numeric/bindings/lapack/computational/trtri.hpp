@@ -31,20 +31,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trtri( char const uplo, char const diag, integer_t const n,
-            float* a, integer_t const lda, integer_t& info ) {
+    inline void trtri( const char uplo, const char diag, const integer_t n,
+            float* a, const integer_t lda, integer_t& info ) {
         LAPACK_STRTRI( &uplo, &diag, &n, a, &lda, &info );
     }
-    inline void trtri( char const uplo, char const diag, integer_t const n,
-            double* a, integer_t const lda, integer_t& info ) {
+    inline void trtri( const char uplo, const char diag, const integer_t n,
+            double* a, const integer_t lda, integer_t& info ) {
         LAPACK_DTRTRI( &uplo, &diag, &n, a, &lda, &info );
     }
-    inline void trtri( char const uplo, char const diag, integer_t const n,
-            traits::complex_f* a, integer_t const lda, integer_t& info ) {
+    inline void trtri( const char uplo, const char diag, const integer_t n,
+            traits::complex_f* a, const integer_t lda, integer_t& info ) {
         LAPACK_CTRTRI( &uplo, &diag, &n, traits::complex_ptr(a), &lda, &info );
     }
-    inline void trtri( char const uplo, char const diag, integer_t const n,
-            traits::complex_d* a, integer_t const lda, integer_t& info ) {
+    inline void trtri( const char uplo, const char diag, const integer_t n,
+            traits::complex_d* a, const integer_t lda, integer_t& info ) {
         LAPACK_ZTRTRI( &uplo, &diag, &n, traits::complex_ptr(a), &lda, &info );
     }
 }
@@ -58,7 +58,7 @@ struct trtri_impl {
 
     // templated specialization
     template< typename MatrixA >
-    static void invoke( char const diag, MatrixA& a, integer_t& info ) {
+    static void invoke( const char diag, MatrixA& a, integer_t& info ) {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
@@ -74,7 +74,7 @@ struct trtri_impl {
 
 // template function to call trtri
 template< typename MatrixA >
-inline integer_t trtri( char const diag, MatrixA& a ) {
+inline integer_t trtri( const char diag, MatrixA& a ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     trtri_impl< value_type >::invoke( diag, a, info );

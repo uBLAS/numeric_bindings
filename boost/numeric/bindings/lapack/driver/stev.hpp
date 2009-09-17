@@ -33,12 +33,12 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void stev( char const jobz, integer_t const n, float* d, float* e,
-            float* z, integer_t const ldz, float* work, integer_t& info ) {
+    inline void stev( const char jobz, const integer_t n, float* d, float* e,
+            float* z, const integer_t ldz, float* work, integer_t& info ) {
         LAPACK_SSTEV( &jobz, &n, d, e, z, &ldz, work, &info );
     }
-    inline void stev( char const jobz, integer_t const n, double* d,
-            double* e, double* z, integer_t const ldz, double* work,
+    inline void stev( const char jobz, const integer_t n, double* d,
+            double* e, double* z, const integer_t ldz, double* work,
             integer_t& info ) {
         LAPACK_DSTEV( &jobz, &n, d, e, z, &ldz, work, &info );
     }
@@ -54,7 +54,7 @@ struct stev_impl {
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixZ,
             typename WORK >
-    static void invoke( char const jobz, integer_t const n, VectorD& d,
+    static void invoke( const char jobz, const integer_t n, VectorD& d,
             VectorE& e, MatrixZ& z, integer_t& info, detail::workspace1<
             WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -76,7 +76,7 @@ struct stev_impl {
 
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n, VectorD& d,
+    static void invoke( const char jobz, const integer_t n, VectorD& d,
             VectorE& e, MatrixZ& z, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         invoke( jobz, n, d, e, z, info, workspace( tmp_work ) );
@@ -84,12 +84,12 @@ struct stev_impl {
 
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( char const jobz, integer_t const n, VectorD& d,
+    static void invoke( const char jobz, const integer_t n, VectorD& d,
             VectorE& e, MatrixZ& z, integer_t& info, optimal_workspace work ) {
         invoke( jobz, n, d, e, z, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, 2*n-2 );
     }
 };
@@ -98,7 +98,7 @@ struct stev_impl {
 // template function to call stev
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline integer_t stev( char const jobz, integer_t const n, VectorD& d,
+inline integer_t stev( const char jobz, const integer_t n, VectorD& d,
         VectorE& e, MatrixZ& z, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
@@ -108,7 +108,7 @@ inline integer_t stev( char const jobz, integer_t const n, VectorD& d,
 
 // template function to call stev, default workspace type
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline integer_t stev( char const jobz, integer_t const n, VectorD& d,
+inline integer_t stev( const char jobz, const integer_t n, VectorD& d,
         VectorE& e, MatrixZ& z ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);

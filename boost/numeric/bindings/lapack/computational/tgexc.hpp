@@ -37,36 +37,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tgexc( logical_t const wantq, logical_t const wantz,
-            integer_t const n, float* a, integer_t const lda, float* b,
-            integer_t const ldb, float* q, integer_t const ldq, float* z,
-            integer_t const ldz, integer_t& ifst, integer_t& ilst,
-            float* work, integer_t const lwork, integer_t& info ) {
+    inline void tgexc( const logical_t wantq, const logical_t wantz,
+            const integer_t n, float* a, const integer_t lda, float* b,
+            const integer_t ldb, float* q, const integer_t ldq, float* z,
+            const integer_t ldz, integer_t& ifst, integer_t& ilst,
+            float* work, const integer_t lwork, integer_t& info ) {
         LAPACK_STGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,
                 &ifst, &ilst, work, &lwork, &info );
     }
-    inline void tgexc( logical_t const wantq, logical_t const wantz,
-            integer_t const n, double* a, integer_t const lda, double* b,
-            integer_t const ldb, double* q, integer_t const ldq, double* z,
-            integer_t const ldz, integer_t& ifst, integer_t& ilst,
-            double* work, integer_t const lwork, integer_t& info ) {
+    inline void tgexc( const logical_t wantq, const logical_t wantz,
+            const integer_t n, double* a, const integer_t lda, double* b,
+            const integer_t ldb, double* q, const integer_t ldq, double* z,
+            const integer_t ldz, integer_t& ifst, integer_t& ilst,
+            double* work, const integer_t lwork, integer_t& info ) {
         LAPACK_DTGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,
                 &ifst, &ilst, work, &lwork, &info );
     }
-    inline void tgexc( logical_t const wantq, logical_t const wantz,
-            integer_t const n, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* b, integer_t const ldb, traits::complex_f* q,
-            integer_t const ldq, traits::complex_f* z, integer_t const ldz,
-            integer_t const ifst, integer_t& ilst, integer_t& info ) {
+    inline void tgexc( const logical_t wantq, const logical_t wantz,
+            const integer_t n, traits::complex_f* a, const integer_t lda,
+            traits::complex_f* b, const integer_t ldb, traits::complex_f* q,
+            const integer_t ldq, traits::complex_f* z, const integer_t ldz,
+            const integer_t ifst, integer_t& ilst, integer_t& info ) {
         LAPACK_CTGEXC( &wantq, &wantz, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
                 traits::complex_ptr(z), &ldz, &ifst, &ilst, &info );
     }
-    inline void tgexc( logical_t const wantq, logical_t const wantz,
-            integer_t const n, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* b, integer_t const ldb, traits::complex_d* q,
-            integer_t const ldq, traits::complex_d* z, integer_t const ldz,
-            integer_t const ifst, integer_t& ilst, integer_t& info ) {
+    inline void tgexc( const logical_t wantq, const logical_t wantz,
+            const integer_t n, traits::complex_d* a, const integer_t lda,
+            traits::complex_d* b, const integer_t ldb, traits::complex_d* q,
+            const integer_t ldq, traits::complex_d* z, const integer_t ldz,
+            const integer_t ifst, integer_t& ilst, integer_t& info ) {
         LAPACK_ZTGEXC( &wantq, &wantz, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
                 traits::complex_ptr(z), &ldz, &ifst, &ilst, &info );
@@ -87,8 +87,8 @@ struct tgexc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixQ,
             typename MatrixZ >
-    static void invoke( logical_t const wantq, logical_t const wantz,
-            integer_t const n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
+    static void invoke( const logical_t wantq, const logical_t wantz,
+            const integer_t n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
             integer_t& ifst, integer_t& ilst, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -124,9 +124,9 @@ struct tgexc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixQ,
             typename MatrixZ, $WORKSPACE_TYPENAMES >
-    static void invoke( logical_t const wantq, logical_t const wantz,
-            integer_t const n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
-            integer_t const ifst, integer_t& ilst, integer_t& info,
+    static void invoke( const logical_t wantq, const logical_t wantz,
+            const integer_t n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
+            const integer_t ifst, integer_t& ilst, integer_t& info,
             detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -150,9 +150,9 @@ struct tgexc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixQ,
             typename MatrixZ >
-    static void invoke( logical_t const wantq, logical_t const wantz,
-            integer_t const n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
-            integer_t const ifst, integer_t& ilst, integer_t& info,
+    static void invoke( const logical_t wantq, const logical_t wantz,
+            const integer_t n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
+            const integer_t ifst, integer_t& ilst, integer_t& info,
             minimal_workspace work ) {
 $SETUP_MIN_WORKARRAYS_POST
         invoke( wantq, wantz, n, a, b, q, z, ifst, ilst, info,
@@ -162,9 +162,9 @@ $SETUP_MIN_WORKARRAYS_POST
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixQ,
             typename MatrixZ >
-    static void invoke( logical_t const wantq, logical_t const wantz,
-            integer_t const n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
-            integer_t const ifst, integer_t& ilst, integer_t& info,
+    static void invoke( const logical_t wantq, const logical_t wantz,
+            const integer_t n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
+            const integer_t ifst, integer_t& ilst, integer_t& info,
             optimal_workspace work ) {
 $OPT_WORKSPACE_FUNC
     }
@@ -176,8 +176,8 @@ $MIN_SIZE_FUNCS
 // template function to call tgexc
 template< typename MatrixA, typename MatrixB, typename MatrixQ,
         typename MatrixZ >
-inline integer_t tgexc( logical_t const wantq, logical_t const wantz,
-        integer_t const n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
+inline integer_t tgexc( const logical_t wantq, const logical_t wantz,
+        const integer_t n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
         integer_t& ifst, integer_t& ilst ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -188,9 +188,9 @@ inline integer_t tgexc( logical_t const wantq, logical_t const wantz,
 // template function to call tgexc
 template< typename MatrixA, typename MatrixB, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline integer_t tgexc( logical_t const wantq, logical_t const wantz,
-        integer_t const n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
-        integer_t const ifst, integer_t& ilst, Workspace work ) {
+inline integer_t tgexc( const logical_t wantq, const logical_t wantz,
+        const integer_t n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
+        const integer_t ifst, integer_t& ilst, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     tgexc_impl< value_type >::invoke( wantq, wantz, n, a, b, q, z, ifst,
@@ -201,9 +201,9 @@ inline integer_t tgexc( logical_t const wantq, logical_t const wantz,
 // template function to call tgexc, default workspace type
 template< typename MatrixA, typename MatrixB, typename MatrixQ,
         typename MatrixZ >
-inline integer_t tgexc( logical_t const wantq, logical_t const wantz,
-        integer_t const n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
-        integer_t const ifst, integer_t& ilst ) {
+inline integer_t tgexc( const logical_t wantq, const logical_t wantz,
+        const integer_t n, MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
+        const integer_t ifst, integer_t& ilst ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     tgexc_impl< value_type >::invoke( wantq, wantz, n, a, b, q, z, ifst,

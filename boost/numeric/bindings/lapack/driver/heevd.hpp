@@ -34,19 +34,19 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void heevd( char const jobz, char const uplo, integer_t const n,
-            traits::complex_f* a, integer_t const lda, float* w,
-            traits::complex_f* work, integer_t const lwork, float* rwork,
-            integer_t const lrwork, integer_t* iwork, integer_t const liwork,
+    inline void heevd( const char jobz, const char uplo, const integer_t n,
+            traits::complex_f* a, const integer_t lda, float* w,
+            traits::complex_f* work, const integer_t lwork, float* rwork,
+            const integer_t lrwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_CHEEVD( &jobz, &uplo, &n, traits::complex_ptr(a), &lda, w,
                 traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork,
                 &liwork, &info );
     }
-    inline void heevd( char const jobz, char const uplo, integer_t const n,
-            traits::complex_d* a, integer_t const lda, double* w,
-            traits::complex_d* work, integer_t const lwork, double* rwork,
-            integer_t const lrwork, integer_t* iwork, integer_t const liwork,
+    inline void heevd( const char jobz, const char uplo, const integer_t n,
+            traits::complex_d* a, const integer_t lda, double* w,
+            traits::complex_d* work, const integer_t lwork, double* rwork,
+            const integer_t lrwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_ZHEEVD( &jobz, &uplo, &n, traits::complex_ptr(a), &lda, w,
                 traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork,
@@ -64,7 +64,7 @@ struct heevd_impl {
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorW, typename WORK,
             typename RWORK, typename IWORK >
-    static void invoke( char const jobz, MatrixA& a, VectorW& w,
+    static void invoke( const char jobz, MatrixA& a, VectorW& w,
             integer_t& info, detail::workspace3< WORK, RWORK, IWORK > work ) {
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
@@ -91,7 +91,7 @@ struct heevd_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorW >
-    static void invoke( char const jobz, MatrixA& a, VectorW& w,
+    static void invoke( const char jobz, MatrixA& a, VectorW& w,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( jobz,
                 traits::matrix_num_columns(a) ) );
@@ -105,7 +105,7 @@ struct heevd_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorW >
-    static void invoke( char const jobz, MatrixA& a, VectorW& w,
+    static void invoke( const char jobz, MatrixA& a, VectorW& w,
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         real_type opt_size_rwork;
@@ -124,7 +124,7 @@ struct heevd_impl {
                 tmp_iwork ) );
     }
 
-    static integer_t min_size_work( char const jobz, integer_t const n ) {
+    static integer_t min_size_work( const char jobz, const integer_t n ) {
         if ( n < 2 )
             return 1;
         else {
@@ -135,7 +135,7 @@ struct heevd_impl {
         }
     }
 
-    static integer_t min_size_rwork( char const jobz, integer_t const n ) {
+    static integer_t min_size_rwork( const char jobz, const integer_t n ) {
         if ( n < 2 )
             return 1;
         else {
@@ -146,7 +146,7 @@ struct heevd_impl {
         }
     }
 
-    static integer_t min_size_iwork( char const jobz, integer_t const n ) {
+    static integer_t min_size_iwork( const char jobz, const integer_t n ) {
         if ( jobz == 'N' || n < 2 )
             return 1;
         else
@@ -157,7 +157,7 @@ struct heevd_impl {
 
 // template function to call heevd
 template< typename MatrixA, typename VectorW, typename Workspace >
-inline integer_t heevd( char const jobz, MatrixA& a, VectorW& w,
+inline integer_t heevd( const char jobz, MatrixA& a, VectorW& w,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -167,7 +167,7 @@ inline integer_t heevd( char const jobz, MatrixA& a, VectorW& w,
 
 // template function to call heevd, default workspace type
 template< typename MatrixA, typename VectorW >
-inline integer_t heevd( char const jobz, MatrixA& a, VectorW& w ) {
+inline integer_t heevd( const char jobz, MatrixA& a, VectorW& w ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     heevd_impl< value_type >::invoke( jobz, a, w, info,

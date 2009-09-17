@@ -37,26 +37,26 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gelqf( integer_t const m, integer_t const n, float* a,
-            integer_t const lda, float* tau, float* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void gelqf( const integer_t m, const integer_t n, float* a,
+            const integer_t lda, float* tau, float* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_SGELQF( &m, &n, a, &lda, tau, work, &lwork, &info );
     }
-    inline void gelqf( integer_t const m, integer_t const n, double* a,
-            integer_t const lda, double* tau, double* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void gelqf( const integer_t m, const integer_t n, double* a,
+            const integer_t lda, double* tau, double* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_DGELQF( &m, &n, a, &lda, tau, work, &lwork, &info );
     }
-    inline void gelqf( integer_t const m, integer_t const n,
-            traits::complex_f* a, integer_t const lda, traits::complex_f* tau,
-            traits::complex_f* work, integer_t const lwork, integer_t& info ) {
+    inline void gelqf( const integer_t m, const integer_t n,
+            traits::complex_f* a, const integer_t lda, traits::complex_f* tau,
+            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
         LAPACK_CGELQF( &m, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
                 &info );
     }
-    inline void gelqf( integer_t const m, integer_t const n,
-            traits::complex_d* a, integer_t const lda, traits::complex_d* tau,
-            traits::complex_d* work, integer_t const lwork, integer_t& info ) {
+    inline void gelqf( const integer_t m, const integer_t n,
+            traits::complex_d* a, const integer_t lda, traits::complex_d* tau,
+            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
         LAPACK_ZGELQF( &m, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
                 &info );
@@ -120,7 +120,7 @@ struct gelqf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         invoke( a, tau, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const m ) {
+    static integer_t min_size_work( const integer_t m ) {
         return std::max( 1, m );
     }
 };
@@ -178,7 +178,7 @@ struct gelqf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         invoke( a, tau, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const m ) {
+    static integer_t min_size_work( const integer_t m ) {
         return std::max( 1, m );
     }
 };

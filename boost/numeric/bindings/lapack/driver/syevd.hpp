@@ -34,16 +34,16 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void syevd( char const jobz, char const uplo, integer_t const n,
-            float* a, integer_t const lda, float* w, float* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+    inline void syevd( const char jobz, const char uplo, const integer_t n,
+            float* a, const integer_t lda, float* w, float* work,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_SSYEVD( &jobz, &uplo, &n, a, &lda, w, work, &lwork, iwork,
                 &liwork, &info );
     }
-    inline void syevd( char const jobz, char const uplo, integer_t const n,
-            double* a, integer_t const lda, double* w, double* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+    inline void syevd( const char jobz, const char uplo, const integer_t n,
+            double* a, const integer_t lda, double* w, double* work,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_DSYEVD( &jobz, &uplo, &n, a, &lda, w, work, &lwork, iwork,
                 &liwork, &info );
@@ -60,7 +60,7 @@ struct syevd_impl {
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorW, typename WORK,
             typename IWORK >
-    static void invoke( char const jobz, MatrixA& a, VectorW& w,
+    static void invoke( const char jobz, MatrixA& a, VectorW& w,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
@@ -86,7 +86,7 @@ struct syevd_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorW >
-    static void invoke( char const jobz, MatrixA& a, VectorW& w,
+    static void invoke( const char jobz, MatrixA& a, VectorW& w,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( jobz,
                 traits::matrix_num_columns(a) ) );
@@ -97,7 +97,7 @@ struct syevd_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorW >
-    static void invoke( char const jobz, MatrixA& a, VectorW& w,
+    static void invoke( const char jobz, MatrixA& a, VectorW& w,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         integer_t opt_size_iwork;
@@ -111,7 +111,7 @@ struct syevd_impl {
         invoke( jobz, a, w, info, workspace( tmp_work, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( char const jobz, integer_t const n ) {
+    static integer_t min_size_work( const char jobz, const integer_t n ) {
         if ( n < 2 )
             return 1;
         else {
@@ -122,7 +122,7 @@ struct syevd_impl {
         }
     }
 
-    static integer_t min_size_iwork( char const jobz, integer_t const n ) {
+    static integer_t min_size_iwork( const char jobz, const integer_t n ) {
         if ( jobz == 'N' || n < 2 )
             return 1;
         else
@@ -133,7 +133,7 @@ struct syevd_impl {
 
 // template function to call syevd
 template< typename MatrixA, typename VectorW, typename Workspace >
-inline integer_t syevd( char const jobz, MatrixA& a, VectorW& w,
+inline integer_t syevd( const char jobz, MatrixA& a, VectorW& w,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -143,7 +143,7 @@ inline integer_t syevd( char const jobz, MatrixA& a, VectorW& w,
 
 // template function to call syevd, default workspace type
 template< typename MatrixA, typename VectorW >
-inline integer_t syevd( char const jobz, MatrixA& a, VectorW& w ) {
+inline integer_t syevd( const char jobz, MatrixA& a, VectorW& w ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     syevd_impl< value_type >::invoke( jobz, a, w, info,

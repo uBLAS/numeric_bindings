@@ -33,17 +33,17 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void upgtr( char const uplo, integer_t const n,
-            traits::complex_f* ap, traits::complex_f* tau,
-            traits::complex_f* q, integer_t const ldq,
+    inline void upgtr( const char uplo, const integer_t n,
+            const traits::complex_f* ap, const traits::complex_f* tau,
+            traits::complex_f* q, const integer_t ldq,
             traits::complex_f* work, integer_t& info ) {
         LAPACK_CUPGTR( &uplo, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(tau), traits::complex_ptr(q), &ldq,
                 traits::complex_ptr(work), &info );
     }
-    inline void upgtr( char const uplo, integer_t const n,
-            traits::complex_d* ap, traits::complex_d* tau,
-            traits::complex_d* q, integer_t const ldq,
+    inline void upgtr( const char uplo, const integer_t n,
+            const traits::complex_d* ap, const traits::complex_d* tau,
+            traits::complex_d* q, const integer_t ldq,
             traits::complex_d* work, integer_t& info ) {
         LAPACK_ZUPGTR( &uplo, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(tau), traits::complex_ptr(q), &ldq,
@@ -61,8 +61,9 @@ struct upgtr_impl {
     // user-defined workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixQ,
             typename WORK >
-    static void invoke( char const uplo, VectorAP& ap, VectorTAU& tau,
-            MatrixQ& q, integer_t& info, detail::workspace1< WORK > work ) {
+    static void invoke( const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixQ& q, integer_t& info,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorAP >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -88,8 +89,9 @@ struct upgtr_impl {
 
     // minimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-    static void invoke( char const uplo, VectorAP& ap, VectorTAU& tau,
-            MatrixQ& q, integer_t& info, minimal_workspace work ) {
+    static void invoke( const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixQ& q, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(q) ) );
         invoke( uplo, ap, tau, q, info, workspace( tmp_work ) );
@@ -97,12 +99,13 @@ struct upgtr_impl {
 
     // optimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-    static void invoke( char const uplo, VectorAP& ap, VectorTAU& tau,
-            MatrixQ& q, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixQ& q, integer_t& info,
+            optimal_workspace work ) {
         invoke( uplo, ap, tau, q, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return n-1;
     }
 };
@@ -111,8 +114,8 @@ struct upgtr_impl {
 // template function to call upgtr
 template< typename VectorAP, typename VectorTAU, typename MatrixQ,
         typename Workspace >
-inline integer_t upgtr( char const uplo, VectorAP& ap, VectorTAU& tau,
-        MatrixQ& q, Workspace work ) {
+inline integer_t upgtr( const char uplo, const VectorAP& ap,
+        const VectorTAU& tau, MatrixQ& q, Workspace work ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
     upgtr_impl< value_type >::invoke( uplo, ap, tau, q, info, work );
@@ -121,8 +124,8 @@ inline integer_t upgtr( char const uplo, VectorAP& ap, VectorTAU& tau,
 
 // template function to call upgtr, default workspace type
 template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-inline integer_t upgtr( char const uplo, VectorAP& ap, VectorTAU& tau,
-        MatrixQ& q ) {
+inline integer_t upgtr( const char uplo, const VectorAP& ap,
+        const VectorTAU& tau, MatrixQ& q ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
     upgtr_impl< value_type >::invoke( uplo, ap, tau, q, info,

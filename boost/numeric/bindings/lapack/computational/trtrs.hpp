@@ -31,32 +31,32 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trtrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, float* a,
-            integer_t const lda, float* b, integer_t const ldb,
+    inline void trtrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs, const float* a,
+            const integer_t lda, float* b, const integer_t ldb,
             integer_t& info ) {
         LAPACK_STRTRS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb,
                 &info );
     }
-    inline void trtrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, double* a,
-            integer_t const lda, double* b, integer_t const ldb,
+    inline void trtrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs, const double* a,
+            const integer_t lda, double* b, const integer_t ldb,
             integer_t& info ) {
         LAPACK_DTRTRS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb,
                 &info );
     }
-    inline void trtrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void trtrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs,
+            const traits::complex_f* a, const integer_t lda,
+            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
         LAPACK_CTRTRS( &uplo, &trans, &diag, &n, &nrhs,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
                 &info );
     }
-    inline void trtrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void trtrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs,
+            const traits::complex_d* a, const integer_t lda,
+            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
         LAPACK_ZTRTRS( &uplo, &trans, &diag, &n, &nrhs,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
                 &info );
@@ -72,8 +72,8 @@ struct trtrs_impl {
 
     // templated specialization
     template< typename MatrixA, typename MatrixB >
-    static void invoke( char const uplo, char const trans, char const diag,
-            MatrixA& a, MatrixB& b, integer_t& info ) {
+    static void invoke( const char uplo, const char trans, const char diag,
+            const MatrixA& a, MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -96,8 +96,8 @@ struct trtrs_impl {
 
 // template function to call trtrs
 template< typename MatrixA, typename MatrixB >
-inline integer_t trtrs( char const uplo, char const trans,
-        char const diag, MatrixA& a, MatrixB& b ) {
+inline integer_t trtrs( const char uplo, const char trans,
+        const char diag, const MatrixA& a, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     trtrs_impl< value_type >::invoke( uplo, trans, diag, a, b, info );

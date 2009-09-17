@@ -31,25 +31,25 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbtrf( integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, float* ab,
-            integer_t const ldab, integer_t* ipiv, integer_t& info ) {
+    inline void gbtrf( const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, float* ab,
+            const integer_t ldab, integer_t* ipiv, integer_t& info ) {
         LAPACK_SGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
     }
-    inline void gbtrf( integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, double* ab,
-            integer_t const ldab, integer_t* ipiv, integer_t& info ) {
+    inline void gbtrf( const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, double* ab,
+            const integer_t ldab, integer_t* ipiv, integer_t& info ) {
         LAPACK_DGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
     }
-    inline void gbtrf( integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, traits::complex_f* ab,
-            integer_t const ldab, integer_t* ipiv, integer_t& info ) {
+    inline void gbtrf( const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, traits::complex_f* ab,
+            const integer_t ldab, integer_t* ipiv, integer_t& info ) {
         LAPACK_CGBTRF( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, ipiv,
                 &info );
     }
-    inline void gbtrf( integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, traits::complex_d* ab,
-            integer_t const ldab, integer_t* ipiv, integer_t& info ) {
+    inline void gbtrf( const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, traits::complex_d* ab,
+            const integer_t ldab, integer_t* ipiv, integer_t& info ) {
         LAPACK_ZGBTRF( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, ipiv,
                 &info );
     }
@@ -64,8 +64,8 @@ struct gbtrf_impl {
 
     // templated specialization
     template< typename MatrixAB, typename VectorIPIV >
-    static void invoke( integer_t const m, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
+    static void invoke( const integer_t m, const integer_t n,
+            const integer_t kl, const integer_t ku, MatrixAB& ab,
             VectorIPIV& ipiv, integer_t& info ) {
         BOOST_ASSERT( m >= 0 );
         BOOST_ASSERT( n >= 0 );
@@ -82,8 +82,8 @@ struct gbtrf_impl {
 
 // template function to call gbtrf
 template< typename MatrixAB, typename VectorIPIV >
-inline integer_t gbtrf( integer_t const m, integer_t const n,
-        integer_t const kl, integer_t const ku, MatrixAB& ab,
+inline integer_t gbtrf( const integer_t m, const integer_t n,
+        const integer_t kl, const integer_t ku, MatrixAB& ab,
         VectorIPIV& ipiv ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);

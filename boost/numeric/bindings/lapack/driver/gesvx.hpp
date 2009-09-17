@@ -36,31 +36,31 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gesvx( char const fact, char const trans, integer_t const n,
-            integer_t const nrhs, float* a, integer_t const lda, float* af,
-            integer_t const ldaf, integer_t* ipiv, char& equed, float* r,
-            float* c, float* b, integer_t const ldb, float* x,
-            integer_t const ldx, float& rcond, float* ferr, float* berr,
+    inline void gesvx( const char fact, const char trans, const integer_t n,
+            const integer_t nrhs, float* a, const integer_t lda, float* af,
+            const integer_t ldaf, integer_t* ipiv, char& equed, float* r,
+            float* c, float* b, const integer_t ldb, float* x,
+            const integer_t ldx, float& rcond, float* ferr, float* berr,
             float* work, integer_t* iwork, integer_t& info ) {
         LAPACK_SGESVX( &fact, &trans, &n, &nrhs, a, &lda, af, &ldaf, ipiv,
                 &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
                 iwork, &info );
     }
-    inline void gesvx( char const fact, char const trans, integer_t const n,
-            integer_t const nrhs, double* a, integer_t const lda, double* af,
-            integer_t const ldaf, integer_t* ipiv, char& equed, double* r,
-            double* c, double* b, integer_t const ldb, double* x,
-            integer_t const ldx, double& rcond, double* ferr, double* berr,
+    inline void gesvx( const char fact, const char trans, const integer_t n,
+            const integer_t nrhs, double* a, const integer_t lda, double* af,
+            const integer_t ldaf, integer_t* ipiv, char& equed, double* r,
+            double* c, double* b, const integer_t ldb, double* x,
+            const integer_t ldx, double& rcond, double* ferr, double* berr,
             double* work, integer_t* iwork, integer_t& info ) {
         LAPACK_DGESVX( &fact, &trans, &n, &nrhs, a, &lda, af, &ldaf, ipiv,
                 &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
                 iwork, &info );
     }
-    inline void gesvx( char const fact, char const trans, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* af, integer_t const ldaf, integer_t* ipiv,
+    inline void gesvx( const char fact, const char trans, const integer_t n,
+            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
+            traits::complex_f* af, const integer_t ldaf, integer_t* ipiv,
             char& equed, float* r, float* c, traits::complex_f* b,
-            integer_t const ldb, traits::complex_f* x, integer_t const ldx,
+            const integer_t ldb, traits::complex_f* x, const integer_t ldx,
             float& rcond, float* ferr, float* berr, traits::complex_f* work,
             float* rwork, integer_t& info ) {
         LAPACK_CGESVX( &fact, &trans, &n, &nrhs, traits::complex_ptr(a), &lda,
@@ -68,11 +68,11 @@ namespace detail {
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
                 &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
     }
-    inline void gesvx( char const fact, char const trans, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* af, integer_t const ldaf, integer_t* ipiv,
+    inline void gesvx( const char fact, const char trans, const integer_t n,
+            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
+            traits::complex_d* af, const integer_t ldaf, integer_t* ipiv,
             char& equed, double* r, double* c, traits::complex_d* b,
-            integer_t const ldb, traits::complex_d* x, integer_t const ldx,
+            const integer_t ldb, traits::complex_d* x, const integer_t ldx,
             double& rcond, double* ferr, double* berr,
             traits::complex_d* work, double* rwork, integer_t& info ) {
         LAPACK_ZGESVX( &fact, &trans, &n, &nrhs, traits::complex_ptr(a), &lda,
@@ -98,7 +98,7 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename IWORK >
-    static void invoke( char const fact, char const trans, MatrixA& a,
+    static void invoke( const char fact, const char trans, MatrixA& a,
             MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r,
             VectorC& c, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
@@ -161,7 +161,7 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( char const fact, char const trans, MatrixA& a,
+    static void invoke( const char fact, const char trans, MatrixA& a,
             MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r,
             VectorC& c, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
@@ -178,7 +178,7 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( char const fact, char const trans, MatrixA& a,
+    static void invoke( const char fact, const char trans, MatrixA& a,
             MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r,
             VectorC& c, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
@@ -187,11 +187,11 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 berr, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 4*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -208,7 +208,7 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename RWORK >
-    static void invoke( char const fact, char const trans, MatrixA& a,
+    static void invoke( const char fact, const char trans, MatrixA& a,
             MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r,
             VectorC& c, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
@@ -268,7 +268,7 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( char const fact, char const trans, MatrixA& a,
+    static void invoke( const char fact, const char trans, MatrixA& a,
             MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r,
             VectorC& c, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
@@ -285,7 +285,7 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename VectorR, typename VectorC, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( char const fact, char const trans, MatrixA& a,
+    static void invoke( const char fact, const char trans, MatrixA& a,
             MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r,
             VectorC& c, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
@@ -294,11 +294,11 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 berr, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return 2*n;
     }
 };
@@ -309,7 +309,7 @@ template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename VectorR, typename VectorC, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline integer_t gesvx( char const fact, char const trans, MatrixA& a,
+inline integer_t gesvx( const char fact, const char trans, MatrixA& a,
         MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, MatrixX& x, typename traits::type_traits<
         typename traits::matrix_traits<
@@ -326,7 +326,7 @@ inline integer_t gesvx( char const fact, char const trans, MatrixA& a,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename VectorR, typename VectorC, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline integer_t gesvx( char const fact, char const trans, MatrixA& a,
+inline integer_t gesvx( const char fact, const char trans, MatrixA& a,
         MatrixAF& af, VectorIPIV& ipiv, char& equed, VectorR& r, VectorC& c,
         MatrixB& b, MatrixX& x, typename traits::type_traits<
         typename traits::matrix_traits<

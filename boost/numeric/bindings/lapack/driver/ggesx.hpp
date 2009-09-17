@@ -37,41 +37,41 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ggesx( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, char const sense, integer_t const n, float* a,
-            integer_t const lda, float* b, integer_t const ldb,
+    inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const char sense, const integer_t n, float* a,
+            const integer_t lda, float* b, const integer_t ldb,
             integer_t& sdim, float* alphar, float* alphai, float* beta,
-            float* vsl, integer_t const ldvsl, float* vsr,
-            integer_t const ldvsr, float* rconde, float* rcondv, float* work,
-            integer_t const lwork, integer_t* iwork, integer_t const liwork,
+            float* vsl, const integer_t ldvsl, float* vsr,
+            const integer_t ldvsr, float* rconde, float* rcondv, float* work,
+            const integer_t lwork, integer_t* iwork, const integer_t liwork,
             logical_t* bwork, integer_t& info ) {
         LAPACK_SGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n, a, &lda,
                 b, &ldb, &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr,
                 &ldvsr, rconde, rcondv, work, &lwork, iwork, &liwork, bwork,
                 &info );
     }
-    inline void ggesx( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, char const sense, integer_t const n, double* a,
-            integer_t const lda, double* b, integer_t const ldb,
+    inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const char sense, const integer_t n, double* a,
+            const integer_t lda, double* b, const integer_t ldb,
             integer_t& sdim, double* alphar, double* alphai, double* beta,
-            double* vsl, integer_t const ldvsl, double* vsr,
-            integer_t const ldvsr, double* rconde, double* rcondv,
-            double* work, integer_t const lwork, integer_t* iwork,
-            integer_t const liwork, logical_t* bwork, integer_t& info ) {
+            double* vsl, const integer_t ldvsl, double* vsr,
+            const integer_t ldvsr, double* rconde, double* rcondv,
+            double* work, const integer_t lwork, integer_t* iwork,
+            const integer_t liwork, logical_t* bwork, integer_t& info ) {
         LAPACK_DGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n, a, &lda,
                 b, &ldb, &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr,
                 &ldvsr, rconde, rcondv, work, &lwork, iwork, &liwork, bwork,
                 &info );
     }
-    inline void ggesx( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, char const sense, integer_t const n,
-            traits::complex_f* a, integer_t const lda, traits::complex_f* b,
-            integer_t const ldb, integer_t& sdim, traits::complex_f* alpha,
+    inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const char sense, const integer_t n,
+            traits::complex_f* a, const integer_t lda, traits::complex_f* b,
+            const integer_t ldb, integer_t& sdim, traits::complex_f* alpha,
             traits::complex_f* beta, traits::complex_f* vsl,
-            integer_t const ldvsl, traits::complex_f* vsr,
-            integer_t const ldvsr, float* rconde, float* rcondv,
-            traits::complex_f* work, integer_t const lwork, float* rwork,
-            integer_t* iwork, integer_t const liwork, logical_t* bwork,
+            const integer_t ldvsl, traits::complex_f* vsr,
+            const integer_t ldvsr, float* rconde, float* rcondv,
+            traits::complex_f* work, const integer_t lwork, float* rwork,
+            integer_t* iwork, const integer_t liwork, logical_t* bwork,
             integer_t& info ) {
         LAPACK_CGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
@@ -80,15 +80,15 @@ namespace detail {
                 &ldvsr, rconde, rcondv, traits::complex_ptr(work), &lwork,
                 rwork, iwork, &liwork, bwork, &info );
     }
-    inline void ggesx( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, char const sense, integer_t const n,
-            traits::complex_d* a, integer_t const lda, traits::complex_d* b,
-            integer_t const ldb, integer_t& sdim, traits::complex_d* alpha,
+    inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const char sense, const integer_t n,
+            traits::complex_d* a, const integer_t lda, traits::complex_d* b,
+            const integer_t ldb, integer_t& sdim, traits::complex_d* alpha,
             traits::complex_d* beta, traits::complex_d* vsl,
-            integer_t const ldvsl, traits::complex_d* vsr,
-            integer_t const ldvsr, double* rconde, double* rcondv,
-            traits::complex_d* work, integer_t const lwork, double* rwork,
-            integer_t* iwork, integer_t const liwork, logical_t* bwork,
+            const integer_t ldvsl, traits::complex_d* vsr,
+            const integer_t ldvsr, double* rconde, double* rcondv,
+            traits::complex_d* work, const integer_t lwork, double* rwork,
+            integer_t* iwork, const integer_t liwork, logical_t* bwork,
             integer_t& info ) {
         LAPACK_ZGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
@@ -115,8 +115,8 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR, typename VectorRCONDE, typename VectorRCONDV,
             typename WORK, typename IWORK, typename BWORK >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, char const sense, MatrixA& a, MatrixB& b,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
             integer_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
             VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
             VectorRCONDE& rconde, VectorRCONDV& rcondv, integer_t& info,
@@ -186,8 +186,8 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR, typename VectorRCONDE, typename VectorRCONDV >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, char const sense, MatrixA& a, MatrixB& b,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
             integer_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
             VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
             VectorRCONDE& rconde, VectorRCONDV& rcondv, integer_t& info,
@@ -207,8 +207,8 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
             typename MatrixVSR, typename VectorRCONDE, typename VectorRCONDV >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, char const sense, MatrixA& a, MatrixB& b,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
             integer_t& sdim, VectorALPHAR& alphar, VectorALPHAI& alphai,
             VectorBETA& beta, MatrixVSL& vsl, MatrixVSR& vsr,
             VectorRCONDE& rconde, VectorRCONDV& rcondv, integer_t& info,
@@ -236,7 +236,7 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 workspace( tmp_work, tmp_iwork, tmp_bwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n, char const sense ) {
+    static integer_t min_size_work( const integer_t n, const char sense ) {
         if ( n == 0 )
             return 1;
         if ( sense == 'N' )
@@ -245,14 +245,14 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             return std::max( 8*n, std::max( 6*n+16, n*n/2 ));
     }
 
-    static integer_t min_size_iwork( integer_t const n, char const sense ) {
+    static integer_t min_size_iwork( const integer_t n, const char sense ) {
         if ( sense == 'N' )
             return 1;
         else
             return std::max( 1, n+6 );
     }
 
-    static integer_t min_size_bwork( integer_t const n, char const sort ) {
+    static integer_t min_size_bwork( const integer_t n, const char sort ) {
         if ( sort == 'N' )
             return 0;
         else
@@ -272,8 +272,8 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
             typename VectorRCONDE, typename VectorRCONDV, typename WORK,
             typename RWORK, typename IWORK, typename BWORK >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, char const sense, MatrixA& a, MatrixB& b,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
             integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
             MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
             VectorRCONDV& rcondv, integer_t& info, detail::workspace4< WORK,
@@ -339,8 +339,8 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
             typename VectorRCONDE, typename VectorRCONDV >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, char const sense, MatrixA& a, MatrixB& b,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
             integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
             MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
             VectorRCONDV& rcondv, integer_t& info, minimal_workspace work ) {
@@ -361,8 +361,8 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
             typename VectorRCONDE, typename VectorRCONDV >
-    static void invoke( char const jobvsl, char const jobvsr, char const sort,
-            logical_t* selctg, char const sense, MatrixA& a, MatrixB& b,
+    static void invoke( const char jobvsl, const char jobvsr, const char sort,
+            logical_t* selctg, const char sense, MatrixA& a, MatrixB& b,
             integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
             MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
             VectorRCONDV& rcondv, integer_t& info, optimal_workspace work ) {
@@ -391,25 +391,25 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 tmp_rwork, tmp_iwork, tmp_bwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n, char const sense ) {
+    static integer_t min_size_work( const integer_t n, const char sense ) {
         if ( sense == 'N' )
             return std::max( 1, 2*n );
         else
             return std::max( 1, std::max( 2*n, n*n/2 ) );
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return 8*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n, char const sense ) {
+    static integer_t min_size_iwork( const integer_t n, const char sense ) {
         if ( sense == 'N' )
             return 1;
         else
             return std::max( 1, n+2 );
     }
 
-    static integer_t min_size_bwork( integer_t const n, char const sort ) {
+    static integer_t min_size_bwork( const integer_t n, const char sort ) {
         if ( sort == 'N' )
             return 0;
         else
@@ -423,8 +423,8 @@ template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename VectorRCONDE, typename VectorRCONDV,
         typename Workspace >
-inline integer_t ggesx( char const jobvsl, char const jobvsr,
-        char const sort, logical_t* selctg, char const sense, MatrixA& a,
+inline integer_t ggesx( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, const char sense, MatrixA& a,
         MatrixB& b, integer_t& sdim, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv,
@@ -441,8 +441,8 @@ inline integer_t ggesx( char const jobvsl, char const jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixVSL,
         typename MatrixVSR, typename VectorRCONDE, typename VectorRCONDV >
-inline integer_t ggesx( char const jobvsl, char const jobvsr,
-        char const sort, logical_t* selctg, char const sense, MatrixA& a,
+inline integer_t ggesx( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, const char sense, MatrixA& a,
         MatrixB& b, integer_t& sdim, VectorALPHAR& alphar,
         VectorALPHAI& alphai, VectorBETA& beta, MatrixVSL& vsl,
         MatrixVSR& vsr, VectorRCONDE& rconde, VectorRCONDV& rcondv ) {
@@ -457,8 +457,8 @@ inline integer_t ggesx( char const jobvsl, char const jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
         typename VectorRCONDE, typename VectorRCONDV, typename Workspace >
-inline integer_t ggesx( char const jobvsl, char const jobvsr,
-        char const sort, logical_t* selctg, char const sense, MatrixA& a,
+inline integer_t ggesx( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, const char sense, MatrixA& a,
         MatrixB& b, integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv, Workspace work ) {
@@ -474,8 +474,8 @@ inline integer_t ggesx( char const jobvsl, char const jobvsr,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixVSL, typename MatrixVSR,
         typename VectorRCONDE, typename VectorRCONDV >
-inline integer_t ggesx( char const jobvsl, char const jobvsr,
-        char const sort, logical_t* selctg, char const sense, MatrixA& a,
+inline integer_t ggesx( const char jobvsl, const char jobvsr,
+        const char sort, logical_t* selctg, const char sense, MatrixA& a,
         MatrixB& b, integer_t& sdim, VectorALPHA& alpha, VectorBETA& beta,
         MatrixVSL& vsl, MatrixVSR& vsr, VectorRCONDE& rconde,
         VectorRCONDV& rcondv ) {

@@ -31,11 +31,11 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sterf( integer_t const n, float* d, float* e,
+    inline void sterf( const integer_t n, float* d, float* e,
             integer_t& info ) {
         LAPACK_SSTERF( &n, d, e, &info );
     }
-    inline void sterf( integer_t const n, double* d, double* e,
+    inline void sterf( const integer_t n, double* d, double* e,
             integer_t& info ) {
         LAPACK_DSTERF( &n, d, e, &info );
     }
@@ -50,7 +50,7 @@ struct sterf_impl {
 
     // templated specialization
     template< typename VectorD, typename VectorE >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e,
+    static void invoke( const integer_t n, VectorD& d, VectorE& e,
             integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
@@ -65,7 +65,7 @@ struct sterf_impl {
 
 // template function to call sterf
 template< typename VectorD, typename VectorE >
-inline integer_t sterf( integer_t const n, VectorD& d, VectorE& e ) {
+inline integer_t sterf( const integer_t n, VectorD& d, VectorE& e ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
     sterf_impl< value_type >::invoke( n, d, e, info );

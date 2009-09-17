@@ -34,20 +34,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void unmql( char const side, char const trans, integer_t const m,
-            integer_t const n, integer_t const k, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* tau, traits::complex_f* c,
-            integer_t const ldc, traits::complex_f* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void unmql( const char side, const char trans, const integer_t m,
+            const integer_t n, const integer_t k, const traits::complex_f* a,
+            const integer_t lda, const traits::complex_f* tau,
+            traits::complex_f* c, const integer_t ldc,
+            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
         LAPACK_CUNMQL( &side, &trans, &m, &n, &k, traits::complex_ptr(a),
                 &lda, traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
                 traits::complex_ptr(work), &lwork, &info );
     }
-    inline void unmql( char const side, char const trans, integer_t const m,
-            integer_t const n, integer_t const k, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* tau, traits::complex_d* c,
-            integer_t const ldc, traits::complex_d* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void unmql( const char side, const char trans, const integer_t m,
+            const integer_t n, const integer_t k, const traits::complex_d* a,
+            const integer_t lda, const traits::complex_d* tau,
+            traits::complex_d* c, const integer_t ldc,
+            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
         LAPACK_ZUNMQL( &side, &trans, &m, &n, &k, traits::complex_ptr(a),
                 &lda, traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
                 traits::complex_ptr(work), &lwork, &info );
@@ -64,9 +64,9 @@ struct unmql_impl {
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static void invoke( char const side, char const trans, integer_t const k,
-            MatrixA& a, VectorTAU& tau, MatrixC& c, integer_t& info,
-            detail::workspace1< WORK > work ) {
+    static void invoke( const char side, const char trans, const integer_t k,
+            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -93,9 +93,9 @@ struct unmql_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const trans, integer_t const k,
-            MatrixA& a, VectorTAU& tau, MatrixC& c, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( const char side, const char trans, const integer_t k,
+            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( side,
                 traits::matrix_num_rows(c), traits::matrix_num_columns(c) ) );
         invoke( side, trans, k, a, tau, c, info, workspace( tmp_work ) );
@@ -103,9 +103,9 @@ struct unmql_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU, typename MatrixC >
-    static void invoke( char const side, char const trans, integer_t const k,
-            MatrixA& a, VectorTAU& tau, MatrixC& c, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( const char side, const char trans, const integer_t k,
+            const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+            integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         detail::unmql( side, trans, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c), k, traits::matrix_storage(a),
@@ -117,8 +117,8 @@ struct unmql_impl {
         invoke( side, trans, k, a, tau, c, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( char const side, integer_t const m,
-            integer_t const n ) {
+    static integer_t min_size_work( const char side, const integer_t m,
+            const integer_t n ) {
         if ( side == 'L' )
             return std::max( 1, n );
         else
@@ -130,8 +130,8 @@ struct unmql_impl {
 // template function to call unmql
 template< typename MatrixA, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline integer_t unmql( char const side, char const trans,
-        integer_t const k, MatrixA& a, VectorTAU& tau, MatrixC& c,
+inline integer_t unmql( const char side, const char trans,
+        const integer_t k, const MatrixA& a, const VectorTAU& tau, MatrixC& c,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -142,8 +142,9 @@ inline integer_t unmql( char const side, char const trans,
 
 // template function to call unmql, default workspace type
 template< typename MatrixA, typename VectorTAU, typename MatrixC >
-inline integer_t unmql( char const side, char const trans,
-        integer_t const k, MatrixA& a, VectorTAU& tau, MatrixC& c ) {
+inline integer_t unmql( const char side, const char trans,
+        const integer_t k, const MatrixA& a, const VectorTAU& tau,
+        MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     unmql_impl< value_type >::invoke( side, trans, k, a, tau, c, info,

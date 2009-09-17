@@ -33,17 +33,17 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hpgv( integer_t const itype, char const jobz, char const uplo,
-            integer_t const n, traits::complex_f* ap, traits::complex_f* bp,
-            float* w, traits::complex_f* z, integer_t const ldz,
+    inline void hpgv( const integer_t itype, const char jobz, const char uplo,
+            const integer_t n, traits::complex_f* ap, traits::complex_f* bp,
+            float* w, traits::complex_f* z, const integer_t ldz,
             traits::complex_f* work, float* rwork, integer_t& info ) {
         LAPACK_CHPGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(bp), w, traits::complex_ptr(z), &ldz,
                 traits::complex_ptr(work), rwork, &info );
     }
-    inline void hpgv( integer_t const itype, char const jobz, char const uplo,
-            integer_t const n, traits::complex_d* ap, traits::complex_d* bp,
-            double* w, traits::complex_d* z, integer_t const ldz,
+    inline void hpgv( const integer_t itype, const char jobz, const char uplo,
+            const integer_t n, traits::complex_d* ap, traits::complex_d* bp,
+            double* w, traits::complex_d* z, const integer_t ldz,
             traits::complex_d* work, double* rwork, integer_t& info ) {
         LAPACK_ZHPGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(bp), w, traits::complex_ptr(z), &ldz,
@@ -61,8 +61,8 @@ struct hpgv_impl {
     // user-defined workspace specialization
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ, typename WORK, typename RWORK >
-    static void invoke( integer_t const itype, char const jobz,
-            integer_t const n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
+    static void invoke( const integer_t itype, const char jobz,
+            const integer_t n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
             MatrixZ& z, integer_t& info, detail::workspace2< WORK,
             RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -90,8 +90,8 @@ struct hpgv_impl {
     // minimal workspace specialization
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ >
-    static void invoke( integer_t const itype, char const jobz,
-            integer_t const n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
+    static void invoke( const integer_t itype, const char jobz,
+            const integer_t n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
             MatrixZ& z, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
@@ -102,17 +102,17 @@ struct hpgv_impl {
     // optimal workspace specialization
     template< typename MatrixAP, typename MatrixBP, typename VectorW,
             typename MatrixZ >
-    static void invoke( integer_t const itype, char const jobz,
-            integer_t const n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
+    static void invoke( const integer_t itype, const char jobz,
+            const integer_t n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
             MatrixZ& z, integer_t& info, optimal_workspace work ) {
         invoke( itype, jobz, n, ap, bp, w, z, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max(1,2*n-1);
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return std::max(1,3*n-2);
     }
 };
@@ -121,8 +121,8 @@ struct hpgv_impl {
 // template function to call hpgv
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ, typename Workspace >
-inline integer_t hpgv( integer_t const itype, char const jobz,
-        integer_t const n, MatrixAP& ap, MatrixBP& bp, VectorW& w, MatrixZ& z,
+inline integer_t hpgv( const integer_t itype, const char jobz,
+        const integer_t n, MatrixAP& ap, MatrixBP& bp, VectorW& w, MatrixZ& z,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);
@@ -134,8 +134,8 @@ inline integer_t hpgv( integer_t const itype, char const jobz,
 // template function to call hpgv, default workspace type
 template< typename MatrixAP, typename MatrixBP, typename VectorW,
         typename MatrixZ >
-inline integer_t hpgv( integer_t const itype, char const jobz,
-        integer_t const n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
+inline integer_t hpgv( const integer_t itype, const char jobz,
+        const integer_t n, MatrixAP& ap, MatrixBP& bp, VectorW& w,
         MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
     integer_t info(0);

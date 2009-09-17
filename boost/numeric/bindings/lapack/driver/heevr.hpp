@@ -34,26 +34,26 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void heevr( char const jobz, char const range, char const uplo,
-            integer_t const n, traits::complex_f* a, integer_t const lda,
-            float const vl, float const vu, integer_t const il,
-            integer_t const iu, float const abstol, integer_t& m, float* w,
-            traits::complex_f* z, integer_t const ldz, integer_t* isuppz,
-            traits::complex_f* work, integer_t const lwork, float* rwork,
-            integer_t const lrwork, integer_t* iwork, integer_t const liwork,
+    inline void heevr( const char jobz, const char range, const char uplo,
+            const integer_t n, traits::complex_f* a, const integer_t lda,
+            const float vl, const float vu, const integer_t il,
+            const integer_t iu, const float abstol, integer_t& m, float* w,
+            traits::complex_f* z, const integer_t ldz, integer_t* isuppz,
+            traits::complex_f* work, const integer_t lwork, float* rwork,
+            const integer_t lrwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_CHEEVR( &jobz, &range, &uplo, &n, traits::complex_ptr(a), &lda,
                 &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z),
                 &ldz, isuppz, traits::complex_ptr(work), &lwork, rwork,
                 &lrwork, iwork, &liwork, &info );
     }
-    inline void heevr( char const jobz, char const range, char const uplo,
-            integer_t const n, traits::complex_d* a, integer_t const lda,
-            double const vl, double const vu, integer_t const il,
-            integer_t const iu, double const abstol, integer_t& m, double* w,
-            traits::complex_d* z, integer_t const ldz, integer_t* isuppz,
-            traits::complex_d* work, integer_t const lwork, double* rwork,
-            integer_t const lrwork, integer_t* iwork, integer_t const liwork,
+    inline void heevr( const char jobz, const char range, const char uplo,
+            const integer_t n, traits::complex_d* a, const integer_t lda,
+            const double vl, const double vu, const integer_t il,
+            const integer_t iu, const double abstol, integer_t& m, double* w,
+            traits::complex_d* z, const integer_t ldz, integer_t* isuppz,
+            traits::complex_d* work, const integer_t lwork, double* rwork,
+            const integer_t lrwork, integer_t* iwork, const integer_t liwork,
             integer_t& info ) {
         LAPACK_ZHEEVR( &jobz, &range, &uplo, &n, traits::complex_ptr(a), &lda,
                 &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z),
@@ -73,9 +73,9 @@ struct heevr_impl {
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ, typename WORK, typename RWORK,
             typename IWORK >
-    static void invoke( char const jobz, char const range, MatrixA& a,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const char jobz, const char range, MatrixA& a,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, integer_t& info,
             detail::workspace3< WORK, RWORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -113,9 +113,9 @@ struct heevr_impl {
     // minimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ >
-    static void invoke( char const jobz, char const range, MatrixA& a,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const char jobz, const char range, MatrixA& a,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
@@ -131,9 +131,9 @@ struct heevr_impl {
     // optimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ >
-    static void invoke( char const jobz, char const range, MatrixA& a,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, integer_t& m,
+    static void invoke( const char jobz, const char range, MatrixA& a,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, integer_t& m,
             VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, integer_t& info,
             optimal_workspace work ) {
         value_type opt_size_work;
@@ -155,15 +155,15 @@ struct heevr_impl {
                 workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return std::max( 1, 2*n );
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return std::max( 1, 24*n );
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return std::max( 1, 10*n );
     }
 };
@@ -172,15 +172,15 @@ struct heevr_impl {
 // template function to call heevr
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorISUPPZ, typename Workspace >
-inline integer_t heevr( char const jobz, char const range, MatrixA& a,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+inline integer_t heevr( const char jobz, const char range, MatrixA& a,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     heevr_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,
@@ -191,15 +191,15 @@ inline integer_t heevr( char const jobz, char const range, MatrixA& a,
 // template function to call heevr, default workspace type
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorISUPPZ >
-inline integer_t heevr( char const jobz, char const range, MatrixA& a,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
+inline integer_t heevr( const char jobz, const char range, MatrixA& a,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const abstol, integer_t& m,
-        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     heevr_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,

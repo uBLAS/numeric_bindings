@@ -37,35 +37,35 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gglse( integer_t const m, integer_t const n,
-            integer_t const p, float* a, integer_t const lda, float* b,
-            integer_t const ldb, float* c, float* d, float* x, float* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void gglse( const integer_t m, const integer_t n,
+            const integer_t p, float* a, const integer_t lda, float* b,
+            const integer_t ldb, float* c, float* d, float* x, float* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_SGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
                 &info );
     }
-    inline void gglse( integer_t const m, integer_t const n,
-            integer_t const p, double* a, integer_t const lda, double* b,
-            integer_t const ldb, double* c, double* d, double* x,
-            double* work, integer_t const lwork, integer_t& info ) {
+    inline void gglse( const integer_t m, const integer_t n,
+            const integer_t p, double* a, const integer_t lda, double* b,
+            const integer_t ldb, double* c, double* d, double* x,
+            double* work, const integer_t lwork, integer_t& info ) {
         LAPACK_DGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
                 &info );
     }
-    inline void gglse( integer_t const m, integer_t const n,
-            integer_t const p, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* b, integer_t const ldb, traits::complex_f* c,
+    inline void gglse( const integer_t m, const integer_t n,
+            const integer_t p, traits::complex_f* a, const integer_t lda,
+            traits::complex_f* b, const integer_t ldb, traits::complex_f* c,
             traits::complex_f* d, traits::complex_f* x,
-            traits::complex_f* work, integer_t const lwork, integer_t& info ) {
+            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
         LAPACK_CGGLSE( &m, &n, &p, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(c),
                 traits::complex_ptr(d), traits::complex_ptr(x),
                 traits::complex_ptr(work), &lwork, &info );
     }
-    inline void gglse( integer_t const m, integer_t const n,
-            integer_t const p, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* b, integer_t const ldb, traits::complex_d* c,
+    inline void gglse( const integer_t m, const integer_t n,
+            const integer_t p, traits::complex_d* a, const integer_t lda,
+            traits::complex_d* b, const integer_t ldb, traits::complex_d* c,
             traits::complex_d* d, traits::complex_d* x,
-            traits::complex_d* work, integer_t const lwork, integer_t& info ) {
+            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
         LAPACK_ZGGLSE( &m, &n, &p, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(c),
                 traits::complex_ptr(d), traits::complex_ptr(x),
@@ -152,8 +152,8 @@ struct gglse_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         invoke( a, b, c, d, x, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const m, integer_t const n,
-            integer_t const p ) {
+    static integer_t min_size_work( const integer_t m, const integer_t n,
+            const integer_t p ) {
         return std::max( 1, m+n+p );
     }
 };
@@ -233,8 +233,8 @@ struct gglse_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         invoke( a, b, c, d, x, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const m, integer_t const n,
-            integer_t const p ) {
+    static integer_t min_size_work( const integer_t m, const integer_t n,
+            const integer_t p ) {
         return std::max( 1, m+n+p );
     }
 };

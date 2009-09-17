@@ -34,22 +34,22 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ptsv( integer_t const n, integer_t const nrhs, float* d,
-            float* e, float* b, integer_t const ldb, integer_t& info ) {
+    inline void ptsv( const integer_t n, const integer_t nrhs, float* d,
+            float* e, float* b, const integer_t ldb, integer_t& info ) {
         LAPACK_SPTSV( &n, &nrhs, d, e, b, &ldb, &info );
     }
-    inline void ptsv( integer_t const n, integer_t const nrhs, double* d,
-            double* e, double* b, integer_t const ldb, integer_t& info ) {
+    inline void ptsv( const integer_t n, const integer_t nrhs, double* d,
+            double* e, double* b, const integer_t ldb, integer_t& info ) {
         LAPACK_DPTSV( &n, &nrhs, d, e, b, &ldb, &info );
     }
-    inline void ptsv( integer_t const n, integer_t const nrhs, float* d,
-            traits::complex_f* e, traits::complex_f* b, integer_t const ldb,
+    inline void ptsv( const integer_t n, const integer_t nrhs, float* d,
+            traits::complex_f* e, traits::complex_f* b, const integer_t ldb,
             integer_t& info ) {
         LAPACK_CPTSV( &n, &nrhs, d, traits::complex_ptr(e),
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void ptsv( integer_t const n, integer_t const nrhs, double* d,
-            traits::complex_d* e, traits::complex_d* b, integer_t const ldb,
+    inline void ptsv( const integer_t n, const integer_t nrhs, double* d,
+            traits::complex_d* e, traits::complex_d* b, const integer_t ldb,
             integer_t& info ) {
         LAPACK_ZPTSV( &n, &nrhs, d, traits::complex_ptr(e),
                 traits::complex_ptr(b), &ldb, &info );
@@ -78,7 +78,7 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     // templated specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
+    static void invoke( const integer_t n, VectorD& d, VectorE& e, MatrixB& b,
             integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
@@ -116,7 +116,7 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     // templated specialization
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e, MatrixB& b,
+    static void invoke( const integer_t n, VectorD& d, VectorE& e, MatrixB& b,
             integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorE >::value_type, typename traits::matrix_traits<
@@ -136,7 +136,7 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
 // template function to call ptsv
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline integer_t ptsv( integer_t const n, VectorD& d, VectorE& e,
+inline integer_t ptsv( const integer_t n, VectorD& d, VectorE& e,
         MatrixB& b ) {
     typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);

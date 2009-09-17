@@ -34,31 +34,31 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ggbak( char const job, char const side, integer_t const n,
-            integer_t const ilo, integer_t const ihi, float* lscale,
-            float* rscale, integer_t const m, float* v, integer_t const ldv,
-            integer_t& info ) {
+    inline void ggbak( const char job, const char side, const integer_t n,
+            const integer_t ilo, const integer_t ihi, const float* lscale,
+            const float* rscale, const integer_t m, float* v,
+            const integer_t ldv, integer_t& info ) {
         LAPACK_SGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m, v,
                 &ldv, &info );
     }
-    inline void ggbak( char const job, char const side, integer_t const n,
-            integer_t const ilo, integer_t const ihi, double* lscale,
-            double* rscale, integer_t const m, double* v, integer_t const ldv,
-            integer_t& info ) {
+    inline void ggbak( const char job, const char side, const integer_t n,
+            const integer_t ilo, const integer_t ihi, const double* lscale,
+            const double* rscale, const integer_t m, double* v,
+            const integer_t ldv, integer_t& info ) {
         LAPACK_DGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m, v,
                 &ldv, &info );
     }
-    inline void ggbak( char const job, char const side, integer_t const n,
-            integer_t const ilo, integer_t const ihi, float* lscale,
-            float* rscale, integer_t const m, traits::complex_f* v,
-            integer_t const ldv, integer_t& info ) {
+    inline void ggbak( const char job, const char side, const integer_t n,
+            const integer_t ilo, const integer_t ihi, const float* lscale,
+            const float* rscale, const integer_t m, traits::complex_f* v,
+            const integer_t ldv, integer_t& info ) {
         LAPACK_CGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m,
                 traits::complex_ptr(v), &ldv, &info );
     }
-    inline void ggbak( char const job, char const side, integer_t const n,
-            integer_t const ilo, integer_t const ihi, double* lscale,
-            double* rscale, integer_t const m, traits::complex_d* v,
-            integer_t const ldv, integer_t& info ) {
+    inline void ggbak( const char job, const char side, const integer_t n,
+            const integer_t ilo, const integer_t ihi, const double* lscale,
+            const double* rscale, const integer_t m, traits::complex_d* v,
+            const integer_t ldv, integer_t& info ) {
         LAPACK_ZGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m,
                 traits::complex_ptr(v), &ldv, &info );
     }
@@ -77,9 +77,9 @@ struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
-    static void invoke( char const job, char const side, integer_t const ilo,
-            integer_t const ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
-            MatrixV& v, integer_t& info ) {
+    static void invoke( const char job, const char side, const integer_t ilo,
+            const integer_t ihi, const VectorLSCALE& lscale,
+            const VectorRSCALE& rscale, MatrixV& v, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorLSCALE >::value_type, typename traits::vector_traits<
                 VectorRSCALE >::value_type >::value) );
@@ -113,9 +113,9 @@ struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // templated specialization
     template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
-    static void invoke( char const job, char const side, integer_t const ilo,
-            integer_t const ihi, VectorLSCALE& lscale, VectorRSCALE& rscale,
-            MatrixV& v, integer_t& info ) {
+    static void invoke( const char job, const char side, const integer_t ilo,
+            const integer_t ihi, const VectorLSCALE& lscale,
+            const VectorRSCALE& rscale, MatrixV& v, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorLSCALE >::value_type, typename traits::vector_traits<
                 VectorRSCALE >::value_type >::value) );
@@ -140,9 +140,9 @@ struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call ggbak
 template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
-inline integer_t ggbak( char const job, char const side,
-        integer_t const ilo, integer_t const ihi, VectorLSCALE& lscale,
-        VectorRSCALE& rscale, MatrixV& v ) {
+inline integer_t ggbak( const char job, const char side,
+        const integer_t ilo, const integer_t ihi, const VectorLSCALE& lscale,
+        const VectorRSCALE& rscale, MatrixV& v ) {
     typedef typename traits::matrix_traits< MatrixV >::value_type value_type;
     integer_t info(0);
     ggbak_impl< value_type >::invoke( job, side, ilo, ihi, lscale,

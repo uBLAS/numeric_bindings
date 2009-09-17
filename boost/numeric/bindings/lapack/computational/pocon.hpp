@@ -36,29 +36,29 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pocon( char const uplo, integer_t const n, float* a,
-            integer_t const lda, float const anorm, float& rcond, float* work,
+    inline void pocon( const char uplo, const integer_t n, const float* a,
+            const integer_t lda, const float anorm, float& rcond, float* work,
             integer_t* iwork, integer_t& info ) {
         LAPACK_SPOCON( &uplo, &n, a, &lda, &anorm, &rcond, work, iwork,
                 &info );
     }
-    inline void pocon( char const uplo, integer_t const n, double* a,
-            integer_t const lda, double const anorm, double& rcond,
+    inline void pocon( const char uplo, const integer_t n, const double* a,
+            const integer_t lda, const double anorm, double& rcond,
             double* work, integer_t* iwork, integer_t& info ) {
         LAPACK_DPOCON( &uplo, &n, a, &lda, &anorm, &rcond, work, iwork,
                 &info );
     }
-    inline void pocon( char const uplo, integer_t const n,
-            traits::complex_f* a, integer_t const lda, float const anorm,
-            float& rcond, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
+    inline void pocon( const char uplo, const integer_t n,
+            const traits::complex_f* a, const integer_t lda,
+            const float anorm, float& rcond, traits::complex_f* work,
+            float* rwork, integer_t& info ) {
         LAPACK_CPOCON( &uplo, &n, traits::complex_ptr(a), &lda, &anorm,
                 &rcond, traits::complex_ptr(work), rwork, &info );
     }
-    inline void pocon( char const uplo, integer_t const n,
-            traits::complex_d* a, integer_t const lda, double const anorm,
-            double& rcond, traits::complex_d* work, double* rwork,
-            integer_t& info ) {
+    inline void pocon( const char uplo, const integer_t n,
+            const traits::complex_d* a, const integer_t lda,
+            const double anorm, double& rcond, traits::complex_d* work,
+            double* rwork, integer_t& info ) {
         LAPACK_ZPOCON( &uplo, &n, traits::complex_ptr(a), &lda, &anorm,
                 &rcond, traits::complex_ptr(work), rwork, &info );
     }
@@ -77,8 +77,9 @@ struct pocon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // user-defined workspace specialization
     template< typename MatrixA, typename WORK, typename IWORK >
-    static void invoke( MatrixA& a, real_type const anorm, real_type& rcond,
-            integer_t& info, detail::workspace2< WORK, IWORK > work ) {
+    static void invoke( const MatrixA& a, const real_type anorm,
+            real_type& rcond, integer_t& info, detail::workspace2< WORK,
+            IWORK > work ) {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
@@ -97,8 +98,8 @@ struct pocon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixA >
-    static void invoke( MatrixA& a, real_type const anorm, real_type& rcond,
-            integer_t& info, minimal_workspace work ) {
+    static void invoke( const MatrixA& a, const real_type anorm,
+            real_type& rcond, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
@@ -108,16 +109,16 @@ struct pocon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // optimal workspace specialization
     template< typename MatrixA >
-    static void invoke( MatrixA& a, real_type const anorm, real_type& rcond,
-            integer_t& info, optimal_workspace work ) {
+    static void invoke( const MatrixA& a, const real_type anorm,
+            real_type& rcond, integer_t& info, optimal_workspace work ) {
         invoke( a, anorm, rcond, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -131,8 +132,9 @@ struct pocon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // user-defined workspace specialization
     template< typename MatrixA, typename WORK, typename RWORK >
-    static void invoke( MatrixA& a, real_type const anorm, real_type& rcond,
-            integer_t& info, detail::workspace2< WORK, RWORK > work ) {
+    static void invoke( const MatrixA& a, const real_type anorm,
+            real_type& rcond, integer_t& info, detail::workspace2< WORK,
+            RWORK > work ) {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
@@ -151,8 +153,8 @@ struct pocon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA >
-    static void invoke( MatrixA& a, real_type const anorm, real_type& rcond,
-            integer_t& info, minimal_workspace work ) {
+    static void invoke( const MatrixA& a, const real_type anorm,
+            real_type& rcond, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
@@ -162,16 +164,16 @@ struct pocon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // optimal workspace specialization
     template< typename MatrixA >
-    static void invoke( MatrixA& a, real_type const anorm, real_type& rcond,
-            integer_t& info, optimal_workspace work ) {
+    static void invoke( const MatrixA& a, const real_type anorm,
+            real_type& rcond, integer_t& info, optimal_workspace work ) {
         invoke( a, anorm, rcond, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -179,9 +181,9 @@ struct pocon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call pocon
 template< typename MatrixA, typename Workspace >
-inline integer_t pocon( MatrixA& a, typename traits::type_traits<
-        typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const anorm,
+inline integer_t pocon( const MatrixA& a,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type anorm,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -192,9 +194,9 @@ inline integer_t pocon( MatrixA& a, typename traits::type_traits<
 
 // template function to call pocon, default workspace type
 template< typename MatrixA >
-inline integer_t pocon( MatrixA& a, typename traits::type_traits<
-        typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const anorm,
+inline integer_t pocon( const MatrixA& a,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type anorm,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;

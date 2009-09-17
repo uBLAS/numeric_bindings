@@ -31,20 +31,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pbstf( char const uplo, integer_t const n, integer_t const kd,
-            float* ab, integer_t const ldab, integer_t& info ) {
+    inline void pbstf( const char uplo, const integer_t n, const integer_t kd,
+            float* ab, const integer_t ldab, integer_t& info ) {
         LAPACK_SPBSTF( &uplo, &n, &kd, ab, &ldab, &info );
     }
-    inline void pbstf( char const uplo, integer_t const n, integer_t const kd,
-            double* ab, integer_t const ldab, integer_t& info ) {
+    inline void pbstf( const char uplo, const integer_t n, const integer_t kd,
+            double* ab, const integer_t ldab, integer_t& info ) {
         LAPACK_DPBSTF( &uplo, &n, &kd, ab, &ldab, &info );
     }
-    inline void pbstf( char const uplo, integer_t const n, integer_t const kd,
-            traits::complex_f* ab, integer_t const ldab, integer_t& info ) {
+    inline void pbstf( const char uplo, const integer_t n, const integer_t kd,
+            traits::complex_f* ab, const integer_t ldab, integer_t& info ) {
         LAPACK_CPBSTF( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, &info );
     }
-    inline void pbstf( char const uplo, integer_t const n, integer_t const kd,
-            traits::complex_d* ab, integer_t const ldab, integer_t& info ) {
+    inline void pbstf( const char uplo, const integer_t n, const integer_t kd,
+            traits::complex_d* ab, const integer_t ldab, integer_t& info ) {
         LAPACK_ZPBSTF( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, &info );
     }
 }
@@ -58,7 +58,7 @@ struct pbstf_impl {
 
     // templated specialization
     template< typename MatrixAB >
-    static void invoke( integer_t const n, integer_t const kd, MatrixAB& ab,
+    static void invoke( const integer_t n, const integer_t kd, MatrixAB& ab,
             integer_t& info ) {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
@@ -74,7 +74,7 @@ struct pbstf_impl {
 
 // template function to call pbstf
 template< typename MatrixAB >
-inline integer_t pbstf( integer_t const n, integer_t const kd,
+inline integer_t pbstf( const integer_t n, const integer_t kd,
         MatrixAB& ab ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);

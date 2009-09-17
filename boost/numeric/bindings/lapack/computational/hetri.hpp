@@ -33,14 +33,14 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hetri( char const uplo, integer_t const n,
-            traits::complex_f* a, integer_t const lda, integer_t* ipiv,
+    inline void hetri( const char uplo, const integer_t n,
+            traits::complex_f* a, const integer_t lda, const integer_t* ipiv,
             traits::complex_f* work, integer_t& info ) {
         LAPACK_CHETRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(work), &info );
     }
-    inline void hetri( char const uplo, integer_t const n,
-            traits::complex_d* a, integer_t const lda, integer_t* ipiv,
+    inline void hetri( const char uplo, const integer_t n,
+            traits::complex_d* a, const integer_t lda, const integer_t* ipiv,
             traits::complex_d* work, integer_t& info ) {
         LAPACK_ZHETRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(work), &info );
@@ -56,7 +56,7 @@ struct hetri_impl {
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename WORK >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( const char uplo, MatrixA& a, const VectorIPIV& ipiv,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
@@ -74,7 +74,7 @@ struct hetri_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( const char uplo, MatrixA& a, const VectorIPIV& ipiv,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
@@ -83,12 +83,12 @@ struct hetri_impl {
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( const char uplo, MatrixA& a, const VectorIPIV& ipiv,
             integer_t& info, optimal_workspace work ) {
         invoke( uplo, a, ipiv, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return n;
     }
 };
@@ -96,8 +96,8 @@ struct hetri_impl {
 
 // template function to call hetri
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline integer_t hetri( char const uplo, MatrixA& a, VectorIPIV& ipiv,
-        Workspace work ) {
+inline integer_t hetri( const char uplo, MatrixA& a,
+        const VectorIPIV& ipiv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     hetri_impl< value_type >::invoke( uplo, a, ipiv, info, work );
@@ -106,7 +106,8 @@ inline integer_t hetri( char const uplo, MatrixA& a, VectorIPIV& ipiv,
 
 // template function to call hetri, default workspace type
 template< typename MatrixA, typename VectorIPIV >
-inline integer_t hetri( char const uplo, MatrixA& a, VectorIPIV& ipiv ) {
+inline integer_t hetri( const char uplo, MatrixA& a,
+        const VectorIPIV& ipiv ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     hetri_impl< value_type >::invoke( uplo, a, ipiv, info,

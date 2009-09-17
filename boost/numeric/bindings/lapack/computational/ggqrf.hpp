@@ -37,35 +37,35 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ggqrf( integer_t const n, integer_t const m,
-            integer_t const p, float* a, integer_t const lda, float* taua,
-            float* b, integer_t const ldb, float* taub, float* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void ggqrf( const integer_t n, const integer_t m,
+            const integer_t p, float* a, const integer_t lda, float* taua,
+            float* b, const integer_t ldb, float* taub, float* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_SGGQRF( &n, &m, &p, a, &lda, taua, b, &ldb, taub, work, &lwork,
                 &info );
     }
-    inline void ggqrf( integer_t const n, integer_t const m,
-            integer_t const p, double* a, integer_t const lda, double* taua,
-            double* b, integer_t const ldb, double* taub, double* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void ggqrf( const integer_t n, const integer_t m,
+            const integer_t p, double* a, const integer_t lda, double* taua,
+            double* b, const integer_t ldb, double* taub, double* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_DGGQRF( &n, &m, &p, a, &lda, taua, b, &ldb, taub, work, &lwork,
                 &info );
     }
-    inline void ggqrf( integer_t const n, integer_t const m,
-            integer_t const p, traits::complex_f* a, integer_t const lda,
+    inline void ggqrf( const integer_t n, const integer_t m,
+            const integer_t p, traits::complex_f* a, const integer_t lda,
             traits::complex_f* taua, traits::complex_f* b,
-            integer_t const ldb, traits::complex_f* taub,
-            traits::complex_f* work, integer_t const lwork, integer_t& info ) {
+            const integer_t ldb, traits::complex_f* taub,
+            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
         LAPACK_CGGQRF( &n, &m, &p, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(taua), traits::complex_ptr(b), &ldb,
                 traits::complex_ptr(taub), traits::complex_ptr(work), &lwork,
                 &info );
     }
-    inline void ggqrf( integer_t const n, integer_t const m,
-            integer_t const p, traits::complex_d* a, integer_t const lda,
+    inline void ggqrf( const integer_t n, const integer_t m,
+            const integer_t p, traits::complex_d* a, const integer_t lda,
             traits::complex_d* taua, traits::complex_d* b,
-            integer_t const ldb, traits::complex_d* taub,
-            traits::complex_d* work, integer_t const lwork, integer_t& info ) {
+            const integer_t ldb, traits::complex_d* taub,
+            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
         LAPACK_ZGGQRF( &n, &m, &p, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(taua), traits::complex_ptr(b), &ldb,
                 traits::complex_ptr(taub), traits::complex_ptr(work), &lwork,

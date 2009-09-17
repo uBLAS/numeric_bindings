@@ -33,13 +33,13 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void opgtr( char const uplo, integer_t const n, float* ap,
-            float* tau, float* q, integer_t const ldq, float* work,
+    inline void opgtr( const char uplo, const integer_t n, const float* ap,
+            const float* tau, float* q, const integer_t ldq, float* work,
             integer_t& info ) {
         LAPACK_SOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
     }
-    inline void opgtr( char const uplo, integer_t const n, double* ap,
-            double* tau, double* q, integer_t const ldq, double* work,
+    inline void opgtr( const char uplo, const integer_t n, const double* ap,
+            const double* tau, double* q, const integer_t ldq, double* work,
             integer_t& info ) {
         LAPACK_DOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
     }
@@ -55,8 +55,9 @@ struct opgtr_impl {
     // user-defined workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixQ,
             typename WORK >
-    static void invoke( char const uplo, VectorAP& ap, VectorTAU& tau,
-            MatrixQ& q, integer_t& info, detail::workspace1< WORK > work ) {
+    static void invoke( const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixQ& q, integer_t& info,
+            detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorAP >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -82,8 +83,9 @@ struct opgtr_impl {
 
     // minimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-    static void invoke( char const uplo, VectorAP& ap, VectorTAU& tau,
-            MatrixQ& q, integer_t& info, minimal_workspace work ) {
+    static void invoke( const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixQ& q, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(q) ) );
         invoke( uplo, ap, tau, q, info, workspace( tmp_work ) );
@@ -91,12 +93,13 @@ struct opgtr_impl {
 
     // optimal workspace specialization
     template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-    static void invoke( char const uplo, VectorAP& ap, VectorTAU& tau,
-            MatrixQ& q, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixQ& q, integer_t& info,
+            optimal_workspace work ) {
         invoke( uplo, ap, tau, q, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return n-1;
     }
 };
@@ -105,8 +108,8 @@ struct opgtr_impl {
 // template function to call opgtr
 template< typename VectorAP, typename VectorTAU, typename MatrixQ,
         typename Workspace >
-inline integer_t opgtr( char const uplo, VectorAP& ap, VectorTAU& tau,
-        MatrixQ& q, Workspace work ) {
+inline integer_t opgtr( const char uplo, const VectorAP& ap,
+        const VectorTAU& tau, MatrixQ& q, Workspace work ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
     opgtr_impl< value_type >::invoke( uplo, ap, tau, q, info, work );
@@ -115,8 +118,8 @@ inline integer_t opgtr( char const uplo, VectorAP& ap, VectorTAU& tau,
 
 // template function to call opgtr, default workspace type
 template< typename VectorAP, typename VectorTAU, typename MatrixQ >
-inline integer_t opgtr( char const uplo, VectorAP& ap, VectorTAU& tau,
-        MatrixQ& q ) {
+inline integer_t opgtr( const char uplo, const VectorAP& ap,
+        const VectorTAU& tau, MatrixQ& q ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
     opgtr_impl< value_type >::invoke( uplo, ap, tau, q, info,

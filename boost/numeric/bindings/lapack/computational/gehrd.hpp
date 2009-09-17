@@ -37,28 +37,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gehrd( integer_t const n, integer_t const ilo,
-            integer_t const ihi, float* a, integer_t const lda, float* tau,
-            float* work, integer_t const lwork, integer_t& info ) {
+    inline void gehrd( const integer_t n, const integer_t ilo,
+            const integer_t ihi, float* a, const integer_t lda, float* tau,
+            float* work, const integer_t lwork, integer_t& info ) {
         LAPACK_SGEHRD( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
     }
-    inline void gehrd( integer_t const n, integer_t const ilo,
-            integer_t const ihi, double* a, integer_t const lda, double* tau,
-            double* work, integer_t const lwork, integer_t& info ) {
+    inline void gehrd( const integer_t n, const integer_t ilo,
+            const integer_t ihi, double* a, const integer_t lda, double* tau,
+            double* work, const integer_t lwork, integer_t& info ) {
         LAPACK_DGEHRD( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
     }
-    inline void gehrd( integer_t const n, integer_t const ilo,
-            integer_t const ihi, traits::complex_f* a, integer_t const lda,
+    inline void gehrd( const integer_t n, const integer_t ilo,
+            const integer_t ihi, traits::complex_f* a, const integer_t lda,
             traits::complex_f* tau, traits::complex_f* work,
-            integer_t const lwork, integer_t& info ) {
+            const integer_t lwork, integer_t& info ) {
         LAPACK_CGEHRD( &n, &ilo, &ihi, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
                 &info );
     }
-    inline void gehrd( integer_t const n, integer_t const ilo,
-            integer_t const ihi, traits::complex_d* a, integer_t const lda,
+    inline void gehrd( const integer_t n, const integer_t ilo,
+            const integer_t ihi, traits::complex_d* a, const integer_t lda,
             traits::complex_d* tau, traits::complex_d* work,
-            integer_t const lwork, integer_t& info ) {
+            const integer_t lwork, integer_t& info ) {
         LAPACK_ZGEHRD( &n, &ilo, &ihi, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
                 &info );
@@ -78,7 +78,7 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void invoke( integer_t const ilo, integer_t const ihi, MatrixA& a,
+    static void invoke( const integer_t ilo, const integer_t ihi, MatrixA& a,
             VectorTAU& tau, integer_t& info, detail::workspace1<
             WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -100,7 +100,7 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const ilo, integer_t const ihi, MatrixA& a,
+    static void invoke( const integer_t ilo, const integer_t ihi, MatrixA& a,
             VectorTAU& tau, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -109,7 +109,7 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const ilo, integer_t const ihi, MatrixA& a,
+    static void invoke( const integer_t ilo, const integer_t ihi, MatrixA& a,
             VectorTAU& tau, integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         detail::gehrd( traits::matrix_num_columns(a), ilo, ihi,
@@ -134,7 +134,7 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void invoke( integer_t const ilo, integer_t const ihi, MatrixA& a,
+    static void invoke( const integer_t ilo, const integer_t ihi, MatrixA& a,
             VectorTAU& tau, integer_t& info, detail::workspace1<
             WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -156,7 +156,7 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const ilo, integer_t const ihi, MatrixA& a,
+    static void invoke( const integer_t ilo, const integer_t ihi, MatrixA& a,
             VectorTAU& tau, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -165,7 +165,7 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( integer_t const ilo, integer_t const ihi, MatrixA& a,
+    static void invoke( const integer_t ilo, const integer_t ihi, MatrixA& a,
             VectorTAU& tau, integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         detail::gehrd( traits::matrix_num_columns(a), ilo, ihi,
@@ -184,7 +184,7 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call gehrd
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline integer_t gehrd( integer_t const ilo, integer_t const ihi,
+inline integer_t gehrd( const integer_t ilo, const integer_t ihi,
         MatrixA& a, VectorTAU& tau, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -194,7 +194,7 @@ inline integer_t gehrd( integer_t const ilo, integer_t const ihi,
 
 // template function to call gehrd, default workspace type
 template< typename MatrixA, typename VectorTAU >
-inline integer_t gehrd( integer_t const ilo, integer_t const ihi,
+inline integer_t gehrd( const integer_t ilo, const integer_t ihi,
         MatrixA& a, VectorTAU& tau ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);

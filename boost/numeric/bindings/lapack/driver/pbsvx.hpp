@@ -36,44 +36,44 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pbsvx( char const fact, char const uplo, integer_t const n,
-            integer_t const kd, integer_t const nrhs, float* ab,
-            integer_t const ldab, float* afb, integer_t const ldafb,
-            char& equed, float* s, float* b, integer_t const ldb, float* x,
-            integer_t const ldx, float& rcond, float* ferr, float* berr,
+    inline void pbsvx( const char fact, const char uplo, const integer_t n,
+            const integer_t kd, const integer_t nrhs, float* ab,
+            const integer_t ldab, float* afb, const integer_t ldafb,
+            char& equed, float* s, float* b, const integer_t ldb, float* x,
+            const integer_t ldx, float& rcond, float* ferr, float* berr,
             float* work, integer_t* iwork, integer_t& info ) {
         LAPACK_SPBSVX( &fact, &uplo, &n, &kd, &nrhs, ab, &ldab, afb, &ldafb,
                 &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork,
                 &info );
     }
-    inline void pbsvx( char const fact, char const uplo, integer_t const n,
-            integer_t const kd, integer_t const nrhs, double* ab,
-            integer_t const ldab, double* afb, integer_t const ldafb,
-            char& equed, double* s, double* b, integer_t const ldb, double* x,
-            integer_t const ldx, double& rcond, double* ferr, double* berr,
+    inline void pbsvx( const char fact, const char uplo, const integer_t n,
+            const integer_t kd, const integer_t nrhs, double* ab,
+            const integer_t ldab, double* afb, const integer_t ldafb,
+            char& equed, double* s, double* b, const integer_t ldb, double* x,
+            const integer_t ldx, double& rcond, double* ferr, double* berr,
             double* work, integer_t* iwork, integer_t& info ) {
         LAPACK_DPBSVX( &fact, &uplo, &n, &kd, &nrhs, ab, &ldab, afb, &ldafb,
                 &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork,
                 &info );
     }
-    inline void pbsvx( char const fact, char const uplo, integer_t const n,
-            integer_t const kd, integer_t const nrhs, traits::complex_f* ab,
-            integer_t const ldab, traits::complex_f* afb,
-            integer_t const ldafb, char& equed, float* s,
-            traits::complex_f* b, integer_t const ldb, traits::complex_f* x,
-            integer_t const ldx, float& rcond, float* ferr, float* berr,
+    inline void pbsvx( const char fact, const char uplo, const integer_t n,
+            const integer_t kd, const integer_t nrhs, traits::complex_f* ab,
+            const integer_t ldab, traits::complex_f* afb,
+            const integer_t ldafb, char& equed, float* s,
+            traits::complex_f* b, const integer_t ldb, traits::complex_f* x,
+            const integer_t ldx, float& rcond, float* ferr, float* berr,
             traits::complex_f* work, float* rwork, integer_t& info ) {
         LAPACK_CPBSVX( &fact, &uplo, &n, &kd, &nrhs, traits::complex_ptr(ab),
                 &ldab, traits::complex_ptr(afb), &ldafb, &equed, s,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
                 &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
     }
-    inline void pbsvx( char const fact, char const uplo, integer_t const n,
-            integer_t const kd, integer_t const nrhs, traits::complex_d* ab,
-            integer_t const ldab, traits::complex_d* afb,
-            integer_t const ldafb, char& equed, double* s,
-            traits::complex_d* b, integer_t const ldb, traits::complex_d* x,
-            integer_t const ldx, double& rcond, double* ferr, double* berr,
+    inline void pbsvx( const char fact, const char uplo, const integer_t n,
+            const integer_t kd, const integer_t nrhs, traits::complex_d* ab,
+            const integer_t ldab, traits::complex_d* afb,
+            const integer_t ldafb, char& equed, double* s,
+            traits::complex_d* b, const integer_t ldb, traits::complex_d* x,
+            const integer_t ldx, double& rcond, double* ferr, double* berr,
             traits::complex_d* work, double* rwork, integer_t& info ) {
         LAPACK_ZPBSVX( &fact, &uplo, &n, &kd, &nrhs, traits::complex_ptr(ab),
                 &ldab, traits::complex_ptr(afb), &ldafb, &equed, s,
@@ -97,8 +97,8 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename IWORK >
-    static void invoke( char const fact, integer_t const n,
-            integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
+    static void invoke( const char fact, const integer_t n,
+            const integer_t kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
@@ -154,8 +154,8 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, integer_t const n,
-            integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
+    static void invoke( const char fact, const integer_t n,
+            const integer_t kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
@@ -169,8 +169,8 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, integer_t const n,
-            integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
+    static void invoke( const char fact, const integer_t n,
+            const integer_t kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
@@ -178,11 +178,11 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -198,8 +198,8 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void invoke( char const fact, integer_t const n,
-            integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
+    static void invoke( const char fact, const integer_t n,
+            const integer_t kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
@@ -252,8 +252,8 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, integer_t const n,
-            integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
+    static void invoke( const char fact, const integer_t n,
+            const integer_t kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
@@ -267,8 +267,8 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixAB, typename MatrixAFB, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, integer_t const n,
-            integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
+    static void invoke( const char fact, const integer_t n,
+            const integer_t kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
             VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
@@ -276,11 +276,11 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -290,8 +290,8 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline integer_t pbsvx( char const fact, integer_t const n,
-        integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
+inline integer_t pbsvx( const char fact, const integer_t n,
+        const integer_t kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
         VectorS& s, MatrixB& b, MatrixX& x, typename traits::type_traits<
         typename traits::matrix_traits<
         MatrixAB >::value_type >::real_type& rcond, VectorFERR& ferr,
@@ -307,8 +307,8 @@ inline integer_t pbsvx( char const fact, integer_t const n,
 template< typename MatrixAB, typename MatrixAFB, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline integer_t pbsvx( char const fact, integer_t const n,
-        integer_t const kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
+inline integer_t pbsvx( const char fact, const integer_t n,
+        const integer_t kd, MatrixAB& ab, MatrixAFB& afb, char& equed,
         VectorS& s, MatrixB& b, MatrixX& x, typename traits::type_traits<
         typename traits::matrix_traits<
         MatrixAB >::value_type >::real_type& rcond, VectorFERR& ferr,

@@ -31,32 +31,32 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tbtrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const kd, integer_t const nrhs,
-            float* ab, integer_t const ldab, float* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void tbtrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t kd, const integer_t nrhs,
+            const float* ab, const integer_t ldab, float* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_STBTRS( &uplo, &trans, &diag, &n, &kd, &nrhs, ab, &ldab, b,
                 &ldb, &info );
     }
-    inline void tbtrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const kd, integer_t const nrhs,
-            double* ab, integer_t const ldab, double* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void tbtrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t kd, const integer_t nrhs,
+            const double* ab, const integer_t ldab, double* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_DTBTRS( &uplo, &trans, &diag, &n, &kd, &nrhs, ab, &ldab, b,
                 &ldb, &info );
     }
-    inline void tbtrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const kd, integer_t const nrhs,
-            traits::complex_f* ab, integer_t const ldab, traits::complex_f* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void tbtrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t kd, const integer_t nrhs,
+            const traits::complex_f* ab, const integer_t ldab,
+            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
         LAPACK_CTBTRS( &uplo, &trans, &diag, &n, &kd, &nrhs,
                 traits::complex_ptr(ab), &ldab, traits::complex_ptr(b), &ldb,
                 &info );
     }
-    inline void tbtrs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const kd, integer_t const nrhs,
-            traits::complex_d* ab, integer_t const ldab, traits::complex_d* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void tbtrs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t kd, const integer_t nrhs,
+            const traits::complex_d* ab, const integer_t ldab,
+            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
         LAPACK_ZTBTRS( &uplo, &trans, &diag, &n, &kd, &nrhs,
                 traits::complex_ptr(ab), &ldab, traits::complex_ptr(b), &ldb,
                 &info );
@@ -72,9 +72,9 @@ struct tbtrs_impl {
 
     // templated specialization
     template< typename MatrixAB, typename MatrixB >
-    static void invoke( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const kd, MatrixAB& ab, MatrixB& b,
-            integer_t& info ) {
+    static void invoke( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t kd, const MatrixAB& ab,
+            MatrixB& b, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -96,9 +96,9 @@ struct tbtrs_impl {
 
 // template function to call tbtrs
 template< typename MatrixAB, typename MatrixB >
-inline integer_t tbtrs( char const uplo, char const trans,
-        char const diag, integer_t const n, integer_t const kd, MatrixAB& ab,
-        MatrixB& b ) {
+inline integer_t tbtrs( const char uplo, const char trans,
+        const char diag, const integer_t n, const integer_t kd,
+        const MatrixAB& ab, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
     tbtrs_impl< value_type >::invoke( uplo, trans, diag, n, kd, ab, b,

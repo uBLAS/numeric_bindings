@@ -36,37 +36,37 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tgsja( char const jobu, char const jobv, char const jobq,
-            integer_t const m, integer_t const p, integer_t const n,
-            integer_t const k, integer_t const l, float* a,
-            integer_t const lda, float* b, integer_t const ldb,
-            float const tola, float const tolb, float* alpha, float* beta,
-            float* u, integer_t const ldu, float* v, integer_t const ldv,
-            float* q, integer_t const ldq, float* work, integer_t& ncycle,
+    inline void tgsja( const char jobu, const char jobv, const char jobq,
+            const integer_t m, const integer_t p, const integer_t n,
+            const integer_t k, const integer_t l, float* a,
+            const integer_t lda, float* b, const integer_t ldb,
+            const float tola, const float tolb, float* alpha, float* beta,
+            float* u, const integer_t ldu, float* v, const integer_t ldv,
+            float* q, const integer_t ldq, float* work, integer_t& ncycle,
             integer_t& info ) {
         LAPACK_STGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l, a, &lda, b,
                 &ldb, &tola, &tolb, alpha, beta, u, &ldu, v, &ldv, q, &ldq,
                 work, &ncycle, &info );
     }
-    inline void tgsja( char const jobu, char const jobv, char const jobq,
-            integer_t const m, integer_t const p, integer_t const n,
-            integer_t const k, integer_t const l, double* a,
-            integer_t const lda, double* b, integer_t const ldb,
-            double const tola, double const tolb, double* alpha, double* beta,
-            double* u, integer_t const ldu, double* v, integer_t const ldv,
-            double* q, integer_t const ldq, double* work, integer_t& ncycle,
+    inline void tgsja( const char jobu, const char jobv, const char jobq,
+            const integer_t m, const integer_t p, const integer_t n,
+            const integer_t k, const integer_t l, double* a,
+            const integer_t lda, double* b, const integer_t ldb,
+            const double tola, const double tolb, double* alpha, double* beta,
+            double* u, const integer_t ldu, double* v, const integer_t ldv,
+            double* q, const integer_t ldq, double* work, integer_t& ncycle,
             integer_t& info ) {
         LAPACK_DTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l, a, &lda, b,
                 &ldb, &tola, &tolb, alpha, beta, u, &ldu, v, &ldv, q, &ldq,
                 work, &ncycle, &info );
     }
-    inline void tgsja( char const jobu, char const jobv, char const jobq,
-            integer_t const m, integer_t const p, integer_t const n,
-            integer_t const k, integer_t const l, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* b, integer_t const ldb,
-            float const tola, float const tolb, float* alpha, float* beta,
-            traits::complex_f* u, integer_t const ldu, traits::complex_f* v,
-            integer_t const ldv, traits::complex_f* q, integer_t const ldq,
+    inline void tgsja( const char jobu, const char jobv, const char jobq,
+            const integer_t m, const integer_t p, const integer_t n,
+            const integer_t k, const integer_t l, traits::complex_f* a,
+            const integer_t lda, traits::complex_f* b, const integer_t ldb,
+            const float tola, const float tolb, float* alpha, float* beta,
+            traits::complex_f* u, const integer_t ldu, traits::complex_f* v,
+            const integer_t ldv, traits::complex_f* q, const integer_t ldq,
             traits::complex_f* work, integer_t& ncycle, integer_t& info ) {
         LAPACK_CTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
@@ -74,13 +74,13 @@ namespace detail {
                 traits::complex_ptr(v), &ldv, traits::complex_ptr(q), &ldq,
                 traits::complex_ptr(work), &ncycle, &info );
     }
-    inline void tgsja( char const jobu, char const jobv, char const jobq,
-            integer_t const m, integer_t const p, integer_t const n,
-            integer_t const k, integer_t const l, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* b, integer_t const ldb,
-            double const tola, double const tolb, double* alpha, double* beta,
-            traits::complex_d* u, integer_t const ldu, traits::complex_d* v,
-            integer_t const ldv, traits::complex_d* q, integer_t const ldq,
+    inline void tgsja( const char jobu, const char jobv, const char jobq,
+            const integer_t m, const integer_t p, const integer_t n,
+            const integer_t k, const integer_t l, traits::complex_d* a,
+            const integer_t lda, traits::complex_d* b, const integer_t ldb,
+            const double tola, const double tolb, double* alpha, double* beta,
+            traits::complex_d* u, const integer_t ldu, traits::complex_d* v,
+            const integer_t ldv, traits::complex_d* q, const integer_t ldq,
             traits::complex_d* work, integer_t& ncycle, integer_t& info ) {
         LAPACK_ZTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l,
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
@@ -105,9 +105,9 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ, typename WORK >
-    static void invoke( char const jobu, char const jobv, char const jobq,
-            integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
-            real_type const tola, real_type const tolb, VectorALPHA& alpha,
+    static void invoke( const char jobu, const char jobv, const char jobq,
+            const integer_t k, const integer_t l, MatrixA& a, MatrixB& b,
+            const real_type tola, const real_type tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, detail::workspace1<
             WORK > work ) {
@@ -160,9 +160,9 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void invoke( char const jobu, char const jobv, char const jobq,
-            integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
-            real_type const tola, real_type const tolb, VectorALPHA& alpha,
+    static void invoke( const char jobu, const char jobv, const char jobq,
+            const integer_t k, const integer_t l, MatrixA& a, MatrixB& b,
+            const real_type tola, const real_type tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
@@ -175,16 +175,16 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void invoke( char const jobu, char const jobv, char const jobq,
-            integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
-            real_type const tola, real_type const tolb, VectorALPHA& alpha,
+    static void invoke( const char jobu, const char jobv, const char jobq,
+            const integer_t k, const integer_t l, MatrixA& a, MatrixB& b,
+            const real_type tola, const real_type tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, optimal_workspace work ) {
         invoke( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
                 q, ncycle, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 };
@@ -200,9 +200,9 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ, typename WORK >
-    static void invoke( char const jobu, char const jobv, char const jobq,
-            integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
-            real_type const tola, real_type const tolb, VectorALPHA& alpha,
+    static void invoke( const char jobu, const char jobv, const char jobq,
+            const integer_t k, const integer_t l, MatrixA& a, MatrixB& b,
+            const real_type tola, const real_type tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, detail::workspace1<
             WORK > work ) {
@@ -252,9 +252,9 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void invoke( char const jobu, char const jobv, char const jobq,
-            integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
-            real_type const tola, real_type const tolb, VectorALPHA& alpha,
+    static void invoke( const char jobu, const char jobv, const char jobq,
+            const integer_t k, const integer_t l, MatrixA& a, MatrixB& b,
+            const real_type tola, const real_type tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
@@ -267,16 +267,16 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename VectorALPHA,
             typename VectorBETA, typename MatrixU, typename MatrixV,
             typename MatrixQ >
-    static void invoke( char const jobu, char const jobv, char const jobq,
-            integer_t const k, integer_t const l, MatrixA& a, MatrixB& b,
-            real_type const tola, real_type const tolb, VectorALPHA& alpha,
+    static void invoke( const char jobu, const char jobv, const char jobq,
+            const integer_t k, const integer_t l, MatrixA& a, MatrixB& b,
+            const real_type tola, const real_type tolb, VectorALPHA& alpha,
             VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
             integer_t& ncycle, integer_t& info, optimal_workspace work ) {
         invoke( jobu, jobv, jobq, k, l, a, b, tola, tolb, alpha, beta, u, v,
                 q, ncycle, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 };
@@ -286,13 +286,13 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ, typename Workspace >
-inline integer_t tgsja( char const jobu, char const jobv,
-        char const jobq, integer_t const k, integer_t const l, MatrixA& a,
-        MatrixB& b, typename traits::type_traits<
+inline integer_t tgsja( const char jobu, const char jobv,
+        const char jobq, const integer_t k, const integer_t l, MatrixA& a,
+        MatrixB& b, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const tola,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const tolb, VectorALPHA& alpha,
+        MatrixA >::value_type >::real_type tola,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type tolb, VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         integer_t& ncycle, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -306,13 +306,13 @@ inline integer_t tgsja( char const jobu, char const jobv,
 template< typename MatrixA, typename MatrixB, typename VectorALPHA,
         typename VectorBETA, typename MatrixU, typename MatrixV,
         typename MatrixQ >
-inline integer_t tgsja( char const jobu, char const jobv,
-        char const jobq, integer_t const k, integer_t const l, MatrixA& a,
-        MatrixB& b, typename traits::type_traits<
+inline integer_t tgsja( const char jobu, const char jobv,
+        const char jobq, const integer_t k, const integer_t l, MatrixA& a,
+        MatrixB& b, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const tola,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type const tolb, VectorALPHA& alpha,
+        MatrixA >::value_type >::real_type tola,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type tolb, VectorALPHA& alpha,
         VectorBETA& beta, MatrixU& u, MatrixV& v, MatrixQ& q,
         integer_t& ncycle ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;

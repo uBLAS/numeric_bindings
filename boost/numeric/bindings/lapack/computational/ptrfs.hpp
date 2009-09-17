@@ -36,24 +36,27 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ptrfs( integer_t const n, integer_t const nrhs, float* d,
-            float* e, float* df, float* ef, float* b, integer_t const ldb,
-            float* x, integer_t const ldx, float* ferr, float* berr,
-            float* work, integer_t& info ) {
+    inline void ptrfs( const integer_t n, const integer_t nrhs,
+            const float* d, const float* e, const float* df, const float* ef,
+            const float* b, const integer_t ldb, float* x,
+            const integer_t ldx, float* ferr, float* berr, float* work,
+            integer_t& info ) {
         LAPACK_SPTRFS( &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, ferr, berr,
                 work, &info );
     }
-    inline void ptrfs( integer_t const n, integer_t const nrhs, double* d,
-            double* e, double* df, double* ef, double* b, integer_t const ldb,
-            double* x, integer_t const ldx, double* ferr, double* berr,
-            double* work, integer_t& info ) {
+    inline void ptrfs( const integer_t n, const integer_t nrhs,
+            const double* d, const double* e, const double* df,
+            const double* ef, const double* b, const integer_t ldb, double* x,
+            const integer_t ldx, double* ferr, double* berr, double* work,
+            integer_t& info ) {
         LAPACK_DPTRFS( &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, ferr, berr,
                 work, &info );
     }
-    inline void ptrfs( char const uplo, integer_t const n,
-            integer_t const nrhs, float* d, traits::complex_f* e, float* df,
-            traits::complex_f* ef, traits::complex_f* b, integer_t const ldb,
-            traits::complex_f* x, integer_t const ldx, float* ferr,
+    inline void ptrfs( const char uplo, const integer_t n,
+            const integer_t nrhs, const float* d, const traits::complex_f* e,
+            const float* df, const traits::complex_f* ef,
+            const traits::complex_f* b, const integer_t ldb,
+            traits::complex_f* x, const integer_t ldx, float* ferr,
             float* berr, traits::complex_f* work, float* rwork,
             integer_t& info ) {
         LAPACK_CPTRFS( &uplo, &n, &nrhs, d, traits::complex_ptr(e), df,
@@ -61,10 +64,11 @@ namespace detail {
                 traits::complex_ptr(x), &ldx, ferr, berr,
                 traits::complex_ptr(work), rwork, &info );
     }
-    inline void ptrfs( char const uplo, integer_t const n,
-            integer_t const nrhs, double* d, traits::complex_d* e, double* df,
-            traits::complex_d* ef, traits::complex_d* b, integer_t const ldb,
-            traits::complex_d* x, integer_t const ldx, double* ferr,
+    inline void ptrfs( const char uplo, const integer_t n,
+            const integer_t nrhs, const double* d, const traits::complex_d* e,
+            const double* df, const traits::complex_d* ef,
+            const traits::complex_d* b, const integer_t ldb,
+            traits::complex_d* x, const integer_t ldx, double* ferr,
             double* berr, traits::complex_d* work, double* rwork,
             integer_t& info ) {
         LAPACK_ZPTRFS( &uplo, &n, &nrhs, d, traits::complex_ptr(e), df,
@@ -89,9 +93,9 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR, typename WORK >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e,
-            VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
+            const VectorDF& df, const VectorEF& ef, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
@@ -139,9 +143,9 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e,
-            VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
+            const VectorDF& df, const VectorEF& ef, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         invoke( n, d, e, df, ef, b, x, ferr, berr, info,
@@ -152,14 +156,14 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( integer_t const n, VectorD& d, VectorE& e,
-            VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
+            const VectorDF& df, const VectorEF& ef, const MatrixB& b,
+            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
         invoke( n, d, e, df, ef, b, x, ferr, berr, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 };
@@ -176,10 +180,10 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR, typename WORK,
             typename RWORK >
-    static void invoke( char const uplo, integer_t const n, VectorD& d,
-            VectorE& e, VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
-            detail::workspace2< WORK, RWORK > work ) {
+    static void invoke( const char uplo, const integer_t n, const VectorD& d,
+            const VectorE& e, const VectorDF& df, const VectorEF& ef,
+            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            integer_t& info, detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorD >::value_type, typename traits::vector_traits<
                 VectorDF >::value_type >::value) );
@@ -227,10 +231,10 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( char const uplo, integer_t const n, VectorD& d,
-            VectorE& e, VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( const char uplo, const integer_t n, const VectorD& d,
+            const VectorE& e, const VectorDF& df, const VectorEF& ef,
+            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
         invoke( uplo, n, d, e, df, ef, b, x, ferr, berr, info,
@@ -241,19 +245,19 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename VectorD, typename VectorE, typename VectorDF,
             typename VectorEF, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( char const uplo, integer_t const n, VectorD& d,
-            VectorE& e, VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
-            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( const char uplo, const integer_t n, const VectorD& d,
+            const VectorE& e, const VectorDF& df, const VectorEF& ef,
+            const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+            integer_t& info, optimal_workspace work ) {
         invoke( uplo, n, d, e, df, ef, b, x, ferr, berr, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -263,9 +267,10 @@ struct ptrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline integer_t ptrfs( integer_t const n, VectorD& d, VectorE& e,
-        VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
+inline integer_t ptrfs( const integer_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
     typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     ptrfs_impl< value_type >::invoke( n, d, e, df, ef, b, x, ferr, berr,
@@ -277,9 +282,9 @@ inline integer_t ptrfs( integer_t const n, VectorD& d, VectorE& e,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline integer_t ptrfs( integer_t const n, VectorD& d, VectorE& e,
-        VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr ) {
+inline integer_t ptrfs( const integer_t n, const VectorD& d,
+        const VectorE& e, const VectorDF& df, const VectorEF& ef,
+        const MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
     typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     ptrfs_impl< value_type >::invoke( n, d, e, df, ef, b, x, ferr, berr,
@@ -290,9 +295,10 @@ inline integer_t ptrfs( integer_t const n, VectorD& d, VectorE& e,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline integer_t ptrfs( char const uplo, integer_t const n, VectorD& d,
-        VectorE& e, VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
+inline integer_t ptrfs( const char uplo, const integer_t n,
+        const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        VectorBERR& berr, Workspace work ) {
     typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     ptrfs_impl< value_type >::invoke( uplo, n, d, e, df, ef, b, x, ferr,
@@ -304,9 +310,10 @@ inline integer_t ptrfs( char const uplo, integer_t const n, VectorD& d,
 template< typename VectorD, typename VectorE, typename VectorDF,
         typename VectorEF, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline integer_t ptrfs( char const uplo, integer_t const n, VectorD& d,
-        VectorE& e, VectorDF& df, VectorEF& ef, MatrixB& b, MatrixX& x,
-        VectorFERR& ferr, VectorBERR& berr ) {
+inline integer_t ptrfs( const char uplo, const integer_t n,
+        const VectorD& d, const VectorE& e, const VectorDF& df,
+        const VectorEF& ef, const MatrixB& b, MatrixX& x, VectorFERR& ferr,
+        VectorBERR& berr ) {
     typedef typename traits::vector_traits< VectorE >::value_type value_type;
     integer_t info(0);
     ptrfs_impl< value_type >::invoke( uplo, n, d, e, df, ef, b, x, ferr,

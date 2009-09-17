@@ -36,32 +36,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbcon( char const norm, integer_t const n, integer_t const kl,
-            integer_t const ku, float* ab, integer_t const ldab,
-            integer_t* ipiv, float const anorm, float& rcond, float* work,
-            integer_t* iwork, integer_t& info ) {
+    inline void gbcon( const char norm, const integer_t n, const integer_t kl,
+            const integer_t ku, const float* ab, const integer_t ldab,
+            const integer_t* ipiv, const float anorm, float& rcond,
+            float* work, integer_t* iwork, integer_t& info ) {
         LAPACK_SGBCON( &norm, &n, &kl, &ku, ab, &ldab, ipiv, &anorm, &rcond,
                 work, iwork, &info );
     }
-    inline void gbcon( char const norm, integer_t const n, integer_t const kl,
-            integer_t const ku, double* ab, integer_t const ldab,
-            integer_t* ipiv, double const anorm, double& rcond, double* work,
-            integer_t* iwork, integer_t& info ) {
+    inline void gbcon( const char norm, const integer_t n, const integer_t kl,
+            const integer_t ku, const double* ab, const integer_t ldab,
+            const integer_t* ipiv, const double anorm, double& rcond,
+            double* work, integer_t* iwork, integer_t& info ) {
         LAPACK_DGBCON( &norm, &n, &kl, &ku, ab, &ldab, ipiv, &anorm, &rcond,
                 work, iwork, &info );
     }
-    inline void gbcon( char const norm, integer_t const n, integer_t const kl,
-            integer_t const ku, traits::complex_f* ab, integer_t const ldab,
-            integer_t* ipiv, float const anorm, float& rcond,
-            traits::complex_f* work, float* rwork, integer_t& info ) {
+    inline void gbcon( const char norm, const integer_t n, const integer_t kl,
+            const integer_t ku, const traits::complex_f* ab,
+            const integer_t ldab, const integer_t* ipiv, const float anorm,
+            float& rcond, traits::complex_f* work, float* rwork,
+            integer_t& info ) {
         LAPACK_CGBCON( &norm, &n, &kl, &ku, traits::complex_ptr(ab), &ldab,
                 ipiv, &anorm, &rcond, traits::complex_ptr(work), rwork,
                 &info );
     }
-    inline void gbcon( char const norm, integer_t const n, integer_t const kl,
-            integer_t const ku, traits::complex_d* ab, integer_t const ldab,
-            integer_t* ipiv, double const anorm, double& rcond,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
+    inline void gbcon( const char norm, const integer_t n, const integer_t kl,
+            const integer_t ku, const traits::complex_d* ab,
+            const integer_t ldab, const integer_t* ipiv, const double anorm,
+            double& rcond, traits::complex_d* work, double* rwork,
+            integer_t& info ) {
         LAPACK_ZGBCON( &norm, &n, &kl, &ku, traits::complex_ptr(ab), &ldab,
                 ipiv, &anorm, &rcond, traits::complex_ptr(work), rwork,
                 &info );
@@ -82,9 +84,9 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // user-defined workspace specialization
     template< typename MatrixAB, typename VectorIPIV, typename WORK,
             typename IWORK >
-    static void invoke( char const norm, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
+    static void invoke( const char norm, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( n >= 0 );
@@ -105,9 +107,9 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixAB, typename VectorIPIV >
-    static void invoke( char const norm, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
+    static void invoke( const char norm, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
@@ -117,19 +119,19 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // optimal workspace specialization
     template< typename MatrixAB, typename VectorIPIV >
-    static void invoke( char const norm, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
+    static void invoke( const char norm, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
             integer_t& info, optimal_workspace work ) {
         invoke( norm, n, kl, ku, ab, ipiv, anorm, rcond, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -144,9 +146,9 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // user-defined workspace specialization
     template< typename MatrixAB, typename VectorIPIV, typename WORK,
             typename RWORK >
-    static void invoke( char const norm, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
+    static void invoke( const char norm, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
             integer_t& info, detail::workspace2< WORK, RWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( n >= 0 );
@@ -167,9 +169,9 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixAB, typename VectorIPIV >
-    static void invoke( char const norm, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
+    static void invoke( const char norm, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( n ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
@@ -179,19 +181,19 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // optimal workspace specialization
     template< typename MatrixAB, typename VectorIPIV >
-    static void invoke( char const norm, integer_t const n,
-            integer_t const kl, integer_t const ku, MatrixAB& ab,
-            VectorIPIV& ipiv, real_type const anorm, real_type& rcond,
+    static void invoke( const char norm, const integer_t n,
+            const integer_t kl, const integer_t ku, const MatrixAB& ab,
+            const VectorIPIV& ipiv, const real_type anorm, real_type& rcond,
             integer_t& info, optimal_workspace work ) {
         invoke( norm, n, kl, ku, ab, ipiv, anorm, rcond, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -199,11 +201,11 @@ struct gbcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call gbcon
 template< typename MatrixAB, typename VectorIPIV, typename Workspace >
-inline integer_t gbcon( char const norm, integer_t const n,
-        integer_t const kl, integer_t const ku, MatrixAB& ab,
-        VectorIPIV& ipiv, typename traits::type_traits<
+inline integer_t gbcon( const char norm, const integer_t n,
+        const integer_t kl, const integer_t ku, const MatrixAB& ab,
+        const VectorIPIV& ipiv, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixAB >::value_type >::real_type const anorm,
+        MatrixAB >::value_type >::real_type anorm,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixAB >::value_type >::real_type& rcond, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
@@ -215,11 +217,11 @@ inline integer_t gbcon( char const norm, integer_t const n,
 
 // template function to call gbcon, default workspace type
 template< typename MatrixAB, typename VectorIPIV >
-inline integer_t gbcon( char const norm, integer_t const n,
-        integer_t const kl, integer_t const ku, MatrixAB& ab,
-        VectorIPIV& ipiv, typename traits::type_traits<
+inline integer_t gbcon( const char norm, const integer_t n,
+        const integer_t kl, const integer_t ku, const MatrixAB& ab,
+        const VectorIPIV& ipiv, const typename traits::type_traits<
         typename traits::matrix_traits<
-        MatrixAB >::value_type >::real_type const anorm,
+        MatrixAB >::value_type >::real_type anorm,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixAB >::value_type >::real_type& rcond ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;

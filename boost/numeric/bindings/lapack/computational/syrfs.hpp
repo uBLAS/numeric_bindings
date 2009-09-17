@@ -36,39 +36,45 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void syrfs( char const uplo, integer_t const n,
-            integer_t const nrhs, float* a, integer_t const lda, float* af,
-            integer_t const ldaf, integer_t* ipiv, float* b,
-            integer_t const ldb, float* x, integer_t const ldx, float* ferr,
-            float* berr, float* work, integer_t* iwork, integer_t& info ) {
+    inline void syrfs( const char uplo, const integer_t n,
+            const integer_t nrhs, const float* a, const integer_t lda,
+            const float* af, const integer_t ldaf, const integer_t* ipiv,
+            const float* b, const integer_t ldb, float* x,
+            const integer_t ldx, float* ferr, float* berr, float* work,
+            integer_t* iwork, integer_t& info ) {
         LAPACK_SSYRFS( &uplo, &n, &nrhs, a, &lda, af, &ldaf, ipiv, b, &ldb, x,
                 &ldx, ferr, berr, work, iwork, &info );
     }
-    inline void syrfs( char const uplo, integer_t const n,
-            integer_t const nrhs, double* a, integer_t const lda, double* af,
-            integer_t const ldaf, integer_t* ipiv, double* b,
-            integer_t const ldb, double* x, integer_t const ldx, double* ferr,
-            double* berr, double* work, integer_t* iwork, integer_t& info ) {
+    inline void syrfs( const char uplo, const integer_t n,
+            const integer_t nrhs, const double* a, const integer_t lda,
+            const double* af, const integer_t ldaf, const integer_t* ipiv,
+            const double* b, const integer_t ldb, double* x,
+            const integer_t ldx, double* ferr, double* berr, double* work,
+            integer_t* iwork, integer_t& info ) {
         LAPACK_DSYRFS( &uplo, &n, &nrhs, a, &lda, af, &ldaf, ipiv, b, &ldb, x,
                 &ldx, ferr, berr, work, iwork, &info );
     }
-    inline void syrfs( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* af, integer_t const ldaf, integer_t* ipiv,
-            traits::complex_f* b, integer_t const ldb, traits::complex_f* x,
-            integer_t const ldx, float* ferr, float* berr,
-            traits::complex_f* work, float* rwork, integer_t& info ) {
+    inline void syrfs( const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_f* a,
+            const integer_t lda, const traits::complex_f* af,
+            const integer_t ldaf, const integer_t* ipiv,
+            const traits::complex_f* b, const integer_t ldb,
+            traits::complex_f* x, const integer_t ldx, float* ferr,
+            float* berr, traits::complex_f* work, float* rwork,
+            integer_t& info ) {
         LAPACK_CSYRFS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
                 &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
                 traits::complex_ptr(work), rwork, &info );
     }
-    inline void syrfs( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* af, integer_t const ldaf, integer_t* ipiv,
-            traits::complex_d* b, integer_t const ldb, traits::complex_d* x,
-            integer_t const ldx, double* ferr, double* berr,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
+    inline void syrfs( const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_d* a,
+            const integer_t lda, const traits::complex_d* af,
+            const integer_t ldaf, const integer_t* ipiv,
+            const traits::complex_d* b, const integer_t ldb,
+            traits::complex_d* x, const integer_t ldx, double* ferr,
+            double* berr, traits::complex_d* work, double* rwork,
+            integer_t& info ) {
         LAPACK_ZSYRFS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
                 &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
@@ -91,9 +97,10 @@ struct syrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename IWORK >
-    static void invoke( MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
-            MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            integer_t& info, detail::workspace2< WORK, IWORK > work ) {
+    static void invoke( const MatrixA& a, const MatrixAF& af,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixAF >::value_type >::value) );
@@ -145,9 +152,10 @@ struct syrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
-            MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            integer_t& info, minimal_workspace work ) {
+    static void invoke( const MatrixA& a, const MatrixAF& af,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
@@ -160,17 +168,18 @@ struct syrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
-            MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            integer_t& info, optimal_workspace work ) {
+    static void invoke( const MatrixA& a, const MatrixAF& af,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            optimal_workspace work ) {
         invoke( a, af, ipiv, b, x, ferr, berr, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -186,9 +195,10 @@ struct syrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void invoke( MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
-            MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            integer_t& info, detail::workspace2< WORK, RWORK > work ) {
+    static void invoke( const MatrixA& a, const MatrixAF& af,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorFERR >::value_type, typename traits::vector_traits<
                 VectorBERR >::value_type >::value) );
@@ -237,9 +247,10 @@ struct syrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
-            MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            integer_t& info, minimal_workspace work ) {
+    static void invoke( const MatrixA& a, const MatrixAF& af,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
@@ -252,17 +263,18 @@ struct syrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
-            MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-            integer_t& info, optimal_workspace work ) {
+    static void invoke( const MatrixA& a, const MatrixAF& af,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            optimal_workspace work ) {
         invoke( a, af, ipiv, b, x, ferr, berr, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -272,9 +284,9 @@ struct syrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline integer_t syrfs( MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
-        MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
-        Workspace work ) {
+inline integer_t syrfs( const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     syrfs_impl< value_type >::invoke( a, af, ipiv, b, x, ferr, berr,
@@ -286,8 +298,9 @@ inline integer_t syrfs( MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
 template< typename MatrixA, typename MatrixAF, typename VectorIPIV,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline integer_t syrfs( MatrixA& a, MatrixAF& af, VectorIPIV& ipiv,
-        MatrixB& b, MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
+inline integer_t syrfs( const MatrixA& a, const MatrixAF& af,
+        const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+        VectorFERR& ferr, VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     syrfs_impl< value_type >::invoke( a, af, ipiv, b, x, ferr, berr,

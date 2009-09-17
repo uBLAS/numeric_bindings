@@ -31,25 +31,25 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pptrs( char const uplo, integer_t const n,
-            integer_t const nrhs, float* ap, float* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void pptrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const float* ap, float* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_SPPTRS( &uplo, &n, &nrhs, ap, b, &ldb, &info );
     }
-    inline void pptrs( char const uplo, integer_t const n,
-            integer_t const nrhs, double* ap, double* b, integer_t const ldb,
-            integer_t& info ) {
+    inline void pptrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const double* ap, double* b,
+            const integer_t ldb, integer_t& info ) {
         LAPACK_DPPTRS( &uplo, &n, &nrhs, ap, b, &ldb, &info );
     }
-    inline void pptrs( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* ap, traits::complex_f* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void pptrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_f* ap,
+            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
         LAPACK_CPPTRS( &uplo, &n, &nrhs, traits::complex_ptr(ap),
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void pptrs( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* ap, traits::complex_d* b,
-            integer_t const ldb, integer_t& info ) {
+    inline void pptrs( const char uplo, const integer_t n,
+            const integer_t nrhs, const traits::complex_d* ap,
+            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
         LAPACK_ZPPTRS( &uplo, &n, &nrhs, traits::complex_ptr(ap),
                 traits::complex_ptr(b), &ldb, &info );
     }
@@ -64,7 +64,7 @@ struct pptrs_impl {
 
     // templated specialization
     template< typename VectorAP, typename MatrixB >
-    static void invoke( integer_t const n, VectorAP& ap, MatrixB& b,
+    static void invoke( const integer_t n, const VectorAP& ap, MatrixB& b,
             integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorAP >::value_type, typename traits::matrix_traits<
@@ -84,7 +84,8 @@ struct pptrs_impl {
 
 // template function to call pptrs
 template< typename VectorAP, typename MatrixB >
-inline integer_t pptrs( integer_t const n, VectorAP& ap, MatrixB& b ) {
+inline integer_t pptrs( const integer_t n, const VectorAP& ap,
+        MatrixB& b ) {
     typedef typename traits::vector_traits< VectorAP >::value_type value_type;
     integer_t info(0);
     pptrs_impl< value_type >::invoke( n, ap, b, info );

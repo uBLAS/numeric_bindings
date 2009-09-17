@@ -36,29 +36,29 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void posvx( char const fact, char const uplo, integer_t const n,
-            integer_t const nrhs, float* a, integer_t const lda, float* af,
-            integer_t const ldaf, char& equed, float* s, float* b,
-            integer_t const ldb, float* x, integer_t const ldx, float& rcond,
+    inline void posvx( const char fact, const char uplo, const integer_t n,
+            const integer_t nrhs, float* a, const integer_t lda, float* af,
+            const integer_t ldaf, char& equed, float* s, float* b,
+            const integer_t ldb, float* x, const integer_t ldx, float& rcond,
             float* ferr, float* berr, float* work, integer_t* iwork,
             integer_t& info ) {
         LAPACK_SPOSVX( &fact, &uplo, &n, &nrhs, a, &lda, af, &ldaf, &equed, s,
                 b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
     }
-    inline void posvx( char const fact, char const uplo, integer_t const n,
-            integer_t const nrhs, double* a, integer_t const lda, double* af,
-            integer_t const ldaf, char& equed, double* s, double* b,
-            integer_t const ldb, double* x, integer_t const ldx,
+    inline void posvx( const char fact, const char uplo, const integer_t n,
+            const integer_t nrhs, double* a, const integer_t lda, double* af,
+            const integer_t ldaf, char& equed, double* s, double* b,
+            const integer_t ldb, double* x, const integer_t ldx,
             double& rcond, double* ferr, double* berr, double* work,
             integer_t* iwork, integer_t& info ) {
         LAPACK_DPOSVX( &fact, &uplo, &n, &nrhs, a, &lda, af, &ldaf, &equed, s,
                 b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
     }
-    inline void posvx( char const fact, char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* af, integer_t const ldaf, char& equed,
-            float* s, traits::complex_f* b, integer_t const ldb,
-            traits::complex_f* x, integer_t const ldx, float& rcond,
+    inline void posvx( const char fact, const char uplo, const integer_t n,
+            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
+            traits::complex_f* af, const integer_t ldaf, char& equed,
+            float* s, traits::complex_f* b, const integer_t ldb,
+            traits::complex_f* x, const integer_t ldx, float& rcond,
             float* ferr, float* berr, traits::complex_f* work, float* rwork,
             integer_t& info ) {
         LAPACK_CPOSVX( &fact, &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
@@ -66,11 +66,11 @@ namespace detail {
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
                 &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
     }
-    inline void posvx( char const fact, char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* af, integer_t const ldaf, char& equed,
-            double* s, traits::complex_d* b, integer_t const ldb,
-            traits::complex_d* x, integer_t const ldx, double& rcond,
+    inline void posvx( const char fact, const char uplo, const integer_t n,
+            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
+            traits::complex_d* af, const integer_t ldaf, char& equed,
+            double* s, traits::complex_d* b, const integer_t ldb,
+            traits::complex_d* x, const integer_t ldx, double& rcond,
             double* ferr, double* berr, traits::complex_d* work,
             double* rwork, integer_t& info ) {
         LAPACK_ZPOSVX( &fact, &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
@@ -95,7 +95,7 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename IWORK >
-    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
+    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
@@ -154,7 +154,7 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
+    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
@@ -170,7 +170,7 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
+    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
@@ -178,11 +178,11 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -198,7 +198,7 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR, typename WORK, typename RWORK >
-    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
+    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             detail::workspace2< WORK, RWORK > work ) {
@@ -254,7 +254,7 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
+    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             minimal_workspace work ) {
@@ -270,7 +270,7 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixAF, typename VectorS,
             typename MatrixB, typename MatrixX, typename VectorFERR,
             typename VectorBERR >
-    static void invoke( char const fact, MatrixA& a, MatrixAF& af,
+    static void invoke( const char fact, MatrixA& a, MatrixAF& af,
             char& equed, VectorS& s, MatrixB& b, MatrixX& x, real_type& rcond,
             VectorFERR& ferr, VectorBERR& berr, integer_t& info,
             optimal_workspace work ) {
@@ -278,11 +278,11 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -292,7 +292,7 @@ struct posvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR, typename Workspace >
-inline integer_t posvx( char const fact, MatrixA& a, MatrixAF& af,
+inline integer_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond, VectorFERR& ferr,
@@ -308,7 +308,7 @@ inline integer_t posvx( char const fact, MatrixA& a, MatrixAF& af,
 template< typename MatrixA, typename MatrixAF, typename VectorS,
         typename MatrixB, typename MatrixX, typename VectorFERR,
         typename VectorBERR >
-inline integer_t posvx( char const fact, MatrixA& a, MatrixAF& af,
+inline integer_t posvx( const char fact, MatrixA& a, MatrixAF& af,
         char& equed, VectorS& s, MatrixB& b, MatrixX& x,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rcond, VectorFERR& ferr,

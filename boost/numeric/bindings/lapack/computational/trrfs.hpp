@@ -36,26 +36,27 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trrfs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, float* a,
-            integer_t const lda, float* b, integer_t const ldb, float* x,
-            integer_t const ldx, float* ferr, float* berr, float* work,
-            integer_t* iwork, integer_t& info ) {
+    inline void trrfs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs, const float* a,
+            const integer_t lda, const float* b, const integer_t ldb,
+            const float* x, const integer_t ldx, float* ferr, float* berr,
+            float* work, integer_t* iwork, integer_t& info ) {
         LAPACK_STRRFS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb, x,
                 &ldx, ferr, berr, work, iwork, &info );
     }
-    inline void trrfs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, double* a,
-            integer_t const lda, double* b, integer_t const ldb, double* x,
-            integer_t const ldx, double* ferr, double* berr, double* work,
-            integer_t* iwork, integer_t& info ) {
+    inline void trrfs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs, const double* a,
+            const integer_t lda, const double* b, const integer_t ldb,
+            const double* x, const integer_t ldx, double* ferr, double* berr,
+            double* work, integer_t* iwork, integer_t& info ) {
         LAPACK_DTRRFS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb, x,
                 &ldx, ferr, berr, work, iwork, &info );
     }
-    inline void trrfs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, traits::complex_f* a,
-            integer_t const lda, traits::complex_f* b, integer_t const ldb,
-            traits::complex_f* x, integer_t const ldx, float* ferr,
+    inline void trrfs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs,
+            const traits::complex_f* a, const integer_t lda,
+            const traits::complex_f* b, const integer_t ldb,
+            const traits::complex_f* x, const integer_t ldx, float* ferr,
             float* berr, traits::complex_f* work, float* rwork,
             integer_t& info ) {
         LAPACK_CTRRFS( &uplo, &trans, &diag, &n, &nrhs,
@@ -63,10 +64,11 @@ namespace detail {
                 traits::complex_ptr(x), &ldx, ferr, berr,
                 traits::complex_ptr(work), rwork, &info );
     }
-    inline void trrfs( char const uplo, char const trans, char const diag,
-            integer_t const n, integer_t const nrhs, traits::complex_d* a,
-            integer_t const lda, traits::complex_d* b, integer_t const ldb,
-            traits::complex_d* x, integer_t const ldx, double* ferr,
+    inline void trrfs( const char uplo, const char trans, const char diag,
+            const integer_t n, const integer_t nrhs,
+            const traits::complex_d* a, const integer_t lda,
+            const traits::complex_d* b, const integer_t ldb,
+            const traits::complex_d* x, const integer_t ldx, double* ferr,
             double* berr, traits::complex_d* work, double* rwork,
             integer_t& info ) {
         LAPACK_ZTRRFS( &uplo, &trans, &diag, &n, &nrhs,
@@ -91,10 +93,10 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR, typename WORK,
             typename IWORK >
-    static void invoke( char const uplo, char const trans, char const diag,
-            MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-            VectorBERR& berr, integer_t& info, detail::workspace2< WORK,
-            IWORK > work ) {
+    static void invoke( const char uplo, const char trans, const char diag,
+            const MatrixA& a, const MatrixB& b, const MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
@@ -137,9 +139,10 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( char const uplo, char const trans, char const diag,
-            MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-            VectorBERR& berr, integer_t& info, minimal_workspace work ) {
+    static void invoke( const char uplo, const char trans, const char diag,
+            const MatrixA& a, const MatrixB& b, const MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
@@ -151,18 +154,19 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( char const uplo, char const trans, char const diag,
-            MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-            VectorBERR& berr, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char uplo, const char trans, const char diag,
+            const MatrixA& a, const MatrixB& b, const MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            optimal_workspace work ) {
         invoke( uplo, trans, diag, a, b, x, ferr, berr, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return n;
     }
 };
@@ -178,10 +182,10 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR, typename WORK,
             typename RWORK >
-    static void invoke( char const uplo, char const trans, char const diag,
-            MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-            VectorBERR& berr, integer_t& info, detail::workspace2< WORK,
-            RWORK > work ) {
+    static void invoke( const char uplo, const char trans, const char diag,
+            const MatrixA& a, const MatrixB& b, const MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            detail::workspace2< WORK, RWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
                 VectorFERR >::value_type, typename traits::vector_traits<
                 VectorBERR >::value_type >::value) );
@@ -221,9 +225,10 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( char const uplo, char const trans, char const diag,
-            MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-            VectorBERR& berr, integer_t& info, minimal_workspace work ) {
+    static void invoke( const char uplo, const char trans, const char diag,
+            const MatrixA& a, const MatrixB& b, const MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
         traits::detail::array< real_type > tmp_rwork( min_size_rwork(
@@ -235,18 +240,19 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB, typename MatrixX,
             typename VectorFERR, typename VectorBERR >
-    static void invoke( char const uplo, char const trans, char const diag,
-            MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-            VectorBERR& berr, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char uplo, const char trans, const char diag,
+            const MatrixA& a, const MatrixB& b, const MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+            optimal_workspace work ) {
         invoke( uplo, trans, diag, a, b, x, ferr, berr, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 };
@@ -255,9 +261,9 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call trrfs
 template< typename MatrixA, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR, typename Workspace >
-inline integer_t trrfs( char const uplo, char const trans,
-        char const diag, MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr, Workspace work ) {
+inline integer_t trrfs( const char uplo, const char trans,
+        const char diag, const MatrixA& a, const MatrixB& b, const MatrixX& x,
+        VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     trrfs_impl< value_type >::invoke( uplo, trans, diag, a, b, x, ferr,
@@ -268,9 +274,9 @@ inline integer_t trrfs( char const uplo, char const trans,
 // template function to call trrfs, default workspace type
 template< typename MatrixA, typename MatrixB, typename MatrixX,
         typename VectorFERR, typename VectorBERR >
-inline integer_t trrfs( char const uplo, char const trans,
-        char const diag, MatrixA& a, MatrixB& b, MatrixX& x, VectorFERR& ferr,
-        VectorBERR& berr ) {
+inline integer_t trrfs( const char uplo, const char trans,
+        const char diag, const MatrixA& a, const MatrixB& b, const MatrixX& x,
+        VectorFERR& ferr, VectorBERR& berr ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     trrfs_impl< value_type >::invoke( uplo, trans, diag, a, b, x, ferr,

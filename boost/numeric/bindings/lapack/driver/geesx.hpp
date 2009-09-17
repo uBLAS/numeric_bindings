@@ -37,42 +37,42 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void geesx( char const jobvs, char const sort, logical_t* select,
-            char const sense, integer_t const n, float* a,
-            integer_t const lda, integer_t& sdim, float* wr, float* wi,
-            float* vs, integer_t const ldvs, float& rconde, float& rcondv,
-            float* work, integer_t const lwork, integer_t* iwork,
-            integer_t const liwork, logical_t* bwork, integer_t& info ) {
+    inline void geesx( const char jobvs, const char sort, logical_t* select,
+            const char sense, const integer_t n, float* a,
+            const integer_t lda, integer_t& sdim, float* wr, float* wi,
+            float* vs, const integer_t ldvs, float& rconde, float& rcondv,
+            float* work, const integer_t lwork, integer_t* iwork,
+            const integer_t liwork, logical_t* bwork, integer_t& info ) {
         LAPACK_SGEESX( &jobvs, &sort, &select, &sense, &n, a, &lda, &sdim, wr,
                 wi, vs, &ldvs, &rconde, &rcondv, work, &lwork, iwork, &liwork,
                 bwork, &info );
     }
-    inline void geesx( char const jobvs, char const sort, logical_t* select,
-            char const sense, integer_t const n, double* a,
-            integer_t const lda, integer_t& sdim, double* wr, double* wi,
-            double* vs, integer_t const ldvs, double& rconde, double& rcondv,
-            double* work, integer_t const lwork, integer_t* iwork,
-            integer_t const liwork, logical_t* bwork, integer_t& info ) {
+    inline void geesx( const char jobvs, const char sort, logical_t* select,
+            const char sense, const integer_t n, double* a,
+            const integer_t lda, integer_t& sdim, double* wr, double* wi,
+            double* vs, const integer_t ldvs, double& rconde, double& rcondv,
+            double* work, const integer_t lwork, integer_t* iwork,
+            const integer_t liwork, logical_t* bwork, integer_t& info ) {
         LAPACK_DGEESX( &jobvs, &sort, &select, &sense, &n, a, &lda, &sdim, wr,
                 wi, vs, &ldvs, &rconde, &rcondv, work, &lwork, iwork, &liwork,
                 bwork, &info );
     }
-    inline void geesx( char const jobvs, char const sort, logical_t* select,
-            char const sense, integer_t const n, traits::complex_f* a,
-            integer_t const lda, integer_t& sdim, traits::complex_f* w,
-            traits::complex_f* vs, integer_t const ldvs, float& rconde,
-            float& rcondv, traits::complex_f* work, integer_t const lwork,
+    inline void geesx( const char jobvs, const char sort, logical_t* select,
+            const char sense, const integer_t n, traits::complex_f* a,
+            const integer_t lda, integer_t& sdim, traits::complex_f* w,
+            traits::complex_f* vs, const integer_t ldvs, float& rconde,
+            float& rcondv, traits::complex_f* work, const integer_t lwork,
             float* rwork, logical_t* bwork, integer_t& info ) {
         LAPACK_CGEESX( &jobvs, &sort, &select, &sense, &n,
                 traits::complex_ptr(a), &lda, &sdim, traits::complex_ptr(w),
                 traits::complex_ptr(vs), &ldvs, &rconde, &rcondv,
                 traits::complex_ptr(work), &lwork, rwork, bwork, &info );
     }
-    inline void geesx( char const jobvs, char const sort, logical_t* select,
-            char const sense, integer_t const n, traits::complex_d* a,
-            integer_t const lda, integer_t& sdim, traits::complex_d* w,
-            traits::complex_d* vs, integer_t const ldvs, double& rconde,
-            double& rcondv, traits::complex_d* work, integer_t const lwork,
+    inline void geesx( const char jobvs, const char sort, logical_t* select,
+            const char sense, const integer_t n, traits::complex_d* a,
+            const integer_t lda, integer_t& sdim, traits::complex_d* w,
+            traits::complex_d* vs, const integer_t ldvs, double& rconde,
+            double& rcondv, traits::complex_d* work, const integer_t lwork,
             double* rwork, logical_t* bwork, integer_t& info ) {
         LAPACK_ZGEESX( &jobvs, &sort, &select, &sense, &n,
                 traits::complex_ptr(a), &lda, &sdim, traits::complex_ptr(w),
@@ -95,8 +95,8 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVS, typename WORK, typename IWORK, typename BWORK >
-    static void invoke( char const jobvs, char const sort, logical_t* select,
-            char const sense, MatrixA& a, integer_t& sdim, VectorWR& wr,
+    static void invoke( const char jobvs, const char sort, logical_t* select,
+            const char sense, MatrixA& a, integer_t& sdim, VectorWR& wr,
             VectorWI& wi, MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, detail::workspace3< WORK, IWORK, BWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -141,8 +141,8 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVS >
-    static void invoke( char const jobvs, char const sort, logical_t* select,
-            char const sense, MatrixA& a, integer_t& sdim, VectorWR& wr,
+    static void invoke( const char jobvs, const char sort, logical_t* select,
+            const char sense, MatrixA& a, integer_t& sdim, VectorWR& wr,
             VectorWI& wi, MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
@@ -158,8 +158,8 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // optimal workspace specialization
     template< typename MatrixA, typename VectorWR, typename VectorWI,
             typename MatrixVS >
-    static void invoke( char const jobvs, char const sort, logical_t* select,
-            char const sense, MatrixA& a, integer_t& sdim, VectorWR& wr,
+    static void invoke( const char jobvs, const char sort, logical_t* select,
+            const char sense, MatrixA& a, integer_t& sdim, VectorWR& wr,
             VectorWI& wi, MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
@@ -180,21 +180,21 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 rcondv, info, workspace( tmp_work, tmp_iwork, tmp_bwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n, char const sense ) {
+    static integer_t min_size_work( const integer_t n, const char sense ) {
         if ( sense == 'N' )
             return std::max( 1, 3*n );
         else
             return std::max( 1, n+n*n/2 );
     }
 
-    static integer_t min_size_iwork( integer_t const n, char const sense ) {
+    static integer_t min_size_iwork( const integer_t n, const char sense ) {
         if ( sense == 'N' || sense == 'E' )
             return 1;
         else
             return std::max( 1, n*n/4 );
     }
 
-    static integer_t min_size_bwork( integer_t const n, char const sort ) {
+    static integer_t min_size_bwork( const integer_t n, const char sort ) {
         if ( sort == 'N' )
             return 0;
         else
@@ -212,8 +212,8 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVS,
             typename WORK, typename RWORK, typename BWORK >
-    static void invoke( char const jobvs, char const sort, logical_t* select,
-            char const sense, MatrixA& a, integer_t& sdim, VectorW& w,
+    static void invoke( const char jobvs, const char sort, logical_t* select,
+            const char sense, MatrixA& a, integer_t& sdim, VectorW& w,
             MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, detail::workspace3< WORK, RWORK, BWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
@@ -250,8 +250,8 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVS >
-    static void invoke( char const jobvs, char const sort, logical_t* select,
-            char const sense, MatrixA& a, integer_t& sdim, VectorW& w,
+    static void invoke( const char jobvs, const char sort, logical_t* select,
+            const char sense, MatrixA& a, integer_t& sdim, VectorW& w,
             MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
@@ -266,8 +266,8 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorW, typename MatrixVS >
-    static void invoke( char const jobvs, char const sort, logical_t* select,
-            char const sense, MatrixA& a, integer_t& sdim, VectorW& w,
+    static void invoke( const char jobvs, const char sort, logical_t* select,
+            const char sense, MatrixA& a, integer_t& sdim, VectorW& w,
             MatrixVS& vs, real_type& rconde, real_type& rcondv,
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
@@ -288,18 +288,18 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 info, workspace( tmp_work, tmp_rwork, tmp_bwork ) );
     }
 
-    static integer_t min_size_work( integer_t const n, char const sense ) {
+    static integer_t min_size_work( const integer_t n, const char sense ) {
         if ( sense == 'N' )
             return std::max( 1, 2*n );
         else
             return std::max( 1, n*n/2 );
     }
 
-    static integer_t min_size_rwork( integer_t const n ) {
+    static integer_t min_size_rwork( const integer_t n ) {
         return n;
     }
 
-    static integer_t min_size_bwork( integer_t const n, char const sort ) {
+    static integer_t min_size_bwork( const integer_t n, const char sort ) {
         if ( sort == 'N' )
             return 0;
         else
@@ -311,8 +311,8 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call geesx
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
-inline integer_t geesx( char const jobvs, char const sort,
-        logical_t* select, char const sense, MatrixA& a, integer_t& sdim,
+inline integer_t geesx( const char jobvs, const char sort,
+        logical_t* select, const char sense, MatrixA& a, integer_t& sdim,
         VectorWR& wr, VectorWI& wi, MatrixVS& vs,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rconde,
@@ -328,8 +328,8 @@ inline integer_t geesx( char const jobvs, char const sort,
 // template function to call geesx, default workspace type
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
-inline integer_t geesx( char const jobvs, char const sort,
-        logical_t* select, char const sense, MatrixA& a, integer_t& sdim,
+inline integer_t geesx( const char jobvs, const char sort,
+        logical_t* select, const char sense, MatrixA& a, integer_t& sdim,
         VectorWR& wr, VectorWI& wi, MatrixVS& vs,
         typename traits::type_traits< typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rconde,
@@ -344,8 +344,8 @@ inline integer_t geesx( char const jobvs, char const sort,
 // template function to call geesx
 template< typename MatrixA, typename VectorW, typename MatrixVS,
         typename Workspace >
-inline integer_t geesx( char const jobvs, char const sort,
-        logical_t* select, char const sense, MatrixA& a, integer_t& sdim,
+inline integer_t geesx( const char jobvs, const char sort,
+        logical_t* select, const char sense, MatrixA& a, integer_t& sdim,
         VectorW& w, MatrixVS& vs, typename traits::type_traits<
         typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rconde,
@@ -360,8 +360,8 @@ inline integer_t geesx( char const jobvs, char const sort,
 
 // template function to call geesx, default workspace type
 template< typename MatrixA, typename VectorW, typename MatrixVS >
-inline integer_t geesx( char const jobvs, char const sort,
-        logical_t* select, char const sense, MatrixA& a, integer_t& sdim,
+inline integer_t geesx( const char jobvs, const char sort,
+        logical_t* select, const char sense, MatrixA& a, integer_t& sdim,
         VectorW& w, MatrixVS& vs, typename traits::type_traits<
         typename traits::matrix_traits<
         MatrixA >::value_type >::real_type& rconde,

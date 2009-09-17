@@ -36,24 +36,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void steqr( char const compz, integer_t const n, float* d,
-            float* e, float* z, integer_t const ldz, float* work,
+    inline void steqr( const char compz, const integer_t n, float* d,
+            float* e, float* z, const integer_t ldz, float* work,
             integer_t& info ) {
         LAPACK_SSTEQR( &compz, &n, d, e, z, &ldz, work, &info );
     }
-    inline void steqr( char const compz, integer_t const n, double* d,
-            double* e, double* z, integer_t const ldz, double* work,
+    inline void steqr( const char compz, const integer_t n, double* d,
+            double* e, double* z, const integer_t ldz, double* work,
             integer_t& info ) {
         LAPACK_DSTEQR( &compz, &n, d, e, z, &ldz, work, &info );
     }
-    inline void steqr( char const compz, integer_t const n, float* d,
-            float* e, traits::complex_f* z, integer_t const ldz, float* work,
+    inline void steqr( const char compz, const integer_t n, float* d,
+            float* e, traits::complex_f* z, const integer_t ldz, float* work,
             integer_t& info ) {
         LAPACK_CSTEQR( &compz, &n, d, e, traits::complex_ptr(z), &ldz, work,
                 &info );
     }
-    inline void steqr( char const compz, integer_t const n, double* d,
-            double* e, traits::complex_d* z, integer_t const ldz,
+    inline void steqr( const char compz, const integer_t n, double* d,
+            double* e, traits::complex_d* z, const integer_t ldz,
             double* work, integer_t& info ) {
         LAPACK_ZSTEQR( &compz, &n, d, e, traits::complex_ptr(z), &ldz, work,
                 &info );
@@ -74,7 +74,7 @@ struct steqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixZ,
             typename WORK >
-    static void invoke( char const compz, integer_t const n, VectorD& d,
+    static void invoke( const char compz, const integer_t n, VectorD& d,
             VectorE& e, MatrixZ& z, integer_t& info, detail::workspace1<
             WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -96,7 +96,7 @@ struct steqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( char const compz, integer_t const n, VectorD& d,
+    static void invoke( const char compz, const integer_t n, VectorD& d,
             VectorE& e, MatrixZ& z, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -105,7 +105,7 @@ struct steqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( char const compz, integer_t const n, VectorD& d,
+    static void invoke( const char compz, const integer_t n, VectorD& d,
             VectorE& e, MatrixZ& z, integer_t& info, optimal_workspace work ) {
         invoke( compz, n, d, e, z, info, minimal_workspace() );
     }
@@ -125,7 +125,7 @@ struct steqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // user-defined workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixZ,
             typename WORK >
-    static void invoke( char const compz, integer_t const n, VectorD& d,
+    static void invoke( const char compz, const integer_t n, VectorD& d,
             VectorE& e, MatrixZ& z, integer_t& info, detail::workspace1<
             WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -144,7 +144,7 @@ struct steqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( char const compz, integer_t const n, VectorD& d,
+    static void invoke( const char compz, const integer_t n, VectorD& d,
             VectorE& e, MatrixZ& z, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -153,7 +153,7 @@ struct steqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( char const compz, integer_t const n, VectorD& d,
+    static void invoke( const char compz, const integer_t n, VectorD& d,
             VectorE& e, MatrixZ& z, integer_t& info, optimal_workspace work ) {
         invoke( compz, n, d, e, z, info, minimal_workspace() );
     }
@@ -167,7 +167,7 @@ struct steqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call steqr
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline integer_t steqr( char const compz, integer_t const n, VectorD& d,
+inline integer_t steqr( const char compz, const integer_t n, VectorD& d,
         VectorE& e, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);
@@ -177,7 +177,7 @@ inline integer_t steqr( char const compz, integer_t const n, VectorD& d,
 
 // template function to call steqr, default workspace type
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline integer_t steqr( char const compz, integer_t const n, VectorD& d,
+inline integer_t steqr( const char compz, const integer_t n, VectorD& d,
         VectorE& e, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
     integer_t info(0);

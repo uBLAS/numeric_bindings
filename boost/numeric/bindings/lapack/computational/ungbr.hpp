@@ -34,18 +34,18 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ungbr( char const vect, integer_t const m, integer_t const n,
-            integer_t const k, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* tau, traits::complex_f* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void ungbr( const char vect, const integer_t m, const integer_t n,
+            const integer_t k, traits::complex_f* a, const integer_t lda,
+            const traits::complex_f* tau, traits::complex_f* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_CUNGBR( &vect, &m, &n, &k, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
                 &info );
     }
-    inline void ungbr( char const vect, integer_t const m, integer_t const n,
-            integer_t const k, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* tau, traits::complex_d* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void ungbr( const char vect, const integer_t m, const integer_t n,
+            const integer_t k, traits::complex_d* a, const integer_t lda,
+            const traits::complex_d* tau, traits::complex_d* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_ZUNGBR( &vect, &m, &n, &k, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
                 &info );
@@ -61,9 +61,9 @@ struct ungbr_impl {
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void invoke( char const vect, integer_t const m, integer_t const n,
-            integer_t const k, MatrixA& a, VectorTAU& tau, integer_t& info,
-            detail::workspace1< WORK > work ) {
+    static void invoke( const char vect, const integer_t m, const integer_t n,
+            const integer_t k, MatrixA& a, const VectorTAU& tau,
+            integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
@@ -81,18 +81,18 @@ struct ungbr_impl {
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( char const vect, integer_t const m, integer_t const n,
-            integer_t const k, MatrixA& a, VectorTAU& tau, integer_t& info,
-            minimal_workspace work ) {
+    static void invoke( const char vect, const integer_t m, const integer_t n,
+            const integer_t k, MatrixA& a, const VectorTAU& tau,
+            integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work( m, n ) );
         invoke( vect, m, n, k, a, tau, info, workspace( tmp_work ) );
     }
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( char const vect, integer_t const m, integer_t const n,
-            integer_t const k, MatrixA& a, VectorTAU& tau, integer_t& info,
-            optimal_workspace work ) {
+    static void invoke( const char vect, const integer_t m, const integer_t n,
+            const integer_t k, MatrixA& a, const VectorTAU& tau,
+            integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         detail::ungbr( vect, m, n, k, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),
@@ -102,7 +102,7 @@ struct ungbr_impl {
         invoke( vect, m, n, k, a, tau, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const m, integer_t const n ) {
+    static integer_t min_size_work( const integer_t m, const integer_t n ) {
         return std::max( 1, std::min( m, n ) );
     }
 };
@@ -110,9 +110,9 @@ struct ungbr_impl {
 
 // template function to call ungbr
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline integer_t ungbr( char const vect, integer_t const m,
-        integer_t const n, integer_t const k, MatrixA& a, VectorTAU& tau,
-        Workspace work ) {
+inline integer_t ungbr( const char vect, const integer_t m,
+        const integer_t n, const integer_t k, MatrixA& a,
+        const VectorTAU& tau, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ungbr_impl< value_type >::invoke( vect, m, n, k, a, tau, info, work );
@@ -121,8 +121,9 @@ inline integer_t ungbr( char const vect, integer_t const m,
 
 // template function to call ungbr, default workspace type
 template< typename MatrixA, typename VectorTAU >
-inline integer_t ungbr( char const vect, integer_t const m,
-        integer_t const n, integer_t const k, MatrixA& a, VectorTAU& tau ) {
+inline integer_t ungbr( const char vect, const integer_t m,
+        const integer_t n, const integer_t k, MatrixA& a,
+        const VectorTAU& tau ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     ungbr_impl< value_type >::invoke( vect, m, n, k, a, tau, info,

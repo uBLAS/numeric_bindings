@@ -36,24 +36,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sytri( char const uplo, integer_t const n, float* a,
-            integer_t const lda, integer_t* ipiv, float* work,
+    inline void sytri( const char uplo, const integer_t n, float* a,
+            const integer_t lda, const integer_t* ipiv, float* work,
             integer_t& info ) {
         LAPACK_SSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
     }
-    inline void sytri( char const uplo, integer_t const n, double* a,
-            integer_t const lda, integer_t* ipiv, double* work,
+    inline void sytri( const char uplo, const integer_t n, double* a,
+            const integer_t lda, const integer_t* ipiv, double* work,
             integer_t& info ) {
         LAPACK_DSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
     }
-    inline void sytri( char const uplo, integer_t const n,
-            traits::complex_f* a, integer_t const lda, integer_t* ipiv,
+    inline void sytri( const char uplo, const integer_t n,
+            traits::complex_f* a, const integer_t lda, const integer_t* ipiv,
             traits::complex_f* work, integer_t& info ) {
         LAPACK_CSYTRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(work), &info );
     }
-    inline void sytri( char const uplo, integer_t const n,
-            traits::complex_d* a, integer_t const lda, integer_t* ipiv,
+    inline void sytri( const char uplo, const integer_t n,
+            traits::complex_d* a, const integer_t lda, const integer_t* ipiv,
             traits::complex_d* work, integer_t& info ) {
         LAPACK_ZSYTRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(work), &info );
@@ -73,7 +73,7 @@ struct sytri_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename WORK >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( const char uplo, MatrixA& a, const VectorIPIV& ipiv,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
@@ -91,7 +91,7 @@ struct sytri_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( const char uplo, MatrixA& a, const VectorIPIV& ipiv,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
@@ -100,12 +100,12 @@ struct sytri_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( const char uplo, MatrixA& a, const VectorIPIV& ipiv,
             integer_t& info, optimal_workspace work ) {
         invoke( uplo, a, ipiv, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return n;
     }
 };
@@ -119,7 +119,7 @@ struct sytri_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // user-defined workspace specialization
     template< typename MatrixA, typename VectorIPIV, typename WORK >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( const char uplo, MatrixA& a, const VectorIPIV& ipiv,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
@@ -137,7 +137,7 @@ struct sytri_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( const char uplo, MatrixA& a, const VectorIPIV& ipiv,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_columns(a) ) );
@@ -146,12 +146,12 @@ struct sytri_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // optimal workspace specialization
     template< typename MatrixA, typename VectorIPIV >
-    static void invoke( char const uplo, MatrixA& a, VectorIPIV& ipiv,
+    static void invoke( const char uplo, MatrixA& a, const VectorIPIV& ipiv,
             integer_t& info, optimal_workspace work ) {
         invoke( uplo, a, ipiv, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 2*n;
     }
 };
@@ -159,8 +159,8 @@ struct sytri_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
 // template function to call sytri
 template< typename MatrixA, typename VectorIPIV, typename Workspace >
-inline integer_t sytri( char const uplo, MatrixA& a, VectorIPIV& ipiv,
-        Workspace work ) {
+inline integer_t sytri( const char uplo, MatrixA& a,
+        const VectorIPIV& ipiv, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     sytri_impl< value_type >::invoke( uplo, a, ipiv, info, work );
@@ -169,7 +169,8 @@ inline integer_t sytri( char const uplo, MatrixA& a, VectorIPIV& ipiv,
 
 // template function to call sytri, default workspace type
 template< typename MatrixA, typename VectorIPIV >
-inline integer_t sytri( char const uplo, MatrixA& a, VectorIPIV& ipiv ) {
+inline integer_t sytri( const char uplo, MatrixA& a,
+        const VectorIPIV& ipiv ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     sytri_impl< value_type >::invoke( uplo, a, ipiv, info,

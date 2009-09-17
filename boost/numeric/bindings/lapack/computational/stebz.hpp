@@ -33,21 +33,21 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void stebz( char const range, char const order, integer_t const n,
-            float const vl, float const vu, integer_t const il,
-            integer_t const iu, float const abstol, float* d, float* e,
-            integer_t& m, integer_t& nsplit, float* w, integer_t* iblock,
-            integer_t* isplit, float* work, integer_t* iwork,
-            integer_t& info ) {
+    inline void stebz( const char range, const char order, const integer_t n,
+            const float vl, const float vu, const integer_t il,
+            const integer_t iu, const float abstol, const float* d,
+            const float* e, integer_t& m, integer_t& nsplit, float* w,
+            integer_t* iblock, integer_t* isplit, float* work,
+            integer_t* iwork, integer_t& info ) {
         LAPACK_SSTEBZ( &range, &order, &n, &vl, &vu, &il, &iu, &abstol, d, e,
                 &m, &nsplit, w, iblock, isplit, work, iwork, &info );
     }
-    inline void stebz( char const range, char const order, integer_t const n,
-            double const vl, double const vu, integer_t const il,
-            integer_t const iu, double const abstol, double* d, double* e,
-            integer_t& m, integer_t& nsplit, double* w, integer_t* iblock,
-            integer_t* isplit, double* work, integer_t* iwork,
-            integer_t& info ) {
+    inline void stebz( const char range, const char order, const integer_t n,
+            const double vl, const double vu, const integer_t il,
+            const integer_t iu, const double abstol, const double* d,
+            const double* e, integer_t& m, integer_t& nsplit, double* w,
+            integer_t* iblock, integer_t* isplit, double* work,
+            integer_t* iwork, integer_t& info ) {
         LAPACK_DSTEBZ( &range, &order, &n, &vl, &vu, &il, &iu, &abstol, d, e,
                 &m, &nsplit, w, iblock, isplit, work, iwork, &info );
     }
@@ -64,10 +64,10 @@ struct stebz_impl {
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename WORK,
             typename IWORK >
-    static void invoke( char const range, char const order, integer_t const n,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, VectorD& d,
-            VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
+    static void invoke( const char range, const char order, const integer_t n,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, const VectorD& d,
+            const VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
             VectorIBLOCK& iblock, VectorISPLIT& isplit, integer_t& info,
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -102,10 +102,10 @@ struct stebz_impl {
     // minimal workspace specialization
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT >
-    static void invoke( char const range, char const order, integer_t const n,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, VectorD& d,
-            VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
+    static void invoke( const char range, const char order, const integer_t n,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, const VectorD& d,
+            const VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
             VectorIBLOCK& iblock, VectorISPLIT& isplit, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
@@ -117,21 +117,21 @@ struct stebz_impl {
     // optimal workspace specialization
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT >
-    static void invoke( char const range, char const order, integer_t const n,
-            real_type const vl, real_type const vu, integer_t const il,
-            integer_t const iu, real_type const abstol, VectorD& d,
-            VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
+    static void invoke( const char range, const char order, const integer_t n,
+            const real_type vl, const real_type vu, const integer_t il,
+            const integer_t iu, const real_type abstol, const VectorD& d,
+            const VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
             VectorIBLOCK& iblock, VectorISPLIT& isplit, integer_t& info,
             optimal_workspace work ) {
         invoke( range, order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w,
                 iblock, isplit, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return 4*n;
     }
 
-    static integer_t min_size_iwork( integer_t const n ) {
+    static integer_t min_size_iwork( const integer_t n ) {
         return 3*n;
     }
 };
@@ -140,16 +140,15 @@ struct stebz_impl {
 // template function to call stebz
 template< typename VectorD, typename VectorE, typename VectorW,
         typename VectorIBLOCK, typename VectorISPLIT, typename Workspace >
-inline integer_t stebz( char const range, char const order,
-        integer_t const n, typename traits::type_traits<
+inline integer_t stebz( const char range, const char order,
+        const integer_t n, const typename traits::type_traits<
+        typename traits::vector_traits< VectorD >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::vector_traits<
-        VectorD >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
-        typename traits::vector_traits<
-        VectorD >::value_type >::real_type const abstol, VectorD& d,
-        VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
+        VectorD >::value_type >::real_type abstol, const VectorD& d,
+        const VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
         VectorIBLOCK& iblock, VectorISPLIT& isplit, Workspace work ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);
@@ -161,16 +160,15 @@ inline integer_t stebz( char const range, char const order,
 // template function to call stebz, default workspace type
 template< typename VectorD, typename VectorE, typename VectorW,
         typename VectorIBLOCK, typename VectorISPLIT >
-inline integer_t stebz( char const range, char const order,
-        integer_t const n, typename traits::type_traits<
+inline integer_t stebz( const char range, const char order,
+        const integer_t n, const typename traits::type_traits<
+        typename traits::vector_traits< VectorD >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::vector_traits<
+        VectorD >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
         typename traits::vector_traits<
-        VectorD >::value_type >::real_type const vl,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type const vu, integer_t const il,
-        integer_t const iu, typename traits::type_traits<
-        typename traits::vector_traits<
-        VectorD >::value_type >::real_type const abstol, VectorD& d,
-        VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
+        VectorD >::value_type >::real_type abstol, const VectorD& d,
+        const VectorE& e, integer_t& m, integer_t& nsplit, VectorW& w,
         VectorIBLOCK& iblock, VectorISPLIT& isplit ) {
     typedef typename traits::vector_traits< VectorD >::value_type value_type;
     integer_t info(0);

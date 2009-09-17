@@ -31,15 +31,15 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hpsv( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* ap, integer_t* ipiv,
-            traits::complex_f* b, integer_t const ldb, integer_t& info ) {
+    inline void hpsv( const char uplo, const integer_t n,
+            const integer_t nrhs, traits::complex_f* ap, integer_t* ipiv,
+            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
         LAPACK_CHPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
                 traits::complex_ptr(b), &ldb, &info );
     }
-    inline void hpsv( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* ap, integer_t* ipiv,
-            traits::complex_d* b, integer_t const ldb, integer_t& info ) {
+    inline void hpsv( const char uplo, const integer_t n,
+            const integer_t nrhs, traits::complex_d* ap, integer_t* ipiv,
+            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
         LAPACK_ZHPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
                 traits::complex_ptr(b), &ldb, &info );
     }

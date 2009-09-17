@@ -36,36 +36,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hseqr( char const job, char const compz, integer_t const n,
-            integer_t const ilo, integer_t const ihi, float* h,
-            integer_t const ldh, float* wr, float* wi, float* z,
-            integer_t const ldz, float* work, integer_t const lwork,
+    inline void hseqr( const char job, const char compz, const integer_t n,
+            const integer_t ilo, const integer_t ihi, float* h,
+            const integer_t ldh, float* wr, float* wi, float* z,
+            const integer_t ldz, float* work, const integer_t lwork,
             integer_t& info ) {
         LAPACK_SHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, wr, wi, z, &ldz,
                 work, &lwork, &info );
     }
-    inline void hseqr( char const job, char const compz, integer_t const n,
-            integer_t const ilo, integer_t const ihi, double* h,
-            integer_t const ldh, double* wr, double* wi, double* z,
-            integer_t const ldz, double* work, integer_t const lwork,
+    inline void hseqr( const char job, const char compz, const integer_t n,
+            const integer_t ilo, const integer_t ihi, double* h,
+            const integer_t ldh, double* wr, double* wi, double* z,
+            const integer_t ldz, double* work, const integer_t lwork,
             integer_t& info ) {
         LAPACK_DHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, wr, wi, z, &ldz,
                 work, &lwork, &info );
     }
-    inline void hseqr( char const job, char const compz, integer_t const n,
-            integer_t const ilo, integer_t const ihi, traits::complex_f* h,
-            integer_t const ldh, traits::complex_f* w, traits::complex_f* z,
-            integer_t const ldz, traits::complex_f* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void hseqr( const char job, const char compz, const integer_t n,
+            const integer_t ilo, const integer_t ihi, traits::complex_f* h,
+            const integer_t ldh, traits::complex_f* w, traits::complex_f* z,
+            const integer_t ldz, traits::complex_f* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_CHSEQR( &job, &compz, &n, &ilo, &ihi, traits::complex_ptr(h),
                 &ldh, traits::complex_ptr(w), traits::complex_ptr(z), &ldz,
                 traits::complex_ptr(work), &lwork, &info );
     }
-    inline void hseqr( char const job, char const compz, integer_t const n,
-            integer_t const ilo, integer_t const ihi, traits::complex_d* h,
-            integer_t const ldh, traits::complex_d* w, traits::complex_d* z,
-            integer_t const ldz, traits::complex_d* work,
-            integer_t const lwork, integer_t& info ) {
+    inline void hseqr( const char job, const char compz, const integer_t n,
+            const integer_t ilo, const integer_t ihi, traits::complex_d* h,
+            const integer_t ldh, traits::complex_d* w, traits::complex_d* z,
+            const integer_t ldz, traits::complex_d* work,
+            const integer_t lwork, integer_t& info ) {
         LAPACK_ZHSEQR( &job, &compz, &n, &ilo, &ihi, traits::complex_ptr(h),
                 &ldh, traits::complex_ptr(w), traits::complex_ptr(z), &ldz,
                 traits::complex_ptr(work), &lwork, &info );
@@ -86,8 +86,8 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // user-defined workspace specialization
     template< typename MatrixH, typename VectorWR, typename VectorWI,
             typename MatrixZ, typename WORK >
-    static void invoke( char const job, char const compz, integer_t const ilo,
-            integer_t const ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
+    static void invoke( const char job, const char compz, const integer_t ilo,
+            const integer_t ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
             MatrixZ& z, integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::vector_traits<
@@ -115,8 +115,8 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // minimal workspace specialization
     template< typename MatrixH, typename VectorWR, typename VectorWI,
             typename MatrixZ >
-    static void invoke( char const job, char const compz, integer_t const ilo,
-            integer_t const ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
+    static void invoke( const char job, const char compz, const integer_t ilo,
+            const integer_t ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
             MatrixZ& z, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -127,8 +127,8 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     // optimal workspace specialization
     template< typename MatrixH, typename VectorWR, typename VectorWI,
             typename MatrixZ >
-    static void invoke( char const job, char const compz, integer_t const ilo,
-            integer_t const ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
+    static void invoke( const char job, const char compz, const integer_t ilo,
+            const integer_t ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
             MatrixZ& z, integer_t& info, optimal_workspace work ) {
         invoke( job, compz, ilo, ihi, h, wr, wi, z, info,
                 minimal_workspace() );
@@ -149,8 +149,8 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     // user-defined workspace specialization
     template< typename MatrixH, typename VectorW, typename MatrixZ,
             typename WORK >
-    static void invoke( char const job, char const compz, integer_t const ilo,
-            integer_t const ihi, MatrixH& h, VectorW& w, MatrixZ& z,
+    static void invoke( const char job, const char compz, const integer_t ilo,
+            const integer_t ihi, MatrixH& h, VectorW& w, MatrixZ& z,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixH >::value_type, typename traits::vector_traits<
@@ -172,8 +172,8 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixH, typename VectorW, typename MatrixZ >
-    static void invoke( char const job, char const compz, integer_t const ilo,
-            integer_t const ihi, MatrixH& h, VectorW& w, MatrixZ& z,
+    static void invoke( const char job, const char compz, const integer_t ilo,
+            const integer_t ihi, MatrixH& h, VectorW& w, MatrixZ& z,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
@@ -182,8 +182,8 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // optimal workspace specialization
     template< typename MatrixH, typename VectorW, typename MatrixZ >
-    static void invoke( char const job, char const compz, integer_t const ilo,
-            integer_t const ihi, MatrixH& h, VectorW& w, MatrixZ& z,
+    static void invoke( const char job, const char compz, const integer_t ilo,
+            const integer_t ihi, MatrixH& h, VectorW& w, MatrixZ& z,
             integer_t& info, optimal_workspace work ) {
         invoke( job, compz, ilo, ihi, h, w, z, info, minimal_workspace() );
     }
@@ -197,8 +197,8 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call hseqr
 template< typename MatrixH, typename VectorWR, typename VectorWI,
         typename MatrixZ, typename Workspace >
-inline integer_t hseqr( char const job, char const compz,
-        integer_t const ilo, integer_t const ihi, MatrixH& h, VectorWR& wr,
+inline integer_t hseqr( const char job, const char compz,
+        const integer_t ilo, const integer_t ihi, MatrixH& h, VectorWR& wr,
         VectorWI& wi, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
@@ -210,8 +210,8 @@ inline integer_t hseqr( char const job, char const compz,
 // template function to call hseqr, default workspace type
 template< typename MatrixH, typename VectorWR, typename VectorWI,
         typename MatrixZ >
-inline integer_t hseqr( char const job, char const compz,
-        integer_t const ilo, integer_t const ihi, MatrixH& h, VectorWR& wr,
+inline integer_t hseqr( const char job, const char compz,
+        const integer_t ilo, const integer_t ihi, MatrixH& h, VectorWR& wr,
         VectorWI& wi, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
@@ -222,8 +222,8 @@ inline integer_t hseqr( char const job, char const compz,
 // template function to call hseqr
 template< typename MatrixH, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline integer_t hseqr( char const job, char const compz,
-        integer_t const ilo, integer_t const ihi, MatrixH& h, VectorW& w,
+inline integer_t hseqr( const char job, const char compz,
+        const integer_t ilo, const integer_t ihi, MatrixH& h, VectorW& w,
         MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);
@@ -234,8 +234,8 @@ inline integer_t hseqr( char const job, char const compz,
 
 // template function to call hseqr, default workspace type
 template< typename MatrixH, typename VectorW, typename MatrixZ >
-inline integer_t hseqr( char const job, char const compz,
-        integer_t const ilo, integer_t const ihi, MatrixH& h, VectorW& w,
+inline integer_t hseqr( const char job, const char compz,
+        const integer_t ilo, const integer_t ihi, MatrixH& h, VectorW& w,
         MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
     integer_t info(0);

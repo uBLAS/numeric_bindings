@@ -33,16 +33,16 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sbtrd( char const vect, char const uplo, integer_t const n,
-            integer_t const kd, float* ab, integer_t const ldab, float* d,
-            float* e, float* q, integer_t const ldq, float* work,
+    inline void sbtrd( const char vect, const char uplo, const integer_t n,
+            const integer_t kd, float* ab, const integer_t ldab, float* d,
+            float* e, float* q, const integer_t ldq, float* work,
             integer_t& info ) {
         LAPACK_SSBTRD( &vect, &uplo, &n, &kd, ab, &ldab, d, e, q, &ldq, work,
                 &info );
     }
-    inline void sbtrd( char const vect, char const uplo, integer_t const n,
-            integer_t const kd, double* ab, integer_t const ldab, double* d,
-            double* e, double* q, integer_t const ldq, double* work,
+    inline void sbtrd( const char vect, const char uplo, const integer_t n,
+            const integer_t kd, double* ab, const integer_t ldab, double* d,
+            double* e, double* q, const integer_t ldq, double* work,
             integer_t& info ) {
         LAPACK_DSBTRD( &vect, &uplo, &n, &kd, ab, &ldab, d, e, q, &ldq, work,
                 &info );
@@ -59,8 +59,8 @@ struct sbtrd_impl {
     // user-defined workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename WORK >
-    static void invoke( char const vect, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorD& d, VectorE& e,
+    static void invoke( const char vect, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
             MatrixQ& q, integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixAB >::value_type, typename traits::vector_traits<
@@ -90,8 +90,8 @@ struct sbtrd_impl {
     // minimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ >
-    static void invoke( char const vect, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorD& d, VectorE& e,
+    static void invoke( const char vect, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
             MatrixQ& q, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work( n ) );
         invoke( vect, n, kd, ab, d, e, q, info, workspace( tmp_work ) );
@@ -100,13 +100,13 @@ struct sbtrd_impl {
     // optimal workspace specialization
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ >
-    static void invoke( char const vect, integer_t const n,
-            integer_t const kd, MatrixAB& ab, VectorD& d, VectorE& e,
+    static void invoke( const char vect, const integer_t n,
+            const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
             MatrixQ& q, integer_t& info, optimal_workspace work ) {
         invoke( vect, n, kd, ab, d, e, q, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( integer_t const n ) {
+    static integer_t min_size_work( const integer_t n ) {
         return n;
     }
 };
@@ -115,8 +115,8 @@ struct sbtrd_impl {
 // template function to call sbtrd
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline integer_t sbtrd( char const vect, integer_t const n,
-        integer_t const kd, MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
+inline integer_t sbtrd( const char vect, const integer_t n,
+        const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);
@@ -128,8 +128,8 @@ inline integer_t sbtrd( char const vect, integer_t const n,
 // template function to call sbtrd, default workspace type
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline integer_t sbtrd( char const vect, integer_t const n,
-        integer_t const kd, MatrixAB& ab, VectorD& d, VectorE& e,
+inline integer_t sbtrd( const char vect, const integer_t n,
+        const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
         MatrixQ& q ) {
     typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
     integer_t info(0);

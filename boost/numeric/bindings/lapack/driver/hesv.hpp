@@ -34,18 +34,18 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hesv( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, integer_t const lda,
-            integer_t* ipiv, traits::complex_f* b, integer_t const ldb,
-            traits::complex_f* work, integer_t const lwork, integer_t& info ) {
+    inline void hesv( const char uplo, const integer_t n,
+            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
+            integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
+            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
         LAPACK_CHESV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(work),
                 &lwork, &info );
     }
-    inline void hesv( char const uplo, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, integer_t const lda,
-            integer_t* ipiv, traits::complex_d* b, integer_t const ldb,
-            traits::complex_d* work, integer_t const lwork, integer_t& info ) {
+    inline void hesv( const char uplo, const integer_t n,
+            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
+            integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
+            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
         LAPACK_ZHESV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(work),
                 &lwork, &info );

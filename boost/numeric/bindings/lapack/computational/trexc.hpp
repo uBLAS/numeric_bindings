@@ -36,28 +36,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trexc( char const compq, integer_t const n, float* t,
-            integer_t const ldt, float* q, integer_t const ldq,
+    inline void trexc( const char compq, const integer_t n, float* t,
+            const integer_t ldt, float* q, const integer_t ldq,
             integer_t& ifst, integer_t& ilst, float* work, integer_t& info ) {
         LAPACK_STREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, work,
                 &info );
     }
-    inline void trexc( char const compq, integer_t const n, double* t,
-            integer_t const ldt, double* q, integer_t const ldq,
+    inline void trexc( const char compq, const integer_t n, double* t,
+            const integer_t ldt, double* q, const integer_t ldq,
             integer_t& ifst, integer_t& ilst, double* work, integer_t& info ) {
         LAPACK_DTREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, work,
                 &info );
     }
-    inline void trexc( char const compq, integer_t const n,
-            traits::complex_f* t, integer_t const ldt, traits::complex_f* q,
-            integer_t const ldq, integer_t const ifst, integer_t const ilst,
+    inline void trexc( const char compq, const integer_t n,
+            traits::complex_f* t, const integer_t ldt, traits::complex_f* q,
+            const integer_t ldq, const integer_t ifst, const integer_t ilst,
             integer_t& info ) {
         LAPACK_CTREXC( &compq, &n, traits::complex_ptr(t), &ldt,
                 traits::complex_ptr(q), &ldq, &ifst, &ilst, &info );
     }
-    inline void trexc( char const compq, integer_t const n,
-            traits::complex_d* t, integer_t const ldt, traits::complex_d* q,
-            integer_t const ldq, integer_t const ifst, integer_t const ilst,
+    inline void trexc( const char compq, const integer_t n,
+            traits::complex_d* t, const integer_t ldt, traits::complex_d* q,
+            const integer_t ldq, const integer_t ifst, const integer_t ilst,
             integer_t& info ) {
         LAPACK_ZTREXC( &compq, &n, traits::complex_ptr(t), &ldt,
                 traits::complex_ptr(q), &ldq, &ifst, &ilst, &info );
@@ -77,7 +77,7 @@ struct trexc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     // templated specialization
     template< typename MatrixT, typename MatrixQ >
-    static void invoke( char const compq, MatrixT& t, MatrixQ& q,
+    static void invoke( const char compq, MatrixT& t, MatrixQ& q,
             integer_t& ifst, integer_t& ilst, integer_t& info ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixT >::value_type, typename traits::matrix_traits<
@@ -106,8 +106,8 @@ struct trexc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // user-defined workspace specialization
     template< typename MatrixT, typename MatrixQ, $WORKSPACE_TYPENAMES >
-    static void invoke( char const compq, MatrixT& t, MatrixQ& q,
-            integer_t const ifst, integer_t const ilst, integer_t& info,
+    static void invoke( const char compq, MatrixT& t, MatrixQ& q,
+            const integer_t ifst, const integer_t ilst, integer_t& info,
             detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixT >::value_type, typename traits::matrix_traits<
@@ -126,8 +126,8 @@ struct trexc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     // minimal workspace specialization
     template< typename MatrixT, typename MatrixQ >
-    static void invoke( char const compq, MatrixT& t, MatrixQ& q,
-            integer_t const ifst, integer_t const ilst, integer_t& info,
+    static void invoke( const char compq, MatrixT& t, MatrixQ& q,
+            const integer_t ifst, const integer_t ilst, integer_t& info,
             minimal_workspace work ) {
 $SETUP_MIN_WORKARRAYS_POST
         invoke( compq, t, q, ifst, ilst, info, workspace( $TMP_WORKARRAYS ) );
@@ -135,8 +135,8 @@ $SETUP_MIN_WORKARRAYS_POST
 
     // optimal workspace specialization
     template< typename MatrixT, typename MatrixQ >
-    static void invoke( char const compq, MatrixT& t, MatrixQ& q,
-            integer_t const ifst, integer_t const ilst, integer_t& info,
+    static void invoke( const char compq, MatrixT& t, MatrixQ& q,
+            const integer_t ifst, const integer_t ilst, integer_t& info,
             optimal_workspace work ) {
 $OPT_WORKSPACE_FUNC
     }
@@ -147,7 +147,7 @@ $MIN_SIZE_FUNCS
 
 // template function to call trexc
 template< typename MatrixT, typename MatrixQ >
-inline integer_t trexc( char const compq, MatrixT& t, MatrixQ& q,
+inline integer_t trexc( const char compq, MatrixT& t, MatrixQ& q,
         integer_t& ifst, integer_t& ilst ) {
     typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
     integer_t info(0);
@@ -156,8 +156,8 @@ inline integer_t trexc( char const compq, MatrixT& t, MatrixQ& q,
 }
 // template function to call trexc
 template< typename MatrixT, typename MatrixQ, typename Workspace >
-inline integer_t trexc( char const compq, MatrixT& t, MatrixQ& q,
-        integer_t const ifst, integer_t const ilst, Workspace work ) {
+inline integer_t trexc( const char compq, MatrixT& t, MatrixQ& q,
+        const integer_t ifst, const integer_t ilst, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
     integer_t info(0);
     trexc_impl< value_type >::invoke( compq, t, q, ifst, ilst, info,
@@ -167,8 +167,8 @@ inline integer_t trexc( char const compq, MatrixT& t, MatrixQ& q,
 
 // template function to call trexc, default workspace type
 template< typename MatrixT, typename MatrixQ >
-inline integer_t trexc( char const compq, MatrixT& t, MatrixQ& q,
-        integer_t const ifst, integer_t const ilst ) {
+inline integer_t trexc( const char compq, MatrixT& t, MatrixQ& q,
+        const integer_t ifst, const integer_t ilst ) {
     typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
     integer_t info(0);
     trexc_impl< value_type >::invoke( compq, t, q, ifst, ilst, info,

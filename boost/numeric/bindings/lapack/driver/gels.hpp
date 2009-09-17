@@ -37,32 +37,32 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gels( char const trans, integer_t const m, integer_t const n,
-            integer_t const nrhs, float* a, integer_t const lda, float* b,
-            integer_t const ldb, float* work, integer_t const lwork,
+    inline void gels( const char trans, const integer_t m, const integer_t n,
+            const integer_t nrhs, float* a, const integer_t lda, float* b,
+            const integer_t ldb, float* work, const integer_t lwork,
             integer_t& info ) {
         LAPACK_SGELS( &trans, &m, &n, &nrhs, a, &lda, b, &ldb, work, &lwork,
                 &info );
     }
-    inline void gels( char const trans, integer_t const m, integer_t const n,
-            integer_t const nrhs, double* a, integer_t const lda, double* b,
-            integer_t const ldb, double* work, integer_t const lwork,
+    inline void gels( const char trans, const integer_t m, const integer_t n,
+            const integer_t nrhs, double* a, const integer_t lda, double* b,
+            const integer_t ldb, double* work, const integer_t lwork,
             integer_t& info ) {
         LAPACK_DGELS( &trans, &m, &n, &nrhs, a, &lda, b, &ldb, work, &lwork,
                 &info );
     }
-    inline void gels( char const trans, integer_t const m, integer_t const n,
-            integer_t const nrhs, traits::complex_f* a, integer_t const lda,
-            traits::complex_f* b, integer_t const ldb,
-            traits::complex_f* work, integer_t const lwork, integer_t& info ) {
+    inline void gels( const char trans, const integer_t m, const integer_t n,
+            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
+            traits::complex_f* b, const integer_t ldb,
+            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
         LAPACK_CGELS( &trans, &m, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(work),
                 &lwork, &info );
     }
-    inline void gels( char const trans, integer_t const m, integer_t const n,
-            integer_t const nrhs, traits::complex_d* a, integer_t const lda,
-            traits::complex_d* b, integer_t const ldb,
-            traits::complex_d* work, integer_t const lwork, integer_t& info ) {
+    inline void gels( const char trans, const integer_t m, const integer_t n,
+            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
+            traits::complex_d* b, const integer_t ldb,
+            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
         LAPACK_ZGELS( &trans, &m, &n, &nrhs, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(b), &ldb, traits::complex_ptr(work),
                 &lwork, &info );
@@ -82,7 +82,7 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename WORK >
-    static void invoke( char const trans, MatrixA& a, MatrixB& b,
+    static void invoke( const char trans, MatrixA& a, MatrixB& b,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -110,7 +110,7 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB >
-    static void invoke( char const trans, MatrixA& a, MatrixB& b,
+    static void invoke( const char trans, MatrixA& a, MatrixB& b,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
                 traits::matrix_num_rows(a), traits::matrix_num_columns(a),
@@ -120,7 +120,7 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB >
-    static void invoke( char const trans, MatrixA& a, MatrixB& b,
+    static void invoke( const char trans, MatrixA& a, MatrixB& b,
             integer_t& info, optimal_workspace work ) {
         real_type opt_size_work;
         detail::gels( trans, traits::matrix_num_rows(a),
@@ -133,8 +133,8 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
         invoke( trans, a, b, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const m, integer_t const n,
-            integer_t const nrhs ) {
+    static integer_t min_size_work( const integer_t m, const integer_t n,
+            const integer_t nrhs ) {
         integer_t minmn = std::min( m, n );
         return std::max( 1, minmn + std::max( minmn, nrhs ) );
     }
@@ -149,7 +149,7 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     // user-defined workspace specialization
     template< typename MatrixA, typename MatrixB, typename WORK >
-    static void invoke( char const trans, MatrixA& a, MatrixB& b,
+    static void invoke( const char trans, MatrixA& a, MatrixB& b,
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
@@ -177,7 +177,7 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     // minimal workspace specialization
     template< typename MatrixA, typename MatrixB >
-    static void invoke( char const trans, MatrixA& a, MatrixB& b,
+    static void invoke( const char trans, MatrixA& a, MatrixB& b,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
                 traits::matrix_num_rows(a), traits::matrix_num_columns(a),
@@ -187,7 +187,7 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
     // optimal workspace specialization
     template< typename MatrixA, typename MatrixB >
-    static void invoke( char const trans, MatrixA& a, MatrixB& b,
+    static void invoke( const char trans, MatrixA& a, MatrixB& b,
             integer_t& info, optimal_workspace work ) {
         value_type opt_size_work;
         detail::gels( trans, traits::matrix_num_rows(a),
@@ -200,8 +200,8 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
         invoke( trans, a, b, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( integer_t const m, integer_t const n,
-            integer_t const nrhs ) {
+    static integer_t min_size_work( const integer_t m, const integer_t n,
+            const integer_t nrhs ) {
         integer_t minmn = std::min( m, n );
         return std::max( 1, minmn + std::max( minmn, nrhs ) );
     }
@@ -210,7 +210,7 @@ struct gels_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 
 // template function to call gels
 template< typename MatrixA, typename MatrixB, typename Workspace >
-inline integer_t gels( char const trans, MatrixA& a, MatrixB& b,
+inline integer_t gels( const char trans, MatrixA& a, MatrixB& b,
         Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
@@ -220,7 +220,7 @@ inline integer_t gels( char const trans, MatrixA& a, MatrixB& b,
 
 // template function to call gels, default workspace type
 template< typename MatrixA, typename MatrixB >
-inline integer_t gels( char const trans, MatrixA& a, MatrixB& b ) {
+inline integer_t gels( const char trans, MatrixA& a, MatrixB& b ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     integer_t info(0);
     gels_impl< value_type >::invoke( trans, a, b, info,

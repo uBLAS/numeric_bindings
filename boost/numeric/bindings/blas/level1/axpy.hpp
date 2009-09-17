@@ -29,22 +29,22 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void axpy( const integer_t n, const float a, float const* x,
+    inline void axpy( const integer_t n, const float a, const float* x,
             const integer_t incx, float* y, const integer_t incy ) {
         BLAS_SAXPY( &n, &a, x, &incx, y, &incy );
     }
-    inline void axpy( const integer_t n, const double a, double const* x,
+    inline void axpy( const integer_t n, const double a, const double* x,
             const integer_t incx, double* y, const integer_t incy ) {
         BLAS_DAXPY( &n, &a, x, &incx, y, &incy );
     }
     inline void axpy( const integer_t n, const traits::complex_f a,
-            traits::complex_f const* x, const integer_t incx,
+            const traits::complex_f* x, const integer_t incx,
             traits::complex_f* y, const integer_t incy ) {
         BLAS_CAXPY( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
                 &incx, traits::complex_ptr(y), &incy );
     }
     inline void axpy( const integer_t n, const traits::complex_d a,
-            traits::complex_d const* x, const integer_t incx,
+            const traits::complex_d* x, const integer_t incx,
             traits::complex_d* y, const integer_t incy ) {
         BLAS_ZAXPY( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
                 &incx, traits::complex_ptr(y), &incy );

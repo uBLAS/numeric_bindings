@@ -30,8 +30,8 @@ namespace level2 {
 // overloaded functions to call blas
 namespace detail {
     inline void hbmv( const char uplo, const integer_t n, const integer_t k,
-            const traits::complex_f alpha, traits::complex_f const* a,
-            const integer_t lda, traits::complex_f const* x,
+            const traits::complex_f alpha, const traits::complex_f* a,
+            const integer_t lda, const traits::complex_f* x,
             const integer_t incx, const traits::complex_f beta,
             traits::complex_f* y, const integer_t incy ) {
         BLAS_CHBMV( &uplo, &n, &k, traits::complex_ptr(&alpha),
@@ -39,8 +39,8 @@ namespace detail {
                 traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
     }
     inline void hbmv( const char uplo, const integer_t n, const integer_t k,
-            const traits::complex_d alpha, traits::complex_d const* a,
-            const integer_t lda, traits::complex_d const* x,
+            const traits::complex_d alpha, const traits::complex_d* a,
+            const integer_t lda, const traits::complex_d* x,
             const integer_t incx, const traits::complex_d beta,
             traits::complex_d* y, const integer_t incy ) {
         BLAS_ZHBMV( &uplo, &n, &k, traits::complex_ptr(&alpha),

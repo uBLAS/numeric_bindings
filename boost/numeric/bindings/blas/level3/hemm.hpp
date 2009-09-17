@@ -31,8 +31,8 @@ namespace level3 {
 namespace detail {
     inline void hemm( const char side, const char uplo, const integer_t m,
             const integer_t n, const traits::complex_f alpha,
-            traits::complex_f const* a, const integer_t lda,
-            traits::complex_f const* b, const integer_t ldb,
+            const traits::complex_f* a, const integer_t lda,
+            const traits::complex_f* b, const integer_t ldb,
             const traits::complex_f beta, traits::complex_f* c,
             const integer_t ldc ) {
         BLAS_CHEMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
@@ -41,8 +41,8 @@ namespace detail {
     }
     inline void hemm( const char side, const char uplo, const integer_t m,
             const integer_t n, const traits::complex_d alpha,
-            traits::complex_d const* a, const integer_t lda,
-            traits::complex_d const* b, const integer_t ldb,
+            const traits::complex_d* a, const integer_t lda,
+            const traits::complex_d* b, const integer_t ldb,
             const traits::complex_d beta, traits::complex_d* c,
             const integer_t ldc ) {
         BLAS_ZHEMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),

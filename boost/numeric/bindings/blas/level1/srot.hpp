@@ -29,8 +29,8 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void srot( const integer_t n, traits::complex_f const* cx,
-            const integer_t incx, traits::complex_f const* cy,
+    inline void srot( const integer_t n, const traits::complex_f* cx,
+            const integer_t incx, const traits::complex_f* cy,
             const integer_t incy, const float c, const float s ) {
         BLAS_CSROT( &n, traits::complex_ptr(cx), &incx,
                 traits::complex_ptr(cy), &incy, &c, &s );

@@ -29,22 +29,22 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void copy( const integer_t n, float const* x, const integer_t incx,
-            float const* y, const integer_t incy ) {
+    inline void copy( const integer_t n, const float* x, const integer_t incx,
+            const float* y, const integer_t incy ) {
         BLAS_SCOPY( &n, x, &incx, y, &incy );
     }
-    inline void copy( const integer_t n, double const* x,
-            const integer_t incx, double const* y, const integer_t incy ) {
+    inline void copy( const integer_t n, const double* x,
+            const integer_t incx, const double* y, const integer_t incy ) {
         BLAS_DCOPY( &n, x, &incx, y, &incy );
     }
-    inline void copy( const integer_t n, traits::complex_f const* x,
-            const integer_t incx, traits::complex_f const* y,
+    inline void copy( const integer_t n, const traits::complex_f* x,
+            const integer_t incx, const traits::complex_f* y,
             const integer_t incy ) {
         BLAS_CCOPY( &n, traits::complex_ptr(x), &incx, traits::complex_ptr(y),
                 &incy );
     }
-    inline void copy( const integer_t n, traits::complex_d const* x,
-            const integer_t incx, traits::complex_d const* y,
+    inline void copy( const integer_t n, const traits::complex_d* x,
+            const integer_t incx, const traits::complex_d* y,
             const integer_t incy ) {
         BLAS_ZCOPY( &n, traits::complex_ptr(x), &incx, traits::complex_ptr(y),
                 &incy );

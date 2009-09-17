@@ -31,7 +31,7 @@ namespace level2 {
 namespace detail {
     inline void gbmv( const char trans, const integer_t m, const integer_t n,
             const integer_t kl, const integer_t ku, const float alpha,
-            float const* a, const integer_t lda, float const* x,
+            const float* a, const integer_t lda, const float* x,
             const integer_t incx, const float beta, float* y,
             const integer_t incy ) {
         BLAS_SGBMV( &trans, &m, &n, &kl, &ku, &alpha, a, &lda, x, &incx,
@@ -39,7 +39,7 @@ namespace detail {
     }
     inline void gbmv( const char trans, const integer_t m, const integer_t n,
             const integer_t kl, const integer_t ku, const double alpha,
-            double const* a, const integer_t lda, double const* x,
+            const double* a, const integer_t lda, const double* x,
             const integer_t incx, const double beta, double* y,
             const integer_t incy ) {
         BLAS_DGBMV( &trans, &m, &n, &kl, &ku, &alpha, a, &lda, x, &incx,
@@ -47,8 +47,8 @@ namespace detail {
     }
     inline void gbmv( const char trans, const integer_t m, const integer_t n,
             const integer_t kl, const integer_t ku,
-            const traits::complex_f alpha, traits::complex_f const* a,
-            const integer_t lda, traits::complex_f const* x,
+            const traits::complex_f alpha, const traits::complex_f* a,
+            const integer_t lda, const traits::complex_f* x,
             const integer_t incx, const traits::complex_f beta,
             traits::complex_f* y, const integer_t incy ) {
         BLAS_CGBMV( &trans, &m, &n, &kl, &ku, traits::complex_ptr(&alpha),
@@ -57,8 +57,8 @@ namespace detail {
     }
     inline void gbmv( const char trans, const integer_t m, const integer_t n,
             const integer_t kl, const integer_t ku,
-            const traits::complex_d alpha, traits::complex_d const* a,
-            const integer_t lda, traits::complex_d const* x,
+            const traits::complex_d alpha, const traits::complex_d* a,
+            const integer_t lda, const traits::complex_d* x,
             const integer_t incx, const traits::complex_d beta,
             traits::complex_d* y, const integer_t incy ) {
         BLAS_ZGBMV( &trans, &m, &n, &kl, &ku, traits::complex_ptr(&alpha),

@@ -29,11 +29,11 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline float asum( const integer_t n, float const* x,
+    inline float asum( const integer_t n, const float* x,
             const integer_t incx ) {
         return BLAS_SASUM( &n, x, &incx );
     }
-    inline double asum( const integer_t n, double const* x,
+    inline double asum( const integer_t n, const double* x,
             const integer_t incx ) {
         return BLAS_DASUM( &n, x, &incx );
     }

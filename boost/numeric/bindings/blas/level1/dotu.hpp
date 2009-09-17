@@ -29,14 +29,14 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline fcomplex_t dotu( const integer_t n, traits::complex_f const* x,
-            const integer_t incx, traits::complex_f const* y,
+    inline fcomplex_t dotu( const integer_t n, const traits::complex_f* x,
+            const integer_t incx, const traits::complex_f* y,
             const integer_t incy ) {
         return BLAS_CDOTU( &n, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(y), &incy );
     }
-    inline dcomplex_t dotu( const integer_t n, traits::complex_d const* x,
-            const integer_t incx, traits::complex_d const* y,
+    inline dcomplex_t dotu( const integer_t n, const traits::complex_d* x,
+            const integer_t incx, const traits::complex_d* y,
             const integer_t incy ) {
         return BLAS_ZDOTU( &n, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(y), &incy );

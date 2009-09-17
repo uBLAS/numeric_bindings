@@ -30,16 +30,16 @@ namespace level2 {
 // overloaded functions to call blas
 namespace detail {
     inline void her2( const char uplo, const integer_t n,
-            const traits::complex_f alpha, traits::complex_f const* x,
-            const integer_t incx, traits::complex_f const* y,
+            const traits::complex_f alpha, const traits::complex_f* x,
+            const integer_t incx, const traits::complex_f* y,
             const integer_t incy, traits::complex_f* a, const integer_t lda ) {
         BLAS_CHER2( &uplo, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,
                 traits::complex_ptr(a), &lda );
     }
     inline void her2( const char uplo, const integer_t n,
-            const traits::complex_d alpha, traits::complex_d const* x,
-            const integer_t incx, traits::complex_d const* y,
+            const traits::complex_d alpha, const traits::complex_d* x,
+            const integer_t incx, const traits::complex_d* y,
             const integer_t incy, traits::complex_d* a, const integer_t lda ) {
         BLAS_ZHER2( &uplo, &n, traits::complex_ptr(&alpha),
                 traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,

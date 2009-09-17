@@ -30,23 +30,23 @@ namespace level2 {
 // overloaded functions to call blas
 namespace detail {
     inline void tpsv( const char uplo, const char trans, const char diag,
-            const integer_t n, float const* ap, float* x,
+            const integer_t n, const float* ap, float* x,
             const integer_t incx ) {
         BLAS_STPSV( &uplo, &trans, &diag, &n, ap, x, &incx );
     }
     inline void tpsv( const char uplo, const char trans, const char diag,
-            const integer_t n, double const* ap, double* x,
+            const integer_t n, const double* ap, double* x,
             const integer_t incx ) {
         BLAS_DTPSV( &uplo, &trans, &diag, &n, ap, x, &incx );
     }
     inline void tpsv( const char uplo, const char trans, const char diag,
-            const integer_t n, traits::complex_f const* ap,
+            const integer_t n, const traits::complex_f* ap,
             traits::complex_f* x, const integer_t incx ) {
         BLAS_CTPSV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(x), &incx );
     }
     inline void tpsv( const char uplo, const char trans, const char diag,
-            const integer_t n, traits::complex_d const* ap,
+            const integer_t n, const traits::complex_d* ap,
             traits::complex_d* x, const integer_t incx ) {
         BLAS_ZTPSV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
                 traits::complex_ptr(x), &incx );

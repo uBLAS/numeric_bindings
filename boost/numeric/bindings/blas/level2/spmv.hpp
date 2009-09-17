@@ -30,12 +30,12 @@ namespace level2 {
 // overloaded functions to call blas
 namespace detail {
     inline void spmv( const char uplo, const integer_t n, const float alpha,
-            float const* ap, float const* x, const integer_t incx,
+            const float* ap, const float* x, const integer_t incx,
             const float beta, float* y, const integer_t incy ) {
         BLAS_SSPMV( &uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy );
     }
     inline void spmv( const char uplo, const integer_t n, const double alpha,
-            double const* ap, double const* x, const integer_t incx,
+            const double* ap, const double* x, const integer_t incx,
             const double beta, double* y, const integer_t incy ) {
         BLAS_DSPMV( &uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy );
     }

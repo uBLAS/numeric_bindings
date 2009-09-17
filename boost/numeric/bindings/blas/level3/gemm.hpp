@@ -31,7 +31,7 @@ namespace level3 {
 namespace detail {
     inline void gemm( const char transa, const char transb, const integer_t m,
             const integer_t n, const integer_t k, const float alpha,
-            float const* a, const integer_t lda, float const* b,
+            const float* a, const integer_t lda, const float* b,
             const integer_t ldb, const float beta, float* c,
             const integer_t ldc ) {
         BLAS_SGEMM( &transa, &transb, &m, &n, &k, &alpha, a, &lda, b, &ldb,
@@ -39,7 +39,7 @@ namespace detail {
     }
     inline void gemm( const char transa, const char transb, const integer_t m,
             const integer_t n, const integer_t k, const double alpha,
-            double const* a, const integer_t lda, double const* b,
+            const double* a, const integer_t lda, const double* b,
             const integer_t ldb, const double beta, double* c,
             const integer_t ldc ) {
         BLAS_DGEMM( &transa, &transb, &m, &n, &k, &alpha, a, &lda, b, &ldb,
@@ -47,8 +47,8 @@ namespace detail {
     }
     inline void gemm( const char transa, const char transb, const integer_t m,
             const integer_t n, const integer_t k,
-            const traits::complex_f alpha, traits::complex_f const* a,
-            const integer_t lda, traits::complex_f const* b,
+            const traits::complex_f alpha, const traits::complex_f* a,
+            const integer_t lda, const traits::complex_f* b,
             const integer_t ldb, const traits::complex_f beta,
             traits::complex_f* c, const integer_t ldc ) {
         BLAS_CGEMM( &transa, &transb, &m, &n, &k, traits::complex_ptr(&alpha),
@@ -57,8 +57,8 @@ namespace detail {
     }
     inline void gemm( const char transa, const char transb, const integer_t m,
             const integer_t n, const integer_t k,
-            const traits::complex_d alpha, traits::complex_d const* a,
-            const integer_t lda, traits::complex_d const* b,
+            const traits::complex_d alpha, const traits::complex_d* a,
+            const integer_t lda, const traits::complex_d* b,
             const integer_t ldb, const traits::complex_d beta,
             traits::complex_d* c, const integer_t ldc ) {
         BLAS_ZGEMM( &transa, &transb, &m, &n, &k, traits::complex_ptr(&alpha),
@@ -78,19 +78,20 @@ struct gemm_impl {
     // templated specialization
     template< typename MatrixA, typename MatrixB, typename MatrixC >
     static return_type invoke( const char transa, const char transb,
-            const integer_t k, const value_type alpha, const MatrixA& a,
-            const MatrixB& b, const value_type beta, MatrixC& c ) {
+            const value_type alpha, const MatrixA& a, const MatrixB& b,
+            const value_type beta, MatrixC& c ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixB >::value_type >::value) );
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
-        detail::gemm( transa, transb, traits::matrix_num_rows(c),
-                traits::matrix_num_columns(c), k, alpha,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::matrix_storage(b), traits::leading_dimension(b), beta,
-                traits::matrix_storage(c), traits::leading_dimension(c) );
+        detail::gemm( transa, transb, , traits::matrix_num_columns(c),
+                (transa=='N'?traits::matrix_num_columns(a),
+                traits::matrix_num_rows(a)), alpha, traits::matrix_storage(a),
+                traits::leading_dimension(a), traits::matrix_storage(b),
+                traits::leading_dimension(b), beta, traits::matrix_storage(c),
+                traits::leading_dimension(c) );
     }
 };
 
@@ -98,14 +99,14 @@ struct gemm_impl {
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename gemm_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
-gemm( const char transa, const char transb, const integer_t k,
+gemm( const char transa, const char transb,
         const typename traits::matrix_traits< MatrixA >::value_type alpha,
         const MatrixA& a, const MatrixB& b,
         const typename traits::matrix_traits< MatrixA >::value_type beta,
         MatrixC& c ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    gemm_impl< value_type >::invoke( transa, transb, k, alpha, a, b,
-            beta, c );
+    gemm_impl< value_type >::invoke( transa, transb, alpha, a, b, beta,
+            c );
 }
 
 }}}}} // namespace boost::numeric::bindings::blas::level3

@@ -29,11 +29,11 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void rot( const integer_t n, float const* x, const integer_t incx,
+    inline void rot( const integer_t n, const float* x, const integer_t incx,
             float* y, const integer_t incy, const float c, const float s ) {
         BLAS_SROT( &n, x, &incx, y, &incy, &c, &s );
     }
-    inline void rot( const integer_t n, double const* x, const integer_t incx,
+    inline void rot( const integer_t n, const double* x, const integer_t incx,
             double* y, const integer_t incy, const double c, const double s ) {
         BLAS_DROT( &n, x, &incx, y, &incy, &c, &s );
     }

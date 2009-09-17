@@ -30,23 +30,23 @@ namespace level2 {
 // overloaded functions to call blas
 namespace detail {
     inline void trsv( const char uplo, const char trans, const char diag,
-            const integer_t n, float const* a, const integer_t lda, float* x,
+            const integer_t n, const float* a, const integer_t lda, float* x,
             const integer_t incx ) {
         BLAS_STRSV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
     }
     inline void trsv( const char uplo, const char trans, const char diag,
-            const integer_t n, double const* a, const integer_t lda,
+            const integer_t n, const double* a, const integer_t lda,
             double* x, const integer_t incx ) {
         BLAS_DTRSV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
     }
     inline void trsv( const char uplo, const char trans, const char diag,
-            const integer_t n, traits::complex_f const* a,
+            const integer_t n, const traits::complex_f* a,
             const integer_t lda, traits::complex_f* x, const integer_t incx ) {
         BLAS_CTRSV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(x), &incx );
     }
     inline void trsv( const char uplo, const char trans, const char diag,
-            const integer_t n, traits::complex_d const* a,
+            const integer_t n, const traits::complex_d* a,
             const integer_t lda, traits::complex_d* x, const integer_t incx ) {
         BLAS_ZTRSV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
                 traits::complex_ptr(x), &incx );

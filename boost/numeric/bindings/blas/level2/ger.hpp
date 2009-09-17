@@ -30,12 +30,12 @@ namespace level2 {
 // overloaded functions to call blas
 namespace detail {
     inline void ger( const integer_t m, const integer_t n, const float alpha,
-            float const* x, const integer_t incx, float const* y,
+            const float* x, const integer_t incx, const float* y,
             const integer_t incy, float* a, const integer_t lda ) {
         BLAS_SGER( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
     }
     inline void ger( const integer_t m, const integer_t n, const double alpha,
-            double const* x, const integer_t incx, double const* y,
+            const double* x, const integer_t incx, const double* y,
             const integer_t incy, double* a, const integer_t lda ) {
         BLAS_DGER( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
     }

@@ -30,13 +30,13 @@ namespace level2 {
 // overloaded functions to call blas
 namespace detail {
     inline void hpr( const char uplo, const integer_t n, const float alpha,
-            traits::complex_f const* x, const integer_t incx,
+            const traits::complex_f* x, const integer_t incx,
             traits::complex_f* ap ) {
         BLAS_CHPR( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(ap) );
     }
     inline void hpr( const char uplo, const integer_t n, const double alpha,
-            traits::complex_d const* x, const integer_t incx,
+            const traits::complex_d* x, const integer_t incx,
             traits::complex_d* ap ) {
         BLAS_ZHPR( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
                 traits::complex_ptr(ap) );

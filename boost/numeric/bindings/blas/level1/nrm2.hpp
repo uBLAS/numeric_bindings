@@ -29,11 +29,11 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline float nrm2( const integer_t n, float const* x,
+    inline float nrm2( const integer_t n, const float* x,
             const integer_t incx ) {
         return BLAS_SNRM2( &n, x, &incx );
     }
-    inline double nrm2( const integer_t n, double const* x,
+    inline double nrm2( const integer_t n, const double* x,
             const integer_t incx ) {
         return BLAS_DNRM2( &n, x, &incx );
     }

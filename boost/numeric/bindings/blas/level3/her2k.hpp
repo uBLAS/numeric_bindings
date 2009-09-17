@@ -31,8 +31,8 @@ namespace level3 {
 namespace detail {
     inline void her2k( const char uplo, const char trans, const integer_t n,
             const integer_t k, const traits::complex_f alpha,
-            traits::complex_f const* a, const integer_t lda,
-            traits::complex_f const* b, const integer_t ldb, const float beta,
+            const traits::complex_f* a, const integer_t lda,
+            const traits::complex_f* b, const integer_t ldb, const float beta,
             traits::complex_f* c, const integer_t ldc ) {
         BLAS_CHER2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
@@ -40,8 +40,8 @@ namespace detail {
     }
     inline void her2k( const char uplo, const char trans, const integer_t n,
             const integer_t k, const traits::complex_d alpha,
-            traits::complex_d const* a, const integer_t lda,
-            traits::complex_d const* b, const integer_t ldb,
+            const traits::complex_d* a, const integer_t lda,
+            const traits::complex_d* b, const integer_t ldb,
             const double beta, traits::complex_d* c, const integer_t ldc ) {
         BLAS_ZHER2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
                 traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,

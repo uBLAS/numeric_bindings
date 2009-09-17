@@ -30,23 +30,23 @@ namespace level3 {
 // overloaded functions to call blas
 namespace detail {
     inline void syr2k( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const float alpha, float const* a,
-            const integer_t lda, float const* b, const integer_t ldb,
+            const integer_t k, const float alpha, const float* a,
+            const integer_t lda, const float* b, const integer_t ldb,
             const float beta, float* c, const integer_t ldc ) {
         BLAS_SSYR2K( &uplo, &trans, &n, &k, &alpha, a, &lda, b, &ldb, &beta,
                 c, &ldc );
     }
     inline void syr2k( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const double alpha, double const* a,
-            const integer_t lda, double const* b, const integer_t ldb,
+            const integer_t k, const double alpha, const double* a,
+            const integer_t lda, const double* b, const integer_t ldb,
             const double beta, double* c, const integer_t ldc ) {
         BLAS_DSYR2K( &uplo, &trans, &n, &k, &alpha, a, &lda, b, &ldb, &beta,
                 c, &ldc );
     }
     inline void syr2k( const char uplo, const char trans, const integer_t n,
             const integer_t k, const traits::complex_f alpha,
-            traits::complex_f const* a, const integer_t lda,
-            traits::complex_f const* b, const integer_t ldb,
+            const traits::complex_f* a, const integer_t lda,
+            const traits::complex_f* b, const integer_t ldb,
             const traits::complex_f beta, traits::complex_f* c,
             const integer_t ldc ) {
         BLAS_CSYR2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
@@ -55,8 +55,8 @@ namespace detail {
     }
     inline void syr2k( const char uplo, const char trans, const integer_t n,
             const integer_t k, const traits::complex_d alpha,
-            traits::complex_d const* a, const integer_t lda,
-            traits::complex_d const* b, const integer_t ldb,
+            const traits::complex_d* a, const integer_t lda,
+            const traits::complex_d* b, const integer_t ldb,
             const traits::complex_d beta, traits::complex_d* c,
             const integer_t ldc ) {
         BLAS_ZSYR2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),

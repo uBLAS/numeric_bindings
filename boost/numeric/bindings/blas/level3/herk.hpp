@@ -30,14 +30,14 @@ namespace level3 {
 // overloaded functions to call blas
 namespace detail {
     inline void herk( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const float alpha, traits::complex_f const* a,
+            const integer_t k, const float alpha, const traits::complex_f* a,
             const integer_t lda, const float beta, traits::complex_f* c,
             const integer_t ldc ) {
         BLAS_CHERK( &uplo, &trans, &n, &k, &alpha, traits::complex_ptr(a),
                 &lda, &beta, traits::complex_ptr(c), &ldc );
     }
     inline void herk( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const double alpha, traits::complex_d const* a,
+            const integer_t k, const double alpha, const traits::complex_d* a,
             const integer_t lda, const double beta, traits::complex_d* c,
             const integer_t ldc ) {
         BLAS_ZHERK( &uplo, &trans, &n, &k, &alpha, traits::complex_ptr(a),

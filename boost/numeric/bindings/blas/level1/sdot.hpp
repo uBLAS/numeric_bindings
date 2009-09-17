@@ -29,8 +29,8 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline double sdot( const integer_t n, float const* sx,
-            const integer_t incx, float const* sy, const integer_t incy ) {
+    inline double sdot( const integer_t n, const float* sx,
+            const integer_t incx, const float* sy, const integer_t incy ) {
         return BLAS_DSDOT( &n, sx, &incx, sy, &incy );
     }
 }

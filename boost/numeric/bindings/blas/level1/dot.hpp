@@ -29,12 +29,12 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline float dot( const integer_t n, float const* x, const integer_t incx,
-            float const* y, const integer_t incy ) {
+    inline float dot( const integer_t n, const float* x, const integer_t incx,
+            const float* y, const integer_t incy ) {
         return BLAS_SDOT( &n, x, &incx, y, &incy );
     }
-    inline double dot( const integer_t n, double const* x,
-            const integer_t incx, double const* y, const integer_t incy ) {
+    inline double dot( const integer_t n, const double* x,
+            const integer_t incx, const double* y, const integer_t incy ) {
         return BLAS_DDOT( &n, x, &incx, y, &incy );
     }
 }

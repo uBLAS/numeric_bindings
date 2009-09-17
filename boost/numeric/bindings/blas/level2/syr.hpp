@@ -30,12 +30,12 @@ namespace level2 {
 // overloaded functions to call blas
 namespace detail {
     inline void syr( const char uplo, const integer_t n, const float alpha,
-            float const* x, const integer_t incx, float* a,
+            const float* x, const integer_t incx, float* a,
             const integer_t lda ) {
         BLAS_SSYR( &uplo, &n, &alpha, x, &incx, a, &lda );
     }
     inline void syr( const char uplo, const integer_t n, const double alpha,
-            double const* x, const integer_t incx, double* a,
+            const double* x, const integer_t incx, double* a,
             const integer_t lda ) {
         BLAS_DSYR( &uplo, &n, &alpha, x, &incx, a, &lda );
     }

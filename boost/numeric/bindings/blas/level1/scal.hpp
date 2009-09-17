@@ -29,21 +29,21 @@ namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void scal( const integer_t n, const float a, float const* x,
+    inline void scal( const integer_t n, const float a, const float* x,
             const integer_t incx ) {
         BLAS_SSCAL( &n, &a, x, &incx );
     }
-    inline void scal( const integer_t n, const double a, double const* x,
+    inline void scal( const integer_t n, const double a, const double* x,
             const integer_t incx ) {
         BLAS_DSCAL( &n, &a, x, &incx );
     }
     inline void scal( const integer_t n, const traits::complex_f a,
-            traits::complex_f const* x, const integer_t incx ) {
+            const traits::complex_f* x, const integer_t incx ) {
         BLAS_CSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
                 &incx );
     }
     inline void scal( const integer_t n, const traits::complex_d a,
-            traits::complex_d const* x, const integer_t incx ) {
+            const traits::complex_d* x, const integer_t incx ) {
         BLAS_ZSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
                 &incx );
     }

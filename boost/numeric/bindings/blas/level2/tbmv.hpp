@@ -30,23 +30,23 @@ namespace level2 {
 // overloaded functions to call blas
 namespace detail {
     inline void tbmv( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t k, float const* a,
+            const integer_t n, const integer_t k, const float* a,
             const integer_t lda, float* x, const integer_t incx ) {
         BLAS_STBMV( &uplo, &trans, &diag, &n, &k, a, &lda, x, &incx );
     }
     inline void tbmv( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t k, double const* a,
+            const integer_t n, const integer_t k, const double* a,
             const integer_t lda, double* x, const integer_t incx ) {
         BLAS_DTBMV( &uplo, &trans, &diag, &n, &k, a, &lda, x, &incx );
     }
     inline void tbmv( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t k, traits::complex_f const* a,
+            const integer_t n, const integer_t k, const traits::complex_f* a,
             const integer_t lda, traits::complex_f* x, const integer_t incx ) {
         BLAS_CTBMV( &uplo, &trans, &diag, &n, &k, traits::complex_ptr(a),
                 &lda, traits::complex_ptr(x), &incx );
     }
     inline void tbmv( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t k, traits::complex_d const* a,
+            const integer_t n, const integer_t k, const traits::complex_d* a,
             const integer_t lda, traits::complex_d* x, const integer_t incx ) {
         BLAS_ZTBMV( &uplo, &trans, &diag, &n, &k, traits::complex_ptr(a),
                 &lda, traits::complex_ptr(x), &incx );

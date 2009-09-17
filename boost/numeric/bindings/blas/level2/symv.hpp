@@ -30,13 +30,13 @@ namespace level2 {
 // overloaded functions to call blas
 namespace detail {
     inline void symv( const char uplo, const integer_t n, const float alpha,
-            float const* a, const integer_t lda, float const* x,
+            const float* a, const integer_t lda, const float* x,
             const integer_t incx, const float beta, float* y,
             const integer_t incy ) {
         BLAS_SSYMV( &uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy );
     }
     inline void symv( const char uplo, const integer_t n, const double alpha,
-            double const* a, const integer_t lda, double const* x,
+            const double* a, const integer_t lda, const double* x,
             const integer_t incx, const double beta, double* y,
             const integer_t incy ) {
         BLAS_DSYMV( &uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy );

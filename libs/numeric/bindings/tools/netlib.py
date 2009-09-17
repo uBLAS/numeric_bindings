@@ -978,64 +978,74 @@ def parse_file( filename, template_map ):
       #
       # Fetch matrix traits such as "the number of columns of A"
       #
-      match_matrix_traits = re.compile( '(rows|columns|order)(in|of|the|input|\s)+(matrix|matrices|\s)+' + \
-        '([A-Z]+\s+and\s+[A-Z]+|[A-Z]+)', re.M | re.S ).findall( comment_block )
-      if len( match_matrix_traits ) == 1:
-        if match_matrix_traits[0][0] == 'order':
-          #
-          # see if the traits are overruled through the template system
-          # logically, these come first
-          traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
-          if my_has_key( traits_key, template_map ):
-            argument_properties[ 'trait_type' ] = 'num_columns'
-            argument_properties[ 'trait_of' ] = template_map[ my_has_key( traits_key, template_map ) ].strip()
-          # PANIC: return none
-          # e.g., in tridiagonal case, there is no matrix, but a number of 
-          # vectors (the diagonals)
-          elif not grouped_arguments[ 'by_type' ].has_key( 'matrix' ):
-            print "PANIC: returning none"
-            # TODO
-            # TODO
-            return subroutine_name, None
-            # TODO
-            # TODO
-          elif match_matrix_traits[0][3] in grouped_arguments[ 'by_type' ][ 'matrix' ]:
-            # because it is both #rows and #columns, we have to choose one
-            argument_properties[ 'trait_type' ] = 'num_columns'
-            argument_properties[ 'trait_of' ] = match_matrix_traits[0][3].strip()
-
-        # if we're not dealing with order
-        else:
-          references = match_matrix_traits[0][3].split( 'and' )
-          for matrix_name in references:
-            if matrix_name.strip() in grouped_arguments[ 'by_type' ][ 'matrix' ]:
-              argument_properties[ 'trait_type' ] = 'num_' + match_matrix_traits[0][0]
-              argument_properties[ 'trait_of' ] = matrix_name.strip()
+      #
+      # First: perhaps there's something in the templating system
+      #
+      traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait'
+      if my_has_key( traits_key, template_map ):
+        data = template_map[ my_has_key( traits_key, template_map ) ].split(",")
+        argument_properties[ 'trait_type' ] = data[0].strip()
+        argument_properties[ 'trait_of' ] = data[1].strip()
 
       #
-      # Matrix traits detection, continued
-      # try to detect stuff like "the number of rows of op( ... )"
-      #
+      # If traits are not user-defined, try the regular detection stuff
+      # 
       else:
-        match_matrix_traits = re.compile( '(columns|rows)(of|the|matrix|\s)+op\(\s?([A-Z])\s?\)',
+        #
+        # Try to detect fastest cases first (cheapest traits)
+        #
+        match_matrix_traits = re.compile( '(rows|columns|order)(in|of|the|input|\s)+(matrix|matrices|\s)+' + \
+            '([A-Z]+\s+and\s+[A-Z]+|[A-Z]+)', re.M | re.S ).findall( comment_block )
+        if len( match_matrix_traits ) == 1:
+          if match_matrix_traits[0][0] == 'order':
+            #
+            # see if the traits are overruled through the template system
+            # logically, these come first
+            traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
+            if my_has_key( traits_key, template_map ):
+                argument_properties[ 'trait_type' ] = 'num_columns'
+                argument_properties[ 'trait_of' ] = template_map[ my_has_key( traits_key, template_map ) ].strip()
+            # PANIC: return none
+            # e.g., in tridiagonal case, there is no matrix, but a number of 
+            # vectors (the diagonals)
+            elif not grouped_arguments[ 'by_type' ].has_key( 'matrix' ):
+              print "PANIC: returning none"
+              # TODO
+              # TODO
+              return subroutine_name, None
+              # TODO
+              # TODO
+            elif match_matrix_traits[0][3] in grouped_arguments[ 'by_type' ][ 'matrix' ]:
+              # because it is both #rows and #columns, we have to choose one
+              argument_properties[ 'trait_type' ] = 'num_columns'
+              argument_properties[ 'trait_of' ] = match_matrix_traits[0][3].strip()
+
+          # if we're not dealing with order
+          else:
+            references = match_matrix_traits[0][3].split( 'and' )
+            for matrix_name in references:
+              if matrix_name.strip() in grouped_arguments[ 'by_type' ][ 'matrix' ]:
+                argument_properties[ 'trait_type' ] = 'num_' + match_matrix_traits[0][0]
+                argument_properties[ 'trait_of' ] = matrix_name.strip()
+
+        #
+        # Matrix traits detection, continued
+        #
+        else:
+          #
+          # try to detect stuff like "the number of rows of op( ... )"
+          # This required testing some variable (like transa, transb), and should come
+          # later than the regular case
+          #
+          match_matrix_traits = re.compile( '(columns|rows)(of|the|matrix|\s)+op\(\s?([A-Z])\s?\)',
             re.M | re.S ).findall( comment_block )
-        if len( match_matrix_traits ) > 0 and \
-                'TRANS' +match_matrix_traits[0][2].strip() in argument_map:
-          print "CHECK TODO:", match_matrix_traits
-          argument_properties[ 'trait_type' ] = 'trans_num_' + match_matrix_traits[0][0]
-          argument_properties[ 'trait_of' ] = [ 'TRANS' + match_matrix_traits[0][2].strip(), \
+          if len( match_matrix_traits ) > 0 and \
+              'TRANS' +match_matrix_traits[0][2].strip() in argument_map:
+            print "CHECK TODO:", match_matrix_traits
+            argument_properties[ 'trait_type' ] = 'trans_num_' + match_matrix_traits[0][0]
+            argument_properties[ 'trait_of' ] = [ 'TRANS' + match_matrix_traits[0][2].strip(), \
                                                           match_matrix_traits[0][2].strip() ]
 
-        #
-        # Fallback for previous two cases
-        # if we have found no matches .. perhaps there's something in the templating system
-        #
-        else:
-          traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait'
-          if my_has_key( traits_key, template_map ):
-            data = template_map[ my_has_key( traits_key, template_map ) ].split(",")
-            argument_properties[ 'trait_type' ] = data[0].strip()
-            argument_properties[ 'trait_of' ] = data[1].strip()
 
       #
       # Fetch array traits, such as "the length of the array WORK"

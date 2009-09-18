@@ -36,45 +36,50 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbbrd( const char vect, const integer_t m, const integer_t n,
-            const integer_t ncc, const integer_t kl, const integer_t ku,
-            float* ab, const integer_t ldab, float* d, float* e, float* q,
-            const integer_t ldq, float* pt, const integer_t ldpt, float* c,
-            const integer_t ldc, float* work, integer_t& info ) {
-        LAPACK_SGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q,
-                &ldq, pt, &ldpt, c, &ldc, work, &info );
-    }
-    inline void gbbrd( const char vect, const integer_t m, const integer_t n,
-            const integer_t ncc, const integer_t kl, const integer_t ku,
-            double* ab, const integer_t ldab, double* d, double* e, double* q,
-            const integer_t ldq, double* pt, const integer_t ldpt, double* c,
-            const integer_t ldc, double* work, integer_t& info ) {
-        LAPACK_DGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q,
-                &ldq, pt, &ldpt, c, &ldc, work, &info );
-    }
-    inline void gbbrd( const char vect, const integer_t m, const integer_t n,
-            const integer_t ncc, const integer_t kl, const integer_t ku,
-            traits::complex_f* ab, const integer_t ldab, float* d, float* e,
-            traits::complex_f* q, const integer_t ldq, traits::complex_f* pt,
-            const integer_t ldpt, traits::complex_f* c, const integer_t ldc,
-            traits::complex_f* work, float* rwork, integer_t& info ) {
-        LAPACK_CGBBRD( &vect, &m, &n, &ncc, &kl, &ku, traits::complex_ptr(ab),
-                &ldab, d, e, traits::complex_ptr(q), &ldq,
-                traits::complex_ptr(pt), &ldpt, traits::complex_ptr(c), &ldc,
-                traits::complex_ptr(work), rwork, &info );
-    }
-    inline void gbbrd( const char vect, const integer_t m, const integer_t n,
-            const integer_t ncc, const integer_t kl, const integer_t ku,
-            traits::complex_d* ab, const integer_t ldab, double* d, double* e,
-            traits::complex_d* q, const integer_t ldq, traits::complex_d* pt,
-            const integer_t ldpt, traits::complex_d* c, const integer_t ldc,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
-        LAPACK_ZGBBRD( &vect, &m, &n, &ncc, &kl, &ku, traits::complex_ptr(ab),
-                &ldab, d, e, traits::complex_ptr(q), &ldq,
-                traits::complex_ptr(pt), &ldpt, traits::complex_ptr(c), &ldc,
-                traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void gbbrd( const char vect, const integer_t m, const integer_t n,
+        const integer_t ncc, const integer_t kl, const integer_t ku,
+        float* ab, const integer_t ldab, float* d, float* e, float* q,
+        const integer_t ldq, float* pt, const integer_t ldpt, float* c,
+        const integer_t ldc, float* work, integer_t& info ) {
+    LAPACK_SGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
+            pt, &ldpt, c, &ldc, work, &info );
 }
+
+inline void gbbrd( const char vect, const integer_t m, const integer_t n,
+        const integer_t ncc, const integer_t kl, const integer_t ku,
+        double* ab, const integer_t ldab, double* d, double* e, double* q,
+        const integer_t ldq, double* pt, const integer_t ldpt, double* c,
+        const integer_t ldc, double* work, integer_t& info ) {
+    LAPACK_DGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
+            pt, &ldpt, c, &ldc, work, &info );
+}
+
+inline void gbbrd( const char vect, const integer_t m, const integer_t n,
+        const integer_t ncc, const integer_t kl, const integer_t ku,
+        traits::complex_f* ab, const integer_t ldab, float* d, float* e,
+        traits::complex_f* q, const integer_t ldq, traits::complex_f* pt,
+        const integer_t ldpt, traits::complex_f* c, const integer_t ldc,
+        traits::complex_f* work, float* rwork, integer_t& info ) {
+    LAPACK_CGBBRD( &vect, &m, &n, &ncc, &kl, &ku, traits::complex_ptr(ab),
+            &ldab, d, e, traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(pt), &ldpt, traits::complex_ptr(c), &ldc,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+inline void gbbrd( const char vect, const integer_t m, const integer_t n,
+        const integer_t ncc, const integer_t kl, const integer_t ku,
+        traits::complex_d* ab, const integer_t ldab, double* d, double* e,
+        traits::complex_d* q, const integer_t ldq, traits::complex_d* pt,
+        const integer_t ldpt, traits::complex_d* c, const integer_t ldc,
+        traits::complex_d* work, double* rwork, integer_t& info ) {
+    LAPACK_ZGBBRD( &vect, &m, &n, &ncc, &kl, &ku, traits::complex_ptr(ab),
+            &ldab, d, e, traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(pt), &ldpt, traits::complex_ptr(c), &ldc,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -273,6 +278,9 @@ inline integer_t gbbrd( const char vect, const integer_t m,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

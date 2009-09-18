@@ -31,31 +31,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tptrs( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t nrhs, const float* ap,
-            float* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_STPTRS( &uplo, &trans, &diag, &n, &nrhs, ap, b, &ldb, &info );
-    }
-    inline void tptrs( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t nrhs, const double* ap,
-            double* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_DTPTRS( &uplo, &trans, &diag, &n, &nrhs, ap, b, &ldb, &info );
-    }
-    inline void tptrs( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t nrhs,
-            const traits::complex_f* ap, traits::complex_f* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_CTPTRS( &uplo, &trans, &diag, &n, &nrhs,
-                traits::complex_ptr(ap), traits::complex_ptr(b), &ldb, &info );
-    }
-    inline void tptrs( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t nrhs,
-            const traits::complex_d* ap, traits::complex_d* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_ZTPTRS( &uplo, &trans, &diag, &n, &nrhs,
-                traits::complex_ptr(ap), traits::complex_ptr(b), &ldb, &info );
-    }
+
+inline void tptrs( const char uplo, const char trans, const char diag,
+        const integer_t n, const integer_t nrhs, const float* ap, float* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_STPTRS( &uplo, &trans, &diag, &n, &nrhs, ap, b, &ldb, &info );
 }
+
+inline void tptrs( const char uplo, const char trans, const char diag,
+        const integer_t n, const integer_t nrhs, const double* ap, double* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_DTPTRS( &uplo, &trans, &diag, &n, &nrhs, ap, b, &ldb, &info );
+}
+
+inline void tptrs( const char uplo, const char trans, const char diag,
+        const integer_t n, const integer_t nrhs, const traits::complex_f* ap,
+        traits::complex_f* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_CTPTRS( &uplo, &trans, &diag, &n, &nrhs, traits::complex_ptr(ap),
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+inline void tptrs( const char uplo, const char trans, const char diag,
+        const integer_t n, const integer_t nrhs, const traits::complex_d* ap,
+        traits::complex_d* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_ZTPTRS( &uplo, &trans, &diag, &n, &nrhs, traits::complex_ptr(ap),
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -95,6 +98,9 @@ inline integer_t tptrs( const char uplo, const char trans,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

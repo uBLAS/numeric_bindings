@@ -37,63 +37,64 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tgsen( const integer_t ijob, const logical_t wantq,
-            const logical_t wantz, const logical_t* select, const integer_t n,
-            float* a, const integer_t lda, float* b, const integer_t ldb,
-            float* alphar, float* alphai, float* beta, float* q,
-            const integer_t ldq, float* z, const integer_t ldz, integer_t& m,
-            float& pl, float& pr, float* dif, float* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_STGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb,
-                alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif,
-                work, &lwork, iwork, &liwork, &info );
-    }
-    inline void tgsen( const integer_t ijob, const logical_t wantq,
-            const logical_t wantz, const logical_t* select, const integer_t n,
-            double* a, const integer_t lda, double* b, const integer_t ldb,
-            double* alphar, double* alphai, double* beta, double* q,
-            const integer_t ldq, double* z, const integer_t ldz, integer_t& m,
-            double& pl, double& pr, double* dif, double* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_DTGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb,
-                alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif,
-                work, &lwork, iwork, &liwork, &info );
-    }
-    inline void tgsen( const integer_t ijob, const logical_t wantq,
-            const logical_t wantz, const logical_t* select, const integer_t n,
-            traits::complex_f* a, const integer_t lda, traits::complex_f* b,
-            const integer_t ldb, traits::complex_f* alpha,
-            traits::complex_f* beta, traits::complex_f* q,
-            const integer_t ldq, traits::complex_f* z, const integer_t ldz,
-            integer_t& m, float& pl, float& pr, float* dif,
-            traits::complex_f* work, const integer_t lwork, integer_t* iwork,
-            const integer_t liwork, integer_t& info ) {
-        LAPACK_CTGSEN( &ijob, &wantq, &wantz, select, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(alpha), traits::complex_ptr(beta),
-                traits::complex_ptr(q), &ldq, traits::complex_ptr(z), &ldz,
-                &m, &pl, &pr, dif, traits::complex_ptr(work), &lwork, iwork,
-                &liwork, &info );
-    }
-    inline void tgsen( const integer_t ijob, const logical_t wantq,
-            const logical_t wantz, const logical_t* select, const integer_t n,
-            traits::complex_d* a, const integer_t lda, traits::complex_d* b,
-            const integer_t ldb, traits::complex_d* alpha,
-            traits::complex_d* beta, traits::complex_d* q,
-            const integer_t ldq, traits::complex_d* z, const integer_t ldz,
-            integer_t& m, double& pl, double& pr, double* dif,
-            traits::complex_d* work, const integer_t lwork, integer_t* iwork,
-            const integer_t liwork, integer_t& info ) {
-        LAPACK_ZTGSEN( &ijob, &wantq, &wantz, select, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(alpha), traits::complex_ptr(beta),
-                traits::complex_ptr(q), &ldq, traits::complex_ptr(z), &ldz,
-                &m, &pl, &pr, dif, traits::complex_ptr(work), &lwork, iwork,
-                &liwork, &info );
-    }
+
+inline void tgsen( const integer_t ijob, const logical_t wantq,
+        const logical_t wantz, const logical_t* select, const integer_t n,
+        float* a, const integer_t lda, float* b, const integer_t ldb,
+        float* alphar, float* alphai, float* beta, float* q,
+        const integer_t ldq, float* z, const integer_t ldz, integer_t& m,
+        float& pl, float& pr, float* dif, float* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_STGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb,
+            alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work,
+            &lwork, iwork, &liwork, &info );
 }
+
+inline void tgsen( const integer_t ijob, const logical_t wantq,
+        const logical_t wantz, const logical_t* select, const integer_t n,
+        double* a, const integer_t lda, double* b, const integer_t ldb,
+        double* alphar, double* alphai, double* beta, double* q,
+        const integer_t ldq, double* z, const integer_t ldz, integer_t& m,
+        double& pl, double& pr, double* dif, double* work,
+        const integer_t lwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_DTGSEN( &ijob, &wantq, &wantz, select, &n, a, &lda, b, &ldb,
+            alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work,
+            &lwork, iwork, &liwork, &info );
+}
+
+inline void tgsen( const integer_t ijob, const logical_t wantq,
+        const logical_t wantz, const logical_t* select, const integer_t n,
+        traits::complex_f* a, const integer_t lda, traits::complex_f* b,
+        const integer_t ldb, traits::complex_f* alpha,
+        traits::complex_f* beta, traits::complex_f* q, const integer_t ldq,
+        traits::complex_f* z, const integer_t ldz, integer_t& m, float& pl,
+        float& pr, float* dif, traits::complex_f* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_CTGSEN( &ijob, &wantq, &wantz, select, &n, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(alpha),
+            traits::complex_ptr(beta), traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(z), &ldz, &m, &pl, &pr, dif,
+            traits::complex_ptr(work), &lwork, iwork, &liwork, &info );
+}
+
+inline void tgsen( const integer_t ijob, const logical_t wantq,
+        const logical_t wantz, const logical_t* select, const integer_t n,
+        traits::complex_d* a, const integer_t lda, traits::complex_d* b,
+        const integer_t ldb, traits::complex_d* alpha,
+        traits::complex_d* beta, traits::complex_d* q, const integer_t ldq,
+        traits::complex_d* z, const integer_t ldz, integer_t& m, double& pl,
+        double& pr, double* dif, traits::complex_d* work,
+        const integer_t lwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_ZTGSEN( &ijob, &wantq, &wantz, select, &n, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(alpha),
+            traits::complex_ptr(beta), traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(z), &ldz, &m, &pl, &pr, dif,
+            traits::complex_ptr(work), &lwork, iwork, &liwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -407,6 +408,9 @@ inline integer_t tgsen( const integer_t ijob, const logical_t wantq,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

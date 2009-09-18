@@ -34,33 +34,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void heevr( const char jobz, const char range, const char uplo,
-            const integer_t n, traits::complex_f* a, const integer_t lda,
-            const float vl, const float vu, const integer_t il,
-            const integer_t iu, const float abstol, integer_t& m, float* w,
-            traits::complex_f* z, const integer_t ldz, integer_t* isuppz,
-            traits::complex_f* work, const integer_t lwork, float* rwork,
-            const integer_t lrwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_CHEEVR( &jobz, &range, &uplo, &n, traits::complex_ptr(a), &lda,
-                &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z),
-                &ldz, isuppz, traits::complex_ptr(work), &lwork, rwork,
-                &lrwork, iwork, &liwork, &info );
-    }
-    inline void heevr( const char jobz, const char range, const char uplo,
-            const integer_t n, traits::complex_d* a, const integer_t lda,
-            const double vl, const double vu, const integer_t il,
-            const integer_t iu, const double abstol, integer_t& m, double* w,
-            traits::complex_d* z, const integer_t ldz, integer_t* isuppz,
-            traits::complex_d* work, const integer_t lwork, double* rwork,
-            const integer_t lrwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_ZHEEVR( &jobz, &range, &uplo, &n, traits::complex_ptr(a), &lda,
-                &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z),
-                &ldz, isuppz, traits::complex_ptr(work), &lwork, rwork,
-                &lrwork, iwork, &liwork, &info );
-    }
+
+inline void heevr( const char jobz, const char range, const char uplo,
+        const integer_t n, traits::complex_f* a, const integer_t lda,
+        const float vl, const float vu, const integer_t il,
+        const integer_t iu, const float abstol, integer_t& m, float* w,
+        traits::complex_f* z, const integer_t ldz, integer_t* isuppz,
+        traits::complex_f* work, const integer_t lwork, float* rwork,
+        const integer_t lrwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_CHEEVR( &jobz, &range, &uplo, &n, traits::complex_ptr(a), &lda,
+            &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z), &ldz,
+            isuppz, traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork,
+            &liwork, &info );
 }
+
+inline void heevr( const char jobz, const char range, const char uplo,
+        const integer_t n, traits::complex_d* a, const integer_t lda,
+        const double vl, const double vu, const integer_t il,
+        const integer_t iu, const double abstol, integer_t& m, double* w,
+        traits::complex_d* z, const integer_t ldz, integer_t* isuppz,
+        traits::complex_d* work, const integer_t lwork, double* rwork,
+        const integer_t lrwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_ZHEEVR( &jobz, &range, &uplo, &n, traits::complex_ptr(a), &lda,
+            &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z), &ldz,
+            isuppz, traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork,
+            &liwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -207,6 +210,9 @@ inline integer_t heevr( const char jobz, const char range, MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

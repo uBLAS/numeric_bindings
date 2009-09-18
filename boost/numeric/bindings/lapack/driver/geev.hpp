@@ -37,44 +37,46 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void geev( const char jobvl, const char jobvr, const integer_t n,
-            float* a, const integer_t lda, float* wr, float* wi, float* vl,
-            const integer_t ldvl, float* vr, const integer_t ldvr,
-            float* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_SGEEV( &jobvl, &jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr,
-                &ldvr, work, &lwork, &info );
-    }
-    inline void geev( const char jobvl, const char jobvr, const integer_t n,
-            double* a, const integer_t lda, double* wr, double* wi,
-            double* vl, const integer_t ldvl, double* vr,
-            const integer_t ldvr, double* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_DGEEV( &jobvl, &jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr,
-                &ldvr, work, &lwork, &info );
-    }
-    inline void geev( const char jobvl, const char jobvr, const integer_t n,
-            traits::complex_f* a, const integer_t lda, traits::complex_f* w,
-            traits::complex_f* vl, const integer_t ldvl,
-            traits::complex_f* vr, const integer_t ldvr,
-            traits::complex_f* work, const integer_t lwork, float* rwork,
-            integer_t& info ) {
-        LAPACK_CGEEV( &jobvl, &jobvr, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(w), traits::complex_ptr(vl), &ldvl,
-                traits::complex_ptr(vr), &ldvr, traits::complex_ptr(work),
-                &lwork, rwork, &info );
-    }
-    inline void geev( const char jobvl, const char jobvr, const integer_t n,
-            traits::complex_d* a, const integer_t lda, traits::complex_d* w,
-            traits::complex_d* vl, const integer_t ldvl,
-            traits::complex_d* vr, const integer_t ldvr,
-            traits::complex_d* work, const integer_t lwork, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZGEEV( &jobvl, &jobvr, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(w), traits::complex_ptr(vl), &ldvl,
-                traits::complex_ptr(vr), &ldvr, traits::complex_ptr(work),
-                &lwork, rwork, &info );
-    }
+
+inline void geev( const char jobvl, const char jobvr, const integer_t n,
+        float* a, const integer_t lda, float* wr, float* wi, float* vl,
+        const integer_t ldvl, float* vr, const integer_t ldvr, float* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_SGEEV( &jobvl, &jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr,
+            work, &lwork, &info );
 }
+
+inline void geev( const char jobvl, const char jobvr, const integer_t n,
+        double* a, const integer_t lda, double* wr, double* wi, double* vl,
+        const integer_t ldvl, double* vr, const integer_t ldvr, double* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_DGEEV( &jobvl, &jobvr, &n, a, &lda, wr, wi, vl, &ldvl, vr, &ldvr,
+            work, &lwork, &info );
+}
+
+inline void geev( const char jobvl, const char jobvr, const integer_t n,
+        traits::complex_f* a, const integer_t lda, traits::complex_f* w,
+        traits::complex_f* vl, const integer_t ldvl, traits::complex_f* vr,
+        const integer_t ldvr, traits::complex_f* work, const integer_t lwork,
+        float* rwork, integer_t& info ) {
+    LAPACK_CGEEV( &jobvl, &jobvr, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(w), traits::complex_ptr(vl), &ldvl,
+            traits::complex_ptr(vr), &ldvr, traits::complex_ptr(work), &lwork,
+            rwork, &info );
+}
+
+inline void geev( const char jobvl, const char jobvr, const integer_t n,
+        traits::complex_d* a, const integer_t lda, traits::complex_d* w,
+        traits::complex_d* vl, const integer_t ldvl, traits::complex_d* vr,
+        const integer_t ldvr, traits::complex_d* work, const integer_t lwork,
+        double* rwork, integer_t& info ) {
+    LAPACK_ZGEEV( &jobvl, &jobvr, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(w), traits::complex_ptr(vl), &ldvl,
+            traits::complex_ptr(vr), &ldvr, traits::complex_ptr(work), &lwork,
+            rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -299,6 +301,9 @@ inline integer_t geev( const char jobvl, const char jobvr, MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

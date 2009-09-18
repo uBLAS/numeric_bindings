@@ -34,36 +34,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hegvx( const integer_t itype, const char jobz,
-            const char range, const char uplo, const integer_t n,
-            traits::complex_f* a, const integer_t lda, traits::complex_f* b,
-            const integer_t ldb, const float vl, const float vu,
-            const integer_t il, const integer_t iu, const float abstol,
-            integer_t& m, float* w, traits::complex_f* z, const integer_t ldz,
-            traits::complex_f* work, const integer_t lwork, float* rwork,
-            integer_t* iwork, integer_t* ifail, integer_t& info ) {
-        LAPACK_CHEGVX( &itype, &jobz, &range, &uplo, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z),
-                &ldz, traits::complex_ptr(work), &lwork, rwork, iwork, ifail,
-                &info );
-    }
-    inline void hegvx( const integer_t itype, const char jobz,
-            const char range, const char uplo, const integer_t n,
-            traits::complex_d* a, const integer_t lda, traits::complex_d* b,
-            const integer_t ldb, const double vl, const double vu,
-            const integer_t il, const integer_t iu, const double abstol,
-            integer_t& m, double* w, traits::complex_d* z,
-            const integer_t ldz, traits::complex_d* work,
-            const integer_t lwork, double* rwork, integer_t* iwork,
-            integer_t* ifail, integer_t& info ) {
-        LAPACK_ZHEGVX( &itype, &jobz, &range, &uplo, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z),
-                &ldz, traits::complex_ptr(work), &lwork, rwork, iwork, ifail,
-                &info );
-    }
+
+inline void hegvx( const integer_t itype, const char jobz, const char range,
+        const char uplo, const integer_t n, traits::complex_f* a,
+        const integer_t lda, traits::complex_f* b, const integer_t ldb,
+        const float vl, const float vu, const integer_t il,
+        const integer_t iu, const float abstol, integer_t& m, float* w,
+        traits::complex_f* z, const integer_t ldz, traits::complex_f* work,
+        const integer_t lwork, float* rwork, integer_t* iwork,
+        integer_t* ifail, integer_t& info ) {
+    LAPACK_CHEGVX( &itype, &jobz, &range, &uplo, &n, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(b), &ldb, &vl, &vu, &il, &iu, &abstol,
+            &m, w, traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
+            &lwork, rwork, iwork, ifail, &info );
 }
+
+inline void hegvx( const integer_t itype, const char jobz, const char range,
+        const char uplo, const integer_t n, traits::complex_d* a,
+        const integer_t lda, traits::complex_d* b, const integer_t ldb,
+        const double vl, const double vu, const integer_t il,
+        const integer_t iu, const double abstol, integer_t& m, double* w,
+        traits::complex_d* z, const integer_t ldz, traits::complex_d* work,
+        const integer_t lwork, double* rwork, integer_t* iwork,
+        integer_t* ifail, integer_t& info ) {
+    LAPACK_ZHEGVX( &itype, &jobz, &range, &uplo, &n, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(b), &ldb, &vl, &vu, &il, &iu, &abstol,
+            &m, w, traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
+            &lwork, rwork, iwork, ifail, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -210,6 +210,9 @@ inline integer_t hegvx( const integer_t itype, const char jobz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

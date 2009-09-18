@@ -36,47 +36,47 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trrfs( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t nrhs, const float* a,
-            const integer_t lda, const float* b, const integer_t ldb,
-            const float* x, const integer_t ldx, float* ferr, float* berr,
-            float* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_STRRFS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb, x,
-                &ldx, ferr, berr, work, iwork, &info );
-    }
-    inline void trrfs( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t nrhs, const double* a,
-            const integer_t lda, const double* b, const integer_t ldb,
-            const double* x, const integer_t ldx, double* ferr, double* berr,
-            double* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_DTRRFS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb, x,
-                &ldx, ferr, berr, work, iwork, &info );
-    }
-    inline void trrfs( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t nrhs,
-            const traits::complex_f* a, const integer_t lda,
-            const traits::complex_f* b, const integer_t ldb,
-            const traits::complex_f* x, const integer_t ldx, float* ferr,
-            float* berr, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
-        LAPACK_CTRRFS( &uplo, &trans, &diag, &n, &nrhs,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(x), &ldx, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
-    inline void trrfs( const char uplo, const char trans, const char diag,
-            const integer_t n, const integer_t nrhs,
-            const traits::complex_d* a, const integer_t lda,
-            const traits::complex_d* b, const integer_t ldb,
-            const traits::complex_d* x, const integer_t ldx, double* ferr,
-            double* berr, traits::complex_d* work, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZTRRFS( &uplo, &trans, &diag, &n, &nrhs,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(x), &ldx, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void trrfs( const char uplo, const char trans, const char diag,
+        const integer_t n, const integer_t nrhs, const float* a,
+        const integer_t lda, const float* b, const integer_t ldb,
+        const float* x, const integer_t ldx, float* ferr, float* berr,
+        float* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_STRRFS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb, x, &ldx,
+            ferr, berr, work, iwork, &info );
 }
+
+inline void trrfs( const char uplo, const char trans, const char diag,
+        const integer_t n, const integer_t nrhs, const double* a,
+        const integer_t lda, const double* b, const integer_t ldb,
+        const double* x, const integer_t ldx, double* ferr, double* berr,
+        double* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_DTRRFS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb, x, &ldx,
+            ferr, berr, work, iwork, &info );
+}
+
+inline void trrfs( const char uplo, const char trans, const char diag,
+        const integer_t n, const integer_t nrhs, const traits::complex_f* a,
+        const integer_t lda, const traits::complex_f* b, const integer_t ldb,
+        const traits::complex_f* x, const integer_t ldx, float* ferr,
+        float* berr, traits::complex_f* work, float* rwork, integer_t& info ) {
+    LAPACK_CTRRFS( &uplo, &trans, &diag, &n, &nrhs, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
+            ferr, berr, traits::complex_ptr(work), rwork, &info );
+}
+
+inline void trrfs( const char uplo, const char trans, const char diag,
+        const integer_t n, const integer_t nrhs, const traits::complex_d* a,
+        const integer_t lda, const traits::complex_d* b, const integer_t ldb,
+        const traits::complex_d* x, const integer_t ldx, double* ferr,
+        double* berr, traits::complex_d* work, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZTRRFS( &uplo, &trans, &diag, &n, &nrhs, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
+            ferr, berr, traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -284,6 +284,9 @@ inline integer_t trrfs( const char uplo, const char trans,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -37,53 +37,56 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hgeqz( const char job, const char compq, const char compz,
-            const integer_t n, const integer_t ilo, const integer_t ihi,
-            float* h, const integer_t ldh, float* t, const integer_t ldt,
-            float* alphar, float* alphai, float* beta, float* q,
-            const integer_t ldq, float* z, const integer_t ldz, float* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_SHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
-                alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
-    }
-    inline void hgeqz( const char job, const char compq, const char compz,
-            const integer_t n, const integer_t ilo, const integer_t ihi,
-            double* h, const integer_t ldh, double* t, const integer_t ldt,
-            double* alphar, double* alphai, double* beta, double* q,
-            const integer_t ldq, double* z, const integer_t ldz, double* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_DHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
-                alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
-    }
-    inline void hgeqz( const char job, const char compq, const char compz,
-            const integer_t n, const integer_t ilo, const integer_t ihi,
-            traits::complex_f* h, const integer_t ldh, traits::complex_f* t,
-            const integer_t ldt, traits::complex_f* alpha,
-            traits::complex_f* beta, traits::complex_f* q,
-            const integer_t ldq, traits::complex_f* z, const integer_t ldz,
-            traits::complex_f* work, const integer_t lwork, float* rwork,
-            integer_t& info ) {
-        LAPACK_CHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi,
-                traits::complex_ptr(h), &ldh, traits::complex_ptr(t), &ldt,
-                traits::complex_ptr(alpha), traits::complex_ptr(beta),
-                traits::complex_ptr(q), &ldq, traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), &lwork, rwork, &info );
-    }
-    inline void hgeqz( const char job, const char compq, const char compz,
-            const integer_t n, const integer_t ilo, const integer_t ihi,
-            traits::complex_d* h, const integer_t ldh, traits::complex_d* t,
-            const integer_t ldt, traits::complex_d* alpha,
-            traits::complex_d* beta, traits::complex_d* q,
-            const integer_t ldq, traits::complex_d* z, const integer_t ldz,
-            traits::complex_d* work, const integer_t lwork, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi,
-                traits::complex_ptr(h), &ldh, traits::complex_ptr(t), &ldt,
-                traits::complex_ptr(alpha), traits::complex_ptr(beta),
-                traits::complex_ptr(q), &ldq, traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), &lwork, rwork, &info );
-    }
+
+inline void hgeqz( const char job, const char compq, const char compz,
+        const integer_t n, const integer_t ilo, const integer_t ihi, float* h,
+        const integer_t ldh, float* t, const integer_t ldt, float* alphar,
+        float* alphai, float* beta, float* q, const integer_t ldq, float* z,
+        const integer_t ldz, float* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_SHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
+            alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
 }
+
+inline void hgeqz( const char job, const char compq, const char compz,
+        const integer_t n, const integer_t ilo, const integer_t ihi,
+        double* h, const integer_t ldh, double* t, const integer_t ldt,
+        double* alphar, double* alphai, double* beta, double* q,
+        const integer_t ldq, double* z, const integer_t ldz, double* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_DHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
+            alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
+}
+
+inline void hgeqz( const char job, const char compq, const char compz,
+        const integer_t n, const integer_t ilo, const integer_t ihi,
+        traits::complex_f* h, const integer_t ldh, traits::complex_f* t,
+        const integer_t ldt, traits::complex_f* alpha,
+        traits::complex_f* beta, traits::complex_f* q, const integer_t ldq,
+        traits::complex_f* z, const integer_t ldz, traits::complex_f* work,
+        const integer_t lwork, float* rwork, integer_t& info ) {
+    LAPACK_CHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi,
+            traits::complex_ptr(h), &ldh, traits::complex_ptr(t), &ldt,
+            traits::complex_ptr(alpha), traits::complex_ptr(beta),
+            traits::complex_ptr(q), &ldq, traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), &lwork, rwork, &info );
+}
+
+inline void hgeqz( const char job, const char compq, const char compz,
+        const integer_t n, const integer_t ilo, const integer_t ihi,
+        traits::complex_d* h, const integer_t ldh, traits::complex_d* t,
+        const integer_t ldt, traits::complex_d* alpha,
+        traits::complex_d* beta, traits::complex_d* q, const integer_t ldq,
+        traits::complex_d* z, const integer_t ldz, traits::complex_d* work,
+        const integer_t lwork, double* rwork, integer_t& info ) {
+    LAPACK_ZHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi,
+            traits::complex_ptr(h), &ldh, traits::complex_ptr(t), &ldt,
+            traits::complex_ptr(alpha), traits::complex_ptr(beta),
+            traits::complex_ptr(q), &ldq, traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), &lwork, rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -345,6 +348,9 @@ inline integer_t hgeqz( const char job, const char compq,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

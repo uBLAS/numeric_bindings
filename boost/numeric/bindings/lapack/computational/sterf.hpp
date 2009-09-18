@@ -31,15 +31,16 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sterf( const integer_t n, float* d, float* e,
-            integer_t& info ) {
-        LAPACK_SSTERF( &n, d, e, &info );
-    }
-    inline void sterf( const integer_t n, double* d, double* e,
-            integer_t& info ) {
-        LAPACK_DSTERF( &n, d, e, &info );
-    }
+
+inline void sterf( const integer_t n, float* d, float* e, integer_t& info ) {
+    LAPACK_SSTERF( &n, d, e, &info );
 }
+
+inline void sterf( const integer_t n, double* d, double* e, integer_t& info ) {
+    LAPACK_DSTERF( &n, d, e, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -72,6 +73,9 @@ inline integer_t sterf( const integer_t n, VectorD& d, VectorE& e ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

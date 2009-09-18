@@ -63,7 +63,7 @@ struct axpy_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX, typename VectorY >
     static return_type invoke( const value_type a, const VectorX& x,
             VectorY& y ) {
@@ -76,7 +76,7 @@ struct axpy_impl {
     }
 };
 
-// generic template function for calling to axpy
+// generic template function to call axpy
 template< typename VectorX, typename VectorY >
 inline typename axpy_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

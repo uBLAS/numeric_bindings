@@ -34,23 +34,26 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hesv( const char uplo, const integer_t n,
-            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
-            integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
-            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_CHESV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(work),
-                &lwork, &info );
-    }
-    inline void hesv( const char uplo, const integer_t n,
-            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
-            integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
-            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_ZHESV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(work),
-                &lwork, &info );
-    }
+
+inline void hesv( const char uplo, const integer_t n, const integer_t nrhs,
+        traits::complex_f* a, const integer_t lda, integer_t* ipiv,
+        traits::complex_f* b, const integer_t ldb, traits::complex_f* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_CHESV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(work), &lwork,
+            &info );
 }
+
+inline void hesv( const char uplo, const integer_t n, const integer_t nrhs,
+        traits::complex_d* a, const integer_t lda, integer_t* ipiv,
+        traits::complex_d* b, const integer_t ldb, traits::complex_d* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_ZHESV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(work), &lwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -153,6 +156,9 @@ inline integer_t hesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

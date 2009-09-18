@@ -33,18 +33,19 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void cposv( const char uplo, const integer_t n,
-            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
-            const traits::complex_d* b, const integer_t ldb,
-            traits::complex_d* x, const integer_t ldx,
-            traits::complex_d* work, traits::complex_f* swork, double* rwork,
-            integer_t& iter, integer_t& info ) {
-        LAPACK_ZCPOSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
-                traits::complex_ptr(work), traits::complex_ptr(swork), rwork,
-                &iter, &info );
-    }
+
+inline void cposv( const char uplo, const integer_t n, const integer_t nrhs,
+        traits::complex_d* a, const integer_t lda, const traits::complex_d* b,
+        const integer_t ldb, traits::complex_d* x, const integer_t ldx,
+        traits::complex_d* work, traits::complex_f* swork, double* rwork,
+        integer_t& iter, integer_t& info ) {
+    LAPACK_ZCPOSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
+            traits::complex_ptr(work), traits::complex_ptr(swork), rwork,
+            &iter, &info );
 }
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -151,6 +152,9 @@ inline integer_t cposv( MatrixA& a, const MatrixB& b, MatrixX& x,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

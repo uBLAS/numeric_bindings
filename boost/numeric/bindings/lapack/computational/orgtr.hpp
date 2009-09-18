@@ -34,17 +34,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void orgtr( const char uplo, const integer_t n, float* a,
-            const integer_t lda, const float* tau, float* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_SORGTR( &uplo, &n, a, &lda, tau, work, &lwork, &info );
-    }
-    inline void orgtr( const char uplo, const integer_t n, double* a,
-            const integer_t lda, const double* tau, double* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_DORGTR( &uplo, &n, a, &lda, tau, work, &lwork, &info );
-    }
+
+inline void orgtr( const char uplo, const integer_t n, float* a,
+        const integer_t lda, const float* tau, float* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_SORGTR( &uplo, &n, a, &lda, tau, work, &lwork, &info );
 }
+
+inline void orgtr( const char uplo, const integer_t n, double* a,
+        const integer_t lda, const double* tau, double* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_DORGTR( &uplo, &n, a, &lda, tau, work, &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -122,6 +125,9 @@ inline integer_t orgtr( const integer_t n, MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

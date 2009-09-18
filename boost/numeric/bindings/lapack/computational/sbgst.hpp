@@ -33,21 +33,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sbgst( const char vect, const char uplo, const integer_t n,
-            const integer_t ka, const integer_t kb, float* ab,
-            const integer_t ldab, const float* bb, const integer_t ldbb,
-            float* x, const integer_t ldx, float* work, integer_t& info ) {
-        LAPACK_SSBGST( &vect, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, x,
-                &ldx, work, &info );
-    }
-    inline void sbgst( const char vect, const char uplo, const integer_t n,
-            const integer_t ka, const integer_t kb, double* ab,
-            const integer_t ldab, const double* bb, const integer_t ldbb,
-            double* x, const integer_t ldx, double* work, integer_t& info ) {
-        LAPACK_DSBGST( &vect, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, x,
-                &ldx, work, &info );
-    }
+
+inline void sbgst( const char vect, const char uplo, const integer_t n,
+        const integer_t ka, const integer_t kb, float* ab,
+        const integer_t ldab, const float* bb, const integer_t ldbb, float* x,
+        const integer_t ldx, float* work, integer_t& info ) {
+    LAPACK_SSBGST( &vect, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, x, &ldx,
+            work, &info );
 }
+
+inline void sbgst( const char vect, const char uplo, const integer_t n,
+        const integer_t ka, const integer_t kb, double* ab,
+        const integer_t ldab, const double* bb, const integer_t ldbb,
+        double* x, const integer_t ldx, double* work, integer_t& info ) {
+    LAPACK_DSBGST( &vect, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, x, &ldx,
+            work, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -136,6 +139,9 @@ inline integer_t sbgst( const char vect, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

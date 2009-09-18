@@ -31,37 +31,40 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbtrs( const char trans, const integer_t n,
-            const integer_t kl, const integer_t ku, const integer_t nrhs,
-            const float* ab, const integer_t ldab, const integer_t* ipiv,
-            float* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_SGBTRS( &trans, &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb,
-                &info );
-    }
-    inline void gbtrs( const char trans, const integer_t n,
-            const integer_t kl, const integer_t ku, const integer_t nrhs,
-            const double* ab, const integer_t ldab, const integer_t* ipiv,
-            double* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_DGBTRS( &trans, &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb,
-                &info );
-    }
-    inline void gbtrs( const char trans, const integer_t n,
-            const integer_t kl, const integer_t ku, const integer_t nrhs,
-            const traits::complex_f* ab, const integer_t ldab,
-            const integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_CGBTRS( &trans, &n, &kl, &ku, &nrhs, traits::complex_ptr(ab),
-                &ldab, ipiv, traits::complex_ptr(b), &ldb, &info );
-    }
-    inline void gbtrs( const char trans, const integer_t n,
-            const integer_t kl, const integer_t ku, const integer_t nrhs,
-            const traits::complex_d* ab, const integer_t ldab,
-            const integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_ZGBTRS( &trans, &n, &kl, &ku, &nrhs, traits::complex_ptr(ab),
-                &ldab, ipiv, traits::complex_ptr(b), &ldb, &info );
-    }
+
+inline void gbtrs( const char trans, const integer_t n, const integer_t kl,
+        const integer_t ku, const integer_t nrhs, const float* ab,
+        const integer_t ldab, const integer_t* ipiv, float* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_SGBTRS( &trans, &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb,
+            &info );
 }
+
+inline void gbtrs( const char trans, const integer_t n, const integer_t kl,
+        const integer_t ku, const integer_t nrhs, const double* ab,
+        const integer_t ldab, const integer_t* ipiv, double* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_DGBTRS( &trans, &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb,
+            &info );
+}
+
+inline void gbtrs( const char trans, const integer_t n, const integer_t kl,
+        const integer_t ku, const integer_t nrhs, const traits::complex_f* ab,
+        const integer_t ldab, const integer_t* ipiv, traits::complex_f* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_CGBTRS( &trans, &n, &kl, &ku, &nrhs, traits::complex_ptr(ab),
+            &ldab, ipiv, traits::complex_ptr(b), &ldb, &info );
+}
+
+inline void gbtrs( const char trans, const integer_t n, const integer_t kl,
+        const integer_t ku, const integer_t nrhs, const traits::complex_d* ab,
+        const integer_t ldab, const integer_t* ipiv, traits::complex_d* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_ZGBTRS( &trans, &n, &kl, &ku, &nrhs, traits::complex_ptr(ab),
+            &ldab, ipiv, traits::complex_ptr(b), &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -106,6 +109,9 @@ inline integer_t gbtrs( const char trans, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

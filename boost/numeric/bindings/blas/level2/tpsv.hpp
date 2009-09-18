@@ -64,7 +64,7 @@ struct tpsv_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename MatrixAP, typename VectorX >
     static return_type invoke( const char trans, const char diag,
             const MatrixAP& ap, VectorX& x ) {
@@ -77,7 +77,7 @@ struct tpsv_impl {
     }
 };
 
-// generic template function for calling to tpsv
+// generic template function to call tpsv
 template< typename MatrixAP, typename VectorX >
 inline typename tpsv_impl< typename traits::matrix_traits<
         MatrixAP >::value_type >::return_type

@@ -48,7 +48,7 @@ struct asum_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef value_type return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX >
     static return_type invoke( const VectorX& x ) {
         return detail::asum( traits::vector_size(x),
@@ -56,7 +56,7 @@ struct asum_impl {
     }
 };
 
-// generic template function for calling to asum
+// generic template function to call asum
 template< typename VectorX >
 inline typename asum_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

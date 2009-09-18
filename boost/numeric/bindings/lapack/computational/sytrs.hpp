@@ -31,33 +31,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sytrs( const char uplo, const integer_t n,
-            const integer_t nrhs, const float* a, const integer_t lda,
-            const integer_t* ipiv, float* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_SSYTRS( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
-    }
-    inline void sytrs( const char uplo, const integer_t n,
-            const integer_t nrhs, const double* a, const integer_t lda,
-            const integer_t* ipiv, double* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_DSYTRS( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
-    }
-    inline void sytrs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_f* a,
-            const integer_t lda, const integer_t* ipiv, traits::complex_f* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_CSYTRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(b), &ldb, &info );
-    }
-    inline void sytrs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_d* a,
-            const integer_t lda, const integer_t* ipiv, traits::complex_d* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_ZSYTRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(b), &ldb, &info );
-    }
+
+inline void sytrs( const char uplo, const integer_t n, const integer_t nrhs,
+        const float* a, const integer_t lda, const integer_t* ipiv, float* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_SSYTRS( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
 }
+
+inline void sytrs( const char uplo, const integer_t n, const integer_t nrhs,
+        const double* a, const integer_t lda, const integer_t* ipiv,
+        double* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_DSYTRS( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
+}
+
+inline void sytrs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_f* a, const integer_t lda,
+        const integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_CSYTRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+inline void sytrs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_d* a, const integer_t lda,
+        const integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_ZSYTRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -101,6 +104,9 @@ inline integer_t sytrs( const char uplo, const MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

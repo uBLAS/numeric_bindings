@@ -36,50 +36,52 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tgevc( const char side, const char howmny,
-            const logical_t* select, const integer_t n, const float* s,
-            const integer_t lds, const float* p, const integer_t ldp,
-            float* vl, const integer_t ldvl, float* vr, const integer_t ldvr,
-            const integer_t mm, integer_t& m, float* work, integer_t& info ) {
-        LAPACK_STGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl,
-                &ldvl, vr, &ldvr, &mm, &m, work, &info );
-    }
-    inline void tgevc( const char side, const char howmny,
-            const logical_t* select, const integer_t n, const double* s,
-            const integer_t lds, const double* p, const integer_t ldp,
-            double* vl, const integer_t ldvl, double* vr,
-            const integer_t ldvr, const integer_t mm, integer_t& m,
-            double* work, integer_t& info ) {
-        LAPACK_DTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl,
-                &ldvl, vr, &ldvr, &mm, &m, work, &info );
-    }
-    inline void tgevc( const char side, const char howmny,
-            const logical_t* select, const integer_t n,
-            const traits::complex_f* s, const integer_t lds,
-            const traits::complex_f* p, const integer_t ldp,
-            traits::complex_f* vl, const integer_t ldvl,
-            traits::complex_f* vr, const integer_t ldvr, const integer_t mm,
-            integer_t& m, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
-        LAPACK_CTGEVC( &side, &howmny, select, &n, traits::complex_ptr(s),
-                &lds, traits::complex_ptr(p), &ldp, traits::complex_ptr(vl),
-                &ldvl, traits::complex_ptr(vr), &ldvr, &mm, &m,
-                traits::complex_ptr(work), rwork, &info );
-    }
-    inline void tgevc( const char side, const char howmny,
-            const logical_t* select, const integer_t n,
-            const traits::complex_d* s, const integer_t lds,
-            const traits::complex_d* p, const integer_t ldp,
-            traits::complex_d* vl, const integer_t ldvl,
-            traits::complex_d* vr, const integer_t ldvr, const integer_t mm,
-            integer_t& m, traits::complex_d* work, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZTGEVC( &side, &howmny, select, &n, traits::complex_ptr(s),
-                &lds, traits::complex_ptr(p), &ldp, traits::complex_ptr(vl),
-                &ldvl, traits::complex_ptr(vr), &ldvr, &mm, &m,
-                traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void tgevc( const char side, const char howmny,
+        const logical_t* select, const integer_t n, const float* s,
+        const integer_t lds, const float* p, const integer_t ldp, float* vl,
+        const integer_t ldvl, float* vr, const integer_t ldvr,
+        const integer_t mm, integer_t& m, float* work, integer_t& info ) {
+    LAPACK_STGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
+            vr, &ldvr, &mm, &m, work, &info );
 }
+
+inline void tgevc( const char side, const char howmny,
+        const logical_t* select, const integer_t n, const double* s,
+        const integer_t lds, const double* p, const integer_t ldp, double* vl,
+        const integer_t ldvl, double* vr, const integer_t ldvr,
+        const integer_t mm, integer_t& m, double* work, integer_t& info ) {
+    LAPACK_DTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
+            vr, &ldvr, &mm, &m, work, &info );
+}
+
+inline void tgevc( const char side, const char howmny,
+        const logical_t* select, const integer_t n,
+        const traits::complex_f* s, const integer_t lds,
+        const traits::complex_f* p, const integer_t ldp,
+        traits::complex_f* vl, const integer_t ldvl, traits::complex_f* vr,
+        const integer_t ldvr, const integer_t mm, integer_t& m,
+        traits::complex_f* work, float* rwork, integer_t& info ) {
+    LAPACK_CTGEVC( &side, &howmny, select, &n, traits::complex_ptr(s), &lds,
+            traits::complex_ptr(p), &ldp, traits::complex_ptr(vl), &ldvl,
+            traits::complex_ptr(vr), &ldvr, &mm, &m,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+inline void tgevc( const char side, const char howmny,
+        const logical_t* select, const integer_t n,
+        const traits::complex_d* s, const integer_t lds,
+        const traits::complex_d* p, const integer_t ldp,
+        traits::complex_d* vl, const integer_t ldvl, traits::complex_d* vr,
+        const integer_t ldvr, const integer_t mm, integer_t& m,
+        traits::complex_d* work, double* rwork, integer_t& info ) {
+    LAPACK_ZTGEVC( &side, &howmny, select, &n, traits::complex_ptr(s), &lds,
+            traits::complex_ptr(p), &ldp, traits::complex_ptr(vl), &ldvl,
+            traits::complex_ptr(vr), &ldvr, &mm, &m,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -258,6 +260,9 @@ inline integer_t tgevc( const char side, const char howmny,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

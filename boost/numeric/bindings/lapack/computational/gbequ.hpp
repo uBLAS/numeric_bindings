@@ -34,37 +34,40 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbequ( const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, const float* ab,
-            const integer_t ldab, float* r, float* c, float& rowcnd,
-            float& colcnd, float& amax, integer_t& info ) {
-        LAPACK_SGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd,
-                &amax, &info );
-    }
-    inline void gbequ( const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, const double* ab,
-            const integer_t ldab, double* r, double* c, double& rowcnd,
-            double& colcnd, double& amax, integer_t& info ) {
-        LAPACK_DGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd,
-                &amax, &info );
-    }
-    inline void gbequ( const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku,
-            const traits::complex_f* ab, const integer_t ldab, float* r,
-            float* c, float& rowcnd, float& colcnd, float& amax,
-            integer_t& info ) {
-        LAPACK_CGBEQU( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, r, c,
-                &rowcnd, &colcnd, &amax, &info );
-    }
-    inline void gbequ( const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku,
-            const traits::complex_d* ab, const integer_t ldab, double* r,
-            double* c, double& rowcnd, double& colcnd, double& amax,
-            integer_t& info ) {
-        LAPACK_ZGBEQU( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, r, c,
-                &rowcnd, &colcnd, &amax, &info );
-    }
+
+inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
+        const integer_t ku, const float* ab, const integer_t ldab, float* r,
+        float* c, float& rowcnd, float& colcnd, float& amax,
+        integer_t& info ) {
+    LAPACK_SGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
+            &info );
 }
+
+inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
+        const integer_t ku, const double* ab, const integer_t ldab, double* r,
+        double* c, double& rowcnd, double& colcnd, double& amax,
+        integer_t& info ) {
+    LAPACK_DGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
+            &info );
+}
+
+inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
+        const integer_t ku, const traits::complex_f* ab, const integer_t ldab,
+        float* r, float* c, float& rowcnd, float& colcnd, float& amax,
+        integer_t& info ) {
+    LAPACK_CGBEQU( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, r, c,
+            &rowcnd, &colcnd, &amax, &info );
+}
+
+inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
+        const integer_t ku, const traits::complex_d* ab, const integer_t ldab,
+        double* r, double* c, double& rowcnd, double& colcnd, double& amax,
+        integer_t& info ) {
+    LAPACK_ZGBEQU( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, r, c,
+            &rowcnd, &colcnd, &amax, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -146,6 +149,9 @@ inline integer_t gbequ( const integer_t m, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

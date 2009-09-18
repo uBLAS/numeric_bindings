@@ -37,40 +37,44 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gelss( const integer_t m, const integer_t n,
-            const integer_t nrhs, float* a, const integer_t lda, float* b,
-            const integer_t ldb, float* s, const float rcond, integer_t& rank,
-            float* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_SGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank,
-                work, &lwork, &info );
-    }
-    inline void gelss( const integer_t m, const integer_t n,
-            const integer_t nrhs, double* a, const integer_t lda, double* b,
-            const integer_t ldb, double* s, const double rcond,
-            integer_t& rank, double* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_DGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank,
-                work, &lwork, &info );
-    }
-    inline void gelss( const integer_t m, const integer_t n,
-            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
-            traits::complex_f* b, const integer_t ldb, float* s,
-            const float rcond, integer_t& rank, traits::complex_f* work,
-            const integer_t lwork, float* rwork, integer_t& info ) {
-        LAPACK_CGELSS( &m, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, s, &rcond, &rank,
-                traits::complex_ptr(work), &lwork, rwork, &info );
-    }
-    inline void gelss( const integer_t m, const integer_t n,
-            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
-            traits::complex_d* b, const integer_t ldb, double* s,
-            const double rcond, integer_t& rank, traits::complex_d* work,
-            const integer_t lwork, double* rwork, integer_t& info ) {
-        LAPACK_ZGELSS( &m, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, s, &rcond, &rank,
-                traits::complex_ptr(work), &lwork, rwork, &info );
-    }
+
+inline void gelss( const integer_t m, const integer_t n, const integer_t nrhs,
+        float* a, const integer_t lda, float* b, const integer_t ldb,
+        float* s, const float rcond, integer_t& rank, float* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_SGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank, work,
+            &lwork, &info );
 }
+
+inline void gelss( const integer_t m, const integer_t n, const integer_t nrhs,
+        double* a, const integer_t lda, double* b, const integer_t ldb,
+        double* s, const double rcond, integer_t& rank, double* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_DGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank, work,
+            &lwork, &info );
+}
+
+inline void gelss( const integer_t m, const integer_t n, const integer_t nrhs,
+        traits::complex_f* a, const integer_t lda, traits::complex_f* b,
+        const integer_t ldb, float* s, const float rcond, integer_t& rank,
+        traits::complex_f* work, const integer_t lwork, float* rwork,
+        integer_t& info ) {
+    LAPACK_CGELSS( &m, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, s, &rcond, &rank,
+            traits::complex_ptr(work), &lwork, rwork, &info );
+}
+
+inline void gelss( const integer_t m, const integer_t n, const integer_t nrhs,
+        traits::complex_d* a, const integer_t lda, traits::complex_d* b,
+        const integer_t ldb, double* s, const double rcond, integer_t& rank,
+        traits::complex_d* work, const integer_t lwork, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZGELSS( &m, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, s, &rcond, &rank,
+            traits::complex_ptr(work), &lwork, rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -272,6 +276,9 @@ inline integer_t gelss( MatrixA& a, MatrixB& b, VectorS& s,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

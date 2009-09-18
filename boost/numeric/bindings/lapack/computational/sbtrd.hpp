@@ -33,21 +33,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sbtrd( const char vect, const char uplo, const integer_t n,
-            const integer_t kd, float* ab, const integer_t ldab, float* d,
-            float* e, float* q, const integer_t ldq, float* work,
-            integer_t& info ) {
-        LAPACK_SSBTRD( &vect, &uplo, &n, &kd, ab, &ldab, d, e, q, &ldq, work,
-                &info );
-    }
-    inline void sbtrd( const char vect, const char uplo, const integer_t n,
-            const integer_t kd, double* ab, const integer_t ldab, double* d,
-            double* e, double* q, const integer_t ldq, double* work,
-            integer_t& info ) {
-        LAPACK_DSBTRD( &vect, &uplo, &n, &kd, ab, &ldab, d, e, q, &ldq, work,
-                &info );
-    }
+
+inline void sbtrd( const char vect, const char uplo, const integer_t n,
+        const integer_t kd, float* ab, const integer_t ldab, float* d,
+        float* e, float* q, const integer_t ldq, float* work,
+        integer_t& info ) {
+    LAPACK_SSBTRD( &vect, &uplo, &n, &kd, ab, &ldab, d, e, q, &ldq, work,
+            &info );
 }
+
+inline void sbtrd( const char vect, const char uplo, const integer_t n,
+        const integer_t kd, double* ab, const integer_t ldab, double* d,
+        double* e, double* q, const integer_t ldq, double* work,
+        integer_t& info ) {
+    LAPACK_DSBTRD( &vect, &uplo, &n, &kd, ab, &ldab, d, e, q, &ldq, work,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -138,6 +141,9 @@ inline integer_t sbtrd( const char vect, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

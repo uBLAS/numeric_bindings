@@ -36,33 +36,38 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trcon( const char norm, const char uplo, const char diag,
-            const integer_t n, const float* a, const integer_t lda,
-            float& rcond, float* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_STRCON( &norm, &uplo, &diag, &n, a, &lda, &rcond, work, iwork,
-                &info );
-    }
-    inline void trcon( const char norm, const char uplo, const char diag,
-            const integer_t n, const double* a, const integer_t lda,
-            double& rcond, double* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_DTRCON( &norm, &uplo, &diag, &n, a, &lda, &rcond, work, iwork,
-                &info );
-    }
-    inline void trcon( const char norm, const char uplo, const char diag,
-            const integer_t n, const traits::complex_f* a,
-            const integer_t lda, float& rcond, traits::complex_f* work,
-            float* rwork, integer_t& info ) {
-        LAPACK_CTRCON( &norm, &uplo, &diag, &n, traits::complex_ptr(a), &lda,
-                &rcond, traits::complex_ptr(work), rwork, &info );
-    }
-    inline void trcon( const char norm, const char uplo, const char diag,
-            const integer_t n, const traits::complex_d* a,
-            const integer_t lda, double& rcond, traits::complex_d* work,
-            double* rwork, integer_t& info ) {
-        LAPACK_ZTRCON( &norm, &uplo, &diag, &n, traits::complex_ptr(a), &lda,
-                &rcond, traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void trcon( const char norm, const char uplo, const char diag,
+        const integer_t n, const float* a, const integer_t lda, float& rcond,
+        float* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_STRCON( &norm, &uplo, &diag, &n, a, &lda, &rcond, work, iwork,
+            &info );
 }
+
+inline void trcon( const char norm, const char uplo, const char diag,
+        const integer_t n, const double* a, const integer_t lda,
+        double& rcond, double* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_DTRCON( &norm, &uplo, &diag, &n, a, &lda, &rcond, work, iwork,
+            &info );
+}
+
+inline void trcon( const char norm, const char uplo, const char diag,
+        const integer_t n, const traits::complex_f* a, const integer_t lda,
+        float& rcond, traits::complex_f* work, float* rwork,
+        integer_t& info ) {
+    LAPACK_CTRCON( &norm, &uplo, &diag, &n, traits::complex_ptr(a), &lda,
+            &rcond, traits::complex_ptr(work), rwork, &info );
+}
+
+inline void trcon( const char norm, const char uplo, const char diag,
+        const integer_t n, const traits::complex_d* a, const integer_t lda,
+        double& rcond, traits::complex_d* work, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZTRCON( &norm, &uplo, &diag, &n, traits::complex_ptr(a), &lda,
+            &rcond, traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -211,6 +216,9 @@ inline integer_t trcon( const char norm, const char uplo,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

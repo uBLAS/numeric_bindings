@@ -36,29 +36,32 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pteqr( const char compz, const integer_t n, float* d,
-            float* e, float* z, const integer_t ldz, float* work,
-            integer_t& info ) {
-        LAPACK_SPTEQR( &compz, &n, d, e, z, &ldz, work, &info );
-    }
-    inline void pteqr( const char compz, const integer_t n, double* d,
-            double* e, double* z, const integer_t ldz, double* work,
-            integer_t& info ) {
-        LAPACK_DPTEQR( &compz, &n, d, e, z, &ldz, work, &info );
-    }
-    inline void pteqr( const char compz, const integer_t n, float* d,
-            float* e, traits::complex_f* z, const integer_t ldz, float* work,
-            integer_t& info ) {
-        LAPACK_CPTEQR( &compz, &n, d, e, traits::complex_ptr(z), &ldz, work,
-                &info );
-    }
-    inline void pteqr( const char compz, const integer_t n, double* d,
-            double* e, traits::complex_d* z, const integer_t ldz,
-            double* work, integer_t& info ) {
-        LAPACK_ZPTEQR( &compz, &n, d, e, traits::complex_ptr(z), &ldz, work,
-                &info );
-    }
+
+inline void pteqr( const char compz, const integer_t n, float* d, float* e,
+        float* z, const integer_t ldz, float* work, integer_t& info ) {
+    LAPACK_SPTEQR( &compz, &n, d, e, z, &ldz, work, &info );
 }
+
+inline void pteqr( const char compz, const integer_t n, double* d, double* e,
+        double* z, const integer_t ldz, double* work, integer_t& info ) {
+    LAPACK_DPTEQR( &compz, &n, d, e, z, &ldz, work, &info );
+}
+
+inline void pteqr( const char compz, const integer_t n, float* d, float* e,
+        traits::complex_f* z, const integer_t ldz, float* work,
+        integer_t& info ) {
+    LAPACK_CPTEQR( &compz, &n, d, e, traits::complex_ptr(z), &ldz, work,
+            &info );
+}
+
+inline void pteqr( const char compz, const integer_t n, double* d, double* e,
+        traits::complex_d* z, const integer_t ldz, double* work,
+        integer_t& info ) {
+    LAPACK_ZPTEQR( &compz, &n, d, e, traits::complex_ptr(z), &ldz, work,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -186,6 +189,9 @@ inline integer_t pteqr( const char compz, const integer_t n, VectorD& d,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -51,7 +51,7 @@ struct spmv_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename MatrixAP, typename VectorX, typename VectorY >
     static return_type invoke( const real_type alpha, const MatrixAP& ap,
             const VectorX& x, const real_type beta, VectorY& y ) {
@@ -69,7 +69,7 @@ struct spmv_impl {
     }
 };
 
-// generic template function for calling to spmv
+// generic template function to call spmv
 template< typename MatrixAP, typename VectorX, typename VectorY >
 inline typename spmv_impl< typename traits::matrix_traits<
         MatrixAP >::value_type >::return_type

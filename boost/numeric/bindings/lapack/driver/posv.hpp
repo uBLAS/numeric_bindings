@@ -31,29 +31,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void posv( const char uplo, const integer_t n,
-            const integer_t nrhs, float* a, const integer_t lda, float* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_SPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
-    }
-    inline void posv( const char uplo, const integer_t n,
-            const integer_t nrhs, double* a, const integer_t lda, double* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_DPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
-    }
-    inline void posv( const char uplo, const integer_t n,
-            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
-            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_CPOSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, &info );
-    }
-    inline void posv( const char uplo, const integer_t n,
-            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
-            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_ZPOSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, &info );
-    }
+
+inline void posv( const char uplo, const integer_t n, const integer_t nrhs,
+        float* a, const integer_t lda, float* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_SPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
 }
+
+inline void posv( const char uplo, const integer_t n, const integer_t nrhs,
+        double* a, const integer_t lda, double* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_DPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
+}
+
+inline void posv( const char uplo, const integer_t n, const integer_t nrhs,
+        traits::complex_f* a, const integer_t lda, traits::complex_f* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_CPOSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+inline void posv( const char uplo, const integer_t n, const integer_t nrhs,
+        traits::complex_d* a, const integer_t lda, traits::complex_d* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_ZPOSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -103,6 +108,9 @@ inline integer_t posv( MatrixA& a, MatrixB& b ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

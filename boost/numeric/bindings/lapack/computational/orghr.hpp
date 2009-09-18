@@ -34,19 +34,21 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void orghr( const integer_t n, const integer_t ilo,
-            const integer_t ihi, float* a, const integer_t lda,
-            const float* tau, float* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_SORGHR( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
-    }
-    inline void orghr( const integer_t n, const integer_t ilo,
-            const integer_t ihi, double* a, const integer_t lda,
-            const double* tau, double* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_DORGHR( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
-    }
+
+inline void orghr( const integer_t n, const integer_t ilo,
+        const integer_t ihi, float* a, const integer_t lda, const float* tau,
+        float* work, const integer_t lwork, integer_t& info ) {
+    LAPACK_SORGHR( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
 }
+
+inline void orghr( const integer_t n, const integer_t ilo,
+        const integer_t ihi, double* a, const integer_t lda,
+        const double* tau, double* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_DORGHR( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -126,6 +128,9 @@ inline integer_t orghr( const integer_t n, const integer_t ilo,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

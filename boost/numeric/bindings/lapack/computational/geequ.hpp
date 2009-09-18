@@ -34,31 +34,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void geequ( const integer_t m, const integer_t n, const float* a,
-            const integer_t lda, float* r, float* c, float& rowcnd,
-            float& colcnd, float& amax, integer_t& info ) {
-        LAPACK_SGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
-    }
-    inline void geequ( const integer_t m, const integer_t n, const double* a,
-            const integer_t lda, double* r, double* c, double& rowcnd,
-            double& colcnd, double& amax, integer_t& info ) {
-        LAPACK_DGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
-    }
-    inline void geequ( const integer_t m, const integer_t n,
-            const traits::complex_f* a, const integer_t lda, float* r,
-            float* c, float& rowcnd, float& colcnd, float& amax,
-            integer_t& info ) {
-        LAPACK_CGEEQU( &m, &n, traits::complex_ptr(a), &lda, r, c, &rowcnd,
-                &colcnd, &amax, &info );
-    }
-    inline void geequ( const integer_t m, const integer_t n,
-            const traits::complex_d* a, const integer_t lda, double* r,
-            double* c, double& rowcnd, double& colcnd, double& amax,
-            integer_t& info ) {
-        LAPACK_ZGEEQU( &m, &n, traits::complex_ptr(a), &lda, r, c, &rowcnd,
-                &colcnd, &amax, &info );
-    }
+
+inline void geequ( const integer_t m, const integer_t n, const float* a,
+        const integer_t lda, float* r, float* c, float& rowcnd, float& colcnd,
+        float& amax, integer_t& info ) {
+    LAPACK_SGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
 }
+
+inline void geequ( const integer_t m, const integer_t n, const double* a,
+        const integer_t lda, double* r, double* c, double& rowcnd,
+        double& colcnd, double& amax, integer_t& info ) {
+    LAPACK_DGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
+}
+
+inline void geequ( const integer_t m, const integer_t n,
+        const traits::complex_f* a, const integer_t lda, float* r, float* c,
+        float& rowcnd, float& colcnd, float& amax, integer_t& info ) {
+    LAPACK_CGEEQU( &m, &n, traits::complex_ptr(a), &lda, r, c, &rowcnd,
+            &colcnd, &amax, &info );
+}
+
+inline void geequ( const integer_t m, const integer_t n,
+        const traits::complex_d* a, const integer_t lda, double* r, double* c,
+        double& rowcnd, double& colcnd, double& amax, integer_t& info ) {
+    LAPACK_ZGEEQU( &m, &n, traits::complex_ptr(a), &lda, r, c, &rowcnd,
+            &colcnd, &amax, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -136,6 +139,9 @@ inline integer_t geequ( const MatrixA& a, VectorR& r, VectorC& c,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

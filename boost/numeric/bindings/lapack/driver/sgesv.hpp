@@ -33,14 +33,16 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sgesv( const integer_t n, const integer_t nrhs, double* a,
-            const integer_t lda, integer_t* ipiv, const double* b,
-            const integer_t ldb, double* x, const integer_t ldx, double* work,
-            float* swork, integer_t& iter, integer_t& info ) {
-        LAPACK_DSGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, x, &ldx, work,
-                swork, &iter, &info );
-    }
+
+inline void sgesv( const integer_t n, const integer_t nrhs, double* a,
+        const integer_t lda, integer_t* ipiv, const double* b,
+        const integer_t ldb, double* x, const integer_t ldx, double* work,
+        float* swork, integer_t& iter, integer_t& info ) {
+    LAPACK_DSGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, x, &ldx, work, swork,
+            &iter, &info );
 }
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -142,6 +144,9 @@ inline integer_t sgesv( MatrixA& a, VectorIPIV& ipiv, const MatrixB& b,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

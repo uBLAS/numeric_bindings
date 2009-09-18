@@ -34,37 +34,40 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void latrs( const char uplo, const char trans, const char diag,
-            const char normin, const integer_t n, const float* a,
-            const integer_t lda, float* x, float& scale, float* cnorm,
-            integer_t& info ) {
-        LAPACK_SLATRS( &uplo, &trans, &diag, &normin, &n, a, &lda, x, &scale,
-                cnorm, &info );
-    }
-    inline void latrs( const char uplo, const char trans, const char diag,
-            const char normin, const integer_t n, const double* a,
-            const integer_t lda, double* x, double& scale, double* cnorm,
-            integer_t& info ) {
-        LAPACK_DLATRS( &uplo, &trans, &diag, &normin, &n, a, &lda, x, &scale,
-                cnorm, &info );
-    }
-    inline void latrs( const char uplo, const char trans, const char diag,
-            const char normin, const integer_t n, const traits::complex_f* a,
-            const integer_t lda, traits::complex_f* x, float& scale,
-            float* cnorm, integer_t& info ) {
-        LAPACK_CLATRS( &uplo, &trans, &diag, &normin, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(x), &scale,
-                cnorm, &info );
-    }
-    inline void latrs( const char uplo, const char trans, const char diag,
-            const char normin, const integer_t n, const traits::complex_d* a,
-            const integer_t lda, traits::complex_d* x, double& scale,
-            double* cnorm, integer_t& info ) {
-        LAPACK_ZLATRS( &uplo, &trans, &diag, &normin, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(x), &scale,
-                cnorm, &info );
-    }
+
+inline void latrs( const char uplo, const char trans, const char diag,
+        const char normin, const integer_t n, const float* a,
+        const integer_t lda, float* x, float& scale, float* cnorm,
+        integer_t& info ) {
+    LAPACK_SLATRS( &uplo, &trans, &diag, &normin, &n, a, &lda, x, &scale,
+            cnorm, &info );
 }
+
+inline void latrs( const char uplo, const char trans, const char diag,
+        const char normin, const integer_t n, const double* a,
+        const integer_t lda, double* x, double& scale, double* cnorm,
+        integer_t& info ) {
+    LAPACK_DLATRS( &uplo, &trans, &diag, &normin, &n, a, &lda, x, &scale,
+            cnorm, &info );
+}
+
+inline void latrs( const char uplo, const char trans, const char diag,
+        const char normin, const integer_t n, const traits::complex_f* a,
+        const integer_t lda, traits::complex_f* x, float& scale, float* cnorm,
+        integer_t& info ) {
+    LAPACK_CLATRS( &uplo, &trans, &diag, &normin, &n, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(x), &scale, cnorm, &info );
+}
+
+inline void latrs( const char uplo, const char trans, const char diag,
+        const char normin, const integer_t n, const traits::complex_d* a,
+        const integer_t lda, traits::complex_d* x, double& scale,
+        double* cnorm, integer_t& info ) {
+    LAPACK_ZLATRS( &uplo, &trans, &diag, &normin, &n, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(x), &scale, cnorm, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -147,6 +150,9 @@ inline integer_t latrs( const char uplo, const char trans,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

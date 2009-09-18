@@ -34,21 +34,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void syevd( const char jobz, const char uplo, const integer_t n,
-            float* a, const integer_t lda, float* w, float* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_SSYEVD( &jobz, &uplo, &n, a, &lda, w, work, &lwork, iwork,
-                &liwork, &info );
-    }
-    inline void syevd( const char jobz, const char uplo, const integer_t n,
-            double* a, const integer_t lda, double* w, double* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_DSYEVD( &jobz, &uplo, &n, a, &lda, w, work, &lwork, iwork,
-                &liwork, &info );
-    }
+
+inline void syevd( const char jobz, const char uplo, const integer_t n,
+        float* a, const integer_t lda, float* w, float* work,
+        const integer_t lwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_SSYEVD( &jobz, &uplo, &n, a, &lda, w, work, &lwork, iwork, &liwork,
+            &info );
 }
+
+inline void syevd( const char jobz, const char uplo, const integer_t n,
+        double* a, const integer_t lda, double* w, double* work,
+        const integer_t lwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_DSYEVD( &jobz, &uplo, &n, a, &lda, w, work, &lwork, iwork, &liwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -151,6 +154,9 @@ inline integer_t syevd( const char jobz, MatrixA& a, VectorW& w ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -37,46 +37,50 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void stegr( const char jobz, const char range, const integer_t n,
-            float* d, float* e, const float vl, const float vu,
-            const integer_t il, const integer_t iu, const float abstol,
-            integer_t& m, float* w, float* z, const integer_t ldz,
-            integer_t* isuppz, float* work, const integer_t lwork,
-            integer_t* iwork, const integer_t liwork, integer_t& info ) {
-        LAPACK_SSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol,
-                &m, w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
-    }
-    inline void stegr( const char jobz, const char range, const integer_t n,
-            double* d, double* e, const double vl, const double vu,
-            const integer_t il, const integer_t iu, const double abstol,
-            integer_t& m, double* w, double* z, const integer_t ldz,
-            integer_t* isuppz, double* work, const integer_t lwork,
-            integer_t* iwork, const integer_t liwork, integer_t& info ) {
-        LAPACK_DSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol,
-                &m, w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
-    }
-    inline void stegr( const char jobz, const char range, const integer_t n,
-            float* d, float* e, const float vl, const float vu,
-            const integer_t il, const integer_t iu, const float abstol,
-            integer_t& m, float* w, traits::complex_f* z, const integer_t ldz,
-            integer_t* isuppz, float* work, const integer_t lwork,
-            integer_t* iwork, const integer_t liwork, integer_t& info ) {
-        LAPACK_CSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol,
-                &m, w, traits::complex_ptr(z), &ldz, isuppz, work, &lwork,
-                iwork, &liwork, &info );
-    }
-    inline void stegr( const char jobz, const char range, const integer_t n,
-            double* d, double* e, const double vl, const double vu,
-            const integer_t il, const integer_t iu, const double abstol,
-            integer_t& m, double* w, traits::complex_d* z,
-            const integer_t ldz, integer_t* isuppz, double* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_ZSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol,
-                &m, w, traits::complex_ptr(z), &ldz, isuppz, work, &lwork,
-                iwork, &liwork, &info );
-    }
+
+inline void stegr( const char jobz, const char range, const integer_t n,
+        float* d, float* e, const float vl, const float vu,
+        const integer_t il, const integer_t iu, const float abstol,
+        integer_t& m, float* w, float* z, const integer_t ldz,
+        integer_t* isuppz, float* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_SSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
+            w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
 }
+
+inline void stegr( const char jobz, const char range, const integer_t n,
+        double* d, double* e, const double vl, const double vu,
+        const integer_t il, const integer_t iu, const double abstol,
+        integer_t& m, double* w, double* z, const integer_t ldz,
+        integer_t* isuppz, double* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_DSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
+            w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
+}
+
+inline void stegr( const char jobz, const char range, const integer_t n,
+        float* d, float* e, const float vl, const float vu,
+        const integer_t il, const integer_t iu, const float abstol,
+        integer_t& m, float* w, traits::complex_f* z, const integer_t ldz,
+        integer_t* isuppz, float* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_CSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
+            w, traits::complex_ptr(z), &ldz, isuppz, work, &lwork, iwork,
+            &liwork, &info );
+}
+
+inline void stegr( const char jobz, const char range, const integer_t n,
+        double* d, double* e, const double vl, const double vu,
+        const integer_t il, const integer_t iu, const double abstol,
+        integer_t& m, double* w, traits::complex_d* z, const integer_t ldz,
+        integer_t* isuppz, double* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_ZSTEGR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
+            w, traits::complex_ptr(z), &ldz, isuppz, work, &lwork, iwork,
+            &liwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -320,6 +324,9 @@ inline integer_t stegr( const char jobz, const char range,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

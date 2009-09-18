@@ -34,25 +34,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hpevd( const char jobz, const char uplo, const integer_t n,
-            traits::complex_f* ap, float* w, traits::complex_f* z,
-            const integer_t ldz, traits::complex_f* work,
-            const integer_t lwork, float* rwork, const integer_t lrwork,
-            integer_t* iwork, const integer_t liwork, integer_t& info ) {
-        LAPACK_CHPEVD( &jobz, &uplo, &n, traits::complex_ptr(ap), w,
-                traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
-                &lwork, rwork, &lrwork, iwork, &liwork, &info );
-    }
-    inline void hpevd( const char jobz, const char uplo, const integer_t n,
-            traits::complex_d* ap, double* w, traits::complex_d* z,
-            const integer_t ldz, traits::complex_d* work,
-            const integer_t lwork, double* rwork, const integer_t lrwork,
-            integer_t* iwork, const integer_t liwork, integer_t& info ) {
-        LAPACK_ZHPEVD( &jobz, &uplo, &n, traits::complex_ptr(ap), w,
-                traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
-                &lwork, rwork, &lrwork, iwork, &liwork, &info );
-    }
+
+inline void hpevd( const char jobz, const char uplo, const integer_t n,
+        traits::complex_f* ap, float* w, traits::complex_f* z,
+        const integer_t ldz, traits::complex_f* work, const integer_t lwork,
+        float* rwork, const integer_t lrwork, integer_t* iwork,
+        const integer_t liwork, integer_t& info ) {
+    LAPACK_CHPEVD( &jobz, &uplo, &n, traits::complex_ptr(ap), w,
+            traits::complex_ptr(z), &ldz, traits::complex_ptr(work), &lwork,
+            rwork, &lrwork, iwork, &liwork, &info );
 }
+
+inline void hpevd( const char jobz, const char uplo, const integer_t n,
+        traits::complex_d* ap, double* w, traits::complex_d* z,
+        const integer_t ldz, traits::complex_d* work, const integer_t lwork,
+        double* rwork, const integer_t lrwork, integer_t* iwork,
+        const integer_t liwork, integer_t& info ) {
+    LAPACK_ZHPEVD( &jobz, &uplo, &n, traits::complex_ptr(ap), w,
+            traits::complex_ptr(z), &ldz, traits::complex_ptr(work), &lwork,
+            rwork, &lrwork, iwork, &liwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -179,6 +182,9 @@ inline integer_t hpevd( const char jobz, const integer_t n, MatrixAP& ap,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

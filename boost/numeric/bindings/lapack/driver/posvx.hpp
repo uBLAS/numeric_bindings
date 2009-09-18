@@ -36,49 +36,52 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void posvx( const char fact, const char uplo, const integer_t n,
-            const integer_t nrhs, float* a, const integer_t lda, float* af,
-            const integer_t ldaf, char& equed, float* s, float* b,
-            const integer_t ldb, float* x, const integer_t ldx, float& rcond,
-            float* ferr, float* berr, float* work, integer_t* iwork,
-            integer_t& info ) {
-        LAPACK_SPOSVX( &fact, &uplo, &n, &nrhs, a, &lda, af, &ldaf, &equed, s,
-                b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
-    }
-    inline void posvx( const char fact, const char uplo, const integer_t n,
-            const integer_t nrhs, double* a, const integer_t lda, double* af,
-            const integer_t ldaf, char& equed, double* s, double* b,
-            const integer_t ldb, double* x, const integer_t ldx,
-            double& rcond, double* ferr, double* berr, double* work,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_DPOSVX( &fact, &uplo, &n, &nrhs, a, &lda, af, &ldaf, &equed, s,
-                b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
-    }
-    inline void posvx( const char fact, const char uplo, const integer_t n,
-            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
-            traits::complex_f* af, const integer_t ldaf, char& equed,
-            float* s, traits::complex_f* b, const integer_t ldb,
-            traits::complex_f* x, const integer_t ldx, float& rcond,
-            float* ferr, float* berr, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
-        LAPACK_CPOSVX( &fact, &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(af), &ldaf, &equed, s,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
-                &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
-    }
-    inline void posvx( const char fact, const char uplo, const integer_t n,
-            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
-            traits::complex_d* af, const integer_t ldaf, char& equed,
-            double* s, traits::complex_d* b, const integer_t ldb,
-            traits::complex_d* x, const integer_t ldx, double& rcond,
-            double* ferr, double* berr, traits::complex_d* work,
-            double* rwork, integer_t& info ) {
-        LAPACK_ZPOSVX( &fact, &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(af), &ldaf, &equed, s,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
-                &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void posvx( const char fact, const char uplo, const integer_t n,
+        const integer_t nrhs, float* a, const integer_t lda, float* af,
+        const integer_t ldaf, char& equed, float* s, float* b,
+        const integer_t ldb, float* x, const integer_t ldx, float& rcond,
+        float* ferr, float* berr, float* work, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_SPOSVX( &fact, &uplo, &n, &nrhs, a, &lda, af, &ldaf, &equed, s, b,
+            &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
 }
+
+inline void posvx( const char fact, const char uplo, const integer_t n,
+        const integer_t nrhs, double* a, const integer_t lda, double* af,
+        const integer_t ldaf, char& equed, double* s, double* b,
+        const integer_t ldb, double* x, const integer_t ldx, double& rcond,
+        double* ferr, double* berr, double* work, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_DPOSVX( &fact, &uplo, &n, &nrhs, a, &lda, af, &ldaf, &equed, s, b,
+            &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
+}
+
+inline void posvx( const char fact, const char uplo, const integer_t n,
+        const integer_t nrhs, traits::complex_f* a, const integer_t lda,
+        traits::complex_f* af, const integer_t ldaf, char& equed, float* s,
+        traits::complex_f* b, const integer_t ldb, traits::complex_f* x,
+        const integer_t ldx, float& rcond, float* ferr, float* berr,
+        traits::complex_f* work, float* rwork, integer_t& info ) {
+    LAPACK_CPOSVX( &fact, &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(af), &ldaf, &equed, s, traits::complex_ptr(b),
+            &ldb, traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+inline void posvx( const char fact, const char uplo, const integer_t n,
+        const integer_t nrhs, traits::complex_d* a, const integer_t lda,
+        traits::complex_d* af, const integer_t ldaf, char& equed, double* s,
+        traits::complex_d* b, const integer_t ldb, traits::complex_d* x,
+        const integer_t ldx, double& rcond, double* ferr, double* berr,
+        traits::complex_d* work, double* rwork, integer_t& info ) {
+    LAPACK_ZPOSVX( &fact, &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(af), &ldaf, &equed, s, traits::complex_ptr(b),
+            &ldb, traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -320,6 +323,9 @@ inline integer_t posvx( const char fact, MatrixA& a, MatrixAF& af,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

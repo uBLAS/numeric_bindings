@@ -31,29 +31,32 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ppsv( const char uplo, const integer_t n,
-            const integer_t nrhs, float* ap, float* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_SPPSV( &uplo, &n, &nrhs, ap, b, &ldb, &info );
-    }
-    inline void ppsv( const char uplo, const integer_t n,
-            const integer_t nrhs, double* ap, double* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_DPPSV( &uplo, &n, &nrhs, ap, b, &ldb, &info );
-    }
-    inline void ppsv( const char uplo, const integer_t n,
-            const integer_t nrhs, traits::complex_f* ap, traits::complex_f* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_CPPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap),
-                traits::complex_ptr(b), &ldb, &info );
-    }
-    inline void ppsv( const char uplo, const integer_t n,
-            const integer_t nrhs, traits::complex_d* ap, traits::complex_d* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_ZPPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap),
-                traits::complex_ptr(b), &ldb, &info );
-    }
+
+inline void ppsv( const char uplo, const integer_t n, const integer_t nrhs,
+        float* ap, float* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_SPPSV( &uplo, &n, &nrhs, ap, b, &ldb, &info );
 }
+
+inline void ppsv( const char uplo, const integer_t n, const integer_t nrhs,
+        double* ap, double* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_DPPSV( &uplo, &n, &nrhs, ap, b, &ldb, &info );
+}
+
+inline void ppsv( const char uplo, const integer_t n, const integer_t nrhs,
+        traits::complex_f* ap, traits::complex_f* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_CPPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap),
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+inline void ppsv( const char uplo, const integer_t n, const integer_t nrhs,
+        traits::complex_d* ap, traits::complex_d* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_ZPPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap),
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -100,6 +103,9 @@ inline integer_t ppsv( MatrixAP& ap, MatrixB& b ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

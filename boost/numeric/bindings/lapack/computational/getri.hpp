@@ -37,29 +37,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void getri( const integer_t n, float* a, const integer_t lda,
-            const integer_t* ipiv, float* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_SGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
-    }
-    inline void getri( const integer_t n, double* a, const integer_t lda,
-            const integer_t* ipiv, double* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_DGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
-    }
-    inline void getri( const integer_t n, traits::complex_f* a,
-            const integer_t lda, const integer_t* ipiv,
-            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_CGETRI( &n, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(work), &lwork, &info );
-    }
-    inline void getri( const integer_t n, traits::complex_d* a,
-            const integer_t lda, const integer_t* ipiv,
-            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_ZGETRI( &n, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(work), &lwork, &info );
-    }
+
+inline void getri( const integer_t n, float* a, const integer_t lda,
+        const integer_t* ipiv, float* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_SGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
 }
+
+inline void getri( const integer_t n, double* a, const integer_t lda,
+        const integer_t* ipiv, double* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_DGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
+}
+
+inline void getri( const integer_t n, traits::complex_f* a,
+        const integer_t lda, const integer_t* ipiv, traits::complex_f* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_CGETRI( &n, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+inline void getri( const integer_t n, traits::complex_d* a,
+        const integer_t lda, const integer_t* ipiv, traits::complex_d* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_ZGETRI( &n, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -190,6 +195,9 @@ inline integer_t getri( MatrixA& a, const VectorIPIV& ipiv ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

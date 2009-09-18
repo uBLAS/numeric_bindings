@@ -50,7 +50,7 @@ struct syr_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX, typename MatrixA >
     static return_type invoke( const real_type alpha, const VectorX& x,
             MatrixA& a ) {
@@ -64,7 +64,7 @@ struct syr_impl {
     }
 };
 
-// generic template function for calling to syr
+// generic template function to call syr
 template< typename VectorX, typename MatrixA >
 inline typename syr_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

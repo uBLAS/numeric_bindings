@@ -65,7 +65,7 @@ struct trsv_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename MatrixA, typename VectorX >
     static return_type invoke( const char trans, const char diag,
             const MatrixA& a, VectorX& x ) {
@@ -79,7 +79,7 @@ struct trsv_impl {
     }
 };
 
-// generic template function for calling to trsv
+// generic template function to call trsv
 template< typename MatrixA, typename VectorX >
 inline typename trsv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type

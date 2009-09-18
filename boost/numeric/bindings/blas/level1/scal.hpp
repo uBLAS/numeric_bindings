@@ -59,7 +59,7 @@ struct scal_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX >
     static return_type invoke( const value_type a, const VectorX& x ) {
         detail::scal( traits::vector_size(x), a,
@@ -67,7 +67,7 @@ struct scal_impl {
     }
 };
 
-// generic template function for calling to scal
+// generic template function to call scal
 template< typename VectorX >
 inline typename scal_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

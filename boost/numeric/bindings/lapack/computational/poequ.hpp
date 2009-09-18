@@ -34,28 +34,30 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void poequ( const integer_t n, const float* a, const integer_t lda,
-            float* s, float& scond, float& amax, integer_t& info ) {
-        LAPACK_SPOEQU( &n, a, &lda, s, &scond, &amax, &info );
-    }
-    inline void poequ( const integer_t n, const double* a,
-            const integer_t lda, double* s, double& scond, double& amax,
-            integer_t& info ) {
-        LAPACK_DPOEQU( &n, a, &lda, s, &scond, &amax, &info );
-    }
-    inline void poequ( const integer_t n, const traits::complex_f* a,
-            const integer_t lda, float* s, float& scond, float& amax,
-            integer_t& info ) {
-        LAPACK_CPOEQU( &n, traits::complex_ptr(a), &lda, s, &scond, &amax,
-                &info );
-    }
-    inline void poequ( const integer_t n, const traits::complex_d* a,
-            const integer_t lda, double* s, double& scond, double& amax,
-            integer_t& info ) {
-        LAPACK_ZPOEQU( &n, traits::complex_ptr(a), &lda, s, &scond, &amax,
-                &info );
-    }
+
+inline void poequ( const integer_t n, const float* a, const integer_t lda,
+        float* s, float& scond, float& amax, integer_t& info ) {
+    LAPACK_SPOEQU( &n, a, &lda, s, &scond, &amax, &info );
 }
+
+inline void poequ( const integer_t n, const double* a, const integer_t lda,
+        double* s, double& scond, double& amax, integer_t& info ) {
+    LAPACK_DPOEQU( &n, a, &lda, s, &scond, &amax, &info );
+}
+
+inline void poequ( const integer_t n, const traits::complex_f* a,
+        const integer_t lda, float* s, float& scond, float& amax,
+        integer_t& info ) {
+    LAPACK_CPOEQU( &n, traits::complex_ptr(a), &lda, s, &scond, &amax, &info );
+}
+
+inline void poequ( const integer_t n, const traits::complex_d* a,
+        const integer_t lda, double* s, double& scond, double& amax,
+        integer_t& info ) {
+    LAPACK_ZPOEQU( &n, traits::complex_ptr(a), &lda, s, &scond, &amax, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -118,6 +120,9 @@ inline integer_t poequ( const MatrixA& a, VectorS& s,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -37,33 +37,38 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void geqp3( const integer_t m, const integer_t n, float* a,
-            const integer_t lda, integer_t* jpvt, float* tau, float* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_SGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, &info );
-    }
-    inline void geqp3( const integer_t m, const integer_t n, double* a,
-            const integer_t lda, integer_t* jpvt, double* tau, double* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_DGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, &info );
-    }
-    inline void geqp3( const integer_t m, const integer_t n,
-            traits::complex_f* a, const integer_t lda, integer_t* jpvt,
-            traits::complex_f* tau, traits::complex_f* work,
-            const integer_t lwork, float* rwork, integer_t& info ) {
-        LAPACK_CGEQP3( &m, &n, traits::complex_ptr(a), &lda, jpvt,
-                traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
-                rwork, &info );
-    }
-    inline void geqp3( const integer_t m, const integer_t n,
-            traits::complex_d* a, const integer_t lda, integer_t* jpvt,
-            traits::complex_d* tau, traits::complex_d* work,
-            const integer_t lwork, double* rwork, integer_t& info ) {
-        LAPACK_ZGEQP3( &m, &n, traits::complex_ptr(a), &lda, jpvt,
-                traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
-                rwork, &info );
-    }
+
+inline void geqp3( const integer_t m, const integer_t n, float* a,
+        const integer_t lda, integer_t* jpvt, float* tau, float* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_SGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, &info );
 }
+
+inline void geqp3( const integer_t m, const integer_t n, double* a,
+        const integer_t lda, integer_t* jpvt, double* tau, double* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_DGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, &info );
+}
+
+inline void geqp3( const integer_t m, const integer_t n, traits::complex_f* a,
+        const integer_t lda, integer_t* jpvt, traits::complex_f* tau,
+        traits::complex_f* work, const integer_t lwork, float* rwork,
+        integer_t& info ) {
+    LAPACK_CGEQP3( &m, &n, traits::complex_ptr(a), &lda, jpvt,
+            traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
+            rwork, &info );
+}
+
+inline void geqp3( const integer_t m, const integer_t n, traits::complex_d* a,
+        const integer_t lda, integer_t* jpvt, traits::complex_d* tau,
+        traits::complex_d* work, const integer_t lwork, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZGEQP3( &m, &n, traits::complex_ptr(a), &lda, jpvt,
+            traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
+            rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -223,6 +228,9 @@ inline integer_t geqp3( MatrixA& a, VectorJPVT& jpvt, VectorTAU& tau ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

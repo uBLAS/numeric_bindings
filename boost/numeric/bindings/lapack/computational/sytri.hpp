@@ -36,29 +36,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sytri( const char uplo, const integer_t n, float* a,
-            const integer_t lda, const integer_t* ipiv, float* work,
-            integer_t& info ) {
-        LAPACK_SSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
-    }
-    inline void sytri( const char uplo, const integer_t n, double* a,
-            const integer_t lda, const integer_t* ipiv, double* work,
-            integer_t& info ) {
-        LAPACK_DSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
-    }
-    inline void sytri( const char uplo, const integer_t n,
-            traits::complex_f* a, const integer_t lda, const integer_t* ipiv,
-            traits::complex_f* work, integer_t& info ) {
-        LAPACK_CSYTRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(work), &info );
-    }
-    inline void sytri( const char uplo, const integer_t n,
-            traits::complex_d* a, const integer_t lda, const integer_t* ipiv,
-            traits::complex_d* work, integer_t& info ) {
-        LAPACK_ZSYTRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(work), &info );
-    }
+
+inline void sytri( const char uplo, const integer_t n, float* a,
+        const integer_t lda, const integer_t* ipiv, float* work,
+        integer_t& info ) {
+    LAPACK_SSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
 }
+
+inline void sytri( const char uplo, const integer_t n, double* a,
+        const integer_t lda, const integer_t* ipiv, double* work,
+        integer_t& info ) {
+    LAPACK_DSYTRI( &uplo, &n, a, &lda, ipiv, work, &info );
+}
+
+inline void sytri( const char uplo, const integer_t n, traits::complex_f* a,
+        const integer_t lda, const integer_t* ipiv, traits::complex_f* work,
+        integer_t& info ) {
+    LAPACK_CSYTRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(work), &info );
+}
+
+inline void sytri( const char uplo, const integer_t n, traits::complex_d* a,
+        const integer_t lda, const integer_t* ipiv, traits::complex_d* work,
+        integer_t& info ) {
+    LAPACK_ZSYTRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(work), &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -178,6 +183,9 @@ inline integer_t sytri( const char uplo, MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

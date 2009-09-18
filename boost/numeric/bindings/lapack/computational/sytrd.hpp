@@ -34,17 +34,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sytrd( const char uplo, const integer_t n, float* a,
-            const integer_t lda, float* d, float* e, float* tau, float* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_SSYTRD( &uplo, &n, a, &lda, d, e, tau, work, &lwork, &info );
-    }
-    inline void sytrd( const char uplo, const integer_t n, double* a,
-            const integer_t lda, double* d, double* e, double* tau,
-            double* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_DSYTRD( &uplo, &n, a, &lda, d, e, tau, work, &lwork, &info );
-    }
+
+inline void sytrd( const char uplo, const integer_t n, float* a,
+        const integer_t lda, float* d, float* e, float* tau, float* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_SSYTRD( &uplo, &n, a, &lda, d, e, tau, work, &lwork, &info );
 }
+
+inline void sytrd( const char uplo, const integer_t n, double* a,
+        const integer_t lda, double* d, double* e, double* tau, double* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_DSYTRD( &uplo, &n, a, &lda, d, e, tau, work, &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -141,6 +144,9 @@ inline integer_t sytrd( MatrixA& a, VectorD& d, VectorE& e,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -37,41 +37,46 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gglse( const integer_t m, const integer_t n,
-            const integer_t p, float* a, const integer_t lda, float* b,
-            const integer_t ldb, float* c, float* d, float* x, float* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_SGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
-                &info );
-    }
-    inline void gglse( const integer_t m, const integer_t n,
-            const integer_t p, double* a, const integer_t lda, double* b,
-            const integer_t ldb, double* c, double* d, double* x,
-            double* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_DGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
-                &info );
-    }
-    inline void gglse( const integer_t m, const integer_t n,
-            const integer_t p, traits::complex_f* a, const integer_t lda,
-            traits::complex_f* b, const integer_t ldb, traits::complex_f* c,
-            traits::complex_f* d, traits::complex_f* x,
-            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_CGGLSE( &m, &n, &p, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(c),
-                traits::complex_ptr(d), traits::complex_ptr(x),
-                traits::complex_ptr(work), &lwork, &info );
-    }
-    inline void gglse( const integer_t m, const integer_t n,
-            const integer_t p, traits::complex_d* a, const integer_t lda,
-            traits::complex_d* b, const integer_t ldb, traits::complex_d* c,
-            traits::complex_d* d, traits::complex_d* x,
-            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_ZGGLSE( &m, &n, &p, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(c),
-                traits::complex_ptr(d), traits::complex_ptr(x),
-                traits::complex_ptr(work), &lwork, &info );
-    }
+
+inline void gglse( const integer_t m, const integer_t n, const integer_t p,
+        float* a, const integer_t lda, float* b, const integer_t ldb,
+        float* c, float* d, float* x, float* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_SGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
+            &info );
 }
+
+inline void gglse( const integer_t m, const integer_t n, const integer_t p,
+        double* a, const integer_t lda, double* b, const integer_t ldb,
+        double* c, double* d, double* x, double* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_DGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
+            &info );
+}
+
+inline void gglse( const integer_t m, const integer_t n, const integer_t p,
+        traits::complex_f* a, const integer_t lda, traits::complex_f* b,
+        const integer_t ldb, traits::complex_f* c, traits::complex_f* d,
+        traits::complex_f* x, traits::complex_f* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_CGGLSE( &m, &n, &p, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(c),
+            traits::complex_ptr(d), traits::complex_ptr(x),
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+inline void gglse( const integer_t m, const integer_t n, const integer_t p,
+        traits::complex_d* a, const integer_t lda, traits::complex_d* b,
+        const integer_t ldb, traits::complex_d* c, traits::complex_d* d,
+        traits::complex_d* x, traits::complex_d* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_ZGGLSE( &m, &n, &p, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(c),
+            traits::complex_ptr(d), traits::complex_ptr(x),
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -263,6 +268,9 @@ inline integer_t gglse( MatrixA& a, MatrixB& b, VectorC& c, VectorD& d,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

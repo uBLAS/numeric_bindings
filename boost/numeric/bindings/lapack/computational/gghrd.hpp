@@ -31,41 +31,45 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gghrd( const char compq, const char compz, const integer_t n,
-            const integer_t ilo, const integer_t ihi, float* a,
-            const integer_t lda, float* b, const integer_t ldb, float* q,
-            const integer_t ldq, float* z, const integer_t ldz,
-            integer_t& info ) {
-        LAPACK_SGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q,
-                &ldq, z, &ldz, &info );
-    }
-    inline void gghrd( const char compq, const char compz, const integer_t n,
-            const integer_t ilo, const integer_t ihi, double* a,
-            const integer_t lda, double* b, const integer_t ldb, double* q,
-            const integer_t ldq, double* z, const integer_t ldz,
-            integer_t& info ) {
-        LAPACK_DGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q,
-                &ldq, z, &ldz, &info );
-    }
-    inline void gghrd( const char compq, const char compz, const integer_t n,
-            const integer_t ilo, const integer_t ihi, traits::complex_f* a,
-            const integer_t lda, traits::complex_f* b, const integer_t ldb,
-            traits::complex_f* q, const integer_t ldq, traits::complex_f* z,
-            const integer_t ldz, integer_t& info ) {
-        LAPACK_CGGHRD( &compq, &compz, &n, &ilo, &ihi, traits::complex_ptr(a),
-                &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(q),
-                &ldq, traits::complex_ptr(z), &ldz, &info );
-    }
-    inline void gghrd( const char compq, const char compz, const integer_t n,
-            const integer_t ilo, const integer_t ihi, traits::complex_d* a,
-            const integer_t lda, traits::complex_d* b, const integer_t ldb,
-            traits::complex_d* q, const integer_t ldq, traits::complex_d* z,
-            const integer_t ldz, integer_t& info ) {
-        LAPACK_ZGGHRD( &compq, &compz, &n, &ilo, &ihi, traits::complex_ptr(a),
-                &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(q),
-                &ldq, traits::complex_ptr(z), &ldz, &info );
-    }
+
+inline void gghrd( const char compq, const char compz, const integer_t n,
+        const integer_t ilo, const integer_t ihi, float* a,
+        const integer_t lda, float* b, const integer_t ldb, float* q,
+        const integer_t ldq, float* z, const integer_t ldz, integer_t& info ) {
+    LAPACK_SGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
+            z, &ldz, &info );
 }
+
+inline void gghrd( const char compq, const char compz, const integer_t n,
+        const integer_t ilo, const integer_t ihi, double* a,
+        const integer_t lda, double* b, const integer_t ldb, double* q,
+        const integer_t ldq, double* z, const integer_t ldz,
+        integer_t& info ) {
+    LAPACK_DGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
+            z, &ldz, &info );
+}
+
+inline void gghrd( const char compq, const char compz, const integer_t n,
+        const integer_t ilo, const integer_t ihi, traits::complex_f* a,
+        const integer_t lda, traits::complex_f* b, const integer_t ldb,
+        traits::complex_f* q, const integer_t ldq, traits::complex_f* z,
+        const integer_t ldz, integer_t& info ) {
+    LAPACK_CGGHRD( &compq, &compz, &n, &ilo, &ihi, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(z), &ldz, &info );
+}
+
+inline void gghrd( const char compq, const char compz, const integer_t n,
+        const integer_t ilo, const integer_t ihi, traits::complex_d* a,
+        const integer_t lda, traits::complex_d* b, const integer_t ldb,
+        traits::complex_d* q, const integer_t ldq, traits::complex_d* z,
+        const integer_t ldz, integer_t& info ) {
+    LAPACK_ZGGHRD( &compq, &compz, &n, &ilo, &ihi, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(z), &ldz, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -117,6 +121,9 @@ inline integer_t gghrd( const char compq, const char compz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -37,55 +37,58 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void geevx( const char balanc, const char jobvl, const char jobvr,
-            const char sense, const integer_t n, float* a,
-            const integer_t lda, float* wr, float* wi, float* vl,
-            const integer_t ldvl, float* vr, const integer_t ldvr,
-            integer_t& ilo, integer_t& ihi, float* scale, float& abnrm,
-            float* rconde, float* rcondv, float* work, const integer_t lwork,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_SGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, wr, wi,
-                vl, &ldvl, vr, &ldvr, &ilo, &ihi, scale, &abnrm, rconde,
-                rcondv, work, &lwork, iwork, &info );
-    }
-    inline void geevx( const char balanc, const char jobvl, const char jobvr,
-            const char sense, const integer_t n, double* a,
-            const integer_t lda, double* wr, double* wi, double* vl,
-            const integer_t ldvl, double* vr, const integer_t ldvr,
-            integer_t& ilo, integer_t& ihi, double* scale, double& abnrm,
-            double* rconde, double* rcondv, double* work,
-            const integer_t lwork, integer_t* iwork, integer_t& info ) {
-        LAPACK_DGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, wr, wi,
-                vl, &ldvl, vr, &ldvr, &ilo, &ihi, scale, &abnrm, rconde,
-                rcondv, work, &lwork, iwork, &info );
-    }
-    inline void geevx( const char balanc, const char jobvl, const char jobvr,
-            const char sense, const integer_t n, traits::complex_f* a,
-            const integer_t lda, traits::complex_f* w, traits::complex_f* vl,
-            const integer_t ldvl, traits::complex_f* vr, const integer_t ldvr,
-            integer_t& ilo, integer_t& ihi, float* scale, float& abnrm,
-            float* rconde, float* rcondv, traits::complex_f* work,
-            const integer_t lwork, float* rwork, integer_t& info ) {
-        LAPACK_CGEEVX( &balanc, &jobvl, &jobvr, &sense, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(w),
-                traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
-                &ldvr, &ilo, &ihi, scale, &abnrm, rconde, rcondv,
-                traits::complex_ptr(work), &lwork, rwork, &info );
-    }
-    inline void geevx( const char balanc, const char jobvl, const char jobvr,
-            const char sense, const integer_t n, traits::complex_d* a,
-            const integer_t lda, traits::complex_d* w, traits::complex_d* vl,
-            const integer_t ldvl, traits::complex_d* vr, const integer_t ldvr,
-            integer_t& ilo, integer_t& ihi, double* scale, double& abnrm,
-            double* rconde, double* rcondv, traits::complex_d* work,
-            const integer_t lwork, double* rwork, integer_t& info ) {
-        LAPACK_ZGEEVX( &balanc, &jobvl, &jobvr, &sense, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(w),
-                traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
-                &ldvr, &ilo, &ihi, scale, &abnrm, rconde, rcondv,
-                traits::complex_ptr(work), &lwork, rwork, &info );
-    }
+
+inline void geevx( const char balanc, const char jobvl, const char jobvr,
+        const char sense, const integer_t n, float* a, const integer_t lda,
+        float* wr, float* wi, float* vl, const integer_t ldvl, float* vr,
+        const integer_t ldvr, integer_t& ilo, integer_t& ihi, float* scale,
+        float& abnrm, float* rconde, float* rcondv, float* work,
+        const integer_t lwork, integer_t* iwork, integer_t& info ) {
+    LAPACK_SGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, wr, wi, vl,
+            &ldvl, vr, &ldvr, &ilo, &ihi, scale, &abnrm, rconde, rcondv, work,
+            &lwork, iwork, &info );
 }
+
+inline void geevx( const char balanc, const char jobvl, const char jobvr,
+        const char sense, const integer_t n, double* a, const integer_t lda,
+        double* wr, double* wi, double* vl, const integer_t ldvl, double* vr,
+        const integer_t ldvr, integer_t& ilo, integer_t& ihi, double* scale,
+        double& abnrm, double* rconde, double* rcondv, double* work,
+        const integer_t lwork, integer_t* iwork, integer_t& info ) {
+    LAPACK_DGEEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, wr, wi, vl,
+            &ldvl, vr, &ldvr, &ilo, &ihi, scale, &abnrm, rconde, rcondv, work,
+            &lwork, iwork, &info );
+}
+
+inline void geevx( const char balanc, const char jobvl, const char jobvr,
+        const char sense, const integer_t n, traits::complex_f* a,
+        const integer_t lda, traits::complex_f* w, traits::complex_f* vl,
+        const integer_t ldvl, traits::complex_f* vr, const integer_t ldvr,
+        integer_t& ilo, integer_t& ihi, float* scale, float& abnrm,
+        float* rconde, float* rcondv, traits::complex_f* work,
+        const integer_t lwork, float* rwork, integer_t& info ) {
+    LAPACK_CGEEVX( &balanc, &jobvl, &jobvr, &sense, &n,
+            traits::complex_ptr(a), &lda, traits::complex_ptr(w),
+            traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr,
+            &ilo, &ihi, scale, &abnrm, rconde, rcondv,
+            traits::complex_ptr(work), &lwork, rwork, &info );
+}
+
+inline void geevx( const char balanc, const char jobvl, const char jobvr,
+        const char sense, const integer_t n, traits::complex_d* a,
+        const integer_t lda, traits::complex_d* w, traits::complex_d* vl,
+        const integer_t ldvl, traits::complex_d* vr, const integer_t ldvr,
+        integer_t& ilo, integer_t& ihi, double* scale, double& abnrm,
+        double* rconde, double* rcondv, traits::complex_d* work,
+        const integer_t lwork, double* rwork, integer_t& info ) {
+    LAPACK_ZGEEVX( &balanc, &jobvl, &jobvr, &sense, &n,
+            traits::complex_ptr(a), &lda, traits::complex_ptr(w),
+            traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr,
+            &ilo, &ihi, scale, &abnrm, rconde, rcondv,
+            traits::complex_ptr(work), &lwork, rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -431,6 +434,9 @@ inline integer_t geevx( const char balanc, const char jobvl,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

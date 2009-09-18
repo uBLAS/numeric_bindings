@@ -33,21 +33,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void opmtr( const char side, const char uplo, const char trans,
-            const integer_t m, const integer_t n, const float* ap,
-            const float* tau, float* c, const integer_t ldc, float* work,
-            integer_t& info ) {
-        LAPACK_SOPMTR( &side, &uplo, &trans, &m, &n, ap, tau, c, &ldc, work,
-                &info );
-    }
-    inline void opmtr( const char side, const char uplo, const char trans,
-            const integer_t m, const integer_t n, const double* ap,
-            const double* tau, double* c, const integer_t ldc, double* work,
-            integer_t& info ) {
-        LAPACK_DOPMTR( &side, &uplo, &trans, &m, &n, ap, tau, c, &ldc, work,
-                &info );
-    }
+
+inline void opmtr( const char side, const char uplo, const char trans,
+        const integer_t m, const integer_t n, const float* ap,
+        const float* tau, float* c, const integer_t ldc, float* work,
+        integer_t& info ) {
+    LAPACK_SOPMTR( &side, &uplo, &trans, &m, &n, ap, tau, c, &ldc, work,
+            &info );
 }
+
+inline void opmtr( const char side, const char uplo, const char trans,
+        const integer_t m, const integer_t n, const double* ap,
+        const double* tau, double* c, const integer_t ldc, double* work,
+        integer_t& info ) {
+    LAPACK_DOPMTR( &side, &uplo, &trans, &m, &n, ap, tau, c, &ldc, work,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -138,6 +141,9 @@ inline integer_t opmtr( const char side, const char uplo,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -31,21 +31,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hetrs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_f* a,
-            const integer_t lda, const integer_t* ipiv, traits::complex_f* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_CHETRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(b), &ldb, &info );
-    }
-    inline void hetrs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_d* a,
-            const integer_t lda, const integer_t* ipiv, traits::complex_d* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_ZHETRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(b), &ldb, &info );
-    }
+
+inline void hetrs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_f* a, const integer_t lda,
+        const integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_CHETRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(b), &ldb, &info );
 }
+
+inline void hetrs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_d* a, const integer_t lda,
+        const integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_ZHETRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -89,6 +92,9 @@ inline integer_t hetrs( const char uplo, const MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

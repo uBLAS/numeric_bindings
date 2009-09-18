@@ -33,21 +33,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sbgv( const char jobz, const char uplo, const integer_t n,
-            const integer_t ka, const integer_t kb, float* ab,
-            const integer_t ldab, float* bb, const integer_t ldbb, float* w,
-            float* z, const integer_t ldz, float* work, integer_t& info ) {
-        LAPACK_SSBGV( &jobz, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, w, z,
-                &ldz, work, &info );
-    }
-    inline void sbgv( const char jobz, const char uplo, const integer_t n,
-            const integer_t ka, const integer_t kb, double* ab,
-            const integer_t ldab, double* bb, const integer_t ldbb, double* w,
-            double* z, const integer_t ldz, double* work, integer_t& info ) {
-        LAPACK_DSBGV( &jobz, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, w, z,
-                &ldz, work, &info );
-    }
+
+inline void sbgv( const char jobz, const char uplo, const integer_t n,
+        const integer_t ka, const integer_t kb, float* ab,
+        const integer_t ldab, float* bb, const integer_t ldbb, float* w,
+        float* z, const integer_t ldz, float* work, integer_t& info ) {
+    LAPACK_SSBGV( &jobz, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, w, z,
+            &ldz, work, &info );
 }
+
+inline void sbgv( const char jobz, const char uplo, const integer_t n,
+        const integer_t ka, const integer_t kb, double* ab,
+        const integer_t ldab, double* bb, const integer_t ldbb, double* w,
+        double* z, const integer_t ldz, double* work, integer_t& info ) {
+    LAPACK_DSBGV( &jobz, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, w, z,
+            &ldz, work, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -143,6 +146,9 @@ inline integer_t sbgv( const char jobz, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

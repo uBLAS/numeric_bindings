@@ -34,29 +34,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pftrs( const char transr, const char uplo, const integer_t n,
-            const integer_t nrhs, const float* a, float* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_SPFTRS( &transr, &uplo, &n, &nrhs, a, b, &ldb, &info );
-    }
-    inline void pftrs( const char transr, const char uplo, const integer_t n,
-            const integer_t nrhs, const double* a, double* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_DPFTRS( &transr, &uplo, &n, &nrhs, a, b, &ldb, &info );
-    }
-    inline void pftrs( const char transr, const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_f* a,
-            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_CPFTRS( &transr, &uplo, &n, &nrhs, traits::complex_ptr(a),
-                traits::complex_ptr(b), &ldb, &info );
-    }
-    inline void pftrs( const char transr, const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_d* a,
-            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_ZPFTRS( &transr, &uplo, &n, &nrhs, traits::complex_ptr(a),
-                traits::complex_ptr(b), &ldb, &info );
-    }
+
+inline void pftrs( const char transr, const char uplo, const integer_t n,
+        const integer_t nrhs, const float* a, float* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_SPFTRS( &transr, &uplo, &n, &nrhs, a, b, &ldb, &info );
 }
+
+inline void pftrs( const char transr, const char uplo, const integer_t n,
+        const integer_t nrhs, const double* a, double* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_DPFTRS( &transr, &uplo, &n, &nrhs, a, b, &ldb, &info );
+}
+
+inline void pftrs( const char transr, const char uplo, const integer_t n,
+        const integer_t nrhs, const traits::complex_f* a,
+        traits::complex_f* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_CPFTRS( &transr, &uplo, &n, &nrhs, traits::complex_ptr(a),
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+inline void pftrs( const char transr, const char uplo, const integer_t n,
+        const integer_t nrhs, const traits::complex_d* a,
+        traits::complex_d* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_ZPFTRS( &transr, &uplo, &n, &nrhs, traits::complex_ptr(a),
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -129,6 +134,9 @@ inline integer_t pftrs( const char transr, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -57,7 +57,7 @@ struct geru_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX, typename VectorY, typename MatrixA >
     static return_type invoke( const value_type alpha, const VectorX& x,
             const VectorY& y, MatrixA& a ) {
@@ -75,7 +75,7 @@ struct geru_impl {
     }
 };
 
-// generic template function for calling to geru
+// generic template function to call geru
 template< typename VectorX, typename VectorY, typename MatrixA >
 inline typename geru_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

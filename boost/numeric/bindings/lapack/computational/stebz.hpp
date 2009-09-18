@@ -33,25 +33,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void stebz( const char range, const char order, const integer_t n,
-            const float vl, const float vu, const integer_t il,
-            const integer_t iu, const float abstol, const float* d,
-            const float* e, integer_t& m, integer_t& nsplit, float* w,
-            integer_t* iblock, integer_t* isplit, float* work,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_SSTEBZ( &range, &order, &n, &vl, &vu, &il, &iu, &abstol, d, e,
-                &m, &nsplit, w, iblock, isplit, work, iwork, &info );
-    }
-    inline void stebz( const char range, const char order, const integer_t n,
-            const double vl, const double vu, const integer_t il,
-            const integer_t iu, const double abstol, const double* d,
-            const double* e, integer_t& m, integer_t& nsplit, double* w,
-            integer_t* iblock, integer_t* isplit, double* work,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_DSTEBZ( &range, &order, &n, &vl, &vu, &il, &iu, &abstol, d, e,
-                &m, &nsplit, w, iblock, isplit, work, iwork, &info );
-    }
+
+inline void stebz( const char range, const char order, const integer_t n,
+        const float vl, const float vu, const integer_t il,
+        const integer_t iu, const float abstol, const float* d,
+        const float* e, integer_t& m, integer_t& nsplit, float* w,
+        integer_t* iblock, integer_t* isplit, float* work, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_SSTEBZ( &range, &order, &n, &vl, &vu, &il, &iu, &abstol, d, e, &m,
+            &nsplit, w, iblock, isplit, work, iwork, &info );
 }
+
+inline void stebz( const char range, const char order, const integer_t n,
+        const double vl, const double vu, const integer_t il,
+        const integer_t iu, const double abstol, const double* d,
+        const double* e, integer_t& m, integer_t& nsplit, double* w,
+        integer_t* iblock, integer_t* isplit, double* work, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_DSTEBZ( &range, &order, &n, &vl, &vu, &il, &iu, &abstol, d, e, &m,
+            &nsplit, w, iblock, isplit, work, iwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -178,6 +181,9 @@ inline integer_t stebz( const char range, const char order,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -36,40 +36,44 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void lalsd( const char uplo, const integer_t smlsiz,
-            const integer_t n, const integer_t nrhs, float* d, float* e,
-            float* b, const integer_t ldb, const float rcond, integer_t& rank,
-            float* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_SLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond,
-                &rank, work, iwork, &info );
-    }
-    inline void lalsd( const char uplo, const integer_t smlsiz,
-            const integer_t n, const integer_t nrhs, double* d, double* e,
-            double* b, const integer_t ldb, const double rcond,
-            integer_t& rank, double* work, integer_t* iwork,
-            integer_t& info ) {
-        LAPACK_DLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond,
-                &rank, work, iwork, &info );
-    }
-    inline void lalsd( const char uplo, const integer_t smlsiz,
-            const integer_t n, const integer_t nrhs, float* d, float* e,
-            traits::complex_f* b, const integer_t ldb, const float rcond,
-            integer_t& rank, traits::complex_f* work, float* rwork,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_CLALSD( &uplo, &smlsiz, &n, &nrhs, d, e,
-                traits::complex_ptr(b), &ldb, &rcond, &rank,
-                traits::complex_ptr(work), rwork, iwork, &info );
-    }
-    inline void lalsd( const char uplo, const integer_t smlsiz,
-            const integer_t n, const integer_t nrhs, double* d, double* e,
-            traits::complex_d* b, const integer_t ldb, const double rcond,
-            integer_t& rank, traits::complex_d* work, double* rwork,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_ZLALSD( &uplo, &smlsiz, &n, &nrhs, d, e,
-                traits::complex_ptr(b), &ldb, &rcond, &rank,
-                traits::complex_ptr(work), rwork, iwork, &info );
-    }
+
+inline void lalsd( const char uplo, const integer_t smlsiz, const integer_t n,
+        const integer_t nrhs, float* d, float* e, float* b,
+        const integer_t ldb, const float rcond, integer_t& rank, float* work,
+        integer_t* iwork, integer_t& info ) {
+    LAPACK_SLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
+            work, iwork, &info );
 }
+
+inline void lalsd( const char uplo, const integer_t smlsiz, const integer_t n,
+        const integer_t nrhs, double* d, double* e, double* b,
+        const integer_t ldb, const double rcond, integer_t& rank,
+        double* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_DLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
+            work, iwork, &info );
+}
+
+inline void lalsd( const char uplo, const integer_t smlsiz, const integer_t n,
+        const integer_t nrhs, float* d, float* e, traits::complex_f* b,
+        const integer_t ldb, const float rcond, integer_t& rank,
+        traits::complex_f* work, float* rwork, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_CLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, traits::complex_ptr(b),
+            &ldb, &rcond, &rank, traits::complex_ptr(work), rwork, iwork,
+            &info );
+}
+
+inline void lalsd( const char uplo, const integer_t smlsiz, const integer_t n,
+        const integer_t nrhs, double* d, double* e, traits::complex_d* b,
+        const integer_t ldb, const double rcond, integer_t& rank,
+        traits::complex_d* work, double* rwork, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_ZLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, traits::complex_ptr(b),
+            &ldb, &rcond, &rank, traits::complex_ptr(work), rwork, iwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -278,6 +282,9 @@ inline integer_t lalsd( const char uplo, const integer_t smlsiz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

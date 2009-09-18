@@ -37,70 +37,70 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ggevx( const char balanc, const char jobvl, const char jobvr,
-            const char sense, const integer_t n, float* a,
-            const integer_t lda, float* b, const integer_t ldb, float* alphar,
-            float* alphai, float* beta, float* vl, const integer_t ldvl,
-            float* vr, const integer_t ldvr, integer_t& ilo, integer_t& ihi,
-            float* lscale, float* rscale, float& abnrm, float& bbnrm,
-            float* rconde, float* rcondv, float* work, const integer_t lwork,
-            integer_t* iwork, logical_t* bwork, integer_t& info ) {
-        LAPACK_SGGEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, b, &ldb,
-                alphar, alphai, beta, vl, &ldvl, vr, &ldvr, &ilo, &ihi,
-                lscale, rscale, &abnrm, &bbnrm, rconde, rcondv, work, &lwork,
-                iwork, bwork, &info );
-    }
-    inline void ggevx( const char balanc, const char jobvl, const char jobvr,
-            const char sense, const integer_t n, double* a,
-            const integer_t lda, double* b, const integer_t ldb,
-            double* alphar, double* alphai, double* beta, double* vl,
-            const integer_t ldvl, double* vr, const integer_t ldvr,
-            integer_t& ilo, integer_t& ihi, double* lscale, double* rscale,
-            double& abnrm, double& bbnrm, double* rconde, double* rcondv,
-            double* work, const integer_t lwork, integer_t* iwork,
-            logical_t* bwork, integer_t& info ) {
-        LAPACK_DGGEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, b, &ldb,
-                alphar, alphai, beta, vl, &ldvl, vr, &ldvr, &ilo, &ihi,
-                lscale, rscale, &abnrm, &bbnrm, rconde, rcondv, work, &lwork,
-                iwork, bwork, &info );
-    }
-    inline void ggevx( const char balanc, const char jobvl, const char jobvr,
-            const char sense, const integer_t n, traits::complex_f* a,
-            const integer_t lda, traits::complex_f* b, const integer_t ldb,
-            traits::complex_f* alpha, traits::complex_f* beta,
-            traits::complex_f* vl, const integer_t ldvl,
-            traits::complex_f* vr, const integer_t ldvr, integer_t& ilo,
-            integer_t& ihi, float* lscale, float* rscale, float& abnrm,
-            float& bbnrm, float* rconde, float* rcondv,
-            traits::complex_f* work, const integer_t lwork, float* rwork,
-            integer_t* iwork, logical_t* bwork, integer_t& info ) {
-        LAPACK_CGGEVX( &balanc, &jobvl, &jobvr, &sense, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(alpha), traits::complex_ptr(beta),
-                traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
-                &ldvr, &ilo, &ihi, lscale, rscale, &abnrm, &bbnrm, rconde,
-                rcondv, traits::complex_ptr(work), &lwork, rwork, iwork,
-                bwork, &info );
-    }
-    inline void ggevx( const char balanc, const char jobvl, const char jobvr,
-            const char sense, const integer_t n, traits::complex_d* a,
-            const integer_t lda, traits::complex_d* b, const integer_t ldb,
-            traits::complex_d* alpha, traits::complex_d* beta,
-            traits::complex_d* vl, const integer_t ldvl,
-            traits::complex_d* vr, const integer_t ldvr, integer_t& ilo,
-            integer_t& ihi, double* lscale, double* rscale, double& abnrm,
-            double& bbnrm, double* rconde, double* rcondv,
-            traits::complex_d* work, const integer_t lwork, double* rwork,
-            integer_t* iwork, logical_t* bwork, integer_t& info ) {
-        LAPACK_ZGGEVX( &balanc, &jobvl, &jobvr, &sense, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(alpha), traits::complex_ptr(beta),
-                traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
-                &ldvr, &ilo, &ihi, lscale, rscale, &abnrm, &bbnrm, rconde,
-                rcondv, traits::complex_ptr(work), &lwork, rwork, iwork,
-                bwork, &info );
-    }
+
+inline void ggevx( const char balanc, const char jobvl, const char jobvr,
+        const char sense, const integer_t n, float* a, const integer_t lda,
+        float* b, const integer_t ldb, float* alphar, float* alphai,
+        float* beta, float* vl, const integer_t ldvl, float* vr,
+        const integer_t ldvr, integer_t& ilo, integer_t& ihi, float* lscale,
+        float* rscale, float& abnrm, float& bbnrm, float* rconde,
+        float* rcondv, float* work, const integer_t lwork, integer_t* iwork,
+        logical_t* bwork, integer_t& info ) {
+    LAPACK_SGGEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, b, &ldb,
+            alphar, alphai, beta, vl, &ldvl, vr, &ldvr, &ilo, &ihi, lscale,
+            rscale, &abnrm, &bbnrm, rconde, rcondv, work, &lwork, iwork,
+            bwork, &info );
 }
+
+inline void ggevx( const char balanc, const char jobvl, const char jobvr,
+        const char sense, const integer_t n, double* a, const integer_t lda,
+        double* b, const integer_t ldb, double* alphar, double* alphai,
+        double* beta, double* vl, const integer_t ldvl, double* vr,
+        const integer_t ldvr, integer_t& ilo, integer_t& ihi, double* lscale,
+        double* rscale, double& abnrm, double& bbnrm, double* rconde,
+        double* rcondv, double* work, const integer_t lwork, integer_t* iwork,
+        logical_t* bwork, integer_t& info ) {
+    LAPACK_DGGEVX( &balanc, &jobvl, &jobvr, &sense, &n, a, &lda, b, &ldb,
+            alphar, alphai, beta, vl, &ldvl, vr, &ldvr, &ilo, &ihi, lscale,
+            rscale, &abnrm, &bbnrm, rconde, rcondv, work, &lwork, iwork,
+            bwork, &info );
+}
+
+inline void ggevx( const char balanc, const char jobvl, const char jobvr,
+        const char sense, const integer_t n, traits::complex_f* a,
+        const integer_t lda, traits::complex_f* b, const integer_t ldb,
+        traits::complex_f* alpha, traits::complex_f* beta,
+        traits::complex_f* vl, const integer_t ldvl, traits::complex_f* vr,
+        const integer_t ldvr, integer_t& ilo, integer_t& ihi, float* lscale,
+        float* rscale, float& abnrm, float& bbnrm, float* rconde,
+        float* rcondv, traits::complex_f* work, const integer_t lwork,
+        float* rwork, integer_t* iwork, logical_t* bwork, integer_t& info ) {
+    LAPACK_CGGEVX( &balanc, &jobvl, &jobvr, &sense, &n,
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(alpha), traits::complex_ptr(beta),
+            traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr,
+            &ilo, &ihi, lscale, rscale, &abnrm, &bbnrm, rconde, rcondv,
+            traits::complex_ptr(work), &lwork, rwork, iwork, bwork, &info );
+}
+
+inline void ggevx( const char balanc, const char jobvl, const char jobvr,
+        const char sense, const integer_t n, traits::complex_d* a,
+        const integer_t lda, traits::complex_d* b, const integer_t ldb,
+        traits::complex_d* alpha, traits::complex_d* beta,
+        traits::complex_d* vl, const integer_t ldvl, traits::complex_d* vr,
+        const integer_t ldvr, integer_t& ilo, integer_t& ihi, double* lscale,
+        double* rscale, double& abnrm, double& bbnrm, double* rconde,
+        double* rcondv, traits::complex_d* work, const integer_t lwork,
+        double* rwork, integer_t* iwork, logical_t* bwork, integer_t& info ) {
+    LAPACK_ZGGEVX( &balanc, &jobvl, &jobvr, &sense, &n,
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(alpha), traits::complex_ptr(beta),
+            traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr,
+            &ilo, &ihi, lscale, rscale, &abnrm, &bbnrm, rconde, rcondv,
+            traits::complex_ptr(work), &lwork, rwork, iwork, bwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -554,6 +554,9 @@ inline integer_t ggevx( const char balanc, const char jobvl,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

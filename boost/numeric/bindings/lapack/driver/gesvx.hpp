@@ -36,51 +36,54 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gesvx( const char fact, const char trans, const integer_t n,
-            const integer_t nrhs, float* a, const integer_t lda, float* af,
-            const integer_t ldaf, integer_t* ipiv, char& equed, float* r,
-            float* c, float* b, const integer_t ldb, float* x,
-            const integer_t ldx, float& rcond, float* ferr, float* berr,
-            float* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_SGESVX( &fact, &trans, &n, &nrhs, a, &lda, af, &ldaf, ipiv,
-                &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
-                iwork, &info );
-    }
-    inline void gesvx( const char fact, const char trans, const integer_t n,
-            const integer_t nrhs, double* a, const integer_t lda, double* af,
-            const integer_t ldaf, integer_t* ipiv, char& equed, double* r,
-            double* c, double* b, const integer_t ldb, double* x,
-            const integer_t ldx, double& rcond, double* ferr, double* berr,
-            double* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_DGESVX( &fact, &trans, &n, &nrhs, a, &lda, af, &ldaf, ipiv,
-                &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
-                iwork, &info );
-    }
-    inline void gesvx( const char fact, const char trans, const integer_t n,
-            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
-            traits::complex_f* af, const integer_t ldaf, integer_t* ipiv,
-            char& equed, float* r, float* c, traits::complex_f* b,
-            const integer_t ldb, traits::complex_f* x, const integer_t ldx,
-            float& rcond, float* ferr, float* berr, traits::complex_f* work,
-            float* rwork, integer_t& info ) {
-        LAPACK_CGESVX( &fact, &trans, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(af), &ldaf, ipiv, &equed, r, c,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
-                &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
-    }
-    inline void gesvx( const char fact, const char trans, const integer_t n,
-            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
-            traits::complex_d* af, const integer_t ldaf, integer_t* ipiv,
-            char& equed, double* r, double* c, traits::complex_d* b,
-            const integer_t ldb, traits::complex_d* x, const integer_t ldx,
-            double& rcond, double* ferr, double* berr,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
-        LAPACK_ZGESVX( &fact, &trans, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(af), &ldaf, ipiv, &equed, r, c,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
-                &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void gesvx( const char fact, const char trans, const integer_t n,
+        const integer_t nrhs, float* a, const integer_t lda, float* af,
+        const integer_t ldaf, integer_t* ipiv, char& equed, float* r,
+        float* c, float* b, const integer_t ldb, float* x,
+        const integer_t ldx, float& rcond, float* ferr, float* berr,
+        float* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_SGESVX( &fact, &trans, &n, &nrhs, a, &lda, af, &ldaf, ipiv, &equed,
+            r, c, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
 }
+
+inline void gesvx( const char fact, const char trans, const integer_t n,
+        const integer_t nrhs, double* a, const integer_t lda, double* af,
+        const integer_t ldaf, integer_t* ipiv, char& equed, double* r,
+        double* c, double* b, const integer_t ldb, double* x,
+        const integer_t ldx, double& rcond, double* ferr, double* berr,
+        double* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_DGESVX( &fact, &trans, &n, &nrhs, a, &lda, af, &ldaf, ipiv, &equed,
+            r, c, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
+}
+
+inline void gesvx( const char fact, const char trans, const integer_t n,
+        const integer_t nrhs, traits::complex_f* a, const integer_t lda,
+        traits::complex_f* af, const integer_t ldaf, integer_t* ipiv,
+        char& equed, float* r, float* c, traits::complex_f* b,
+        const integer_t ldb, traits::complex_f* x, const integer_t ldx,
+        float& rcond, float* ferr, float* berr, traits::complex_f* work,
+        float* rwork, integer_t& info ) {
+    LAPACK_CGESVX( &fact, &trans, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(af), &ldaf, ipiv, &equed, r, c,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
+            &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
+}
+
+inline void gesvx( const char fact, const char trans, const integer_t n,
+        const integer_t nrhs, traits::complex_d* a, const integer_t lda,
+        traits::complex_d* af, const integer_t ldaf, integer_t* ipiv,
+        char& equed, double* r, double* c, traits::complex_d* b,
+        const integer_t ldb, traits::complex_d* x, const integer_t ldx,
+        double& rcond, double* ferr, double* berr, traits::complex_d* work,
+        double* rwork, integer_t& info ) {
+    LAPACK_ZGESVX( &fact, &trans, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(af), &ldaf, ipiv, &equed, r, c,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
+            &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -339,6 +342,9 @@ inline integer_t gesvx( const char fact, const char trans, MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -51,7 +51,7 @@ struct spr2_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX, typename VectorY, typename MatrixAP >
     static return_type invoke( const real_type alpha, const VectorX& x,
             const VectorY& y, MatrixAP& ap ) {
@@ -69,7 +69,7 @@ struct spr2_impl {
     }
 };
 
-// generic template function for calling to spr2
+// generic template function to call spr2
 template< typename VectorX, typename VectorY, typename MatrixAP >
 inline typename spr2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

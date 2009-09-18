@@ -73,7 +73,7 @@ struct trmm_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename MatrixA, typename MatrixB >
     static return_type invoke( const char side, const char transa,
             const char diag, const value_type alpha, const MatrixA& a,
@@ -89,7 +89,7 @@ struct trmm_impl {
     }
 };
 
-// generic template function for calling to trmm
+// generic template function to call trmm
 template< typename MatrixA, typename MatrixB >
 inline typename trmm_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type

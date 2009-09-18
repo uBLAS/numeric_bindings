@@ -31,15 +31,18 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void lacgv( const integer_t n, traits::complex_f* x,
-            const integer_t incx ) {
-        LAPACK_CLACGV( &n, traits::complex_ptr(x), &incx );
-    }
-    inline void lacgv( const integer_t n, traits::complex_d* x,
-            const integer_t incx ) {
-        LAPACK_ZLACGV( &n, traits::complex_ptr(x), &incx );
-    }
+
+inline void lacgv( const integer_t n, traits::complex_f* x,
+        const integer_t incx ) {
+    LAPACK_CLACGV( &n, traits::complex_ptr(x), &incx );
 }
+
+inline void lacgv( const integer_t n, traits::complex_d* x,
+        const integer_t incx ) {
+    LAPACK_ZLACGV( &n, traits::complex_ptr(x), &incx );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -67,6 +70,9 @@ inline integer_t lacgv( const integer_t n, VectorX& x,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

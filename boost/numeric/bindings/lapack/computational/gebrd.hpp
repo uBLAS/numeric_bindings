@@ -37,36 +37,38 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gebrd( const integer_t m, const integer_t n, float* a,
-            const integer_t lda, float* d, float* e, float* tauq, float* taup,
-            float* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_SGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork,
-                &info );
-    }
-    inline void gebrd( const integer_t m, const integer_t n, double* a,
-            const integer_t lda, double* d, double* e, double* tauq,
-            double* taup, double* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_DGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork,
-                &info );
-    }
-    inline void gebrd( const integer_t m, const integer_t n,
-            traits::complex_f* a, const integer_t lda, float* d, float* e,
-            traits::complex_f* tauq, traits::complex_f* taup,
-            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_CGEBRD( &m, &n, traits::complex_ptr(a), &lda, d, e,
-                traits::complex_ptr(tauq), traits::complex_ptr(taup),
-                traits::complex_ptr(work), &lwork, &info );
-    }
-    inline void gebrd( const integer_t m, const integer_t n,
-            traits::complex_d* a, const integer_t lda, double* d, double* e,
-            traits::complex_d* tauq, traits::complex_d* taup,
-            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_ZGEBRD( &m, &n, traits::complex_ptr(a), &lda, d, e,
-                traits::complex_ptr(tauq), traits::complex_ptr(taup),
-                traits::complex_ptr(work), &lwork, &info );
-    }
+
+inline void gebrd( const integer_t m, const integer_t n, float* a,
+        const integer_t lda, float* d, float* e, float* tauq, float* taup,
+        float* work, const integer_t lwork, integer_t& info ) {
+    LAPACK_SGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
 }
+
+inline void gebrd( const integer_t m, const integer_t n, double* a,
+        const integer_t lda, double* d, double* e, double* tauq, double* taup,
+        double* work, const integer_t lwork, integer_t& info ) {
+    LAPACK_DGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
+}
+
+inline void gebrd( const integer_t m, const integer_t n, traits::complex_f* a,
+        const integer_t lda, float* d, float* e, traits::complex_f* tauq,
+        traits::complex_f* taup, traits::complex_f* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_CGEBRD( &m, &n, traits::complex_ptr(a), &lda, d, e,
+            traits::complex_ptr(tauq), traits::complex_ptr(taup),
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+inline void gebrd( const integer_t m, const integer_t n, traits::complex_d* a,
+        const integer_t lda, double* d, double* e, traits::complex_d* tauq,
+        traits::complex_d* taup, traits::complex_d* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_ZGEBRD( &m, &n, traits::complex_ptr(a), &lda, d, e,
+            traits::complex_ptr(tauq), traits::complex_ptr(taup),
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -255,6 +257,9 @@ inline integer_t gebrd( MatrixA& a, VectorD& d, VectorE& e,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

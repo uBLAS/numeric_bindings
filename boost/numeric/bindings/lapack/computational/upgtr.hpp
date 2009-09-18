@@ -33,23 +33,26 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void upgtr( const char uplo, const integer_t n,
-            const traits::complex_f* ap, const traits::complex_f* tau,
-            traits::complex_f* q, const integer_t ldq,
-            traits::complex_f* work, integer_t& info ) {
-        LAPACK_CUPGTR( &uplo, &n, traits::complex_ptr(ap),
-                traits::complex_ptr(tau), traits::complex_ptr(q), &ldq,
-                traits::complex_ptr(work), &info );
-    }
-    inline void upgtr( const char uplo, const integer_t n,
-            const traits::complex_d* ap, const traits::complex_d* tau,
-            traits::complex_d* q, const integer_t ldq,
-            traits::complex_d* work, integer_t& info ) {
-        LAPACK_ZUPGTR( &uplo, &n, traits::complex_ptr(ap),
-                traits::complex_ptr(tau), traits::complex_ptr(q), &ldq,
-                traits::complex_ptr(work), &info );
-    }
+
+inline void upgtr( const char uplo, const integer_t n,
+        const traits::complex_f* ap, const traits::complex_f* tau,
+        traits::complex_f* q, const integer_t ldq, traits::complex_f* work,
+        integer_t& info ) {
+    LAPACK_CUPGTR( &uplo, &n, traits::complex_ptr(ap),
+            traits::complex_ptr(tau), traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(work), &info );
 }
+
+inline void upgtr( const char uplo, const integer_t n,
+        const traits::complex_d* ap, const traits::complex_d* tau,
+        traits::complex_d* q, const integer_t ldq, traits::complex_d* work,
+        integer_t& info ) {
+    LAPACK_ZUPGTR( &uplo, &n, traits::complex_ptr(ap),
+            traits::complex_ptr(tau), traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(work), &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -133,6 +136,9 @@ inline integer_t upgtr( const char uplo, const VectorAP& ap,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

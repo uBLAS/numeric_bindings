@@ -34,29 +34,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gebal( const char job, const integer_t n, float* a,
-            const integer_t lda, integer_t& ilo, integer_t& ihi, float* scale,
-            integer_t& info ) {
-        LAPACK_SGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );
-    }
-    inline void gebal( const char job, const integer_t n, double* a,
-            const integer_t lda, integer_t& ilo, integer_t& ihi,
-            double* scale, integer_t& info ) {
-        LAPACK_DGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );
-    }
-    inline void gebal( const char job, const integer_t n,
-            traits::complex_f* a, const integer_t lda, integer_t& ilo,
-            integer_t& ihi, float* scale, integer_t& info ) {
-        LAPACK_CGEBAL( &job, &n, traits::complex_ptr(a), &lda, &ilo, &ihi,
-                scale, &info );
-    }
-    inline void gebal( const char job, const integer_t n,
-            traits::complex_d* a, const integer_t lda, integer_t& ilo,
-            integer_t& ihi, double* scale, integer_t& info ) {
-        LAPACK_ZGEBAL( &job, &n, traits::complex_ptr(a), &lda, &ilo, &ihi,
-                scale, &info );
-    }
+
+inline void gebal( const char job, const integer_t n, float* a,
+        const integer_t lda, integer_t& ilo, integer_t& ihi, float* scale,
+        integer_t& info ) {
+    LAPACK_SGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );
 }
+
+inline void gebal( const char job, const integer_t n, double* a,
+        const integer_t lda, integer_t& ilo, integer_t& ihi, double* scale,
+        integer_t& info ) {
+    LAPACK_DGEBAL( &job, &n, a, &lda, &ilo, &ihi, scale, &info );
+}
+
+inline void gebal( const char job, const integer_t n, traits::complex_f* a,
+        const integer_t lda, integer_t& ilo, integer_t& ihi, float* scale,
+        integer_t& info ) {
+    LAPACK_CGEBAL( &job, &n, traits::complex_ptr(a), &lda, &ilo, &ihi, scale,
+            &info );
+}
+
+inline void gebal( const char job, const integer_t n, traits::complex_d* a,
+        const integer_t lda, integer_t& ilo, integer_t& ihi, double* scale,
+        integer_t& info ) {
+    LAPACK_ZGEBAL( &job, &n, traits::complex_ptr(a), &lda, &ilo, &ihi, scale,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -118,6 +123,9 @@ inline integer_t gebal( const char job, MatrixA& a, integer_t& ilo,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

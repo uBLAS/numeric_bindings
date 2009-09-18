@@ -34,23 +34,25 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ormtr( const char side, const char uplo, const char trans,
-            const integer_t m, const integer_t n, const float* a,
-            const integer_t lda, const float* tau, float* c,
-            const integer_t ldc, float* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_SORMTR( &side, &uplo, &trans, &m, &n, a, &lda, tau, c, &ldc,
-                work, &lwork, &info );
-    }
-    inline void ormtr( const char side, const char uplo, const char trans,
-            const integer_t m, const integer_t n, const double* a,
-            const integer_t lda, const double* tau, double* c,
-            const integer_t ldc, double* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_DORMTR( &side, &uplo, &trans, &m, &n, a, &lda, tau, c, &ldc,
-                work, &lwork, &info );
-    }
+
+inline void ormtr( const char side, const char uplo, const char trans,
+        const integer_t m, const integer_t n, const float* a,
+        const integer_t lda, const float* tau, float* c, const integer_t ldc,
+        float* work, const integer_t lwork, integer_t& info ) {
+    LAPACK_SORMTR( &side, &uplo, &trans, &m, &n, a, &lda, tau, c, &ldc, work,
+            &lwork, &info );
 }
+
+inline void ormtr( const char side, const char uplo, const char trans,
+        const integer_t m, const integer_t n, const double* a,
+        const integer_t lda, const double* tau, double* c,
+        const integer_t ldc, double* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_DORMTR( &side, &uplo, &trans, &m, &n, a, &lda, tau, c, &ldc, work,
+            &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -150,6 +152,9 @@ inline integer_t ormtr( const char side, const char trans,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

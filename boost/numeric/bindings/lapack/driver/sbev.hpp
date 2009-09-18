@@ -33,19 +33,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sbev( const char jobz, const char uplo, const integer_t n,
-            const integer_t kd, float* ab, const integer_t ldab, float* w,
-            float* z, const integer_t ldz, float* work, integer_t& info ) {
-        LAPACK_SSBEV( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work,
-                &info );
-    }
-    inline void sbev( const char jobz, const char uplo, const integer_t n,
-            const integer_t kd, double* ab, const integer_t ldab, double* w,
-            double* z, const integer_t ldz, double* work, integer_t& info ) {
-        LAPACK_DSBEV( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work,
-                &info );
-    }
+
+inline void sbev( const char jobz, const char uplo, const integer_t n,
+        const integer_t kd, float* ab, const integer_t ldab, float* w,
+        float* z, const integer_t ldz, float* work, integer_t& info ) {
+    LAPACK_SSBEV( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work, &info );
 }
+
+inline void sbev( const char jobz, const char uplo, const integer_t n,
+        const integer_t kd, double* ab, const integer_t ldab, double* w,
+        double* z, const integer_t ldz, double* work, integer_t& info ) {
+    LAPACK_DSBEV( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -127,6 +128,9 @@ inline integer_t sbev( const char jobz, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

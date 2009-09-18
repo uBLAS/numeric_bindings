@@ -37,41 +37,46 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tgexc( const logical_t wantq, const logical_t wantz,
-            const integer_t n, float* a, const integer_t lda, float* b,
-            const integer_t ldb, float* q, const integer_t ldq, float* z,
-            const integer_t ldz, integer_t& ifst, integer_t& ilst,
-            float* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_STGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,
-                &ifst, &ilst, work, &lwork, &info );
-    }
-    inline void tgexc( const logical_t wantq, const logical_t wantz,
-            const integer_t n, double* a, const integer_t lda, double* b,
-            const integer_t ldb, double* q, const integer_t ldq, double* z,
-            const integer_t ldz, integer_t& ifst, integer_t& ilst,
-            double* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_DTGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,
-                &ifst, &ilst, work, &lwork, &info );
-    }
-    inline void tgexc( const logical_t wantq, const logical_t wantz,
-            const integer_t n, traits::complex_f* a, const integer_t lda,
-            traits::complex_f* b, const integer_t ldb, traits::complex_f* q,
-            const integer_t ldq, traits::complex_f* z, const integer_t ldz,
-            const integer_t ifst, integer_t& ilst, integer_t& info ) {
-        LAPACK_CTGEXC( &wantq, &wantz, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
-                traits::complex_ptr(z), &ldz, &ifst, &ilst, &info );
-    }
-    inline void tgexc( const logical_t wantq, const logical_t wantz,
-            const integer_t n, traits::complex_d* a, const integer_t lda,
-            traits::complex_d* b, const integer_t ldb, traits::complex_d* q,
-            const integer_t ldq, traits::complex_d* z, const integer_t ldz,
-            const integer_t ifst, integer_t& ilst, integer_t& info ) {
-        LAPACK_ZTGEXC( &wantq, &wantz, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
-                traits::complex_ptr(z), &ldz, &ifst, &ilst, &info );
-    }
+
+inline void tgexc( const logical_t wantq, const logical_t wantz,
+        const integer_t n, float* a, const integer_t lda, float* b,
+        const integer_t ldb, float* q, const integer_t ldq, float* z,
+        const integer_t ldz, integer_t& ifst, integer_t& ilst, float* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_STGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,
+            &ifst, &ilst, work, &lwork, &info );
 }
+
+inline void tgexc( const logical_t wantq, const logical_t wantz,
+        const integer_t n, double* a, const integer_t lda, double* b,
+        const integer_t ldb, double* q, const integer_t ldq, double* z,
+        const integer_t ldz, integer_t& ifst, integer_t& ilst, double* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_DTGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,
+            &ifst, &ilst, work, &lwork, &info );
+}
+
+inline void tgexc( const logical_t wantq, const logical_t wantz,
+        const integer_t n, traits::complex_f* a, const integer_t lda,
+        traits::complex_f* b, const integer_t ldb, traits::complex_f* q,
+        const integer_t ldq, traits::complex_f* z, const integer_t ldz,
+        const integer_t ifst, integer_t& ilst, integer_t& info ) {
+    LAPACK_CTGEXC( &wantq, &wantz, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(z), &ldz, &ifst, &ilst, &info );
+}
+
+inline void tgexc( const logical_t wantq, const logical_t wantz,
+        const integer_t n, traits::complex_d* a, const integer_t lda,
+        traits::complex_d* b, const integer_t ldb, traits::complex_d* q,
+        const integer_t ldq, traits::complex_d* z, const integer_t ldz,
+        const integer_t ifst, integer_t& ilst, integer_t& info ) {
+    LAPACK_ZTGEXC( &wantq, &wantz, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(z), &ldz, &ifst, &ilst, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -211,6 +216,9 @@ inline integer_t tgexc( const logical_t wantq, const logical_t wantz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

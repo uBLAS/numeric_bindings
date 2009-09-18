@@ -36,41 +36,44 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void bdsqr( const char uplo, const integer_t n,
-            const integer_t ncvt, const integer_t nru, const integer_t ncc,
-            float* d, float* e, float* vt, const integer_t ldvt, float* u,
-            const integer_t ldu, float* c, const integer_t ldc, float* work,
-            integer_t& info ) {
-        LAPACK_SBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu,
-                c, &ldc, work, &info );
-    }
-    inline void bdsqr( const char uplo, const integer_t n,
-            const integer_t ncvt, const integer_t nru, const integer_t ncc,
-            double* d, double* e, double* vt, const integer_t ldvt, double* u,
-            const integer_t ldu, double* c, const integer_t ldc, double* work,
-            integer_t& info ) {
-        LAPACK_DBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu,
-                c, &ldc, work, &info );
-    }
-    inline void bdsqr( const char uplo, const integer_t n,
-            const integer_t ncvt, const integer_t nru, const integer_t ncc,
-            float* d, float* e, traits::complex_f* vt, const integer_t ldvt,
-            traits::complex_f* u, const integer_t ldu, traits::complex_f* c,
-            const integer_t ldc, float* rwork, integer_t& info ) {
-        LAPACK_CBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e,
-                traits::complex_ptr(vt), &ldvt, traits::complex_ptr(u), &ldu,
-                traits::complex_ptr(c), &ldc, rwork, &info );
-    }
-    inline void bdsqr( const char uplo, const integer_t n,
-            const integer_t ncvt, const integer_t nru, const integer_t ncc,
-            double* d, double* e, traits::complex_d* vt, const integer_t ldvt,
-            traits::complex_d* u, const integer_t ldu, traits::complex_d* c,
-            const integer_t ldc, double* rwork, integer_t& info ) {
-        LAPACK_ZBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e,
-                traits::complex_ptr(vt), &ldvt, traits::complex_ptr(u), &ldu,
-                traits::complex_ptr(c), &ldc, rwork, &info );
-    }
+
+inline void bdsqr( const char uplo, const integer_t n, const integer_t ncvt,
+        const integer_t nru, const integer_t ncc, float* d, float* e,
+        float* vt, const integer_t ldvt, float* u, const integer_t ldu,
+        float* c, const integer_t ldc, float* work, integer_t& info ) {
+    LAPACK_SBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
+            &ldc, work, &info );
 }
+
+inline void bdsqr( const char uplo, const integer_t n, const integer_t ncvt,
+        const integer_t nru, const integer_t ncc, double* d, double* e,
+        double* vt, const integer_t ldvt, double* u, const integer_t ldu,
+        double* c, const integer_t ldc, double* work, integer_t& info ) {
+    LAPACK_DBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
+            &ldc, work, &info );
+}
+
+inline void bdsqr( const char uplo, const integer_t n, const integer_t ncvt,
+        const integer_t nru, const integer_t ncc, float* d, float* e,
+        traits::complex_f* vt, const integer_t ldvt, traits::complex_f* u,
+        const integer_t ldu, traits::complex_f* c, const integer_t ldc,
+        float* rwork, integer_t& info ) {
+    LAPACK_CBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e,
+            traits::complex_ptr(vt), &ldvt, traits::complex_ptr(u), &ldu,
+            traits::complex_ptr(c), &ldc, rwork, &info );
+}
+
+inline void bdsqr( const char uplo, const integer_t n, const integer_t ncvt,
+        const integer_t nru, const integer_t ncc, double* d, double* e,
+        traits::complex_d* vt, const integer_t ldvt, traits::complex_d* u,
+        const integer_t ldu, traits::complex_d* c, const integer_t ldc,
+        double* rwork, integer_t& info ) {
+    LAPACK_ZBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e,
+            traits::complex_ptr(vt), &ldvt, traits::complex_ptr(u), &ldu,
+            traits::complex_ptr(c), &ldc, rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -246,6 +249,9 @@ inline integer_t bdsqr( const char uplo, const integer_t n, VectorD& d,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

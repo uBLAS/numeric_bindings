@@ -79,7 +79,7 @@ struct gbmv_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename MatrixA, typename VectorX, typename VectorY >
     static return_type invoke( const char trans, const integer_t kl,
             const integer_t ku, const value_type alpha, const MatrixA& a,
@@ -98,7 +98,7 @@ struct gbmv_impl {
     }
 };
 
-// generic template function for calling to gbmv
+// generic template function to call gbmv
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename gbmv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type

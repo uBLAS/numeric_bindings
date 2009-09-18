@@ -59,7 +59,7 @@ struct hbmv_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename MatrixA, typename VectorX, typename VectorY >
     static return_type invoke( const integer_t k, const value_type alpha,
             const MatrixA& a, const VectorX& x, const value_type beta,
@@ -78,7 +78,7 @@ struct hbmv_impl {
     }
 };
 
-// generic template function for calling to hbmv
+// generic template function to call hbmv
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename hbmv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type

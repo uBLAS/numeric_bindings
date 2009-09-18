@@ -32,33 +32,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbsv( const integer_t n, const integer_t kl,
-            const integer_t ku, const integer_t nrhs, float* ab,
-            const integer_t ldab, integer_t* ipiv, float* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_SGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
-    }
-    inline void gbsv( const integer_t n, const integer_t kl,
-            const integer_t ku, const integer_t nrhs, double* ab,
-            const integer_t ldab, integer_t* ipiv, double* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_DGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
-    }
-    inline void gbsv( const integer_t n, const integer_t kl,
-            const integer_t ku, const integer_t nrhs, traits::complex_f* ab,
-            const integer_t ldab, integer_t* ipiv, traits::complex_f* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_CGBSV( &n, &kl, &ku, &nrhs, traits::complex_ptr(ab), &ldab,
-                ipiv, traits::complex_ptr(b), &ldb, &info );
-    }
-    inline void gbsv( const integer_t n, const integer_t kl,
-            const integer_t ku, const integer_t nrhs, traits::complex_d* ab,
-            const integer_t ldab, integer_t* ipiv, traits::complex_d* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_ZGBSV( &n, &kl, &ku, &nrhs, traits::complex_ptr(ab), &ldab,
-                ipiv, traits::complex_ptr(b), &ldb, &info );
-    }
+
+inline void gbsv( const integer_t n, const integer_t kl, const integer_t ku,
+        const integer_t nrhs, float* ab, const integer_t ldab,
+        integer_t* ipiv, float* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_SGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
 }
+
+inline void gbsv( const integer_t n, const integer_t kl, const integer_t ku,
+        const integer_t nrhs, double* ab, const integer_t ldab,
+        integer_t* ipiv, double* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_DGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
+}
+
+inline void gbsv( const integer_t n, const integer_t kl, const integer_t ku,
+        const integer_t nrhs, traits::complex_f* ab, const integer_t ldab,
+        integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_CGBSV( &n, &kl, &ku, &nrhs, traits::complex_ptr(ab), &ldab, ipiv,
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+inline void gbsv( const integer_t n, const integer_t kl, const integer_t ku,
+        const integer_t nrhs, traits::complex_d* ab, const integer_t ldab,
+        integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_ZGBSV( &n, &kl, &ku, &nrhs, traits::complex_ptr(ab), &ldab, ipiv,
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -119,6 +122,9 @@ inline integer_t gbsv( const integer_t kl, const integer_t ku,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

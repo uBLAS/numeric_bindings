@@ -36,45 +36,46 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pprfs( const char uplo, const integer_t n,
-            const integer_t nrhs, const float* ap, const float* afp,
-            const float* b, const integer_t ldb, float* x,
-            const integer_t ldx, float* ferr, float* berr, float* work,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_SPPRFS( &uplo, &n, &nrhs, ap, afp, b, &ldb, x, &ldx, ferr,
-                berr, work, iwork, &info );
-    }
-    inline void pprfs( const char uplo, const integer_t n,
-            const integer_t nrhs, const double* ap, const double* afp,
-            const double* b, const integer_t ldb, double* x,
-            const integer_t ldx, double* ferr, double* berr, double* work,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_DPPRFS( &uplo, &n, &nrhs, ap, afp, b, &ldb, x, &ldx, ferr,
-                berr, work, iwork, &info );
-    }
-    inline void pprfs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_f* ap,
-            const traits::complex_f* afp, const traits::complex_f* b,
-            const integer_t ldb, traits::complex_f* x, const integer_t ldx,
-            float* ferr, float* berr, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
-        LAPACK_CPPRFS( &uplo, &n, &nrhs, traits::complex_ptr(ap),
-                traits::complex_ptr(afp), traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(x), &ldx, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
-    inline void pprfs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_d* ap,
-            const traits::complex_d* afp, const traits::complex_d* b,
-            const integer_t ldb, traits::complex_d* x, const integer_t ldx,
-            double* ferr, double* berr, traits::complex_d* work,
-            double* rwork, integer_t& info ) {
-        LAPACK_ZPPRFS( &uplo, &n, &nrhs, traits::complex_ptr(ap),
-                traits::complex_ptr(afp), traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(x), &ldx, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void pprfs( const char uplo, const integer_t n, const integer_t nrhs,
+        const float* ap, const float* afp, const float* b,
+        const integer_t ldb, float* x, const integer_t ldx, float* ferr,
+        float* berr, float* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_SPPRFS( &uplo, &n, &nrhs, ap, afp, b, &ldb, x, &ldx, ferr, berr,
+            work, iwork, &info );
 }
+
+inline void pprfs( const char uplo, const integer_t n, const integer_t nrhs,
+        const double* ap, const double* afp, const double* b,
+        const integer_t ldb, double* x, const integer_t ldx, double* ferr,
+        double* berr, double* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_DPPRFS( &uplo, &n, &nrhs, ap, afp, b, &ldb, x, &ldx, ferr, berr,
+            work, iwork, &info );
+}
+
+inline void pprfs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_f* ap, const traits::complex_f* afp,
+        const traits::complex_f* b, const integer_t ldb, traits::complex_f* x,
+        const integer_t ldx, float* ferr, float* berr,
+        traits::complex_f* work, float* rwork, integer_t& info ) {
+    LAPACK_CPPRFS( &uplo, &n, &nrhs, traits::complex_ptr(ap),
+            traits::complex_ptr(afp), traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(x), &ldx, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+inline void pprfs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_d* ap, const traits::complex_d* afp,
+        const traits::complex_d* b, const integer_t ldb, traits::complex_d* x,
+        const integer_t ldx, double* ferr, double* berr,
+        traits::complex_d* work, double* rwork, integer_t& info ) {
+    LAPACK_ZPPRFS( &uplo, &n, &nrhs, traits::complex_ptr(ap),
+            traits::complex_ptr(afp), traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(x), &ldx, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -275,6 +276,9 @@ inline integer_t pprfs( const integer_t n, const MatrixAP& ap,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

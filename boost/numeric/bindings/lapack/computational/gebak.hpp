@@ -34,35 +34,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gebak( const char job, const char side, const integer_t n,
-            const integer_t ilo, const integer_t ihi, const float* scale,
-            const integer_t m, float* v, const integer_t ldv,
-            integer_t& info ) {
-        LAPACK_SGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv,
-                &info );
-    }
-    inline void gebak( const char job, const char side, const integer_t n,
-            const integer_t ilo, const integer_t ihi, const double* scale,
-            const integer_t m, double* v, const integer_t ldv,
-            integer_t& info ) {
-        LAPACK_DGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv,
-                &info );
-    }
-    inline void gebak( const char job, const char side, const integer_t n,
-            const integer_t ilo, const integer_t ihi, const float* scale,
-            const integer_t m, traits::complex_f* v, const integer_t ldv,
-            integer_t& info ) {
-        LAPACK_CGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m,
-                traits::complex_ptr(v), &ldv, &info );
-    }
-    inline void gebak( const char job, const char side, const integer_t n,
-            const integer_t ilo, const integer_t ihi, const double* scale,
-            const integer_t m, traits::complex_d* v, const integer_t ldv,
-            integer_t& info ) {
-        LAPACK_ZGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m,
-                traits::complex_ptr(v), &ldv, &info );
-    }
+
+inline void gebak( const char job, const char side, const integer_t n,
+        const integer_t ilo, const integer_t ihi, const float* scale,
+        const integer_t m, float* v, const integer_t ldv, integer_t& info ) {
+    LAPACK_SGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
 }
+
+inline void gebak( const char job, const char side, const integer_t n,
+        const integer_t ilo, const integer_t ihi, const double* scale,
+        const integer_t m, double* v, const integer_t ldv, integer_t& info ) {
+    LAPACK_DGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
+}
+
+inline void gebak( const char job, const char side, const integer_t n,
+        const integer_t ilo, const integer_t ihi, const float* scale,
+        const integer_t m, traits::complex_f* v, const integer_t ldv,
+        integer_t& info ) {
+    LAPACK_CGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m,
+            traits::complex_ptr(v), &ldv, &info );
+}
+
+inline void gebak( const char job, const char side, const integer_t n,
+        const integer_t ilo, const integer_t ihi, const double* scale,
+        const integer_t m, traits::complex_d* v, const integer_t ldv,
+        integer_t& info ) {
+    LAPACK_ZGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m,
+            traits::complex_ptr(v), &ldv, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -138,6 +139,9 @@ inline integer_t gebak( const char job, const char side,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

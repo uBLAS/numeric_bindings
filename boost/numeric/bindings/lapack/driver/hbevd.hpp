@@ -34,27 +34,30 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hbevd( const char jobz, const char uplo, const integer_t n,
-            const integer_t kd, traits::complex_f* ab, const integer_t ldab,
-            float* w, traits::complex_f* z, const integer_t ldz,
-            traits::complex_f* work, const integer_t lwork, float* rwork,
-            const integer_t lrwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_CHBEVD( &jobz, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab,
-                w, traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
-                &lwork, rwork, &lrwork, iwork, &liwork, &info );
-    }
-    inline void hbevd( const char jobz, const char uplo, const integer_t n,
-            const integer_t kd, traits::complex_d* ab, const integer_t ldab,
-            double* w, traits::complex_d* z, const integer_t ldz,
-            traits::complex_d* work, const integer_t lwork, double* rwork,
-            const integer_t lrwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_ZHBEVD( &jobz, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab,
-                w, traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
-                &lwork, rwork, &lrwork, iwork, &liwork, &info );
-    }
+
+inline void hbevd( const char jobz, const char uplo, const integer_t n,
+        const integer_t kd, traits::complex_f* ab, const integer_t ldab,
+        float* w, traits::complex_f* z, const integer_t ldz,
+        traits::complex_f* work, const integer_t lwork, float* rwork,
+        const integer_t lrwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_CHBEVD( &jobz, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, w,
+            traits::complex_ptr(z), &ldz, traits::complex_ptr(work), &lwork,
+            rwork, &lrwork, iwork, &liwork, &info );
 }
+
+inline void hbevd( const char jobz, const char uplo, const integer_t n,
+        const integer_t kd, traits::complex_d* ab, const integer_t ldab,
+        double* w, traits::complex_d* z, const integer_t ldz,
+        traits::complex_d* work, const integer_t lwork, double* rwork,
+        const integer_t lrwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_ZHBEVD( &jobz, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, w,
+            traits::complex_ptr(z), &ldz, traits::complex_ptr(work), &lwork,
+            rwork, &lrwork, iwork, &liwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -187,6 +190,9 @@ inline integer_t hbevd( const char jobz, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

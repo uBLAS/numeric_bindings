@@ -34,19 +34,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void orgbr( const char vect, const integer_t m, const integer_t n,
-            const integer_t k, float* a, const integer_t lda,
-            const float* tau, float* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_SORGBR( &vect, &m, &n, &k, a, &lda, tau, work, &lwork, &info );
-    }
-    inline void orgbr( const char vect, const integer_t m, const integer_t n,
-            const integer_t k, double* a, const integer_t lda,
-            const double* tau, double* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_DORGBR( &vect, &m, &n, &k, a, &lda, tau, work, &lwork, &info );
-    }
+
+inline void orgbr( const char vect, const integer_t m, const integer_t n,
+        const integer_t k, float* a, const integer_t lda, const float* tau,
+        float* work, const integer_t lwork, integer_t& info ) {
+    LAPACK_SORGBR( &vect, &m, &n, &k, a, &lda, tau, work, &lwork, &info );
 }
+
+inline void orgbr( const char vect, const integer_t m, const integer_t n,
+        const integer_t k, double* a, const integer_t lda, const double* tau,
+        double* work, const integer_t lwork, integer_t& info ) {
+    LAPACK_DORGBR( &vect, &m, &n, &k, a, &lda, tau, work, &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -127,6 +128,9 @@ inline integer_t orgbr( const char vect, const integer_t m,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

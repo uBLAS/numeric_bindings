@@ -34,43 +34,44 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trsyl( const char trana, const char tranb,
-            const integer_t isgn, const integer_t m, const integer_t n,
-            const float* a, const integer_t lda, const float* b,
-            const integer_t ldb, float* c, const integer_t ldc, float& scale,
-            integer_t& info ) {
-        LAPACK_STRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c,
-                &ldc, &scale, &info );
-    }
-    inline void trsyl( const char trana, const char tranb,
-            const integer_t isgn, const integer_t m, const integer_t n,
-            const double* a, const integer_t lda, const double* b,
-            const integer_t ldb, double* c, const integer_t ldc,
-            double& scale, integer_t& info ) {
-        LAPACK_DTRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c,
-                &ldc, &scale, &info );
-    }
-    inline void trsyl( const char trana, const char tranb,
-            const integer_t isgn, const integer_t m, const integer_t n,
-            const traits::complex_f* a, const integer_t lda,
-            const traits::complex_f* b, const integer_t ldb,
-            traits::complex_f* c, const integer_t ldc, float& scale,
-            integer_t& info ) {
-        LAPACK_CTRSYL( &trana, &tranb, &isgn, &m, &n, traits::complex_ptr(a),
-                &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(c),
-                &ldc, &scale, &info );
-    }
-    inline void trsyl( const char trana, const char tranb,
-            const integer_t isgn, const integer_t m, const integer_t n,
-            const traits::complex_d* a, const integer_t lda,
-            const traits::complex_d* b, const integer_t ldb,
-            traits::complex_d* c, const integer_t ldc, double& scale,
-            integer_t& info ) {
-        LAPACK_ZTRSYL( &trana, &tranb, &isgn, &m, &n, traits::complex_ptr(a),
-                &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(c),
-                &ldc, &scale, &info );
-    }
+
+inline void trsyl( const char trana, const char tranb, const integer_t isgn,
+        const integer_t m, const integer_t n, const float* a,
+        const integer_t lda, const float* b, const integer_t ldb, float* c,
+        const integer_t ldc, float& scale, integer_t& info ) {
+    LAPACK_STRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
+            &scale, &info );
 }
+
+inline void trsyl( const char trana, const char tranb, const integer_t isgn,
+        const integer_t m, const integer_t n, const double* a,
+        const integer_t lda, const double* b, const integer_t ldb, double* c,
+        const integer_t ldc, double& scale, integer_t& info ) {
+    LAPACK_DTRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
+            &scale, &info );
+}
+
+inline void trsyl( const char trana, const char tranb, const integer_t isgn,
+        const integer_t m, const integer_t n, const traits::complex_f* a,
+        const integer_t lda, const traits::complex_f* b, const integer_t ldb,
+        traits::complex_f* c, const integer_t ldc, float& scale,
+        integer_t& info ) {
+    LAPACK_CTRSYL( &trana, &tranb, &isgn, &m, &n, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(c), &ldc,
+            &scale, &info );
+}
+
+inline void trsyl( const char trana, const char tranb, const integer_t isgn,
+        const integer_t m, const integer_t n, const traits::complex_d* a,
+        const integer_t lda, const traits::complex_d* b, const integer_t ldb,
+        traits::complex_d* c, const integer_t ldc, double& scale,
+        integer_t& info ) {
+    LAPACK_ZTRSYL( &trana, &tranb, &isgn, &m, &n, traits::complex_ptr(a),
+            &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(c), &ldc,
+            &scale, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -157,6 +158,9 @@ inline integer_t trsyl( const char trana, const char tranb,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -37,29 +37,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sytrf( const char uplo, const integer_t n, float* a,
-            const integer_t lda, integer_t* ipiv, float* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_SSYTRF( &uplo, &n, a, &lda, ipiv, work, &lwork, &info );
-    }
-    inline void sytrf( const char uplo, const integer_t n, double* a,
-            const integer_t lda, integer_t* ipiv, double* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_DSYTRF( &uplo, &n, a, &lda, ipiv, work, &lwork, &info );
-    }
-    inline void sytrf( const char uplo, const integer_t n,
-            traits::complex_f* a, const integer_t lda, integer_t* ipiv,
-            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_CSYTRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(work), &lwork, &info );
-    }
-    inline void sytrf( const char uplo, const integer_t n,
-            traits::complex_d* a, const integer_t lda, integer_t* ipiv,
-            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_ZSYTRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(work), &lwork, &info );
-    }
+
+inline void sytrf( const char uplo, const integer_t n, float* a,
+        const integer_t lda, integer_t* ipiv, float* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_SSYTRF( &uplo, &n, a, &lda, ipiv, work, &lwork, &info );
 }
+
+inline void sytrf( const char uplo, const integer_t n, double* a,
+        const integer_t lda, integer_t* ipiv, double* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_DSYTRF( &uplo, &n, a, &lda, ipiv, work, &lwork, &info );
+}
+
+inline void sytrf( const char uplo, const integer_t n, traits::complex_f* a,
+        const integer_t lda, integer_t* ipiv, traits::complex_f* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_CSYTRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+inline void sytrf( const char uplo, const integer_t n, traits::complex_d* a,
+        const integer_t lda, integer_t* ipiv, traits::complex_d* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_ZSYTRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -191,6 +196,9 @@ inline integer_t sytrf( MatrixA& a, VectorIPIV& ipiv ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

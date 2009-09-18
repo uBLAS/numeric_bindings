@@ -36,33 +36,38 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pbcon( const char uplo, const integer_t n, const integer_t kd,
-            const float* ab, const integer_t ldab, const float anorm,
-            float& rcond, float* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_SPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, iwork,
-                &info );
-    }
-    inline void pbcon( const char uplo, const integer_t n, const integer_t kd,
-            const double* ab, const integer_t ldab, const double anorm,
-            double& rcond, double* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_DPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, iwork,
-                &info );
-    }
-    inline void pbcon( const char uplo, const integer_t n, const integer_t kd,
-            const traits::complex_f* ab, const integer_t ldab,
-            const float anorm, float& rcond, traits::complex_f* work,
-            float* rwork, integer_t& info ) {
-        LAPACK_CPBCON( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, &anorm,
-                &rcond, traits::complex_ptr(work), rwork, &info );
-    }
-    inline void pbcon( const char uplo, const integer_t n, const integer_t kd,
-            const traits::complex_d* ab, const integer_t ldab,
-            const double anorm, double& rcond, traits::complex_d* work,
-            double* rwork, integer_t& info ) {
-        LAPACK_ZPBCON( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, &anorm,
-                &rcond, traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void pbcon( const char uplo, const integer_t n, const integer_t kd,
+        const float* ab, const integer_t ldab, const float anorm,
+        float& rcond, float* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_SPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, iwork,
+            &info );
 }
+
+inline void pbcon( const char uplo, const integer_t n, const integer_t kd,
+        const double* ab, const integer_t ldab, const double anorm,
+        double& rcond, double* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_DPBCON( &uplo, &n, &kd, ab, &ldab, &anorm, &rcond, work, iwork,
+            &info );
+}
+
+inline void pbcon( const char uplo, const integer_t n, const integer_t kd,
+        const traits::complex_f* ab, const integer_t ldab, const float anorm,
+        float& rcond, traits::complex_f* work, float* rwork,
+        integer_t& info ) {
+    LAPACK_CPBCON( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, &anorm,
+            &rcond, traits::complex_ptr(work), rwork, &info );
+}
+
+inline void pbcon( const char uplo, const integer_t n, const integer_t kd,
+        const traits::complex_d* ab, const integer_t ldab, const double anorm,
+        double& rcond, traits::complex_d* work, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZPBCON( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, &anorm,
+            &rcond, traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -209,6 +214,9 @@ inline integer_t pbcon( const char uplo, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

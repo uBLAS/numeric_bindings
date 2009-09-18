@@ -34,20 +34,22 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void stevd( const char jobz, const integer_t n, float* d, float* e,
-            float* z, const integer_t ldz, float* work, const integer_t lwork,
-            integer_t* iwork, const integer_t liwork, integer_t& info ) {
-        LAPACK_SSTEVD( &jobz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
-                &info );
-    }
-    inline void stevd( const char jobz, const integer_t n, double* d,
-            double* e, double* z, const integer_t ldz, double* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_DSTEVD( &jobz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
-                &info );
-    }
+
+inline void stevd( const char jobz, const integer_t n, float* d, float* e,
+        float* z, const integer_t ldz, float* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_SSTEVD( &jobz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
+            &info );
 }
+
+inline void stevd( const char jobz, const integer_t n, double* d, double* e,
+        double* z, const integer_t ldz, double* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_DSTEVD( &jobz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -149,6 +151,9 @@ inline integer_t stevd( const char jobz, const integer_t n, VectorD& d,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -37,41 +37,46 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ggglm( const integer_t n, const integer_t m,
-            const integer_t p, float* a, const integer_t lda, float* b,
-            const integer_t ldb, float* d, float* x, float* y, float* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_SGGGLM( &n, &m, &p, a, &lda, b, &ldb, d, x, y, work, &lwork,
-                &info );
-    }
-    inline void ggglm( const integer_t n, const integer_t m,
-            const integer_t p, double* a, const integer_t lda, double* b,
-            const integer_t ldb, double* d, double* x, double* y,
-            double* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_DGGGLM( &n, &m, &p, a, &lda, b, &ldb, d, x, y, work, &lwork,
-                &info );
-    }
-    inline void ggglm( const integer_t n, const integer_t m,
-            const integer_t p, traits::complex_f* a, const integer_t lda,
-            traits::complex_f* b, const integer_t ldb, traits::complex_f* d,
-            traits::complex_f* x, traits::complex_f* y,
-            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_CGGGLM( &n, &m, &p, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(d),
-                traits::complex_ptr(x), traits::complex_ptr(y),
-                traits::complex_ptr(work), &lwork, &info );
-    }
-    inline void ggglm( const integer_t n, const integer_t m,
-            const integer_t p, traits::complex_d* a, const integer_t lda,
-            traits::complex_d* b, const integer_t ldb, traits::complex_d* d,
-            traits::complex_d* x, traits::complex_d* y,
-            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_ZGGGLM( &n, &m, &p, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(d),
-                traits::complex_ptr(x), traits::complex_ptr(y),
-                traits::complex_ptr(work), &lwork, &info );
-    }
+
+inline void ggglm( const integer_t n, const integer_t m, const integer_t p,
+        float* a, const integer_t lda, float* b, const integer_t ldb,
+        float* d, float* x, float* y, float* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_SGGGLM( &n, &m, &p, a, &lda, b, &ldb, d, x, y, work, &lwork,
+            &info );
 }
+
+inline void ggglm( const integer_t n, const integer_t m, const integer_t p,
+        double* a, const integer_t lda, double* b, const integer_t ldb,
+        double* d, double* x, double* y, double* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_DGGGLM( &n, &m, &p, a, &lda, b, &ldb, d, x, y, work, &lwork,
+            &info );
+}
+
+inline void ggglm( const integer_t n, const integer_t m, const integer_t p,
+        traits::complex_f* a, const integer_t lda, traits::complex_f* b,
+        const integer_t ldb, traits::complex_f* d, traits::complex_f* x,
+        traits::complex_f* y, traits::complex_f* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_CGGGLM( &n, &m, &p, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(d),
+            traits::complex_ptr(x), traits::complex_ptr(y),
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+inline void ggglm( const integer_t n, const integer_t m, const integer_t p,
+        traits::complex_d* a, const integer_t lda, traits::complex_d* b,
+        const integer_t ldb, traits::complex_d* d, traits::complex_d* x,
+        traits::complex_d* y, traits::complex_d* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_ZGGGLM( &n, &m, &p, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(d),
+            traits::complex_ptr(x), traits::complex_ptr(y),
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -267,6 +272,9 @@ inline integer_t ggglm( MatrixA& a, MatrixB& b, VectorD& d, VectorX& x,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

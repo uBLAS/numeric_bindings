@@ -36,45 +36,49 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ptsvx( const char fact, const integer_t n,
-            const integer_t nrhs, const float* d, const float* e, float* df,
-            float* ef, const float* b, const integer_t ldb, float* x,
-            const integer_t ldx, float& rcond, float* ferr, float* berr,
-            float* work, integer_t& info ) {
-        LAPACK_SPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx,
-                &rcond, ferr, berr, work, &info );
-    }
-    inline void ptsvx( const char fact, const integer_t n,
-            const integer_t nrhs, const double* d, const double* e,
-            double* df, double* ef, const double* b, const integer_t ldb,
-            double* x, const integer_t ldx, double& rcond, double* ferr,
-            double* berr, double* work, integer_t& info ) {
-        LAPACK_DPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx,
-                &rcond, ferr, berr, work, &info );
-    }
-    inline void ptsvx( const char fact, const integer_t n,
-            const integer_t nrhs, const float* d, const traits::complex_f* e,
-            float* df, traits::complex_f* ef, const traits::complex_f* b,
-            const integer_t ldb, traits::complex_f* x, const integer_t ldx,
-            float& rcond, float* ferr, float* berr, traits::complex_f* work,
-            float* rwork, integer_t& info ) {
-        LAPACK_CPTSVX( &fact, &n, &nrhs, d, traits::complex_ptr(e), df,
-                traits::complex_ptr(ef), traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
-    inline void ptsvx( const char fact, const integer_t n,
-            const integer_t nrhs, const double* d, const traits::complex_d* e,
-            double* df, traits::complex_d* ef, const traits::complex_d* b,
-            const integer_t ldb, traits::complex_d* x, const integer_t ldx,
-            double& rcond, double* ferr, double* berr,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
-        LAPACK_ZPTSVX( &fact, &n, &nrhs, d, traits::complex_ptr(e), df,
-                traits::complex_ptr(ef), traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void ptsvx( const char fact, const integer_t n, const integer_t nrhs,
+        const float* d, const float* e, float* df, float* ef, const float* b,
+        const integer_t ldb, float* x, const integer_t ldx, float& rcond,
+        float* ferr, float* berr, float* work, integer_t& info ) {
+    LAPACK_SPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,
+            ferr, berr, work, &info );
 }
+
+inline void ptsvx( const char fact, const integer_t n, const integer_t nrhs,
+        const double* d, const double* e, double* df, double* ef,
+        const double* b, const integer_t ldb, double* x, const integer_t ldx,
+        double& rcond, double* ferr, double* berr, double* work,
+        integer_t& info ) {
+    LAPACK_DPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,
+            ferr, berr, work, &info );
+}
+
+inline void ptsvx( const char fact, const integer_t n, const integer_t nrhs,
+        const float* d, const traits::complex_f* e, float* df,
+        traits::complex_f* ef, const traits::complex_f* b,
+        const integer_t ldb, traits::complex_f* x, const integer_t ldx,
+        float& rcond, float* ferr, float* berr, traits::complex_f* work,
+        float* rwork, integer_t& info ) {
+    LAPACK_CPTSVX( &fact, &n, &nrhs, d, traits::complex_ptr(e), df,
+            traits::complex_ptr(ef), traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+inline void ptsvx( const char fact, const integer_t n, const integer_t nrhs,
+        const double* d, const traits::complex_d* e, double* df,
+        traits::complex_d* ef, const traits::complex_d* b,
+        const integer_t ldb, traits::complex_d* x, const integer_t ldx,
+        double& rcond, double* ferr, double* berr, traits::complex_d* work,
+        double* rwork, integer_t& info ) {
+    LAPACK_ZPTSVX( &fact, &n, &nrhs, d, traits::complex_ptr(e), df,
+            traits::complex_ptr(ef), traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -295,6 +299,9 @@ inline integer_t ptsvx( const char fact, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

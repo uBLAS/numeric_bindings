@@ -31,17 +31,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sygst( const integer_t itype, const char uplo,
-            const integer_t n, float* a, const integer_t lda, const float* b,
-            const integer_t ldb, integer_t& info ) {
-        LAPACK_SSYGST( &itype, &uplo, &n, a, &lda, b, &ldb, &info );
-    }
-    inline void sygst( const integer_t itype, const char uplo,
-            const integer_t n, double* a, const integer_t lda,
-            const double* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_DSYGST( &itype, &uplo, &n, a, &lda, b, &ldb, &info );
-    }
+
+inline void sygst( const integer_t itype, const char uplo, const integer_t n,
+        float* a, const integer_t lda, const float* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_SSYGST( &itype, &uplo, &n, a, &lda, b, &ldb, &info );
 }
+
+inline void sygst( const integer_t itype, const char uplo, const integer_t n,
+        double* a, const integer_t lda, const double* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_DSYGST( &itype, &uplo, &n, a, &lda, b, &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -80,6 +83,9 @@ inline integer_t sygst( const integer_t itype, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

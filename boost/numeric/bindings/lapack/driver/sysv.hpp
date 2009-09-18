@@ -37,37 +37,42 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sysv( const char uplo, const integer_t n,
-            const integer_t nrhs, float* a, const integer_t lda,
-            integer_t* ipiv, float* b, const integer_t ldb, float* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_SSYSV( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, work, &lwork,
-                &info );
-    }
-    inline void sysv( const char uplo, const integer_t n,
-            const integer_t nrhs, double* a, const integer_t lda,
-            integer_t* ipiv, double* b, const integer_t ldb, double* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_DSYSV( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, work, &lwork,
-                &info );
-    }
-    inline void sysv( const char uplo, const integer_t n,
-            const integer_t nrhs, traits::complex_f* a, const integer_t lda,
-            integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
-            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_CSYSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(work),
-                &lwork, &info );
-    }
-    inline void sysv( const char uplo, const integer_t n,
-            const integer_t nrhs, traits::complex_d* a, const integer_t lda,
-            integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
-            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_ZSYSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(work),
-                &lwork, &info );
-    }
+
+inline void sysv( const char uplo, const integer_t n, const integer_t nrhs,
+        float* a, const integer_t lda, integer_t* ipiv, float* b,
+        const integer_t ldb, float* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_SSYSV( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, work, &lwork,
+            &info );
 }
+
+inline void sysv( const char uplo, const integer_t n, const integer_t nrhs,
+        double* a, const integer_t lda, integer_t* ipiv, double* b,
+        const integer_t ldb, double* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_DSYSV( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, work, &lwork,
+            &info );
+}
+
+inline void sysv( const char uplo, const integer_t n, const integer_t nrhs,
+        traits::complex_f* a, const integer_t lda, integer_t* ipiv,
+        traits::complex_f* b, const integer_t ldb, traits::complex_f* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_CSYSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(work), &lwork,
+            &info );
+}
+
+inline void sysv( const char uplo, const integer_t n, const integer_t nrhs,
+        traits::complex_d* a, const integer_t lda, integer_t* ipiv,
+        traits::complex_d* b, const integer_t ldb, traits::complex_d* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_ZSYSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(work), &lwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -253,6 +258,9 @@ inline integer_t sysv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

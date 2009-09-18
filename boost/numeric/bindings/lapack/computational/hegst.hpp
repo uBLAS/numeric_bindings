@@ -31,21 +31,22 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hegst( const integer_t itype, const char uplo,
-            const integer_t n, traits::complex_f* a, const integer_t lda,
-            const traits::complex_f* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_CHEGST( &itype, &uplo, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, &info );
-    }
-    inline void hegst( const integer_t itype, const char uplo,
-            const integer_t n, traits::complex_d* a, const integer_t lda,
-            const traits::complex_d* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_ZHEGST( &itype, &uplo, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, &info );
-    }
+
+inline void hegst( const integer_t itype, const char uplo, const integer_t n,
+        traits::complex_f* a, const integer_t lda, const traits::complex_f* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_CHEGST( &itype, &uplo, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, &info );
 }
+
+inline void hegst( const integer_t itype, const char uplo, const integer_t n,
+        traits::complex_d* a, const integer_t lda, const traits::complex_d* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_ZHEGST( &itype, &uplo, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -84,6 +85,9 @@ inline integer_t hegst( const integer_t itype, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

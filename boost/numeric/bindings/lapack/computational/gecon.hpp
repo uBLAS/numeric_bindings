@@ -36,33 +36,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gecon( const char norm, const integer_t n, const float* a,
-            const integer_t lda, const float anorm, float& rcond, float* work,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_SGECON( &norm, &n, a, &lda, &anorm, &rcond, work, iwork,
-                &info );
-    }
-    inline void gecon( const char norm, const integer_t n, const double* a,
-            const integer_t lda, const double anorm, double& rcond,
-            double* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_DGECON( &norm, &n, a, &lda, &anorm, &rcond, work, iwork,
-                &info );
-    }
-    inline void gecon( const char norm, const integer_t n,
-            const traits::complex_f* a, const integer_t lda,
-            const float anorm, float& rcond, traits::complex_f* work,
-            float* rwork, integer_t& info ) {
-        LAPACK_CGECON( &norm, &n, traits::complex_ptr(a), &lda, &anorm,
-                &rcond, traits::complex_ptr(work), rwork, &info );
-    }
-    inline void gecon( const char norm, const integer_t n,
-            const traits::complex_d* a, const integer_t lda,
-            const double anorm, double& rcond, traits::complex_d* work,
-            double* rwork, integer_t& info ) {
-        LAPACK_ZGECON( &norm, &n, traits::complex_ptr(a), &lda, &anorm,
-                &rcond, traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void gecon( const char norm, const integer_t n, const float* a,
+        const integer_t lda, const float anorm, float& rcond, float* work,
+        integer_t* iwork, integer_t& info ) {
+    LAPACK_SGECON( &norm, &n, a, &lda, &anorm, &rcond, work, iwork, &info );
 }
+
+inline void gecon( const char norm, const integer_t n, const double* a,
+        const integer_t lda, const double anorm, double& rcond, double* work,
+        integer_t* iwork, integer_t& info ) {
+    LAPACK_DGECON( &norm, &n, a, &lda, &anorm, &rcond, work, iwork, &info );
+}
+
+inline void gecon( const char norm, const integer_t n,
+        const traits::complex_f* a, const integer_t lda, const float anorm,
+        float& rcond, traits::complex_f* work, float* rwork,
+        integer_t& info ) {
+    LAPACK_CGECON( &norm, &n, traits::complex_ptr(a), &lda, &anorm, &rcond,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+inline void gecon( const char norm, const integer_t n,
+        const traits::complex_d* a, const integer_t lda, const double anorm,
+        double& rcond, traits::complex_d* work, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZGECON( &norm, &n, traits::complex_ptr(a), &lda, &anorm, &rcond,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -210,6 +213,9 @@ inline integer_t gecon( const char norm, const MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

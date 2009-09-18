@@ -33,25 +33,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void spgvx( const integer_t itype, const char jobz,
-            const char range, const char uplo, const integer_t n, float* ap,
-            float* bp, const float vl, const float vu, const integer_t il,
-            const integer_t iu, const float abstol, integer_t& m, float* w,
-            float* z, const integer_t ldz, float* work, integer_t* iwork,
-            integer_t* ifail, integer_t& info ) {
-        LAPACK_SSPGVX( &itype, &jobz, &range, &uplo, &n, ap, bp, &vl, &vu,
-                &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail, &info );
-    }
-    inline void spgvx( const integer_t itype, const char jobz,
-            const char range, const char uplo, const integer_t n, double* ap,
-            double* bp, const double vl, const double vu, const integer_t il,
-            const integer_t iu, const double abstol, integer_t& m, double* w,
-            double* z, const integer_t ldz, double* work, integer_t* iwork,
-            integer_t* ifail, integer_t& info ) {
-        LAPACK_DSPGVX( &itype, &jobz, &range, &uplo, &n, ap, bp, &vl, &vu,
-                &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail, &info );
-    }
+
+inline void spgvx( const integer_t itype, const char jobz, const char range,
+        const char uplo, const integer_t n, float* ap, float* bp,
+        const float vl, const float vu, const integer_t il,
+        const integer_t iu, const float abstol, integer_t& m, float* w,
+        float* z, const integer_t ldz, float* work, integer_t* iwork,
+        integer_t* ifail, integer_t& info ) {
+    LAPACK_SSPGVX( &itype, &jobz, &range, &uplo, &n, ap, bp, &vl, &vu, &il,
+            &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail, &info );
 }
+
+inline void spgvx( const integer_t itype, const char jobz, const char range,
+        const char uplo, const integer_t n, double* ap, double* bp,
+        const double vl, const double vu, const integer_t il,
+        const integer_t iu, const double abstol, integer_t& m, double* w,
+        double* z, const integer_t ldz, double* work, integer_t* iwork,
+        integer_t* ifail, integer_t& info ) {
+    LAPACK_DSPGVX( &itype, &jobz, &range, &uplo, &n, ap, bp, &vl, &vu, &il,
+            &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -176,6 +179,9 @@ inline integer_t spgvx( const integer_t itype, const char jobz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

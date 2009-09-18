@@ -57,7 +57,7 @@ struct hpr2_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX, typename VectorY, typename MatrixAP >
     static return_type invoke( const value_type alpha, const VectorX& x,
             const VectorY& y, MatrixAP& ap ) {
@@ -75,7 +75,7 @@ struct hpr2_impl {
     }
 };
 
-// generic template function for calling to hpr2
+// generic template function to call hpr2
 template< typename VectorX, typename VectorY, typename MatrixAP >
 inline typename hpr2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

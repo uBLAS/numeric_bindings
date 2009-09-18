@@ -36,37 +36,42 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ggbal( const char job, const integer_t n, float* a,
-            const integer_t lda, float* b, const integer_t ldb,
-            integer_t& ilo, integer_t& ihi, float* lscale, float* rscale,
-            float* work, integer_t& info ) {
-        LAPACK_SGGBAL( &job, &n, a, &lda, b, &ldb, &ilo, &ihi, lscale, rscale,
-                work, &info );
-    }
-    inline void ggbal( const char job, const integer_t n, double* a,
-            const integer_t lda, double* b, const integer_t ldb,
-            integer_t& ilo, integer_t& ihi, double* lscale, double* rscale,
-            double* work, integer_t& info ) {
-        LAPACK_DGGBAL( &job, &n, a, &lda, b, &ldb, &ilo, &ihi, lscale, rscale,
-                work, &info );
-    }
-    inline void ggbal( const char job, const integer_t n,
-            traits::complex_f* a, const integer_t lda, traits::complex_f* b,
-            const integer_t ldb, integer_t& ilo, integer_t& ihi,
-            float* lscale, float* rscale, float* work, integer_t& info ) {
-        LAPACK_CGGBAL( &job, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, &ilo, &ihi, lscale, rscale,
-                work, &info );
-    }
-    inline void ggbal( const char job, const integer_t n,
-            traits::complex_d* a, const integer_t lda, traits::complex_d* b,
-            const integer_t ldb, integer_t& ilo, integer_t& ihi,
-            double* lscale, double* rscale, double* work, integer_t& info ) {
-        LAPACK_ZGGBAL( &job, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, &ilo, &ihi, lscale, rscale,
-                work, &info );
-    }
+
+inline void ggbal( const char job, const integer_t n, float* a,
+        const integer_t lda, float* b, const integer_t ldb, integer_t& ilo,
+        integer_t& ihi, float* lscale, float* rscale, float* work,
+        integer_t& info ) {
+    LAPACK_SGGBAL( &job, &n, a, &lda, b, &ldb, &ilo, &ihi, lscale, rscale,
+            work, &info );
 }
+
+inline void ggbal( const char job, const integer_t n, double* a,
+        const integer_t lda, double* b, const integer_t ldb, integer_t& ilo,
+        integer_t& ihi, double* lscale, double* rscale, double* work,
+        integer_t& info ) {
+    LAPACK_DGGBAL( &job, &n, a, &lda, b, &ldb, &ilo, &ihi, lscale, rscale,
+            work, &info );
+}
+
+inline void ggbal( const char job, const integer_t n, traits::complex_f* a,
+        const integer_t lda, traits::complex_f* b, const integer_t ldb,
+        integer_t& ilo, integer_t& ihi, float* lscale, float* rscale,
+        float* work, integer_t& info ) {
+    LAPACK_CGGBAL( &job, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, &ilo, &ihi, lscale, rscale, work,
+            &info );
+}
+
+inline void ggbal( const char job, const integer_t n, traits::complex_d* a,
+        const integer_t lda, traits::complex_d* b, const integer_t ldb,
+        integer_t& ilo, integer_t& ihi, double* lscale, double* rscale,
+        double* work, integer_t& info ) {
+    LAPACK_ZGGBAL( &job, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, &ilo, &ihi, lscale, rscale, work,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -224,6 +229,9 @@ inline integer_t ggbal( const char job, const integer_t n, MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

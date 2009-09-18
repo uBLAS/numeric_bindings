@@ -49,7 +49,7 @@ struct dot_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef value_type return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX, typename VectorY >
     static return_type invoke( const VectorX& x, const VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -61,7 +61,7 @@ struct dot_impl {
     }
 };
 
-// generic template function for calling to dot
+// generic template function to call dot
 template< typename VectorX, typename VectorY >
 inline typename dot_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

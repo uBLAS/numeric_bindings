@@ -34,39 +34,42 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void labrd( const integer_t m, const integer_t n,
-            const integer_t nb, float* a, const integer_t lda, float* d,
-            float* e, float* tauq, float* taup, float* x, const integer_t ldx,
-            float* y, const integer_t ldy ) {
-        LAPACK_SLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y,
-                &ldy );
-    }
-    inline void labrd( const integer_t m, const integer_t n,
-            const integer_t nb, double* a, const integer_t lda, double* d,
-            double* e, double* tauq, double* taup, double* x,
-            const integer_t ldx, double* y, const integer_t ldy ) {
-        LAPACK_DLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y,
-                &ldy );
-    }
-    inline void labrd( const integer_t m, const integer_t n,
-            const integer_t nb, traits::complex_f* a, const integer_t lda,
-            float* d, float* e, traits::complex_f* tauq,
-            traits::complex_f* taup, traits::complex_f* x,
-            const integer_t ldx, traits::complex_f* y, const integer_t ldy ) {
-        LAPACK_CLABRD( &m, &n, &nb, traits::complex_ptr(a), &lda, d, e,
-                traits::complex_ptr(tauq), traits::complex_ptr(taup),
-                traits::complex_ptr(x), &ldx, traits::complex_ptr(y), &ldy );
-    }
-    inline void labrd( const integer_t m, const integer_t n,
-            const integer_t nb, traits::complex_d* a, const integer_t lda,
-            double* d, double* e, traits::complex_d* tauq,
-            traits::complex_d* taup, traits::complex_d* x,
-            const integer_t ldx, traits::complex_d* y, const integer_t ldy ) {
-        LAPACK_ZLABRD( &m, &n, &nb, traits::complex_ptr(a), &lda, d, e,
-                traits::complex_ptr(tauq), traits::complex_ptr(taup),
-                traits::complex_ptr(x), &ldx, traits::complex_ptr(y), &ldy );
-    }
+
+inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
+        float* a, const integer_t lda, float* d, float* e, float* tauq,
+        float* taup, float* x, const integer_t ldx, float* y,
+        const integer_t ldy ) {
+    LAPACK_SLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
 }
+
+inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
+        double* a, const integer_t lda, double* d, double* e, double* tauq,
+        double* taup, double* x, const integer_t ldx, double* y,
+        const integer_t ldy ) {
+    LAPACK_DLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
+}
+
+inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
+        traits::complex_f* a, const integer_t lda, float* d, float* e,
+        traits::complex_f* tauq, traits::complex_f* taup,
+        traits::complex_f* x, const integer_t ldx, traits::complex_f* y,
+        const integer_t ldy ) {
+    LAPACK_CLABRD( &m, &n, &nb, traits::complex_ptr(a), &lda, d, e,
+            traits::complex_ptr(tauq), traits::complex_ptr(taup),
+            traits::complex_ptr(x), &ldx, traits::complex_ptr(y), &ldy );
+}
+
+inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
+        traits::complex_d* a, const integer_t lda, double* d, double* e,
+        traits::complex_d* tauq, traits::complex_d* taup,
+        traits::complex_d* x, const integer_t ldx, traits::complex_d* y,
+        const integer_t ldy ) {
+    LAPACK_ZLABRD( &m, &n, &nb, traits::complex_ptr(a), &lda, d, e,
+            traits::complex_ptr(tauq), traits::complex_ptr(taup),
+            traits::complex_ptr(x), &ldx, traits::complex_ptr(y), &ldy );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -192,6 +195,9 @@ inline integer_t labrd( MatrixA& a, VectorD& d, VectorE& e,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

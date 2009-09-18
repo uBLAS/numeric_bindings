@@ -34,25 +34,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hegv( const integer_t itype, const char jobz, const char uplo,
-            const integer_t n, traits::complex_f* a, const integer_t lda,
-            traits::complex_f* b, const integer_t ldb, float* w,
-            traits::complex_f* work, const integer_t lwork, float* rwork,
-            integer_t& info ) {
-        LAPACK_CHEGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, w, traits::complex_ptr(work),
-                &lwork, rwork, &info );
-    }
-    inline void hegv( const integer_t itype, const char jobz, const char uplo,
-            const integer_t n, traits::complex_d* a, const integer_t lda,
-            traits::complex_d* b, const integer_t ldb, double* w,
-            traits::complex_d* work, const integer_t lwork, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZHEGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(b), &ldb, w, traits::complex_ptr(work),
-                &lwork, rwork, &info );
-    }
+
+inline void hegv( const integer_t itype, const char jobz, const char uplo,
+        const integer_t n, traits::complex_f* a, const integer_t lda,
+        traits::complex_f* b, const integer_t ldb, float* w,
+        traits::complex_f* work, const integer_t lwork, float* rwork,
+        integer_t& info ) {
+    LAPACK_CHEGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, w, traits::complex_ptr(work),
+            &lwork, rwork, &info );
 }
+
+inline void hegv( const integer_t itype, const char jobz, const char uplo,
+        const integer_t n, traits::complex_d* a, const integer_t lda,
+        traits::complex_d* b, const integer_t ldb, double* w,
+        traits::complex_d* work, const integer_t lwork, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZHEGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, w, traits::complex_ptr(work),
+            &lwork, rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -152,6 +155,9 @@ inline integer_t hegv( const integer_t itype, const char jobz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -33,29 +33,29 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void laebz( const integer_t ijob, const integer_t nitmax,
-            const integer_t n, const integer_t mmax, const integer_t minp,
-            const integer_t nbmin, const float abstol, const float reltol,
-            const float pivmin, const float* d, const float* e,
-            const float* e2, integer_t* nval, float* ab, float* c,
-            integer_t& mout, integer_t* nab, float* work, integer_t* iwork,
-            integer_t& info ) {
-        LAPACK_SLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol,
-                &reltol, &pivmin, d, e, e2, nval, ab, c, &mout, nab, work,
-                iwork, &info );
-    }
-    inline void laebz( const integer_t ijob, const integer_t nitmax,
-            const integer_t n, const integer_t mmax, const integer_t minp,
-            const integer_t nbmin, const double abstol, const double reltol,
-            const double pivmin, const double* d, const double* e,
-            const double* e2, integer_t* nval, double* ab, double* c,
-            integer_t& mout, integer_t* nab, double* work, integer_t* iwork,
-            integer_t& info ) {
-        LAPACK_DLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol,
-                &reltol, &pivmin, d, e, e2, nval, ab, c, &mout, nab, work,
-                iwork, &info );
-    }
+
+inline void laebz( const integer_t ijob, const integer_t nitmax,
+        const integer_t n, const integer_t mmax, const integer_t minp,
+        const integer_t nbmin, const float abstol, const float reltol,
+        const float pivmin, const float* d, const float* e, const float* e2,
+        integer_t* nval, float* ab, float* c, integer_t& mout, integer_t* nab,
+        float* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_SLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol, &reltol,
+            &pivmin, d, e, e2, nval, ab, c, &mout, nab, work, iwork, &info );
 }
+
+inline void laebz( const integer_t ijob, const integer_t nitmax,
+        const integer_t n, const integer_t mmax, const integer_t minp,
+        const integer_t nbmin, const double abstol, const double reltol,
+        const double pivmin, const double* d, const double* e,
+        const double* e2, integer_t* nval, double* ab, double* c,
+        integer_t& mout, integer_t* nab, double* work, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_DLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol, &reltol,
+            &pivmin, d, e, e2, nval, ab, c, &mout, nab, work, iwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -195,6 +195,9 @@ inline integer_t laebz( const integer_t ijob, const integer_t nitmax,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

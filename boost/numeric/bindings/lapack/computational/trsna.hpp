@@ -36,51 +36,51 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trsna( const char job, const char howmny,
-            const logical_t* select, const integer_t n, const float* t,
-            const integer_t ldt, const float* vl, const integer_t ldvl,
-            const float* vr, const integer_t ldvr, float* s, float* sep,
-            const integer_t mm, integer_t& m, float* work,
-            const integer_t ldwork, integer_t* iwork, integer_t& info ) {
-        LAPACK_STRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr,
-                &ldvr, s, sep, &mm, &m, work, &ldwork, iwork, &info );
-    }
-    inline void trsna( const char job, const char howmny,
-            const logical_t* select, const integer_t n, const double* t,
-            const integer_t ldt, const double* vl, const integer_t ldvl,
-            const double* vr, const integer_t ldvr, double* s, double* sep,
-            const integer_t mm, integer_t& m, double* work,
-            const integer_t ldwork, integer_t* iwork, integer_t& info ) {
-        LAPACK_DTRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr,
-                &ldvr, s, sep, &mm, &m, work, &ldwork, iwork, &info );
-    }
-    inline void trsna( const char job, const char howmny,
-            const logical_t* select, const integer_t n,
-            const traits::complex_f* t, const integer_t ldt,
-            const traits::complex_f* vl, const integer_t ldvl,
-            const traits::complex_f* vr, const integer_t ldvr, float* s,
-            float* sep, const integer_t mm, integer_t& m,
-            traits::complex_f* work, const integer_t ldwork, float* rwork,
-            integer_t& info ) {
-        LAPACK_CTRSNA( &job, &howmny, select, &n, traits::complex_ptr(t),
-                &ldt, traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
-                &ldvr, s, sep, &mm, &m, traits::complex_ptr(work), &ldwork,
-                rwork, &info );
-    }
-    inline void trsna( const char job, const char howmny,
-            const logical_t* select, const integer_t n,
-            const traits::complex_d* t, const integer_t ldt,
-            const traits::complex_d* vl, const integer_t ldvl,
-            const traits::complex_d* vr, const integer_t ldvr, double* s,
-            double* sep, const integer_t mm, integer_t& m,
-            traits::complex_d* work, const integer_t ldwork, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZTRSNA( &job, &howmny, select, &n, traits::complex_ptr(t),
-                &ldt, traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
-                &ldvr, s, sep, &mm, &m, traits::complex_ptr(work), &ldwork,
-                rwork, &info );
-    }
+
+inline void trsna( const char job, const char howmny, const logical_t* select,
+        const integer_t n, const float* t, const integer_t ldt,
+        const float* vl, const integer_t ldvl, const float* vr,
+        const integer_t ldvr, float* s, float* sep, const integer_t mm,
+        integer_t& m, float* work, const integer_t ldwork, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_STRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
+            s, sep, &mm, &m, work, &ldwork, iwork, &info );
 }
+
+inline void trsna( const char job, const char howmny, const logical_t* select,
+        const integer_t n, const double* t, const integer_t ldt,
+        const double* vl, const integer_t ldvl, const double* vr,
+        const integer_t ldvr, double* s, double* sep, const integer_t mm,
+        integer_t& m, double* work, const integer_t ldwork, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_DTRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
+            s, sep, &mm, &m, work, &ldwork, iwork, &info );
+}
+
+inline void trsna( const char job, const char howmny, const logical_t* select,
+        const integer_t n, const traits::complex_f* t, const integer_t ldt,
+        const traits::complex_f* vl, const integer_t ldvl,
+        const traits::complex_f* vr, const integer_t ldvr, float* s,
+        float* sep, const integer_t mm, integer_t& m, traits::complex_f* work,
+        const integer_t ldwork, float* rwork, integer_t& info ) {
+    LAPACK_CTRSNA( &job, &howmny, select, &n, traits::complex_ptr(t), &ldt,
+            traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr, s,
+            sep, &mm, &m, traits::complex_ptr(work), &ldwork, rwork, &info );
+}
+
+inline void trsna( const char job, const char howmny, const logical_t* select,
+        const integer_t n, const traits::complex_d* t, const integer_t ldt,
+        const traits::complex_d* vl, const integer_t ldvl,
+        const traits::complex_d* vr, const integer_t ldvr, double* s,
+        double* sep, const integer_t mm, integer_t& m,
+        traits::complex_d* work, const integer_t ldwork, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZTRSNA( &job, &howmny, select, &n, traits::complex_ptr(t), &ldt,
+            traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr, s,
+            sep, &mm, &m, traits::complex_ptr(work), &ldwork, rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -283,6 +283,9 @@ inline integer_t trsna( const char job, const char howmny,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

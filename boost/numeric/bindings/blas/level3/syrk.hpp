@@ -73,7 +73,7 @@ struct syrk_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename MatrixA, typename MatrixC >
     static return_type invoke( const char trans, const value_type alpha,
             const MatrixA& a, const value_type beta, MatrixC& c ) {
@@ -89,7 +89,7 @@ struct syrk_impl {
     }
 };
 
-// generic template function for calling to syrk
+// generic template function to call syrk
 template< typename MatrixA, typename MatrixC >
 inline typename syrk_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type

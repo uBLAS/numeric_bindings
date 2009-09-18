@@ -49,7 +49,7 @@ struct rotm_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX, typename VectorY, typename VectorPARAM >
     static return_type invoke( const integer_t n, VectorX& x,
             const integer_t incx, VectorY& y, const integer_t incy,
@@ -66,7 +66,7 @@ struct rotm_impl {
     }
 };
 
-// generic template function for calling to rotm
+// generic template function to call rotm
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

@@ -36,59 +36,62 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tgsja( const char jobu, const char jobv, const char jobq,
-            const integer_t m, const integer_t p, const integer_t n,
-            const integer_t k, const integer_t l, float* a,
-            const integer_t lda, float* b, const integer_t ldb,
-            const float tola, const float tolb, float* alpha, float* beta,
-            float* u, const integer_t ldu, float* v, const integer_t ldv,
-            float* q, const integer_t ldq, float* work, integer_t& ncycle,
-            integer_t& info ) {
-        LAPACK_STGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l, a, &lda, b,
-                &ldb, &tola, &tolb, alpha, beta, u, &ldu, v, &ldv, q, &ldq,
-                work, &ncycle, &info );
-    }
-    inline void tgsja( const char jobu, const char jobv, const char jobq,
-            const integer_t m, const integer_t p, const integer_t n,
-            const integer_t k, const integer_t l, double* a,
-            const integer_t lda, double* b, const integer_t ldb,
-            const double tola, const double tolb, double* alpha, double* beta,
-            double* u, const integer_t ldu, double* v, const integer_t ldv,
-            double* q, const integer_t ldq, double* work, integer_t& ncycle,
-            integer_t& info ) {
-        LAPACK_DTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l, a, &lda, b,
-                &ldb, &tola, &tolb, alpha, beta, u, &ldu, v, &ldv, q, &ldq,
-                work, &ncycle, &info );
-    }
-    inline void tgsja( const char jobu, const char jobv, const char jobq,
-            const integer_t m, const integer_t p, const integer_t n,
-            const integer_t k, const integer_t l, traits::complex_f* a,
-            const integer_t lda, traits::complex_f* b, const integer_t ldb,
-            const float tola, const float tolb, float* alpha, float* beta,
-            traits::complex_f* u, const integer_t ldu, traits::complex_f* v,
-            const integer_t ldv, traits::complex_f* q, const integer_t ldq,
-            traits::complex_f* work, integer_t& ncycle, integer_t& info ) {
-        LAPACK_CTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                &tola, &tolb, alpha, beta, traits::complex_ptr(u), &ldu,
-                traits::complex_ptr(v), &ldv, traits::complex_ptr(q), &ldq,
-                traits::complex_ptr(work), &ncycle, &info );
-    }
-    inline void tgsja( const char jobu, const char jobv, const char jobq,
-            const integer_t m, const integer_t p, const integer_t n,
-            const integer_t k, const integer_t l, traits::complex_d* a,
-            const integer_t lda, traits::complex_d* b, const integer_t ldb,
-            const double tola, const double tolb, double* alpha, double* beta,
-            traits::complex_d* u, const integer_t ldu, traits::complex_d* v,
-            const integer_t ldv, traits::complex_d* q, const integer_t ldq,
-            traits::complex_d* work, integer_t& ncycle, integer_t& info ) {
-        LAPACK_ZTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                &tola, &tolb, alpha, beta, traits::complex_ptr(u), &ldu,
-                traits::complex_ptr(v), &ldv, traits::complex_ptr(q), &ldq,
-                traits::complex_ptr(work), &ncycle, &info );
-    }
+
+inline void tgsja( const char jobu, const char jobv, const char jobq,
+        const integer_t m, const integer_t p, const integer_t n,
+        const integer_t k, const integer_t l, float* a, const integer_t lda,
+        float* b, const integer_t ldb, const float tola, const float tolb,
+        float* alpha, float* beta, float* u, const integer_t ldu, float* v,
+        const integer_t ldv, float* q, const integer_t ldq, float* work,
+        integer_t& ncycle, integer_t& info ) {
+    LAPACK_STGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l, a, &lda, b, &ldb,
+            &tola, &tolb, alpha, beta, u, &ldu, v, &ldv, q, &ldq, work,
+            &ncycle, &info );
 }
+
+inline void tgsja( const char jobu, const char jobv, const char jobq,
+        const integer_t m, const integer_t p, const integer_t n,
+        const integer_t k, const integer_t l, double* a, const integer_t lda,
+        double* b, const integer_t ldb, const double tola, const double tolb,
+        double* alpha, double* beta, double* u, const integer_t ldu,
+        double* v, const integer_t ldv, double* q, const integer_t ldq,
+        double* work, integer_t& ncycle, integer_t& info ) {
+    LAPACK_DTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l, a, &lda, b, &ldb,
+            &tola, &tolb, alpha, beta, u, &ldu, v, &ldv, q, &ldq, work,
+            &ncycle, &info );
+}
+
+inline void tgsja( const char jobu, const char jobv, const char jobq,
+        const integer_t m, const integer_t p, const integer_t n,
+        const integer_t k, const integer_t l, traits::complex_f* a,
+        const integer_t lda, traits::complex_f* b, const integer_t ldb,
+        const float tola, const float tolb, float* alpha, float* beta,
+        traits::complex_f* u, const integer_t ldu, traits::complex_f* v,
+        const integer_t ldv, traits::complex_f* q, const integer_t ldq,
+        traits::complex_f* work, integer_t& ncycle, integer_t& info ) {
+    LAPACK_CTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l,
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb, &tola,
+            &tolb, alpha, beta, traits::complex_ptr(u), &ldu,
+            traits::complex_ptr(v), &ldv, traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(work), &ncycle, &info );
+}
+
+inline void tgsja( const char jobu, const char jobv, const char jobq,
+        const integer_t m, const integer_t p, const integer_t n,
+        const integer_t k, const integer_t l, traits::complex_d* a,
+        const integer_t lda, traits::complex_d* b, const integer_t ldb,
+        const double tola, const double tolb, double* alpha, double* beta,
+        traits::complex_d* u, const integer_t ldu, traits::complex_d* v,
+        const integer_t ldv, traits::complex_d* q, const integer_t ldq,
+        traits::complex_d* work, integer_t& ncycle, integer_t& info ) {
+    LAPACK_ZTGSJA( &jobu, &jobv, &jobq, &m, &p, &n, &k, &l,
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb, &tola,
+            &tolb, alpha, beta, traits::complex_ptr(u), &ldu,
+            traits::complex_ptr(v), &ldv, traits::complex_ptr(q), &ldq,
+            traits::complex_ptr(work), &ncycle, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -322,6 +325,9 @@ inline integer_t tgsja( const char jobu, const char jobv,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

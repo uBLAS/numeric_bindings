@@ -36,25 +36,30 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void lacon( const integer_t n, float* v, float* x, integer_t* isgn,
-            float& est, integer_t& kase ) {
-        LAPACK_SLACON( &n, v, x, isgn, &est, &kase );
-    }
-    inline void lacon( const integer_t n, double* v, double* x,
-            integer_t* isgn, double& est, integer_t& kase ) {
-        LAPACK_DLACON( &n, v, x, isgn, &est, &kase );
-    }
-    inline void lacon( const integer_t n, traits::complex_f* v,
-            traits::complex_f* x, float& est, integer_t& kase ) {
-        LAPACK_CLACON( &n, traits::complex_ptr(v), traits::complex_ptr(x),
-                &est, &kase );
-    }
-    inline void lacon( const integer_t n, traits::complex_d* v,
-            traits::complex_d* x, double& est, integer_t& kase ) {
-        LAPACK_ZLACON( &n, traits::complex_ptr(v), traits::complex_ptr(x),
-                &est, &kase );
-    }
+
+inline void lacon( const integer_t n, float* v, float* x, integer_t* isgn,
+        float& est, integer_t& kase ) {
+    LAPACK_SLACON( &n, v, x, isgn, &est, &kase );
 }
+
+inline void lacon( const integer_t n, double* v, double* x, integer_t* isgn,
+        double& est, integer_t& kase ) {
+    LAPACK_DLACON( &n, v, x, isgn, &est, &kase );
+}
+
+inline void lacon( const integer_t n, traits::complex_f* v,
+        traits::complex_f* x, float& est, integer_t& kase ) {
+    LAPACK_CLACON( &n, traits::complex_ptr(v), traits::complex_ptr(x), &est,
+            &kase );
+}
+
+inline void lacon( const integer_t n, traits::complex_d* v,
+        traits::complex_d* x, double& est, integer_t& kase ) {
+    LAPACK_ZLACON( &n, traits::complex_ptr(v), traits::complex_ptr(x), &est,
+            &kase );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -169,6 +174,9 @@ inline integer_t lacon( const integer_t n, VectorX& x,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

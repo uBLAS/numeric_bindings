@@ -33,27 +33,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hbgv( const char jobz, const char uplo, const integer_t n,
-            const integer_t ka, const integer_t kb, traits::complex_f* ab,
-            const integer_t ldab, traits::complex_f* bb, const integer_t ldbb,
-            float* w, traits::complex_f* z, const integer_t ldz,
-            traits::complex_f* work, float* rwork, integer_t& info ) {
-        LAPACK_CHBGV( &jobz, &uplo, &n, &ka, &kb, traits::complex_ptr(ab),
-                &ldab, traits::complex_ptr(bb), &ldbb, w,
-                traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
-                rwork, &info );
-    }
-    inline void hbgv( const char jobz, const char uplo, const integer_t n,
-            const integer_t ka, const integer_t kb, traits::complex_d* ab,
-            const integer_t ldab, traits::complex_d* bb, const integer_t ldbb,
-            double* w, traits::complex_d* z, const integer_t ldz,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
-        LAPACK_ZHBGV( &jobz, &uplo, &n, &ka, &kb, traits::complex_ptr(ab),
-                &ldab, traits::complex_ptr(bb), &ldbb, w,
-                traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
-                rwork, &info );
-    }
+
+inline void hbgv( const char jobz, const char uplo, const integer_t n,
+        const integer_t ka, const integer_t kb, traits::complex_f* ab,
+        const integer_t ldab, traits::complex_f* bb, const integer_t ldbb,
+        float* w, traits::complex_f* z, const integer_t ldz,
+        traits::complex_f* work, float* rwork, integer_t& info ) {
+    LAPACK_CHBGV( &jobz, &uplo, &n, &ka, &kb, traits::complex_ptr(ab), &ldab,
+            traits::complex_ptr(bb), &ldbb, w, traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), rwork, &info );
 }
+
+inline void hbgv( const char jobz, const char uplo, const integer_t n,
+        const integer_t ka, const integer_t kb, traits::complex_d* ab,
+        const integer_t ldab, traits::complex_d* bb, const integer_t ldbb,
+        double* w, traits::complex_d* z, const integer_t ldz,
+        traits::complex_d* work, double* rwork, integer_t& info ) {
+    LAPACK_ZHBGV( &jobz, &uplo, &n, &ka, &kb, traits::complex_ptr(ab), &ldab,
+            traits::complex_ptr(bb), &ldbb, w, traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -155,6 +156,9 @@ inline integer_t hbgv( const char jobz, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

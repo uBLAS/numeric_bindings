@@ -36,33 +36,38 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sycon( const char uplo, const integer_t n, const float* a,
-            const integer_t lda, const integer_t* ipiv, const float anorm,
-            float& rcond, float* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_SSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, iwork,
-                &info );
-    }
-    inline void sycon( const char uplo, const integer_t n, const double* a,
-            const integer_t lda, const integer_t* ipiv, const double anorm,
-            double& rcond, double* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_DSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, iwork,
-                &info );
-    }
-    inline void sycon( const char uplo, const integer_t n,
-            const traits::complex_f* a, const integer_t lda,
-            const integer_t* ipiv, const float anorm, float& rcond,
-            traits::complex_f* work, integer_t& info ) {
-        LAPACK_CSYCON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
-                &rcond, traits::complex_ptr(work), &info );
-    }
-    inline void sycon( const char uplo, const integer_t n,
-            const traits::complex_d* a, const integer_t lda,
-            const integer_t* ipiv, const double anorm, double& rcond,
-            traits::complex_d* work, integer_t& info ) {
-        LAPACK_ZSYCON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
-                &rcond, traits::complex_ptr(work), &info );
-    }
+
+inline void sycon( const char uplo, const integer_t n, const float* a,
+        const integer_t lda, const integer_t* ipiv, const float anorm,
+        float& rcond, float* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_SSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, iwork,
+            &info );
 }
+
+inline void sycon( const char uplo, const integer_t n, const double* a,
+        const integer_t lda, const integer_t* ipiv, const double anorm,
+        double& rcond, double* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_DSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, iwork,
+            &info );
+}
+
+inline void sycon( const char uplo, const integer_t n,
+        const traits::complex_f* a, const integer_t lda,
+        const integer_t* ipiv, const float anorm, float& rcond,
+        traits::complex_f* work, integer_t& info ) {
+    LAPACK_CSYCON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
+            &rcond, traits::complex_ptr(work), &info );
+}
+
+inline void sycon( const char uplo, const integer_t n,
+        const traits::complex_d* a, const integer_t lda,
+        const integer_t* ipiv, const double anorm, double& rcond,
+        traits::complex_d* work, integer_t& info ) {
+    LAPACK_ZSYCON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
+            &rcond, traits::complex_ptr(work), &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -208,6 +213,9 @@ inline integer_t sycon( const char uplo, const MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

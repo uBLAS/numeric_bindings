@@ -34,21 +34,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void heev( const char jobz, const char uplo, const integer_t n,
-            traits::complex_f* a, const integer_t lda, float* w,
-            traits::complex_f* work, const integer_t lwork, float* rwork,
-            integer_t& info ) {
-        LAPACK_CHEEV( &jobz, &uplo, &n, traits::complex_ptr(a), &lda, w,
-                traits::complex_ptr(work), &lwork, rwork, &info );
-    }
-    inline void heev( const char jobz, const char uplo, const integer_t n,
-            traits::complex_d* a, const integer_t lda, double* w,
-            traits::complex_d* work, const integer_t lwork, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZHEEV( &jobz, &uplo, &n, traits::complex_ptr(a), &lda, w,
-                traits::complex_ptr(work), &lwork, rwork, &info );
-    }
+
+inline void heev( const char jobz, const char uplo, const integer_t n,
+        traits::complex_f* a, const integer_t lda, float* w,
+        traits::complex_f* work, const integer_t lwork, float* rwork,
+        integer_t& info ) {
+    LAPACK_CHEEV( &jobz, &uplo, &n, traits::complex_ptr(a), &lda, w,
+            traits::complex_ptr(work), &lwork, rwork, &info );
 }
+
+inline void heev( const char jobz, const char uplo, const integer_t n,
+        traits::complex_d* a, const integer_t lda, double* w,
+        traits::complex_d* work, const integer_t lwork, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZHEEV( &jobz, &uplo, &n, traits::complex_ptr(a), &lda, w,
+            traits::complex_ptr(work), &lwork, rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -137,6 +140,9 @@ inline integer_t heev( const char jobz, MatrixA& a, VectorW& w ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

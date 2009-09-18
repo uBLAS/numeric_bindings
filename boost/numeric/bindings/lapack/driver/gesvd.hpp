@@ -37,41 +37,44 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gesvd( const char jobu, const char jobvt, const integer_t m,
-            const integer_t n, float* a, const integer_t lda, float* s,
-            float* u, const integer_t ldu, float* vt, const integer_t ldvt,
-            float* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_SGESVD( &jobu, &jobvt, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt,
-                work, &lwork, &info );
-    }
-    inline void gesvd( const char jobu, const char jobvt, const integer_t m,
-            const integer_t n, double* a, const integer_t lda, double* s,
-            double* u, const integer_t ldu, double* vt, const integer_t ldvt,
-            double* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_DGESVD( &jobu, &jobvt, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt,
-                work, &lwork, &info );
-    }
-    inline void gesvd( const char jobu, const char jobvt, const integer_t m,
-            const integer_t n, traits::complex_f* a, const integer_t lda,
-            float* s, traits::complex_f* u, const integer_t ldu,
-            traits::complex_f* vt, const integer_t ldvt,
-            traits::complex_f* work, const integer_t lwork, float* rwork,
-            integer_t& info ) {
-        LAPACK_CGESVD( &jobu, &jobvt, &m, &n, traits::complex_ptr(a), &lda, s,
-                traits::complex_ptr(u), &ldu, traits::complex_ptr(vt), &ldvt,
-                traits::complex_ptr(work), &lwork, rwork, &info );
-    }
-    inline void gesvd( const char jobu, const char jobvt, const integer_t m,
-            const integer_t n, traits::complex_d* a, const integer_t lda,
-            double* s, traits::complex_d* u, const integer_t ldu,
-            traits::complex_d* vt, const integer_t ldvt,
-            traits::complex_d* work, const integer_t lwork, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZGESVD( &jobu, &jobvt, &m, &n, traits::complex_ptr(a), &lda, s,
-                traits::complex_ptr(u), &ldu, traits::complex_ptr(vt), &ldvt,
-                traits::complex_ptr(work), &lwork, rwork, &info );
-    }
+
+inline void gesvd( const char jobu, const char jobvt, const integer_t m,
+        const integer_t n, float* a, const integer_t lda, float* s, float* u,
+        const integer_t ldu, float* vt, const integer_t ldvt, float* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_SGESVD( &jobu, &jobvt, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt,
+            work, &lwork, &info );
 }
+
+inline void gesvd( const char jobu, const char jobvt, const integer_t m,
+        const integer_t n, double* a, const integer_t lda, double* s,
+        double* u, const integer_t ldu, double* vt, const integer_t ldvt,
+        double* work, const integer_t lwork, integer_t& info ) {
+    LAPACK_DGESVD( &jobu, &jobvt, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt,
+            work, &lwork, &info );
+}
+
+inline void gesvd( const char jobu, const char jobvt, const integer_t m,
+        const integer_t n, traits::complex_f* a, const integer_t lda,
+        float* s, traits::complex_f* u, const integer_t ldu,
+        traits::complex_f* vt, const integer_t ldvt, traits::complex_f* work,
+        const integer_t lwork, float* rwork, integer_t& info ) {
+    LAPACK_CGESVD( &jobu, &jobvt, &m, &n, traits::complex_ptr(a), &lda, s,
+            traits::complex_ptr(u), &ldu, traits::complex_ptr(vt), &ldvt,
+            traits::complex_ptr(work), &lwork, rwork, &info );
+}
+
+inline void gesvd( const char jobu, const char jobvt, const integer_t m,
+        const integer_t n, traits::complex_d* a, const integer_t lda,
+        double* s, traits::complex_d* u, const integer_t ldu,
+        traits::complex_d* vt, const integer_t ldvt, traits::complex_d* work,
+        const integer_t lwork, double* rwork, integer_t& info ) {
+    LAPACK_ZGESVD( &jobu, &jobvt, &m, &n, traits::complex_ptr(a), &lda, s,
+            traits::complex_ptr(u), &ldu, traits::complex_ptr(vt), &ldvt,
+            traits::complex_ptr(work), &lwork, rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -279,6 +282,9 @@ inline integer_t gesvd( const char jobu, const char jobvt, MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

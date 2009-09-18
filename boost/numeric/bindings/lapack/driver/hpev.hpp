@@ -33,23 +33,26 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hpev( const char jobz, const char uplo, const integer_t n,
-            traits::complex_f* ap, float* w, traits::complex_f* z,
-            const integer_t ldz, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
-        LAPACK_CHPEV( &jobz, &uplo, &n, traits::complex_ptr(ap), w,
-                traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
-                rwork, &info );
-    }
-    inline void hpev( const char jobz, const char uplo, const integer_t n,
-            traits::complex_d* ap, double* w, traits::complex_d* z,
-            const integer_t ldz, traits::complex_d* work, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZHPEV( &jobz, &uplo, &n, traits::complex_ptr(ap), w,
-                traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
-                rwork, &info );
-    }
+
+inline void hpev( const char jobz, const char uplo, const integer_t n,
+        traits::complex_f* ap, float* w, traits::complex_f* z,
+        const integer_t ldz, traits::complex_f* work, float* rwork,
+        integer_t& info ) {
+    LAPACK_CHPEV( &jobz, &uplo, &n, traits::complex_ptr(ap), w,
+            traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
+            &info );
 }
+
+inline void hpev( const char jobz, const char uplo, const integer_t n,
+        traits::complex_d* ap, double* w, traits::complex_d* z,
+        const integer_t ldz, traits::complex_d* work, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZHPEV( &jobz, &uplo, &n, traits::complex_ptr(ap), w,
+            traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -130,6 +133,9 @@ inline integer_t hpev( const char jobz, const integer_t n, MatrixAP& ap,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

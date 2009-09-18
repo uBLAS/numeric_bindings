@@ -37,49 +37,54 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void geesx( const char jobvs, const char sort, logical_t* select,
-            const char sense, const integer_t n, float* a,
-            const integer_t lda, integer_t& sdim, float* wr, float* wi,
-            float* vs, const integer_t ldvs, float& rconde, float& rcondv,
-            float* work, const integer_t lwork, integer_t* iwork,
-            const integer_t liwork, logical_t* bwork, integer_t& info ) {
-        LAPACK_SGEESX( &jobvs, &sort, &select, &sense, &n, a, &lda, &sdim, wr,
-                wi, vs, &ldvs, &rconde, &rcondv, work, &lwork, iwork, &liwork,
-                bwork, &info );
-    }
-    inline void geesx( const char jobvs, const char sort, logical_t* select,
-            const char sense, const integer_t n, double* a,
-            const integer_t lda, integer_t& sdim, double* wr, double* wi,
-            double* vs, const integer_t ldvs, double& rconde, double& rcondv,
-            double* work, const integer_t lwork, integer_t* iwork,
-            const integer_t liwork, logical_t* bwork, integer_t& info ) {
-        LAPACK_DGEESX( &jobvs, &sort, &select, &sense, &n, a, &lda, &sdim, wr,
-                wi, vs, &ldvs, &rconde, &rcondv, work, &lwork, iwork, &liwork,
-                bwork, &info );
-    }
-    inline void geesx( const char jobvs, const char sort, logical_t* select,
-            const char sense, const integer_t n, traits::complex_f* a,
-            const integer_t lda, integer_t& sdim, traits::complex_f* w,
-            traits::complex_f* vs, const integer_t ldvs, float& rconde,
-            float& rcondv, traits::complex_f* work, const integer_t lwork,
-            float* rwork, logical_t* bwork, integer_t& info ) {
-        LAPACK_CGEESX( &jobvs, &sort, &select, &sense, &n,
-                traits::complex_ptr(a), &lda, &sdim, traits::complex_ptr(w),
-                traits::complex_ptr(vs), &ldvs, &rconde, &rcondv,
-                traits::complex_ptr(work), &lwork, rwork, bwork, &info );
-    }
-    inline void geesx( const char jobvs, const char sort, logical_t* select,
-            const char sense, const integer_t n, traits::complex_d* a,
-            const integer_t lda, integer_t& sdim, traits::complex_d* w,
-            traits::complex_d* vs, const integer_t ldvs, double& rconde,
-            double& rcondv, traits::complex_d* work, const integer_t lwork,
-            double* rwork, logical_t* bwork, integer_t& info ) {
-        LAPACK_ZGEESX( &jobvs, &sort, &select, &sense, &n,
-                traits::complex_ptr(a), &lda, &sdim, traits::complex_ptr(w),
-                traits::complex_ptr(vs), &ldvs, &rconde, &rcondv,
-                traits::complex_ptr(work), &lwork, rwork, bwork, &info );
-    }
+
+inline void geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const integer_t n, float* a, const integer_t lda,
+        integer_t& sdim, float* wr, float* wi, float* vs,
+        const integer_t ldvs, float& rconde, float& rcondv, float* work,
+        const integer_t lwork, integer_t* iwork, const integer_t liwork,
+        logical_t* bwork, integer_t& info ) {
+    LAPACK_SGEESX( &jobvs, &sort, &select, &sense, &n, a, &lda, &sdim, wr, wi,
+            vs, &ldvs, &rconde, &rcondv, work, &lwork, iwork, &liwork, bwork,
+            &info );
 }
+
+inline void geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const integer_t n, double* a, const integer_t lda,
+        integer_t& sdim, double* wr, double* wi, double* vs,
+        const integer_t ldvs, double& rconde, double& rcondv, double* work,
+        const integer_t lwork, integer_t* iwork, const integer_t liwork,
+        logical_t* bwork, integer_t& info ) {
+    LAPACK_DGEESX( &jobvs, &sort, &select, &sense, &n, a, &lda, &sdim, wr, wi,
+            vs, &ldvs, &rconde, &rcondv, work, &lwork, iwork, &liwork, bwork,
+            &info );
+}
+
+inline void geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const integer_t n, traits::complex_f* a,
+        const integer_t lda, integer_t& sdim, traits::complex_f* w,
+        traits::complex_f* vs, const integer_t ldvs, float& rconde,
+        float& rcondv, traits::complex_f* work, const integer_t lwork,
+        float* rwork, logical_t* bwork, integer_t& info ) {
+    LAPACK_CGEESX( &jobvs, &sort, &select, &sense, &n, traits::complex_ptr(a),
+            &lda, &sdim, traits::complex_ptr(w), traits::complex_ptr(vs),
+            &ldvs, &rconde, &rcondv, traits::complex_ptr(work), &lwork, rwork,
+            bwork, &info );
+}
+
+inline void geesx( const char jobvs, const char sort, logical_t* select,
+        const char sense, const integer_t n, traits::complex_d* a,
+        const integer_t lda, integer_t& sdim, traits::complex_d* w,
+        traits::complex_d* vs, const integer_t ldvs, double& rconde,
+        double& rcondv, traits::complex_d* work, const integer_t lwork,
+        double* rwork, logical_t* bwork, integer_t& info ) {
+    LAPACK_ZGEESX( &jobvs, &sort, &select, &sense, &n, traits::complex_ptr(a),
+            &lda, &sdim, traits::complex_ptr(w), traits::complex_ptr(vs),
+            &ldvs, &rconde, &rcondv, traits::complex_ptr(work), &lwork, rwork,
+            bwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -374,6 +379,9 @@ inline integer_t geesx( const char jobvs, const char sort,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

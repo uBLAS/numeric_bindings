@@ -36,51 +36,54 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hsein( const char side, const char eigsrc, const char initv,
-            logical_t* select, const integer_t n, const float* h,
-            const integer_t ldh, float* wr, const float* wi, float* vl,
-            const integer_t ldvl, float* vr, const integer_t ldvr,
-            const integer_t mm, integer_t& m, float* work, integer_t* ifaill,
-            integer_t* ifailr, integer_t& info ) {
-        LAPACK_SHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, wr, wi,
-                vl, &ldvl, vr, &ldvr, &mm, &m, work, ifaill, ifailr, &info );
-    }
-    inline void hsein( const char side, const char eigsrc, const char initv,
-            logical_t* select, const integer_t n, const double* h,
-            const integer_t ldh, double* wr, const double* wi, double* vl,
-            const integer_t ldvl, double* vr, const integer_t ldvr,
-            const integer_t mm, integer_t& m, double* work, integer_t* ifaill,
-            integer_t* ifailr, integer_t& info ) {
-        LAPACK_DHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, wr, wi,
-                vl, &ldvl, vr, &ldvr, &mm, &m, work, ifaill, ifailr, &info );
-    }
-    inline void hsein( const char side, const char eigsrc, const char initv,
-            const logical_t* select, const integer_t n,
-            const traits::complex_f* h, const integer_t ldh,
-            traits::complex_f* w, traits::complex_f* vl, const integer_t ldvl,
-            traits::complex_f* vr, const integer_t ldvr, const integer_t mm,
-            integer_t& m, traits::complex_f* work, float* rwork,
-            integer_t* ifaill, integer_t* ifailr, integer_t& info ) {
-        LAPACK_CHSEIN( &side, &eigsrc, &initv, select, &n,
-                traits::complex_ptr(h), &ldh, traits::complex_ptr(w),
-                traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
-                &ldvr, &mm, &m, traits::complex_ptr(work), rwork, ifaill,
-                ifailr, &info );
-    }
-    inline void hsein( const char side, const char eigsrc, const char initv,
-            const logical_t* select, const integer_t n,
-            const traits::complex_d* h, const integer_t ldh,
-            traits::complex_d* w, traits::complex_d* vl, const integer_t ldvl,
-            traits::complex_d* vr, const integer_t ldvr, const integer_t mm,
-            integer_t& m, traits::complex_d* work, double* rwork,
-            integer_t* ifaill, integer_t* ifailr, integer_t& info ) {
-        LAPACK_ZHSEIN( &side, &eigsrc, &initv, select, &n,
-                traits::complex_ptr(h), &ldh, traits::complex_ptr(w),
-                traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
-                &ldvr, &mm, &m, traits::complex_ptr(work), rwork, ifaill,
-                ifailr, &info );
-    }
+
+inline void hsein( const char side, const char eigsrc, const char initv,
+        logical_t* select, const integer_t n, const float* h,
+        const integer_t ldh, float* wr, const float* wi, float* vl,
+        const integer_t ldvl, float* vr, const integer_t ldvr,
+        const integer_t mm, integer_t& m, float* work, integer_t* ifaill,
+        integer_t* ifailr, integer_t& info ) {
+    LAPACK_SHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, wr, wi, vl,
+            &ldvl, vr, &ldvr, &mm, &m, work, ifaill, ifailr, &info );
 }
+
+inline void hsein( const char side, const char eigsrc, const char initv,
+        logical_t* select, const integer_t n, const double* h,
+        const integer_t ldh, double* wr, const double* wi, double* vl,
+        const integer_t ldvl, double* vr, const integer_t ldvr,
+        const integer_t mm, integer_t& m, double* work, integer_t* ifaill,
+        integer_t* ifailr, integer_t& info ) {
+    LAPACK_DHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, wr, wi, vl,
+            &ldvl, vr, &ldvr, &mm, &m, work, ifaill, ifailr, &info );
+}
+
+inline void hsein( const char side, const char eigsrc, const char initv,
+        const logical_t* select, const integer_t n,
+        const traits::complex_f* h, const integer_t ldh, traits::complex_f* w,
+        traits::complex_f* vl, const integer_t ldvl, traits::complex_f* vr,
+        const integer_t ldvr, const integer_t mm, integer_t& m,
+        traits::complex_f* work, float* rwork, integer_t* ifaill,
+        integer_t* ifailr, integer_t& info ) {
+    LAPACK_CHSEIN( &side, &eigsrc, &initv, select, &n, traits::complex_ptr(h),
+            &ldh, traits::complex_ptr(w), traits::complex_ptr(vl), &ldvl,
+            traits::complex_ptr(vr), &ldvr, &mm, &m,
+            traits::complex_ptr(work), rwork, ifaill, ifailr, &info );
+}
+
+inline void hsein( const char side, const char eigsrc, const char initv,
+        const logical_t* select, const integer_t n,
+        const traits::complex_d* h, const integer_t ldh, traits::complex_d* w,
+        traits::complex_d* vl, const integer_t ldvl, traits::complex_d* vr,
+        const integer_t ldvr, const integer_t mm, integer_t& m,
+        traits::complex_d* work, double* rwork, integer_t* ifaill,
+        integer_t* ifailr, integer_t& info ) {
+    LAPACK_ZHSEIN( &side, &eigsrc, &initv, select, &n, traits::complex_ptr(h),
+            &ldh, traits::complex_ptr(w), traits::complex_ptr(vl), &ldvl,
+            traits::complex_ptr(vr), &ldvr, &mm, &m,
+            traits::complex_ptr(work), rwork, ifaill, ifailr, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -333,6 +336,9 @@ inline integer_t hsein( const char side, const char eigsrc,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -33,19 +33,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void spgv( const integer_t itype, const char jobz, const char uplo,
-            const integer_t n, float* ap, float* bp, float* w, float* z,
-            const integer_t ldz, float* work, integer_t& info ) {
-        LAPACK_SSPGV( &itype, &jobz, &uplo, &n, ap, bp, w, z, &ldz, work,
-                &info );
-    }
-    inline void spgv( const integer_t itype, const char jobz, const char uplo,
-            const integer_t n, double* ap, double* bp, double* w, double* z,
-            const integer_t ldz, double* work, integer_t& info ) {
-        LAPACK_DSPGV( &itype, &jobz, &uplo, &n, ap, bp, w, z, &ldz, work,
-                &info );
-    }
+
+inline void spgv( const integer_t itype, const char jobz, const char uplo,
+        const integer_t n, float* ap, float* bp, float* w, float* z,
+        const integer_t ldz, float* work, integer_t& info ) {
+    LAPACK_SSPGV( &itype, &jobz, &uplo, &n, ap, bp, w, z, &ldz, work, &info );
 }
+
+inline void spgv( const integer_t itype, const char jobz, const char uplo,
+        const integer_t n, double* ap, double* bp, double* w, double* z,
+        const integer_t ldz, double* work, integer_t& info ) {
+    LAPACK_DSPGV( &itype, &jobz, &uplo, &n, ap, bp, w, z, &ldz, work, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -133,6 +134,9 @@ inline integer_t spgv( const integer_t itype, const char jobz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

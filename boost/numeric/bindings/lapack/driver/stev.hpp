@@ -33,16 +33,18 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void stev( const char jobz, const integer_t n, float* d, float* e,
-            float* z, const integer_t ldz, float* work, integer_t& info ) {
-        LAPACK_SSTEV( &jobz, &n, d, e, z, &ldz, work, &info );
-    }
-    inline void stev( const char jobz, const integer_t n, double* d,
-            double* e, double* z, const integer_t ldz, double* work,
-            integer_t& info ) {
-        LAPACK_DSTEV( &jobz, &n, d, e, z, &ldz, work, &info );
-    }
+
+inline void stev( const char jobz, const integer_t n, float* d, float* e,
+        float* z, const integer_t ldz, float* work, integer_t& info ) {
+    LAPACK_SSTEV( &jobz, &n, d, e, z, &ldz, work, &info );
 }
+
+inline void stev( const char jobz, const integer_t n, double* d, double* e,
+        double* z, const integer_t ldz, double* work, integer_t& info ) {
+    LAPACK_DSTEV( &jobz, &n, d, e, z, &ldz, work, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -117,6 +119,9 @@ inline integer_t stev( const char jobz, const integer_t n, VectorD& d,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -34,27 +34,32 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ptsv( const integer_t n, const integer_t nrhs, float* d,
-            float* e, float* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_SPTSV( &n, &nrhs, d, e, b, &ldb, &info );
-    }
-    inline void ptsv( const integer_t n, const integer_t nrhs, double* d,
-            double* e, double* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_DPTSV( &n, &nrhs, d, e, b, &ldb, &info );
-    }
-    inline void ptsv( const integer_t n, const integer_t nrhs, float* d,
-            traits::complex_f* e, traits::complex_f* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_CPTSV( &n, &nrhs, d, traits::complex_ptr(e),
-                traits::complex_ptr(b), &ldb, &info );
-    }
-    inline void ptsv( const integer_t n, const integer_t nrhs, double* d,
-            traits::complex_d* e, traits::complex_d* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_ZPTSV( &n, &nrhs, d, traits::complex_ptr(e),
-                traits::complex_ptr(b), &ldb, &info );
-    }
+
+inline void ptsv( const integer_t n, const integer_t nrhs, float* d, float* e,
+        float* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_SPTSV( &n, &nrhs, d, e, b, &ldb, &info );
 }
+
+inline void ptsv( const integer_t n, const integer_t nrhs, double* d,
+        double* e, double* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_DPTSV( &n, &nrhs, d, e, b, &ldb, &info );
+}
+
+inline void ptsv( const integer_t n, const integer_t nrhs, float* d,
+        traits::complex_f* e, traits::complex_f* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_CPTSV( &n, &nrhs, d, traits::complex_ptr(e),
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+inline void ptsv( const integer_t n, const integer_t nrhs, double* d,
+        traits::complex_d* e, traits::complex_d* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_ZPTSV( &n, &nrhs, d, traits::complex_ptr(e),
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -144,6 +149,9 @@ inline integer_t ptsv( const integer_t n, VectorD& d, VectorE& e,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

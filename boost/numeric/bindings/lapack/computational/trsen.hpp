@@ -34,25 +34,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trsen( const char job, const char compq,
-            const logical_t* select, const integer_t n, traits::complex_f* t,
-            const integer_t ldt, traits::complex_f* q, const integer_t ldq,
-            traits::complex_f* w, integer_t& m, float& s, float& sep,
-            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_CTRSEN( &job, &compq, select, &n, traits::complex_ptr(t), &ldt,
-                traits::complex_ptr(q), &ldq, traits::complex_ptr(w), &m, &s,
-                &sep, traits::complex_ptr(work), &lwork, &info );
-    }
-    inline void trsen( const char job, const char compq,
-            const logical_t* select, const integer_t n, traits::complex_d* t,
-            const integer_t ldt, traits::complex_d* q, const integer_t ldq,
-            traits::complex_d* w, integer_t& m, double& s, double& sep,
-            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_ZTRSEN( &job, &compq, select, &n, traits::complex_ptr(t), &ldt,
-                traits::complex_ptr(q), &ldq, traits::complex_ptr(w), &m, &s,
-                &sep, traits::complex_ptr(work), &lwork, &info );
-    }
+
+inline void trsen( const char job, const char compq, const logical_t* select,
+        const integer_t n, traits::complex_f* t, const integer_t ldt,
+        traits::complex_f* q, const integer_t ldq, traits::complex_f* w,
+        integer_t& m, float& s, float& sep, traits::complex_f* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_CTRSEN( &job, &compq, select, &n, traits::complex_ptr(t), &ldt,
+            traits::complex_ptr(q), &ldq, traits::complex_ptr(w), &m, &s,
+            &sep, traits::complex_ptr(work), &lwork, &info );
 }
+
+inline void trsen( const char job, const char compq, const logical_t* select,
+        const integer_t n, traits::complex_d* t, const integer_t ldt,
+        traits::complex_d* q, const integer_t ldq, traits::complex_d* w,
+        integer_t& m, double& s, double& sep, traits::complex_d* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_ZTRSEN( &job, &compq, select, &n, traits::complex_ptr(t), &ldt,
+            traits::complex_ptr(q), &ldq, traits::complex_ptr(w), &m, &s,
+            &sep, traits::complex_ptr(work), &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -167,6 +170,9 @@ inline integer_t trsen( const char job, const char compq,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

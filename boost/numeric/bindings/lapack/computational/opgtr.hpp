@@ -33,17 +33,20 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void opgtr( const char uplo, const integer_t n, const float* ap,
-            const float* tau, float* q, const integer_t ldq, float* work,
-            integer_t& info ) {
-        LAPACK_SOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
-    }
-    inline void opgtr( const char uplo, const integer_t n, const double* ap,
-            const double* tau, double* q, const integer_t ldq, double* work,
-            integer_t& info ) {
-        LAPACK_DOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
-    }
+
+inline void opgtr( const char uplo, const integer_t n, const float* ap,
+        const float* tau, float* q, const integer_t ldq, float* work,
+        integer_t& info ) {
+    LAPACK_SOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
 }
+
+inline void opgtr( const char uplo, const integer_t n, const double* ap,
+        const double* tau, double* q, const integer_t ldq, double* work,
+        integer_t& info ) {
+    LAPACK_DOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -127,6 +130,9 @@ inline integer_t opgtr( const char uplo, const VectorAP& ap,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

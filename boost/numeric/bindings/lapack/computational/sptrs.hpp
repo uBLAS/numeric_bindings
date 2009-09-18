@@ -31,31 +31,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sptrs( const char uplo, const integer_t n,
-            const integer_t nrhs, const float* ap, const integer_t* ipiv,
-            float* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_SSPTRS( &uplo, &n, &nrhs, ap, ipiv, b, &ldb, &info );
-    }
-    inline void sptrs( const char uplo, const integer_t n,
-            const integer_t nrhs, const double* ap, const integer_t* ipiv,
-            double* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_DSPTRS( &uplo, &n, &nrhs, ap, ipiv, b, &ldb, &info );
-    }
-    inline void sptrs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_f* ap,
-            const integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_CSPTRS( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
-                traits::complex_ptr(b), &ldb, &info );
-    }
-    inline void sptrs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_d* ap,
-            const integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
-            integer_t& info ) {
-        LAPACK_ZSPTRS( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
-                traits::complex_ptr(b), &ldb, &info );
-    }
+
+inline void sptrs( const char uplo, const integer_t n, const integer_t nrhs,
+        const float* ap, const integer_t* ipiv, float* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_SSPTRS( &uplo, &n, &nrhs, ap, ipiv, b, &ldb, &info );
 }
+
+inline void sptrs( const char uplo, const integer_t n, const integer_t nrhs,
+        const double* ap, const integer_t* ipiv, double* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_DSPTRS( &uplo, &n, &nrhs, ap, ipiv, b, &ldb, &info );
+}
+
+inline void sptrs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_f* ap, const integer_t* ipiv,
+        traits::complex_f* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_CSPTRS( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+inline void sptrs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_d* ap, const integer_t* ipiv,
+        traits::complex_d* b, const integer_t ldb, integer_t& info ) {
+    LAPACK_ZSPTRS( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
+            traits::complex_ptr(b), &ldb, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -96,6 +99,9 @@ inline integer_t sptrs( const char uplo, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

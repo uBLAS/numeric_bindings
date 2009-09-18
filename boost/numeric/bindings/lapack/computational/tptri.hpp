@@ -31,23 +31,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tptri( const char uplo, const char diag, const integer_t n,
-            float* ap, integer_t& info ) {
-        LAPACK_STPTRI( &uplo, &diag, &n, ap, &info );
-    }
-    inline void tptri( const char uplo, const char diag, const integer_t n,
-            double* ap, integer_t& info ) {
-        LAPACK_DTPTRI( &uplo, &diag, &n, ap, &info );
-    }
-    inline void tptri( const char uplo, const char diag, const integer_t n,
-            traits::complex_f* ap, integer_t& info ) {
-        LAPACK_CTPTRI( &uplo, &diag, &n, traits::complex_ptr(ap), &info );
-    }
-    inline void tptri( const char uplo, const char diag, const integer_t n,
-            traits::complex_d* ap, integer_t& info ) {
-        LAPACK_ZTPTRI( &uplo, &diag, &n, traits::complex_ptr(ap), &info );
-    }
+
+inline void tptri( const char uplo, const char diag, const integer_t n,
+        float* ap, integer_t& info ) {
+    LAPACK_STPTRI( &uplo, &diag, &n, ap, &info );
 }
+
+inline void tptri( const char uplo, const char diag, const integer_t n,
+        double* ap, integer_t& info ) {
+    LAPACK_DTPTRI( &uplo, &diag, &n, ap, &info );
+}
+
+inline void tptri( const char uplo, const char diag, const integer_t n,
+        traits::complex_f* ap, integer_t& info ) {
+    LAPACK_CTPTRI( &uplo, &diag, &n, traits::complex_ptr(ap), &info );
+}
+
+inline void tptri( const char uplo, const char diag, const integer_t n,
+        traits::complex_d* ap, integer_t& info ) {
+    LAPACK_ZTPTRI( &uplo, &diag, &n, traits::complex_ptr(ap), &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -79,6 +84,9 @@ inline integer_t tptri( const char diag, MatrixAP& ap ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

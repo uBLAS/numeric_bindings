@@ -36,57 +36,61 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbsvx( const char fact, const char trans, const integer_t n,
-            const integer_t kl, const integer_t ku, const integer_t nrhs,
-            float* ab, const integer_t ldab, float* afb,
-            const integer_t ldafb, integer_t* ipiv, char& equed, float* r,
-            float* c, float* b, const integer_t ldb, float* x,
-            const integer_t ldx, float& rcond, float* ferr, float* berr,
-            float* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_SGBSVX( &fact, &trans, &n, &kl, &ku, &nrhs, ab, &ldab, afb,
-                &ldafb, ipiv, &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr,
-                berr, work, iwork, &info );
-    }
-    inline void gbsvx( const char fact, const char trans, const integer_t n,
-            const integer_t kl, const integer_t ku, const integer_t nrhs,
-            double* ab, const integer_t ldab, double* afb,
-            const integer_t ldafb, integer_t* ipiv, char& equed, double* r,
-            double* c, double* b, const integer_t ldb, double* x,
-            const integer_t ldx, double& rcond, double* ferr, double* berr,
-            double* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_DGBSVX( &fact, &trans, &n, &kl, &ku, &nrhs, ab, &ldab, afb,
-                &ldafb, ipiv, &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr,
-                berr, work, iwork, &info );
-    }
-    inline void gbsvx( const char fact, const char trans, const integer_t n,
-            const integer_t kl, const integer_t ku, const integer_t nrhs,
-            traits::complex_f* ab, const integer_t ldab,
-            traits::complex_f* afb, const integer_t ldafb, integer_t* ipiv,
-            char& equed, float* r, float* c, traits::complex_f* b,
-            const integer_t ldb, traits::complex_f* x, const integer_t ldx,
-            float& rcond, float* ferr, float* berr, traits::complex_f* work,
-            float* rwork, integer_t& info ) {
-        LAPACK_CGBSVX( &fact, &trans, &n, &kl, &ku, &nrhs,
-                traits::complex_ptr(ab), &ldab, traits::complex_ptr(afb),
-                &ldafb, ipiv, &equed, r, c, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
-    inline void gbsvx( const char fact, const char trans, const integer_t n,
-            const integer_t kl, const integer_t ku, const integer_t nrhs,
-            traits::complex_d* ab, const integer_t ldab,
-            traits::complex_d* afb, const integer_t ldafb, integer_t* ipiv,
-            char& equed, double* r, double* c, traits::complex_d* b,
-            const integer_t ldb, traits::complex_d* x, const integer_t ldx,
-            double& rcond, double* ferr, double* berr,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
-        LAPACK_ZGBSVX( &fact, &trans, &n, &kl, &ku, &nrhs,
-                traits::complex_ptr(ab), &ldab, traits::complex_ptr(afb),
-                &ldafb, ipiv, &equed, r, c, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void gbsvx( const char fact, const char trans, const integer_t n,
+        const integer_t kl, const integer_t ku, const integer_t nrhs,
+        float* ab, const integer_t ldab, float* afb, const integer_t ldafb,
+        integer_t* ipiv, char& equed, float* r, float* c, float* b,
+        const integer_t ldb, float* x, const integer_t ldx, float& rcond,
+        float* ferr, float* berr, float* work, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_SGBSVX( &fact, &trans, &n, &kl, &ku, &nrhs, ab, &ldab, afb, &ldafb,
+            ipiv, &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
+            iwork, &info );
 }
+
+inline void gbsvx( const char fact, const char trans, const integer_t n,
+        const integer_t kl, const integer_t ku, const integer_t nrhs,
+        double* ab, const integer_t ldab, double* afb, const integer_t ldafb,
+        integer_t* ipiv, char& equed, double* r, double* c, double* b,
+        const integer_t ldb, double* x, const integer_t ldx, double& rcond,
+        double* ferr, double* berr, double* work, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_DGBSVX( &fact, &trans, &n, &kl, &ku, &nrhs, ab, &ldab, afb, &ldafb,
+            ipiv, &equed, r, c, b, &ldb, x, &ldx, &rcond, ferr, berr, work,
+            iwork, &info );
+}
+
+inline void gbsvx( const char fact, const char trans, const integer_t n,
+        const integer_t kl, const integer_t ku, const integer_t nrhs,
+        traits::complex_f* ab, const integer_t ldab, traits::complex_f* afb,
+        const integer_t ldafb, integer_t* ipiv, char& equed, float* r,
+        float* c, traits::complex_f* b, const integer_t ldb,
+        traits::complex_f* x, const integer_t ldx, float& rcond, float* ferr,
+        float* berr, traits::complex_f* work, float* rwork, integer_t& info ) {
+    LAPACK_CGBSVX( &fact, &trans, &n, &kl, &ku, &nrhs,
+            traits::complex_ptr(ab), &ldab, traits::complex_ptr(afb), &ldafb,
+            ipiv, &equed, r, c, traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+inline void gbsvx( const char fact, const char trans, const integer_t n,
+        const integer_t kl, const integer_t ku, const integer_t nrhs,
+        traits::complex_d* ab, const integer_t ldab, traits::complex_d* afb,
+        const integer_t ldafb, integer_t* ipiv, char& equed, double* r,
+        double* c, traits::complex_d* b, const integer_t ldb,
+        traits::complex_d* x, const integer_t ldx, double& rcond,
+        double* ferr, double* berr, traits::complex_d* work, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZGBSVX( &fact, &trans, &n, &kl, &ku, &nrhs,
+            traits::complex_ptr(ab), &ldab, traits::complex_ptr(afb), &ldafb,
+            ipiv, &equed, r, c, traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -346,6 +350,9 @@ inline integer_t gbsvx( const char fact, const char trans,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

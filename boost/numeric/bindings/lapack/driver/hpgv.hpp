@@ -33,23 +33,26 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hpgv( const integer_t itype, const char jobz, const char uplo,
-            const integer_t n, traits::complex_f* ap, traits::complex_f* bp,
-            float* w, traits::complex_f* z, const integer_t ldz,
-            traits::complex_f* work, float* rwork, integer_t& info ) {
-        LAPACK_CHPGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(ap),
-                traits::complex_ptr(bp), w, traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), rwork, &info );
-    }
-    inline void hpgv( const integer_t itype, const char jobz, const char uplo,
-            const integer_t n, traits::complex_d* ap, traits::complex_d* bp,
-            double* w, traits::complex_d* z, const integer_t ldz,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
-        LAPACK_ZHPGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(ap),
-                traits::complex_ptr(bp), w, traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void hpgv( const integer_t itype, const char jobz, const char uplo,
+        const integer_t n, traits::complex_f* ap, traits::complex_f* bp,
+        float* w, traits::complex_f* z, const integer_t ldz,
+        traits::complex_f* work, float* rwork, integer_t& info ) {
+    LAPACK_CHPGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(ap),
+            traits::complex_ptr(bp), w, traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), rwork, &info );
 }
+
+inline void hpgv( const integer_t itype, const char jobz, const char uplo,
+        const integer_t n, traits::complex_d* ap, traits::complex_d* bp,
+        double* w, traits::complex_d* z, const integer_t ldz,
+        traits::complex_d* work, double* rwork, integer_t& info ) {
+    LAPACK_ZHPGV( &itype, &jobz, &uplo, &n, traits::complex_ptr(ap),
+            traits::complex_ptr(bp), w, traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -144,6 +147,9 @@ inline integer_t hpgv( const integer_t itype, const char jobz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -36,51 +36,52 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void syrfs( const char uplo, const integer_t n,
-            const integer_t nrhs, const float* a, const integer_t lda,
-            const float* af, const integer_t ldaf, const integer_t* ipiv,
-            const float* b, const integer_t ldb, float* x,
-            const integer_t ldx, float* ferr, float* berr, float* work,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_SSYRFS( &uplo, &n, &nrhs, a, &lda, af, &ldaf, ipiv, b, &ldb, x,
-                &ldx, ferr, berr, work, iwork, &info );
-    }
-    inline void syrfs( const char uplo, const integer_t n,
-            const integer_t nrhs, const double* a, const integer_t lda,
-            const double* af, const integer_t ldaf, const integer_t* ipiv,
-            const double* b, const integer_t ldb, double* x,
-            const integer_t ldx, double* ferr, double* berr, double* work,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_DSYRFS( &uplo, &n, &nrhs, a, &lda, af, &ldaf, ipiv, b, &ldb, x,
-                &ldx, ferr, berr, work, iwork, &info );
-    }
-    inline void syrfs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_f* a,
-            const integer_t lda, const traits::complex_f* af,
-            const integer_t ldaf, const integer_t* ipiv,
-            const traits::complex_f* b, const integer_t ldb,
-            traits::complex_f* x, const integer_t ldx, float* ferr,
-            float* berr, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
-        LAPACK_CSYRFS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
-                &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
-    inline void syrfs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_d* a,
-            const integer_t lda, const traits::complex_d* af,
-            const integer_t ldaf, const integer_t* ipiv,
-            const traits::complex_d* b, const integer_t ldb,
-            traits::complex_d* x, const integer_t ldx, double* ferr,
-            double* berr, traits::complex_d* work, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZSYRFS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
-                &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void syrfs( const char uplo, const integer_t n, const integer_t nrhs,
+        const float* a, const integer_t lda, const float* af,
+        const integer_t ldaf, const integer_t* ipiv, const float* b,
+        const integer_t ldb, float* x, const integer_t ldx, float* ferr,
+        float* berr, float* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_SSYRFS( &uplo, &n, &nrhs, a, &lda, af, &ldaf, ipiv, b, &ldb, x,
+            &ldx, ferr, berr, work, iwork, &info );
 }
+
+inline void syrfs( const char uplo, const integer_t n, const integer_t nrhs,
+        const double* a, const integer_t lda, const double* af,
+        const integer_t ldaf, const integer_t* ipiv, const double* b,
+        const integer_t ldb, double* x, const integer_t ldx, double* ferr,
+        double* berr, double* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_DSYRFS( &uplo, &n, &nrhs, a, &lda, af, &ldaf, ipiv, b, &ldb, x,
+            &ldx, ferr, berr, work, iwork, &info );
+}
+
+inline void syrfs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_f* a, const integer_t lda,
+        const traits::complex_f* af, const integer_t ldaf,
+        const integer_t* ipiv, const traits::complex_f* b,
+        const integer_t ldb, traits::complex_f* x, const integer_t ldx,
+        float* ferr, float* berr, traits::complex_f* work, float* rwork,
+        integer_t& info ) {
+    LAPACK_CSYRFS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
+            &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+inline void syrfs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_d* a, const integer_t lda,
+        const traits::complex_d* af, const integer_t ldaf,
+        const integer_t* ipiv, const traits::complex_d* b,
+        const integer_t ldb, traits::complex_d* x, const integer_t ldx,
+        double* ferr, double* berr, traits::complex_d* work, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZSYRFS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
+            &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -308,6 +309,9 @@ inline integer_t syrfs( const MatrixA& a, const MatrixAF& af,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

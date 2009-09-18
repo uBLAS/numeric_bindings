@@ -77,7 +77,7 @@ struct symm_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename MatrixA, typename MatrixB, typename MatrixC >
     static return_type invoke( const char side, const value_type alpha,
             const MatrixA& a, const MatrixB& b, const value_type beta,
@@ -97,7 +97,7 @@ struct symm_impl {
     }
 };
 
-// generic template function for calling to symm
+// generic template function to call symm
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename symm_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type

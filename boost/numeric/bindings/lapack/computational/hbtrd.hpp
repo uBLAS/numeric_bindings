@@ -33,23 +33,26 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hbtrd( const char vect, const char uplo, const integer_t n,
-            const integer_t kd, traits::complex_f* ab, const integer_t ldab,
-            float* d, float* e, traits::complex_f* q, const integer_t ldq,
-            traits::complex_f* work, integer_t& info ) {
-        LAPACK_CHBTRD( &vect, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab,
-                d, e, traits::complex_ptr(q), &ldq, traits::complex_ptr(work),
-                &info );
-    }
-    inline void hbtrd( const char vect, const char uplo, const integer_t n,
-            const integer_t kd, traits::complex_d* ab, const integer_t ldab,
-            double* d, double* e, traits::complex_d* q, const integer_t ldq,
-            traits::complex_d* work, integer_t& info ) {
-        LAPACK_ZHBTRD( &vect, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab,
-                d, e, traits::complex_ptr(q), &ldq, traits::complex_ptr(work),
-                &info );
-    }
+
+inline void hbtrd( const char vect, const char uplo, const integer_t n,
+        const integer_t kd, traits::complex_f* ab, const integer_t ldab,
+        float* d, float* e, traits::complex_f* q, const integer_t ldq,
+        traits::complex_f* work, integer_t& info ) {
+    LAPACK_CHBTRD( &vect, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, d,
+            e, traits::complex_ptr(q), &ldq, traits::complex_ptr(work),
+            &info );
 }
+
+inline void hbtrd( const char vect, const char uplo, const integer_t n,
+        const integer_t kd, traits::complex_d* ab, const integer_t ldab,
+        double* d, double* e, traits::complex_d* q, const integer_t ldq,
+        traits::complex_d* work, integer_t& info ) {
+    LAPACK_ZHBTRD( &vect, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, d,
+            e, traits::complex_ptr(q), &ldq, traits::complex_ptr(work),
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -137,6 +140,9 @@ inline integer_t hbtrd( const char vect, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -34,26 +34,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void syevx( const char jobz, const char range, const char uplo,
-            const integer_t n, float* a, const integer_t lda, const float vl,
-            const float vu, const integer_t il, const integer_t iu,
-            const float abstol, integer_t& m, float* w, float* z,
-            const integer_t ldz, float* work, const integer_t lwork,
-            integer_t* iwork, integer_t* ifail, integer_t& info ) {
-        LAPACK_SSYEVX( &jobz, &range, &uplo, &n, a, &lda, &vl, &vu, &il, &iu,
-                &abstol, &m, w, z, &ldz, work, &lwork, iwork, ifail, &info );
-    }
-    inline void syevx( const char jobz, const char range, const char uplo,
-            const integer_t n, double* a, const integer_t lda,
-            const double vl, const double vu, const integer_t il,
-            const integer_t iu, const double abstol, integer_t& m, double* w,
-            double* z, const integer_t ldz, double* work,
-            const integer_t lwork, integer_t* iwork, integer_t* ifail,
-            integer_t& info ) {
-        LAPACK_DSYEVX( &jobz, &range, &uplo, &n, a, &lda, &vl, &vu, &il, &iu,
-                &abstol, &m, w, z, &ldz, work, &lwork, iwork, ifail, &info );
-    }
+
+inline void syevx( const char jobz, const char range, const char uplo,
+        const integer_t n, float* a, const integer_t lda, const float vl,
+        const float vu, const integer_t il, const integer_t iu,
+        const float abstol, integer_t& m, float* w, float* z,
+        const integer_t ldz, float* work, const integer_t lwork,
+        integer_t* iwork, integer_t* ifail, integer_t& info ) {
+    LAPACK_SSYEVX( &jobz, &range, &uplo, &n, a, &lda, &vl, &vu, &il, &iu,
+            &abstol, &m, w, z, &ldz, work, &lwork, iwork, ifail, &info );
 }
+
+inline void syevx( const char jobz, const char range, const char uplo,
+        const integer_t n, double* a, const integer_t lda, const double vl,
+        const double vu, const integer_t il, const integer_t iu,
+        const double abstol, integer_t& m, double* w, double* z,
+        const integer_t ldz, double* work, const integer_t lwork,
+        integer_t* iwork, integer_t* ifail, integer_t& info ) {
+    LAPACK_DSYEVX( &jobz, &range, &uplo, &n, a, &lda, &vl, &vu, &il, &iu,
+            &abstol, &m, w, z, &ldz, work, &lwork, iwork, ifail, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -191,6 +193,9 @@ inline integer_t syevx( const char jobz, const char range, MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

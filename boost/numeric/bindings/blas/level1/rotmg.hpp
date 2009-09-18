@@ -49,7 +49,7 @@ struct rotmg_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorDPARAM >
     static return_type invoke( real_type& d1, real_type& d2, real_type& x1,
             const real_type y1, VectorDPARAM& dparam ) {
@@ -57,7 +57,7 @@ struct rotmg_impl {
     }
 };
 
-// generic template function for calling to rotmg
+// generic template function to call rotmg
 template< typename VectorDPARAM >
 inline typename rotmg_impl< typename traits::vector_traits<
         VectorDPARAM >::value_type >::return_type

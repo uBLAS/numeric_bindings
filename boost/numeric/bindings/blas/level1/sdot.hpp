@@ -44,7 +44,7 @@ struct sdot_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef value_type return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorSX, typename VectorSY >
     static return_type invoke( const integer_t n, const VectorSX& sx,
             const integer_t incx, const VectorSY& sy, const integer_t incy ) {
@@ -56,7 +56,7 @@ struct sdot_impl {
     }
 };
 
-// generic template function for calling to sdot
+// generic template function to call sdot
 template< typename VectorSX, typename VectorSY >
 inline typename sdot_impl< typename traits::vector_traits<
         VectorSX >::value_type >::return_type

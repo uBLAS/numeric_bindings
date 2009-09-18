@@ -31,23 +31,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void pbtrf( const char uplo, const integer_t n, const integer_t kd,
-            float* ab, const integer_t ldab, integer_t& info ) {
-        LAPACK_SPBTRF( &uplo, &n, &kd, ab, &ldab, &info );
-    }
-    inline void pbtrf( const char uplo, const integer_t n, const integer_t kd,
-            double* ab, const integer_t ldab, integer_t& info ) {
-        LAPACK_DPBTRF( &uplo, &n, &kd, ab, &ldab, &info );
-    }
-    inline void pbtrf( const char uplo, const integer_t n, const integer_t kd,
-            traits::complex_f* ab, const integer_t ldab, integer_t& info ) {
-        LAPACK_CPBTRF( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, &info );
-    }
-    inline void pbtrf( const char uplo, const integer_t n, const integer_t kd,
-            traits::complex_d* ab, const integer_t ldab, integer_t& info ) {
-        LAPACK_ZPBTRF( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, &info );
-    }
+
+inline void pbtrf( const char uplo, const integer_t n, const integer_t kd,
+        float* ab, const integer_t ldab, integer_t& info ) {
+    LAPACK_SPBTRF( &uplo, &n, &kd, ab, &ldab, &info );
 }
+
+inline void pbtrf( const char uplo, const integer_t n, const integer_t kd,
+        double* ab, const integer_t ldab, integer_t& info ) {
+    LAPACK_DPBTRF( &uplo, &n, &kd, ab, &ldab, &info );
+}
+
+inline void pbtrf( const char uplo, const integer_t n, const integer_t kd,
+        traits::complex_f* ab, const integer_t ldab, integer_t& info ) {
+    LAPACK_CPBTRF( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, &info );
+}
+
+inline void pbtrf( const char uplo, const integer_t n, const integer_t kd,
+        traits::complex_d* ab, const integer_t ldab, integer_t& info ) {
+    LAPACK_ZPBTRF( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -82,6 +87,9 @@ inline integer_t pbtrf( const integer_t n, const integer_t kd,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

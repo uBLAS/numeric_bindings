@@ -33,21 +33,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hecon( const char uplo, const integer_t n,
-            const traits::complex_f* a, const integer_t lda,
-            const integer_t* ipiv, const float anorm, float& rcond,
-            traits::complex_f* work, integer_t& info ) {
-        LAPACK_CHECON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
-                &rcond, traits::complex_ptr(work), &info );
-    }
-    inline void hecon( const char uplo, const integer_t n,
-            const traits::complex_d* a, const integer_t lda,
-            const integer_t* ipiv, const double anorm, double& rcond,
-            traits::complex_d* work, integer_t& info ) {
-        LAPACK_ZHECON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
-                &rcond, traits::complex_ptr(work), &info );
-    }
+
+inline void hecon( const char uplo, const integer_t n,
+        const traits::complex_f* a, const integer_t lda,
+        const integer_t* ipiv, const float anorm, float& rcond,
+        traits::complex_f* work, integer_t& info ) {
+    LAPACK_CHECON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
+            &rcond, traits::complex_ptr(work), &info );
 }
+
+inline void hecon( const char uplo, const integer_t n,
+        const traits::complex_d* a, const integer_t lda,
+        const integer_t* ipiv, const double anorm, double& rcond,
+        traits::complex_d* work, integer_t& info ) {
+    LAPACK_ZHECON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
+            &rcond, traits::complex_ptr(work), &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -129,6 +132,9 @@ inline integer_t hecon( const char uplo, const MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -37,67 +37,68 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
-            logical_t* selctg, const char sense, const integer_t n, float* a,
-            const integer_t lda, float* b, const integer_t ldb,
-            integer_t& sdim, float* alphar, float* alphai, float* beta,
-            float* vsl, const integer_t ldvsl, float* vsr,
-            const integer_t ldvsr, float* rconde, float* rcondv, float* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            logical_t* bwork, integer_t& info ) {
-        LAPACK_SGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n, a, &lda,
-                b, &ldb, &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr,
-                &ldvsr, rconde, rcondv, work, &lwork, iwork, &liwork, bwork,
-                &info );
-    }
-    inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
-            logical_t* selctg, const char sense, const integer_t n, double* a,
-            const integer_t lda, double* b, const integer_t ldb,
-            integer_t& sdim, double* alphar, double* alphai, double* beta,
-            double* vsl, const integer_t ldvsl, double* vsr,
-            const integer_t ldvsr, double* rconde, double* rcondv,
-            double* work, const integer_t lwork, integer_t* iwork,
-            const integer_t liwork, logical_t* bwork, integer_t& info ) {
-        LAPACK_DGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n, a, &lda,
-                b, &ldb, &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr,
-                &ldvsr, rconde, rcondv, work, &lwork, iwork, &liwork, bwork,
-                &info );
-    }
-    inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
-            logical_t* selctg, const char sense, const integer_t n,
-            traits::complex_f* a, const integer_t lda, traits::complex_f* b,
-            const integer_t ldb, integer_t& sdim, traits::complex_f* alpha,
-            traits::complex_f* beta, traits::complex_f* vsl,
-            const integer_t ldvsl, traits::complex_f* vsr,
-            const integer_t ldvsr, float* rconde, float* rcondv,
-            traits::complex_f* work, const integer_t lwork, float* rwork,
-            integer_t* iwork, const integer_t liwork, logical_t* bwork,
-            integer_t& info ) {
-        LAPACK_CGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                &sdim, traits::complex_ptr(alpha), traits::complex_ptr(beta),
-                traits::complex_ptr(vsl), &ldvsl, traits::complex_ptr(vsr),
-                &ldvsr, rconde, rcondv, traits::complex_ptr(work), &lwork,
-                rwork, iwork, &liwork, bwork, &info );
-    }
-    inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
-            logical_t* selctg, const char sense, const integer_t n,
-            traits::complex_d* a, const integer_t lda, traits::complex_d* b,
-            const integer_t ldb, integer_t& sdim, traits::complex_d* alpha,
-            traits::complex_d* beta, traits::complex_d* vsl,
-            const integer_t ldvsl, traits::complex_d* vsr,
-            const integer_t ldvsr, double* rconde, double* rcondv,
-            traits::complex_d* work, const integer_t lwork, double* rwork,
-            integer_t* iwork, const integer_t liwork, logical_t* bwork,
-            integer_t& info ) {
-        LAPACK_ZGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n,
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                &sdim, traits::complex_ptr(alpha), traits::complex_ptr(beta),
-                traits::complex_ptr(vsl), &ldvsl, traits::complex_ptr(vsr),
-                &ldvsr, rconde, rcondv, traits::complex_ptr(work), &lwork,
-                rwork, iwork, &liwork, bwork, &info );
-    }
+
+inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const char sense, const integer_t n, float* a,
+        const integer_t lda, float* b, const integer_t ldb, integer_t& sdim,
+        float* alphar, float* alphai, float* beta, float* vsl,
+        const integer_t ldvsl, float* vsr, const integer_t ldvsr,
+        float* rconde, float* rcondv, float* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, logical_t* bwork,
+        integer_t& info ) {
+    LAPACK_SGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n, a, &lda, b,
+            &ldb, &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr,
+            rconde, rcondv, work, &lwork, iwork, &liwork, bwork, &info );
 }
+
+inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const char sense, const integer_t n, double* a,
+        const integer_t lda, double* b, const integer_t ldb, integer_t& sdim,
+        double* alphar, double* alphai, double* beta, double* vsl,
+        const integer_t ldvsl, double* vsr, const integer_t ldvsr,
+        double* rconde, double* rcondv, double* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, logical_t* bwork,
+        integer_t& info ) {
+    LAPACK_DGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n, a, &lda, b,
+            &ldb, &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr,
+            rconde, rcondv, work, &lwork, iwork, &liwork, bwork, &info );
+}
+
+inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const char sense, const integer_t n,
+        traits::complex_f* a, const integer_t lda, traits::complex_f* b,
+        const integer_t ldb, integer_t& sdim, traits::complex_f* alpha,
+        traits::complex_f* beta, traits::complex_f* vsl,
+        const integer_t ldvsl, traits::complex_f* vsr, const integer_t ldvsr,
+        float* rconde, float* rcondv, traits::complex_f* work,
+        const integer_t lwork, float* rwork, integer_t* iwork,
+        const integer_t liwork, logical_t* bwork, integer_t& info ) {
+    LAPACK_CGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n,
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb, &sdim,
+            traits::complex_ptr(alpha), traits::complex_ptr(beta),
+            traits::complex_ptr(vsl), &ldvsl, traits::complex_ptr(vsr),
+            &ldvsr, rconde, rcondv, traits::complex_ptr(work), &lwork, rwork,
+            iwork, &liwork, bwork, &info );
+}
+
+inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
+        logical_t* selctg, const char sense, const integer_t n,
+        traits::complex_d* a, const integer_t lda, traits::complex_d* b,
+        const integer_t ldb, integer_t& sdim, traits::complex_d* alpha,
+        traits::complex_d* beta, traits::complex_d* vsl,
+        const integer_t ldvsl, traits::complex_d* vsr, const integer_t ldvsr,
+        double* rconde, double* rcondv, traits::complex_d* work,
+        const integer_t lwork, double* rwork, integer_t* iwork,
+        const integer_t liwork, logical_t* bwork, integer_t& info ) {
+    LAPACK_ZGGESX( &jobvsl, &jobvsr, &sort, &selctg, &sense, &n,
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb, &sdim,
+            traits::complex_ptr(alpha), traits::complex_ptr(beta),
+            traits::complex_ptr(vsl), &ldvsl, traits::complex_ptr(vsr),
+            &ldvsr, rconde, rcondv, traits::complex_ptr(work), &lwork, rwork,
+            iwork, &liwork, bwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -487,6 +488,9 @@ inline integer_t ggesx( const char jobvsl, const char jobvsr,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

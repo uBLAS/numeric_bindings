@@ -80,7 +80,7 @@ struct gemv_impl {
         invoke(  );
     }
 
-    // templated specialization
+    // static template member function
     template< typename MatrixA, typename VectorX, typename VectorY >
     static return_type invoke( const char trans, const value_type alpha,
             const MatrixA& a, const VectorX& x, const value_type beta,
@@ -99,7 +99,7 @@ struct gemv_impl {
     }
 };
 
-// generic template function for calling to gemv
+// generic template function to call gemv
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename gemv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type

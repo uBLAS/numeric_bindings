@@ -37,55 +37,56 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void tgsna( const char job, const char howmny,
-            const logical_t* select, const integer_t n, const float* a,
-            const integer_t lda, const float* b, const integer_t ldb,
-            const float* vl, const integer_t ldvl, const float* vr,
-            const integer_t ldvr, float* s, float* dif, const integer_t mm,
-            integer_t& m, float* work, const integer_t lwork,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_STGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl,
-                vr, &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
-    }
-    inline void tgsna( const char job, const char howmny,
-            const logical_t* select, const integer_t n, const double* a,
-            const integer_t lda, const double* b, const integer_t ldb,
-            const double* vl, const integer_t ldvl, const double* vr,
-            const integer_t ldvr, double* s, double* dif, const integer_t mm,
-            integer_t& m, double* work, const integer_t lwork,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_DTGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl,
-                vr, &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
-    }
-    inline void tgsna( const char job, const char howmny,
-            const logical_t* select, const integer_t n,
-            const traits::complex_f* a, const integer_t lda,
-            const traits::complex_f* b, const integer_t ldb,
-            const traits::complex_f* vl, const integer_t ldvl,
-            const traits::complex_f* vr, const integer_t ldvr, float* s,
-            float* dif, const integer_t mm, integer_t& m,
-            traits::complex_f* work, const integer_t lwork, integer_t* iwork,
-            integer_t& info ) {
-        LAPACK_CTGSNA( &job, &howmny, select, &n, traits::complex_ptr(a),
-                &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(vl),
-                &ldvl, traits::complex_ptr(vr), &ldvr, s, dif, &mm, &m,
-                traits::complex_ptr(work), &lwork, iwork, &info );
-    }
-    inline void tgsna( const char job, const char howmny,
-            const logical_t* select, const integer_t n,
-            const traits::complex_d* a, const integer_t lda,
-            const traits::complex_d* b, const integer_t ldb,
-            const traits::complex_d* vl, const integer_t ldvl,
-            const traits::complex_d* vr, const integer_t ldvr, double* s,
-            double* dif, const integer_t mm, integer_t& m,
-            traits::complex_d* work, const integer_t lwork, integer_t* iwork,
-            integer_t& info ) {
-        LAPACK_ZTGSNA( &job, &howmny, select, &n, traits::complex_ptr(a),
-                &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(vl),
-                &ldvl, traits::complex_ptr(vr), &ldvr, s, dif, &mm, &m,
-                traits::complex_ptr(work), &lwork, iwork, &info );
-    }
+
+inline void tgsna( const char job, const char howmny, const logical_t* select,
+        const integer_t n, const float* a, const integer_t lda,
+        const float* b, const integer_t ldb, const float* vl,
+        const integer_t ldvl, const float* vr, const integer_t ldvr, float* s,
+        float* dif, const integer_t mm, integer_t& m, float* work,
+        const integer_t lwork, integer_t* iwork, integer_t& info ) {
+    LAPACK_STGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,
+            &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
 }
+
+inline void tgsna( const char job, const char howmny, const logical_t* select,
+        const integer_t n, const double* a, const integer_t lda,
+        const double* b, const integer_t ldb, const double* vl,
+        const integer_t ldvl, const double* vr, const integer_t ldvr,
+        double* s, double* dif, const integer_t mm, integer_t& m,
+        double* work, const integer_t lwork, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_DTGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,
+            &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
+}
+
+inline void tgsna( const char job, const char howmny, const logical_t* select,
+        const integer_t n, const traits::complex_f* a, const integer_t lda,
+        const traits::complex_f* b, const integer_t ldb,
+        const traits::complex_f* vl, const integer_t ldvl,
+        const traits::complex_f* vr, const integer_t ldvr, float* s,
+        float* dif, const integer_t mm, integer_t& m, traits::complex_f* work,
+        const integer_t lwork, integer_t* iwork, integer_t& info ) {
+    LAPACK_CTGSNA( &job, &howmny, select, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(vl), &ldvl,
+            traits::complex_ptr(vr), &ldvr, s, dif, &mm, &m,
+            traits::complex_ptr(work), &lwork, iwork, &info );
+}
+
+inline void tgsna( const char job, const char howmny, const logical_t* select,
+        const integer_t n, const traits::complex_d* a, const integer_t lda,
+        const traits::complex_d* b, const integer_t ldb,
+        const traits::complex_d* vl, const integer_t ldvl,
+        const traits::complex_d* vr, const integer_t ldvr, double* s,
+        double* dif, const integer_t mm, integer_t& m,
+        traits::complex_d* work, const integer_t lwork, integer_t* iwork,
+        integer_t& info ) {
+    LAPACK_ZTGSNA( &job, &howmny, select, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(vl), &ldvl,
+            traits::complex_ptr(vr), &ldvr, s, dif, &mm, &m,
+            traits::complex_ptr(work), &lwork, iwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -313,6 +314,9 @@ inline integer_t tgsna( const char job, const char howmny,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

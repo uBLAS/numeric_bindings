@@ -34,29 +34,32 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hpgvd( const integer_t itype, const char jobz,
-            const char uplo, const integer_t n, traits::complex_f* ap,
-            traits::complex_f* bp, float* w, traits::complex_f* z,
-            const integer_t ldz, traits::complex_f* work,
-            const integer_t lwork, float* rwork, const integer_t lrwork,
-            integer_t* iwork, const integer_t liwork, integer_t& info ) {
-        LAPACK_CHPGVD( &itype, &jobz, &uplo, &n, traits::complex_ptr(ap),
-                traits::complex_ptr(bp), w, traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork,
-                &liwork, &info );
-    }
-    inline void hpgvd( const integer_t itype, const char jobz,
-            const char uplo, const integer_t n, traits::complex_d* ap,
-            traits::complex_d* bp, double* w, traits::complex_d* z,
-            const integer_t ldz, traits::complex_d* work,
-            const integer_t lwork, double* rwork, const integer_t lrwork,
-            integer_t* iwork, const integer_t liwork, integer_t& info ) {
-        LAPACK_ZHPGVD( &itype, &jobz, &uplo, &n, traits::complex_ptr(ap),
-                traits::complex_ptr(bp), w, traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork,
-                &liwork, &info );
-    }
+
+inline void hpgvd( const integer_t itype, const char jobz, const char uplo,
+        const integer_t n, traits::complex_f* ap, traits::complex_f* bp,
+        float* w, traits::complex_f* z, const integer_t ldz,
+        traits::complex_f* work, const integer_t lwork, float* rwork,
+        const integer_t lrwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_CHPGVD( &itype, &jobz, &uplo, &n, traits::complex_ptr(ap),
+            traits::complex_ptr(bp), w, traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
+            &info );
 }
+
+inline void hpgvd( const integer_t itype, const char jobz, const char uplo,
+        const integer_t n, traits::complex_d* ap, traits::complex_d* bp,
+        double* w, traits::complex_d* z, const integer_t ldz,
+        traits::complex_d* work, const integer_t lwork, double* rwork,
+        const integer_t lrwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_ZHPGVD( &itype, &jobz, &uplo, &n, traits::complex_ptr(ap),
+            traits::complex_ptr(bp), w, traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -196,6 +199,9 @@ inline integer_t hpgvd( const integer_t itype, const char jobz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

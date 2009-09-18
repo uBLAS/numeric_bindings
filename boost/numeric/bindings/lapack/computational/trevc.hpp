@@ -36,42 +36,46 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void trevc( const char side, const char howmny, logical_t* select,
-            const integer_t n, const float* t, const integer_t ldt, float* vl,
-            const integer_t ldvl, float* vr, const integer_t ldvr,
-            const integer_t mm, integer_t& m, float* work, integer_t& info ) {
-        LAPACK_STREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr,
-                &ldvr, &mm, &m, work, &info );
-    }
-    inline void trevc( const char side, const char howmny, logical_t* select,
-            const integer_t n, const double* t, const integer_t ldt,
-            double* vl, const integer_t ldvl, double* vr,
-            const integer_t ldvr, const integer_t mm, integer_t& m,
-            double* work, integer_t& info ) {
-        LAPACK_DTREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr,
-                &ldvr, &mm, &m, work, &info );
-    }
-    inline void trevc( const char side, const char howmny,
-            const logical_t* select, const integer_t n, traits::complex_f* t,
-            const integer_t ldt, traits::complex_f* vl, const integer_t ldvl,
-            traits::complex_f* vr, const integer_t ldvr, const integer_t mm,
-            integer_t& m, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
-        LAPACK_CTREVC( &side, &howmny, select, &n, traits::complex_ptr(t),
-                &ldt, traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
-                &ldvr, &mm, &m, traits::complex_ptr(work), rwork, &info );
-    }
-    inline void trevc( const char side, const char howmny,
-            const logical_t* select, const integer_t n, traits::complex_d* t,
-            const integer_t ldt, traits::complex_d* vl, const integer_t ldvl,
-            traits::complex_d* vr, const integer_t ldvr, const integer_t mm,
-            integer_t& m, traits::complex_d* work, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZTREVC( &side, &howmny, select, &n, traits::complex_ptr(t),
-                &ldt, traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr),
-                &ldvr, &mm, &m, traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void trevc( const char side, const char howmny, logical_t* select,
+        const integer_t n, const float* t, const integer_t ldt, float* vl,
+        const integer_t ldvl, float* vr, const integer_t ldvr,
+        const integer_t mm, integer_t& m, float* work, integer_t& info ) {
+    LAPACK_STREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
+            &mm, &m, work, &info );
 }
+
+inline void trevc( const char side, const char howmny, logical_t* select,
+        const integer_t n, const double* t, const integer_t ldt, double* vl,
+        const integer_t ldvl, double* vr, const integer_t ldvr,
+        const integer_t mm, integer_t& m, double* work, integer_t& info ) {
+    LAPACK_DTREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
+            &mm, &m, work, &info );
+}
+
+inline void trevc( const char side, const char howmny,
+        const logical_t* select, const integer_t n, traits::complex_f* t,
+        const integer_t ldt, traits::complex_f* vl, const integer_t ldvl,
+        traits::complex_f* vr, const integer_t ldvr, const integer_t mm,
+        integer_t& m, traits::complex_f* work, float* rwork,
+        integer_t& info ) {
+    LAPACK_CTREVC( &side, &howmny, select, &n, traits::complex_ptr(t), &ldt,
+            traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr,
+            &mm, &m, traits::complex_ptr(work), rwork, &info );
+}
+
+inline void trevc( const char side, const char howmny,
+        const logical_t* select, const integer_t n, traits::complex_d* t,
+        const integer_t ldt, traits::complex_d* vl, const integer_t ldvl,
+        traits::complex_d* vr, const integer_t ldvr, const integer_t mm,
+        integer_t& m, traits::complex_d* work, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZTREVC( &side, &howmny, select, &n, traits::complex_ptr(t), &ldt,
+            traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr,
+            &mm, &m, traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -268,6 +272,9 @@ inline integer_t trevc( const char side, const char howmny,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

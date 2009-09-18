@@ -37,51 +37,53 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void stemr( const char jobz, const char range, const integer_t n,
-            float* d, float* e, const float vl, const float vu,
-            const integer_t il, const integer_t iu, integer_t& m, float* w,
-            float* z, const integer_t ldz, const integer_t nzc,
-            integer_t* isuppz, logical_t& tryrac, float* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_SSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
-                &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork,
-                &info );
-    }
-    inline void stemr( const char jobz, const char range, const integer_t n,
-            double* d, double* e, const double vl, const double vu,
-            const integer_t il, const integer_t iu, integer_t& m, double* w,
-            double* z, const integer_t ldz, const integer_t nzc,
-            integer_t* isuppz, logical_t& tryrac, double* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_DSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
-                &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork,
-                &info );
-    }
-    inline void stemr( const char jobz, const char range, const integer_t n,
-            float* d, float* e, const float vl, const float vu,
-            const integer_t il, const integer_t iu, integer_t& m, float* w,
-            traits::complex_f* z, const integer_t ldz, const integer_t nzc,
-            integer_t* isuppz, logical_t& tryrac, float* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_CSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w,
-                traits::complex_ptr(z), &ldz, &nzc, isuppz, &tryrac, work,
-                &lwork, iwork, &liwork, &info );
-    }
-    inline void stemr( const char jobz, const char range, const integer_t n,
-            double* d, double* e, const double vl, const double vu,
-            const integer_t il, const integer_t iu, integer_t& m, double* w,
-            traits::complex_d* z, const integer_t ldz, const integer_t nzc,
-            integer_t* isuppz, logical_t& tryrac, double* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_ZSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w,
-                traits::complex_ptr(z), &ldz, &nzc, isuppz, &tryrac, work,
-                &lwork, iwork, &liwork, &info );
-    }
+
+inline void stemr( const char jobz, const char range, const integer_t n,
+        float* d, float* e, const float vl, const float vu,
+        const integer_t il, const integer_t iu, integer_t& m, float* w,
+        float* z, const integer_t ldz, const integer_t nzc, integer_t* isuppz,
+        logical_t& tryrac, float* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_SSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
+            &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork, &info );
 }
+
+inline void stemr( const char jobz, const char range, const integer_t n,
+        double* d, double* e, const double vl, const double vu,
+        const integer_t il, const integer_t iu, integer_t& m, double* w,
+        double* z, const integer_t ldz, const integer_t nzc,
+        integer_t* isuppz, logical_t& tryrac, double* work,
+        const integer_t lwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_DSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
+            &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork, &info );
+}
+
+inline void stemr( const char jobz, const char range, const integer_t n,
+        float* d, float* e, const float vl, const float vu,
+        const integer_t il, const integer_t iu, integer_t& m, float* w,
+        traits::complex_f* z, const integer_t ldz, const integer_t nzc,
+        integer_t* isuppz, logical_t& tryrac, float* work,
+        const integer_t lwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_CSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w,
+            traits::complex_ptr(z), &ldz, &nzc, isuppz, &tryrac, work, &lwork,
+            iwork, &liwork, &info );
+}
+
+inline void stemr( const char jobz, const char range, const integer_t n,
+        double* d, double* e, const double vl, const double vu,
+        const integer_t il, const integer_t iu, integer_t& m, double* w,
+        traits::complex_d* z, const integer_t ldz, const integer_t nzc,
+        integer_t* isuppz, logical_t& tryrac, double* work,
+        const integer_t lwork, integer_t* iwork, const integer_t liwork,
+        integer_t& info ) {
+    LAPACK_ZSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w,
+            traits::complex_ptr(z), &ldz, &nzc, isuppz, &tryrac, work, &lwork,
+            iwork, &liwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -328,6 +330,9 @@ inline integer_t stemr( const char jobz, const char range,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

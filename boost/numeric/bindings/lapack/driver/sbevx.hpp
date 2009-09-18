@@ -33,29 +33,32 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sbevx( const char jobz, const char range, const char uplo,
-            const integer_t n, const integer_t kd, float* ab,
-            const integer_t ldab, float* q, const integer_t ldq,
-            const float vl, const float vu, const integer_t il,
-            const integer_t iu, const float abstol, integer_t& m, float* w,
-            float* z, const integer_t ldz, float* work, integer_t* iwork,
-            integer_t* ifail, integer_t& info ) {
-        LAPACK_SSBEVX( &jobz, &range, &uplo, &n, &kd, ab, &ldab, q, &ldq, &vl,
-                &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail,
-                &info );
-    }
-    inline void sbevx( const char jobz, const char range, const char uplo,
-            const integer_t n, const integer_t kd, double* ab,
-            const integer_t ldab, double* q, const integer_t ldq,
-            const double vl, const double vu, const integer_t il,
-            const integer_t iu, const double abstol, integer_t& m, double* w,
-            double* z, const integer_t ldz, double* work, integer_t* iwork,
-            integer_t* ifail, integer_t& info ) {
-        LAPACK_DSBEVX( &jobz, &range, &uplo, &n, &kd, ab, &ldab, q, &ldq, &vl,
-                &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail,
-                &info );
-    }
+
+inline void sbevx( const char jobz, const char range, const char uplo,
+        const integer_t n, const integer_t kd, float* ab,
+        const integer_t ldab, float* q, const integer_t ldq, const float vl,
+        const float vu, const integer_t il, const integer_t iu,
+        const float abstol, integer_t& m, float* w, float* z,
+        const integer_t ldz, float* work, integer_t* iwork, integer_t* ifail,
+        integer_t& info ) {
+    LAPACK_SSBEVX( &jobz, &range, &uplo, &n, &kd, ab, &ldab, q, &ldq, &vl,
+            &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail,
+            &info );
 }
+
+inline void sbevx( const char jobz, const char range, const char uplo,
+        const integer_t n, const integer_t kd, double* ab,
+        const integer_t ldab, double* q, const integer_t ldq, const double vl,
+        const double vu, const integer_t il, const integer_t iu,
+        const double abstol, integer_t& m, double* w, double* z,
+        const integer_t ldz, double* work, integer_t* iwork, integer_t* ifail,
+        integer_t& info ) {
+    LAPACK_DSBEVX( &jobz, &range, &uplo, &n, &kd, ab, &ldab, q, &ldq, &vl,
+            &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -182,6 +185,9 @@ inline integer_t sbevx( const char jobz, const char range,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

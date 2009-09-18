@@ -48,7 +48,7 @@ struct nrm2_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef value_type return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX >
     static return_type invoke( const VectorX& x ) {
         return detail::nrm2( traits::vector_size(x),
@@ -56,7 +56,7 @@ struct nrm2_impl {
     }
 };
 
-// generic template function for calling to nrm2
+// generic template function to call nrm2
 template< typename VectorX >
 inline typename nrm2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

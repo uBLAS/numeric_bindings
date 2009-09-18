@@ -36,60 +36,60 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gtsvx( const char fact, const char trans, const integer_t n,
-            const integer_t nrhs, const float* dl, const float* d,
-            const float* du, float* dlf, float* df, float* duf, float* du2,
-            integer_t* ipiv, const float* b, const integer_t ldb, float* x,
-            const integer_t ldx, float& rcond, float* ferr, float* berr,
-            float* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_SGTSVX( &fact, &trans, &n, &nrhs, dl, d, du, dlf, df, duf, du2,
-                ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork,
-                &info );
-    }
-    inline void gtsvx( const char fact, const char trans, const integer_t n,
-            const integer_t nrhs, const double* dl, const double* d,
-            const double* du, double* dlf, double* df, double* duf,
-            double* du2, integer_t* ipiv, const double* b,
-            const integer_t ldb, double* x, const integer_t ldx,
-            double& rcond, double* ferr, double* berr, double* work,
-            integer_t* iwork, integer_t& info ) {
-        LAPACK_DGTSVX( &fact, &trans, &n, &nrhs, dl, d, du, dlf, df, duf, du2,
-                ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork,
-                &info );
-    }
-    inline void gtsvx( const char fact, const char trans, const integer_t n,
-            const integer_t nrhs, const traits::complex_f* dl,
-            const traits::complex_f* d, const traits::complex_f* du,
-            traits::complex_f* dlf, traits::complex_f* df,
-            traits::complex_f* duf, traits::complex_f* du2, integer_t* ipiv,
-            const traits::complex_f* b, const integer_t ldb,
-            traits::complex_f* x, const integer_t ldx, float& rcond,
-            float* ferr, float* berr, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
-        LAPACK_CGTSVX( &fact, &trans, &n, &nrhs, traits::complex_ptr(dl),
-                traits::complex_ptr(d), traits::complex_ptr(du),
-                traits::complex_ptr(dlf), traits::complex_ptr(df),
-                traits::complex_ptr(duf), traits::complex_ptr(du2), ipiv,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
-                &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
-    }
-    inline void gtsvx( const char fact, const char trans, const integer_t n,
-            const integer_t nrhs, const traits::complex_d* dl,
-            const traits::complex_d* d, const traits::complex_d* du,
-            traits::complex_d* dlf, traits::complex_d* df,
-            traits::complex_d* duf, traits::complex_d* du2, integer_t* ipiv,
-            const traits::complex_d* b, const integer_t ldb,
-            traits::complex_d* x, const integer_t ldx, double& rcond,
-            double* ferr, double* berr, traits::complex_d* work,
-            double* rwork, integer_t& info ) {
-        LAPACK_ZGTSVX( &fact, &trans, &n, &nrhs, traits::complex_ptr(dl),
-                traits::complex_ptr(d), traits::complex_ptr(du),
-                traits::complex_ptr(dlf), traits::complex_ptr(df),
-                traits::complex_ptr(duf), traits::complex_ptr(du2), ipiv,
-                traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
-                &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void gtsvx( const char fact, const char trans, const integer_t n,
+        const integer_t nrhs, const float* dl, const float* d,
+        const float* du, float* dlf, float* df, float* duf, float* du2,
+        integer_t* ipiv, const float* b, const integer_t ldb, float* x,
+        const integer_t ldx, float& rcond, float* ferr, float* berr,
+        float* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_SGTSVX( &fact, &trans, &n, &nrhs, dl, d, du, dlf, df, duf, du2,
+            ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
 }
+
+inline void gtsvx( const char fact, const char trans, const integer_t n,
+        const integer_t nrhs, const double* dl, const double* d,
+        const double* du, double* dlf, double* df, double* duf, double* du2,
+        integer_t* ipiv, const double* b, const integer_t ldb, double* x,
+        const integer_t ldx, double& rcond, double* ferr, double* berr,
+        double* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_DGTSVX( &fact, &trans, &n, &nrhs, dl, d, du, dlf, df, duf, du2,
+            ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
+}
+
+inline void gtsvx( const char fact, const char trans, const integer_t n,
+        const integer_t nrhs, const traits::complex_f* dl,
+        const traits::complex_f* d, const traits::complex_f* du,
+        traits::complex_f* dlf, traits::complex_f* df, traits::complex_f* duf,
+        traits::complex_f* du2, integer_t* ipiv, const traits::complex_f* b,
+        const integer_t ldb, traits::complex_f* x, const integer_t ldx,
+        float& rcond, float* ferr, float* berr, traits::complex_f* work,
+        float* rwork, integer_t& info ) {
+    LAPACK_CGTSVX( &fact, &trans, &n, &nrhs, traits::complex_ptr(dl),
+            traits::complex_ptr(d), traits::complex_ptr(du),
+            traits::complex_ptr(dlf), traits::complex_ptr(df),
+            traits::complex_ptr(duf), traits::complex_ptr(du2), ipiv,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
+            &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
+}
+
+inline void gtsvx( const char fact, const char trans, const integer_t n,
+        const integer_t nrhs, const traits::complex_d* dl,
+        const traits::complex_d* d, const traits::complex_d* du,
+        traits::complex_d* dlf, traits::complex_d* df, traits::complex_d* duf,
+        traits::complex_d* du2, integer_t* ipiv, const traits::complex_d* b,
+        const integer_t ldb, traits::complex_d* x, const integer_t ldx,
+        double& rcond, double* ferr, double* berr, traits::complex_d* work,
+        double* rwork, integer_t& info ) {
+    LAPACK_ZGTSVX( &fact, &trans, &n, &nrhs, traits::complex_ptr(dl),
+            traits::complex_ptr(d), traits::complex_ptr(du),
+            traits::complex_ptr(dlf), traits::complex_ptr(df),
+            traits::complex_ptr(duf), traits::complex_ptr(du2), ipiv,
+            traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
+            &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -369,6 +369,9 @@ inline integer_t gtsvx( const char fact, const char trans,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

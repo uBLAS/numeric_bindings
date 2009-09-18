@@ -33,25 +33,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hbgst( const char vect, const char uplo, const integer_t n,
-            const integer_t ka, const integer_t kb, traits::complex_f* ab,
-            const integer_t ldab, const traits::complex_f* bb,
-            const integer_t ldbb, traits::complex_f* x, const integer_t ldx,
-            traits::complex_f* work, float* rwork, integer_t& info ) {
-        LAPACK_CHBGST( &vect, &uplo, &n, &ka, &kb, traits::complex_ptr(ab),
-                &ldab, traits::complex_ptr(bb), &ldbb, traits::complex_ptr(x),
-                &ldx, traits::complex_ptr(work), rwork, &info );
-    }
-    inline void hbgst( const char vect, const char uplo, const integer_t n,
-            const integer_t ka, const integer_t kb, traits::complex_d* ab,
-            const integer_t ldab, const traits::complex_d* bb,
-            const integer_t ldbb, traits::complex_d* x, const integer_t ldx,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
-        LAPACK_ZHBGST( &vect, &uplo, &n, &ka, &kb, traits::complex_ptr(ab),
-                &ldab, traits::complex_ptr(bb), &ldbb, traits::complex_ptr(x),
-                &ldx, traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void hbgst( const char vect, const char uplo, const integer_t n,
+        const integer_t ka, const integer_t kb, traits::complex_f* ab,
+        const integer_t ldab, const traits::complex_f* bb,
+        const integer_t ldbb, traits::complex_f* x, const integer_t ldx,
+        traits::complex_f* work, float* rwork, integer_t& info ) {
+    LAPACK_CHBGST( &vect, &uplo, &n, &ka, &kb, traits::complex_ptr(ab), &ldab,
+            traits::complex_ptr(bb), &ldbb, traits::complex_ptr(x), &ldx,
+            traits::complex_ptr(work), rwork, &info );
 }
+
+inline void hbgst( const char vect, const char uplo, const integer_t n,
+        const integer_t ka, const integer_t kb, traits::complex_d* ab,
+        const integer_t ldab, const traits::complex_d* bb,
+        const integer_t ldbb, traits::complex_d* x, const integer_t ldx,
+        traits::complex_d* work, double* rwork, integer_t& info ) {
+    LAPACK_ZHBGST( &vect, &uplo, &n, &ka, &kb, traits::complex_ptr(ab), &ldab,
+            traits::complex_ptr(bb), &ldbb, traits::complex_ptr(x), &ldx,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -149,6 +152,9 @@ inline integer_t hbgst( const char vect, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

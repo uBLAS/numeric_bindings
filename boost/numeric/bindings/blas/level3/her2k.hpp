@@ -59,7 +59,7 @@ struct her2k_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename MatrixA, typename MatrixB, typename MatrixC >
     static return_type invoke( const char trans, const value_type alpha,
             const MatrixA& a, const MatrixB& b, const real_type beta,
@@ -80,7 +80,7 @@ struct her2k_impl {
     }
 };
 
-// generic template function for calling to her2k
+// generic template function to call her2k
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename her2k_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type

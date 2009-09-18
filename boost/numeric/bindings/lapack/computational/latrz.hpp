@@ -36,29 +36,32 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void latrz( const integer_t m, const integer_t n,
-            const integer_t l, float* a, const integer_t lda, float* tau,
-            float* work ) {
-        LAPACK_SLATRZ( &m, &n, &l, a, &lda, tau, work );
-    }
-    inline void latrz( const integer_t m, const integer_t n,
-            const integer_t l, double* a, const integer_t lda, double* tau,
-            double* work ) {
-        LAPACK_DLATRZ( &m, &n, &l, a, &lda, tau, work );
-    }
-    inline void latrz( const integer_t m, const integer_t n,
-            const integer_t l, traits::complex_f* a, const integer_t lda,
-            traits::complex_f* tau, traits::complex_f* work ) {
-        LAPACK_CLATRZ( &m, &n, &l, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(tau), traits::complex_ptr(work) );
-    }
-    inline void latrz( const integer_t m, const integer_t n,
-            const integer_t l, traits::complex_d* a, const integer_t lda,
-            traits::complex_d* tau, traits::complex_d* work ) {
-        LAPACK_ZLATRZ( &m, &n, &l, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(tau), traits::complex_ptr(work) );
-    }
+
+inline void latrz( const integer_t m, const integer_t n, const integer_t l,
+        float* a, const integer_t lda, float* tau, float* work ) {
+    LAPACK_SLATRZ( &m, &n, &l, a, &lda, tau, work );
 }
+
+inline void latrz( const integer_t m, const integer_t n, const integer_t l,
+        double* a, const integer_t lda, double* tau, double* work ) {
+    LAPACK_DLATRZ( &m, &n, &l, a, &lda, tau, work );
+}
+
+inline void latrz( const integer_t m, const integer_t n, const integer_t l,
+        traits::complex_f* a, const integer_t lda, traits::complex_f* tau,
+        traits::complex_f* work ) {
+    LAPACK_CLATRZ( &m, &n, &l, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(tau), traits::complex_ptr(work) );
+}
+
+inline void latrz( const integer_t m, const integer_t n, const integer_t l,
+        traits::complex_d* a, const integer_t lda, traits::complex_d* tau,
+        traits::complex_d* work ) {
+    LAPACK_ZLATRZ( &m, &n, &l, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(tau), traits::complex_ptr(work) );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -179,6 +182,9 @@ inline integer_t latrz( MatrixA& a, VectorTAU& tau ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

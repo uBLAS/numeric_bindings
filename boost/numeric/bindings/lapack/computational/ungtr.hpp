@@ -34,23 +34,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ungtr( const char uplo, const integer_t n,
-            traits::complex_f* a, const integer_t lda,
-            const traits::complex_f* tau, traits::complex_f* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_CUNGTR( &uplo, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
-                &info );
-    }
-    inline void ungtr( const char uplo, const integer_t n,
-            traits::complex_d* a, const integer_t lda,
-            const traits::complex_d* tau, traits::complex_d* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_ZUNGTR( &uplo, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
-                &info );
-    }
+
+inline void ungtr( const char uplo, const integer_t n, traits::complex_f* a,
+        const integer_t lda, const traits::complex_f* tau,
+        traits::complex_f* work, const integer_t lwork, integer_t& info ) {
+    LAPACK_CUNGTR( &uplo, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
+            &info );
 }
+
+inline void ungtr( const char uplo, const integer_t n, traits::complex_d* a,
+        const integer_t lda, const traits::complex_d* tau,
+        traits::complex_d* work, const integer_t lwork, integer_t& info ) {
+    LAPACK_ZUNGTR( &uplo, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -133,6 +134,9 @@ inline integer_t ungtr( const integer_t n, MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

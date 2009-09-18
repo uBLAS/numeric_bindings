@@ -34,22 +34,24 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sbevd( const char jobz, const char uplo, const integer_t n,
-            const integer_t kd, float* ab, const integer_t ldab, float* w,
-            float* z, const integer_t ldz, float* work, const integer_t lwork,
-            integer_t* iwork, const integer_t liwork, integer_t& info ) {
-        LAPACK_SSBEVD( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work,
-                &lwork, iwork, &liwork, &info );
-    }
-    inline void sbevd( const char jobz, const char uplo, const integer_t n,
-            const integer_t kd, double* ab, const integer_t ldab, double* w,
-            double* z, const integer_t ldz, double* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_DSBEVD( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work,
-                &lwork, iwork, &liwork, &info );
-    }
+
+inline void sbevd( const char jobz, const char uplo, const integer_t n,
+        const integer_t kd, float* ab, const integer_t ldab, float* w,
+        float* z, const integer_t ldz, float* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_SSBEVD( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work, &lwork,
+            iwork, &liwork, &info );
 }
+
+inline void sbevd( const char jobz, const char uplo, const integer_t n,
+        const integer_t kd, double* ab, const integer_t ldab, double* w,
+        double* z, const integer_t ldz, double* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_DSBEVD( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work, &lwork,
+            iwork, &liwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -168,6 +170,9 @@ inline integer_t sbevd( const char jobz, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

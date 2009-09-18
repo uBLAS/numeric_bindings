@@ -46,7 +46,7 @@ struct srot_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorCX, typename VectorCY >
     static return_type invoke( const integer_t n, const VectorCX& cx,
             const VectorCY& cy, const real_type c, const real_type s ) {
@@ -59,7 +59,7 @@ struct srot_impl {
     }
 };
 
-// generic template function for calling to srot
+// generic template function to call srot
 template< typename VectorCX, typename VectorCY >
 inline typename srot_impl< typename traits::vector_traits<
         VectorCX >::value_type >::return_type

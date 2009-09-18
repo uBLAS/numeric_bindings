@@ -57,7 +57,7 @@ struct her2_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX, typename VectorY, typename MatrixA >
     static return_type invoke( const value_type alpha, const VectorX& x,
             const VectorY& y, MatrixA& a ) {
@@ -75,7 +75,7 @@ struct her2_impl {
     }
 };
 
-// generic template function for calling to her2
+// generic template function to call her2
 template< typename VectorX, typename VectorY, typename MatrixA >
 inline typename her2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

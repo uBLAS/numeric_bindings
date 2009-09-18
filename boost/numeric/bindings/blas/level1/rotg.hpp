@@ -59,7 +59,7 @@ struct rotg_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template<  >
     static return_type invoke( value_type& a, value_type& b, real_type& c,
             value_type& s ) {
@@ -67,7 +67,7 @@ struct rotg_impl {
     }
 };
 
-// generic template function for calling to rotg
+// generic template function to call rotg
 template<  >
 inline typename rotg_impl< typename traits::TODO_traits<
         TODO >::value_type >::return_type

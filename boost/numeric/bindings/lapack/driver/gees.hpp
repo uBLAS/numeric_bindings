@@ -37,45 +37,45 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gees( const char jobvs, const char sort, logical_t* select,
-            const integer_t n, float* a, const integer_t lda, integer_t& sdim,
-            float* wr, float* wi, float* vs, const integer_t ldvs,
-            float* work, const integer_t lwork, logical_t* bwork,
-            integer_t& info ) {
-        LAPACK_SGEES( &jobvs, &sort, &select, &n, a, &lda, &sdim, wr, wi, vs,
-                &ldvs, work, &lwork, bwork, &info );
-    }
-    inline void gees( const char jobvs, const char sort, logical_t* select,
-            const integer_t n, double* a, const integer_t lda,
-            integer_t& sdim, double* wr, double* wi, double* vs,
-            const integer_t ldvs, double* work, const integer_t lwork,
-            logical_t* bwork, integer_t& info ) {
-        LAPACK_DGEES( &jobvs, &sort, &select, &n, a, &lda, &sdim, wr, wi, vs,
-                &ldvs, work, &lwork, bwork, &info );
-    }
-    inline void gees( const char jobvs, const char sort, logical_t* select,
-            const integer_t n, traits::complex_f* a, const integer_t lda,
-            integer_t& sdim, traits::complex_f* w, traits::complex_f* vs,
-            const integer_t ldvs, traits::complex_f* work,
-            const integer_t lwork, float* rwork, logical_t* bwork,
-            integer_t& info ) {
-        LAPACK_CGEES( &jobvs, &sort, &select, &n, traits::complex_ptr(a),
-                &lda, &sdim, traits::complex_ptr(w), traits::complex_ptr(vs),
-                &ldvs, traits::complex_ptr(work), &lwork, rwork, bwork,
-                &info );
-    }
-    inline void gees( const char jobvs, const char sort, logical_t* select,
-            const integer_t n, traits::complex_d* a, const integer_t lda,
-            integer_t& sdim, traits::complex_d* w, traits::complex_d* vs,
-            const integer_t ldvs, traits::complex_d* work,
-            const integer_t lwork, double* rwork, logical_t* bwork,
-            integer_t& info ) {
-        LAPACK_ZGEES( &jobvs, &sort, &select, &n, traits::complex_ptr(a),
-                &lda, &sdim, traits::complex_ptr(w), traits::complex_ptr(vs),
-                &ldvs, traits::complex_ptr(work), &lwork, rwork, bwork,
-                &info );
-    }
+
+inline void gees( const char jobvs, const char sort, logical_t* select,
+        const integer_t n, float* a, const integer_t lda, integer_t& sdim,
+        float* wr, float* wi, float* vs, const integer_t ldvs, float* work,
+        const integer_t lwork, logical_t* bwork, integer_t& info ) {
+    LAPACK_SGEES( &jobvs, &sort, &select, &n, a, &lda, &sdim, wr, wi, vs,
+            &ldvs, work, &lwork, bwork, &info );
 }
+
+inline void gees( const char jobvs, const char sort, logical_t* select,
+        const integer_t n, double* a, const integer_t lda, integer_t& sdim,
+        double* wr, double* wi, double* vs, const integer_t ldvs,
+        double* work, const integer_t lwork, logical_t* bwork,
+        integer_t& info ) {
+    LAPACK_DGEES( &jobvs, &sort, &select, &n, a, &lda, &sdim, wr, wi, vs,
+            &ldvs, work, &lwork, bwork, &info );
+}
+
+inline void gees( const char jobvs, const char sort, logical_t* select,
+        const integer_t n, traits::complex_f* a, const integer_t lda,
+        integer_t& sdim, traits::complex_f* w, traits::complex_f* vs,
+        const integer_t ldvs, traits::complex_f* work, const integer_t lwork,
+        float* rwork, logical_t* bwork, integer_t& info ) {
+    LAPACK_CGEES( &jobvs, &sort, &select, &n, traits::complex_ptr(a), &lda,
+            &sdim, traits::complex_ptr(w), traits::complex_ptr(vs), &ldvs,
+            traits::complex_ptr(work), &lwork, rwork, bwork, &info );
+}
+
+inline void gees( const char jobvs, const char sort, logical_t* select,
+        const integer_t n, traits::complex_d* a, const integer_t lda,
+        integer_t& sdim, traits::complex_d* w, traits::complex_d* vs,
+        const integer_t ldvs, traits::complex_d* work, const integer_t lwork,
+        double* rwork, logical_t* bwork, integer_t& info ) {
+    LAPACK_ZGEES( &jobvs, &sort, &select, &n, traits::complex_ptr(a), &lda,
+            &sdim, traits::complex_ptr(w), traits::complex_ptr(vs), &ldvs,
+            traits::complex_ptr(work), &lwork, rwork, bwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -319,6 +319,9 @@ inline integer_t gees( const char jobvs, const char sort,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

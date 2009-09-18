@@ -63,7 +63,7 @@ struct copy_impl {
     typedef typename traits::type_traits<ValueType>::real_type real_type;
     typedef void return_type;
 
-    // templated specialization
+    // static template member function
     template< typename VectorX, typename VectorY >
     static return_type invoke( const VectorX& x, const VectorY& y ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
@@ -75,7 +75,7 @@ struct copy_impl {
     }
 };
 
-// generic template function for calling to copy
+// generic template function to call copy
 template< typename VectorX, typename VectorY >
 inline typename copy_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type

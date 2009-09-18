@@ -31,23 +31,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void potri( const char uplo, const integer_t n, float* a,
-            const integer_t lda, integer_t& info ) {
-        LAPACK_SPOTRI( &uplo, &n, a, &lda, &info );
-    }
-    inline void potri( const char uplo, const integer_t n, double* a,
-            const integer_t lda, integer_t& info ) {
-        LAPACK_DPOTRI( &uplo, &n, a, &lda, &info );
-    }
-    inline void potri( const char uplo, const integer_t n,
-            traits::complex_f* a, const integer_t lda, integer_t& info ) {
-        LAPACK_CPOTRI( &uplo, &n, traits::complex_ptr(a), &lda, &info );
-    }
-    inline void potri( const char uplo, const integer_t n,
-            traits::complex_d* a, const integer_t lda, integer_t& info ) {
-        LAPACK_ZPOTRI( &uplo, &n, traits::complex_ptr(a), &lda, &info );
-    }
+
+inline void potri( const char uplo, const integer_t n, float* a,
+        const integer_t lda, integer_t& info ) {
+    LAPACK_SPOTRI( &uplo, &n, a, &lda, &info );
 }
+
+inline void potri( const char uplo, const integer_t n, double* a,
+        const integer_t lda, integer_t& info ) {
+    LAPACK_DPOTRI( &uplo, &n, a, &lda, &info );
+}
+
+inline void potri( const char uplo, const integer_t n, traits::complex_f* a,
+        const integer_t lda, integer_t& info ) {
+    LAPACK_CPOTRI( &uplo, &n, traits::complex_ptr(a), &lda, &info );
+}
+
+inline void potri( const char uplo, const integer_t n, traits::complex_d* a,
+        const integer_t lda, integer_t& info ) {
+    LAPACK_ZPOTRI( &uplo, &n, traits::complex_ptr(a), &lda, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -80,6 +85,9 @@ inline integer_t potri( MatrixA& a ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

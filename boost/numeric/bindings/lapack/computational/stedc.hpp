@@ -37,39 +37,40 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void stedc( const char compz, const integer_t n, float* d,
-            float* e, float* z, const integer_t ldz, float* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_SSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, iwork,
-                &liwork, &info );
-    }
-    inline void stedc( const char compz, const integer_t n, double* d,
-            double* e, double* z, const integer_t ldz, double* work,
-            const integer_t lwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_DSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, iwork,
-                &liwork, &info );
-    }
-    inline void stedc( const char compz, const integer_t n, float* d,
-            float* e, traits::complex_f* z, const integer_t ldz,
-            traits::complex_f* work, const integer_t lwork, float* rwork,
-            const integer_t lrwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_CSTEDC( &compz, &n, d, e, traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork,
-                &liwork, &info );
-    }
-    inline void stedc( const char compz, const integer_t n, double* d,
-            double* e, traits::complex_d* z, const integer_t ldz,
-            traits::complex_d* work, const integer_t lwork, double* rwork,
-            const integer_t lrwork, integer_t* iwork, const integer_t liwork,
-            integer_t& info ) {
-        LAPACK_ZSTEDC( &compz, &n, d, e, traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork,
-                &liwork, &info );
-    }
+
+inline void stedc( const char compz, const integer_t n, float* d, float* e,
+        float* z, const integer_t ldz, float* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_SSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
+            &info );
 }
+
+inline void stedc( const char compz, const integer_t n, double* d, double* e,
+        double* z, const integer_t ldz, double* work, const integer_t lwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_DSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
+            &info );
+}
+
+inline void stedc( const char compz, const integer_t n, float* d, float* e,
+        traits::complex_f* z, const integer_t ldz, traits::complex_f* work,
+        const integer_t lwork, float* rwork, const integer_t lrwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_CSTEDC( &compz, &n, d, e, traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
+            &info );
+}
+
+inline void stedc( const char compz, const integer_t n, double* d, double* e,
+        traits::complex_d* z, const integer_t ldz, traits::complex_d* work,
+        const integer_t lwork, double* rwork, const integer_t lrwork,
+        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+    LAPACK_ZSTEDC( &compz, &n, d, e, traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -252,6 +253,9 @@ inline integer_t stedc( const char compz, const integer_t n, VectorD& d,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

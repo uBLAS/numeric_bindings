@@ -33,23 +33,26 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hbev( const char jobz, const char uplo, const integer_t n,
-            const integer_t kd, traits::complex_f* ab, const integer_t ldab,
-            float* w, traits::complex_f* z, const integer_t ldz,
-            traits::complex_f* work, float* rwork, integer_t& info ) {
-        LAPACK_CHBEV( &jobz, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab,
-                w, traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
-                rwork, &info );
-    }
-    inline void hbev( const char jobz, const char uplo, const integer_t n,
-            const integer_t kd, traits::complex_d* ab, const integer_t ldab,
-            double* w, traits::complex_d* z, const integer_t ldz,
-            traits::complex_d* work, double* rwork, integer_t& info ) {
-        LAPACK_ZHBEV( &jobz, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab,
-                w, traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
-                rwork, &info );
-    }
+
+inline void hbev( const char jobz, const char uplo, const integer_t n,
+        const integer_t kd, traits::complex_f* ab, const integer_t ldab,
+        float* w, traits::complex_f* z, const integer_t ldz,
+        traits::complex_f* work, float* rwork, integer_t& info ) {
+    LAPACK_CHBEV( &jobz, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, w,
+            traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
+            &info );
 }
+
+inline void hbev( const char jobz, const char uplo, const integer_t n,
+        const integer_t kd, traits::complex_d* ab, const integer_t ldab,
+        double* w, traits::complex_d* z, const integer_t ldz,
+        traits::complex_d* work, double* rwork, integer_t& info ) {
+    LAPACK_ZHBEV( &jobz, &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, w,
+            traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -137,6 +140,9 @@ inline integer_t hbev( const char jobz, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

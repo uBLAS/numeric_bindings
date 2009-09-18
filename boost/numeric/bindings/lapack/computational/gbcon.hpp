@@ -36,39 +36,40 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbcon( const char norm, const integer_t n, const integer_t kl,
-            const integer_t ku, const float* ab, const integer_t ldab,
-            const integer_t* ipiv, const float anorm, float& rcond,
-            float* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_SGBCON( &norm, &n, &kl, &ku, ab, &ldab, ipiv, &anorm, &rcond,
-                work, iwork, &info );
-    }
-    inline void gbcon( const char norm, const integer_t n, const integer_t kl,
-            const integer_t ku, const double* ab, const integer_t ldab,
-            const integer_t* ipiv, const double anorm, double& rcond,
-            double* work, integer_t* iwork, integer_t& info ) {
-        LAPACK_DGBCON( &norm, &n, &kl, &ku, ab, &ldab, ipiv, &anorm, &rcond,
-                work, iwork, &info );
-    }
-    inline void gbcon( const char norm, const integer_t n, const integer_t kl,
-            const integer_t ku, const traits::complex_f* ab,
-            const integer_t ldab, const integer_t* ipiv, const float anorm,
-            float& rcond, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
-        LAPACK_CGBCON( &norm, &n, &kl, &ku, traits::complex_ptr(ab), &ldab,
-                ipiv, &anorm, &rcond, traits::complex_ptr(work), rwork,
-                &info );
-    }
-    inline void gbcon( const char norm, const integer_t n, const integer_t kl,
-            const integer_t ku, const traits::complex_d* ab,
-            const integer_t ldab, const integer_t* ipiv, const double anorm,
-            double& rcond, traits::complex_d* work, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZGBCON( &norm, &n, &kl, &ku, traits::complex_ptr(ab), &ldab,
-                ipiv, &anorm, &rcond, traits::complex_ptr(work), rwork,
-                &info );
-    }
+
+inline void gbcon( const char norm, const integer_t n, const integer_t kl,
+        const integer_t ku, const float* ab, const integer_t ldab,
+        const integer_t* ipiv, const float anorm, float& rcond, float* work,
+        integer_t* iwork, integer_t& info ) {
+    LAPACK_SGBCON( &norm, &n, &kl, &ku, ab, &ldab, ipiv, &anorm, &rcond, work,
+            iwork, &info );
 }
+
+inline void gbcon( const char norm, const integer_t n, const integer_t kl,
+        const integer_t ku, const double* ab, const integer_t ldab,
+        const integer_t* ipiv, const double anorm, double& rcond,
+        double* work, integer_t* iwork, integer_t& info ) {
+    LAPACK_DGBCON( &norm, &n, &kl, &ku, ab, &ldab, ipiv, &anorm, &rcond, work,
+            iwork, &info );
+}
+
+inline void gbcon( const char norm, const integer_t n, const integer_t kl,
+        const integer_t ku, const traits::complex_f* ab, const integer_t ldab,
+        const integer_t* ipiv, const float anorm, float& rcond,
+        traits::complex_f* work, float* rwork, integer_t& info ) {
+    LAPACK_CGBCON( &norm, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, ipiv,
+            &anorm, &rcond, traits::complex_ptr(work), rwork, &info );
+}
+
+inline void gbcon( const char norm, const integer_t n, const integer_t kl,
+        const integer_t ku, const traits::complex_d* ab, const integer_t ldab,
+        const integer_t* ipiv, const double anorm, double& rcond,
+        traits::complex_d* work, double* rwork, integer_t& info ) {
+    LAPACK_ZGBCON( &norm, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, ipiv,
+            &anorm, &rcond, traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -231,6 +232,9 @@ inline integer_t gbcon( const char norm, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

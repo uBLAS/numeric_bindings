@@ -36,41 +36,46 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hseqr( const char job, const char compz, const integer_t n,
-            const integer_t ilo, const integer_t ihi, float* h,
-            const integer_t ldh, float* wr, float* wi, float* z,
-            const integer_t ldz, float* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_SHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, wr, wi, z, &ldz,
-                work, &lwork, &info );
-    }
-    inline void hseqr( const char job, const char compz, const integer_t n,
-            const integer_t ilo, const integer_t ihi, double* h,
-            const integer_t ldh, double* wr, double* wi, double* z,
-            const integer_t ldz, double* work, const integer_t lwork,
-            integer_t& info ) {
-        LAPACK_DHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, wr, wi, z, &ldz,
-                work, &lwork, &info );
-    }
-    inline void hseqr( const char job, const char compz, const integer_t n,
-            const integer_t ilo, const integer_t ihi, traits::complex_f* h,
-            const integer_t ldh, traits::complex_f* w, traits::complex_f* z,
-            const integer_t ldz, traits::complex_f* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_CHSEQR( &job, &compz, &n, &ilo, &ihi, traits::complex_ptr(h),
-                &ldh, traits::complex_ptr(w), traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), &lwork, &info );
-    }
-    inline void hseqr( const char job, const char compz, const integer_t n,
-            const integer_t ilo, const integer_t ihi, traits::complex_d* h,
-            const integer_t ldh, traits::complex_d* w, traits::complex_d* z,
-            const integer_t ldz, traits::complex_d* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_ZHSEQR( &job, &compz, &n, &ilo, &ihi, traits::complex_ptr(h),
-                &ldh, traits::complex_ptr(w), traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), &lwork, &info );
-    }
+
+inline void hseqr( const char job, const char compz, const integer_t n,
+        const integer_t ilo, const integer_t ihi, float* h,
+        const integer_t ldh, float* wr, float* wi, float* z,
+        const integer_t ldz, float* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_SHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, wr, wi, z, &ldz,
+            work, &lwork, &info );
 }
+
+inline void hseqr( const char job, const char compz, const integer_t n,
+        const integer_t ilo, const integer_t ihi, double* h,
+        const integer_t ldh, double* wr, double* wi, double* z,
+        const integer_t ldz, double* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_DHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, wr, wi, z, &ldz,
+            work, &lwork, &info );
+}
+
+inline void hseqr( const char job, const char compz, const integer_t n,
+        const integer_t ilo, const integer_t ihi, traits::complex_f* h,
+        const integer_t ldh, traits::complex_f* w, traits::complex_f* z,
+        const integer_t ldz, traits::complex_f* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_CHSEQR( &job, &compz, &n, &ilo, &ihi, traits::complex_ptr(h), &ldh,
+            traits::complex_ptr(w), traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+inline void hseqr( const char job, const char compz, const integer_t n,
+        const integer_t ilo, const integer_t ihi, traits::complex_d* h,
+        const integer_t ldh, traits::complex_d* w, traits::complex_d* z,
+        const integer_t ldz, traits::complex_d* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_ZHSEQR( &job, &compz, &n, &ilo, &ihi, traits::complex_ptr(h), &ldh,
+            traits::complex_ptr(w), traits::complex_ptr(z), &ldz,
+            traits::complex_ptr(work), &lwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -244,6 +249,9 @@ inline integer_t hseqr( const char job, const char compz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

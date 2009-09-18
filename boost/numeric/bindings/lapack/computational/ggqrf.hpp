@@ -37,41 +37,44 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void ggqrf( const integer_t n, const integer_t m,
-            const integer_t p, float* a, const integer_t lda, float* taua,
-            float* b, const integer_t ldb, float* taub, float* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_SGGQRF( &n, &m, &p, a, &lda, taua, b, &ldb, taub, work, &lwork,
-                &info );
-    }
-    inline void ggqrf( const integer_t n, const integer_t m,
-            const integer_t p, double* a, const integer_t lda, double* taua,
-            double* b, const integer_t ldb, double* taub, double* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_DGGQRF( &n, &m, &p, a, &lda, taua, b, &ldb, taub, work, &lwork,
-                &info );
-    }
-    inline void ggqrf( const integer_t n, const integer_t m,
-            const integer_t p, traits::complex_f* a, const integer_t lda,
-            traits::complex_f* taua, traits::complex_f* b,
-            const integer_t ldb, traits::complex_f* taub,
-            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_CGGQRF( &n, &m, &p, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(taua), traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(taub), traits::complex_ptr(work), &lwork,
-                &info );
-    }
-    inline void ggqrf( const integer_t n, const integer_t m,
-            const integer_t p, traits::complex_d* a, const integer_t lda,
-            traits::complex_d* taua, traits::complex_d* b,
-            const integer_t ldb, traits::complex_d* taub,
-            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_ZGGQRF( &n, &m, &p, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(taua), traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(taub), traits::complex_ptr(work), &lwork,
-                &info );
-    }
+
+inline void ggqrf( const integer_t n, const integer_t m, const integer_t p,
+        float* a, const integer_t lda, float* taua, float* b,
+        const integer_t ldb, float* taub, float* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_SGGQRF( &n, &m, &p, a, &lda, taua, b, &ldb, taub, work, &lwork,
+            &info );
 }
+
+inline void ggqrf( const integer_t n, const integer_t m, const integer_t p,
+        double* a, const integer_t lda, double* taua, double* b,
+        const integer_t ldb, double* taub, double* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_DGGQRF( &n, &m, &p, a, &lda, taua, b, &ldb, taub, work, &lwork,
+            &info );
+}
+
+inline void ggqrf( const integer_t n, const integer_t m, const integer_t p,
+        traits::complex_f* a, const integer_t lda, traits::complex_f* taua,
+        traits::complex_f* b, const integer_t ldb, traits::complex_f* taub,
+        traits::complex_f* work, const integer_t lwork, integer_t& info ) {
+    LAPACK_CGGQRF( &n, &m, &p, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(taua), traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(taub), traits::complex_ptr(work), &lwork,
+            &info );
+}
+
+inline void ggqrf( const integer_t n, const integer_t m, const integer_t p,
+        traits::complex_d* a, const integer_t lda, traits::complex_d* taua,
+        traits::complex_d* b, const integer_t ldb, traits::complex_d* taub,
+        traits::complex_d* work, const integer_t lwork, integer_t& info ) {
+    LAPACK_ZGGQRF( &n, &m, &p, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(taua), traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(taub), traits::complex_ptr(work), &lwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -257,6 +260,9 @@ inline integer_t ggqrf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

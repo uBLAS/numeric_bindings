@@ -33,32 +33,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hpgvx( const integer_t itype, const char jobz,
-            const char range, const char uplo, const integer_t n,
-            traits::complex_f* ap, traits::complex_f* bp, const float vl,
-            const float vu, const integer_t il, const integer_t iu,
-            const float abstol, integer_t& m, float* w, traits::complex_f* z,
-            const integer_t ldz, traits::complex_f* work, float* rwork,
-            integer_t* iwork, integer_t* ifail, integer_t& info ) {
-        LAPACK_CHPGVX( &itype, &jobz, &range, &uplo, &n,
-                traits::complex_ptr(ap), traits::complex_ptr(bp), &vl, &vu,
-                &il, &iu, &abstol, &m, w, traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), rwork, iwork, ifail, &info );
-    }
-    inline void hpgvx( const integer_t itype, const char jobz,
-            const char range, const char uplo, const integer_t n,
-            traits::complex_d* ap, traits::complex_d* bp, const double vl,
-            const double vu, const integer_t il, const integer_t iu,
-            const double abstol, integer_t& m, double* w,
-            traits::complex_d* z, const integer_t ldz,
-            traits::complex_d* work, double* rwork, integer_t* iwork,
-            integer_t* ifail, integer_t& info ) {
-        LAPACK_ZHPGVX( &itype, &jobz, &range, &uplo, &n,
-                traits::complex_ptr(ap), traits::complex_ptr(bp), &vl, &vu,
-                &il, &iu, &abstol, &m, w, traits::complex_ptr(z), &ldz,
-                traits::complex_ptr(work), rwork, iwork, ifail, &info );
-    }
+
+inline void hpgvx( const integer_t itype, const char jobz, const char range,
+        const char uplo, const integer_t n, traits::complex_f* ap,
+        traits::complex_f* bp, const float vl, const float vu,
+        const integer_t il, const integer_t iu, const float abstol,
+        integer_t& m, float* w, traits::complex_f* z, const integer_t ldz,
+        traits::complex_f* work, float* rwork, integer_t* iwork,
+        integer_t* ifail, integer_t& info ) {
+    LAPACK_CHPGVX( &itype, &jobz, &range, &uplo, &n, traits::complex_ptr(ap),
+            traits::complex_ptr(bp), &vl, &vu, &il, &iu, &abstol, &m, w,
+            traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
+            iwork, ifail, &info );
 }
+
+inline void hpgvx( const integer_t itype, const char jobz, const char range,
+        const char uplo, const integer_t n, traits::complex_d* ap,
+        traits::complex_d* bp, const double vl, const double vu,
+        const integer_t il, const integer_t iu, const double abstol,
+        integer_t& m, double* w, traits::complex_d* z, const integer_t ldz,
+        traits::complex_d* work, double* rwork, integer_t* iwork,
+        integer_t* ifail, integer_t& info ) {
+    LAPACK_ZHPGVX( &itype, &jobz, &range, &uplo, &n, traits::complex_ptr(ap),
+            traits::complex_ptr(bp), &vl, &vu, &il, &iu, &abstol, &m, w,
+            traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
+            iwork, ifail, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -188,6 +190,9 @@ inline integer_t hpgvx( const integer_t itype, const char jobz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

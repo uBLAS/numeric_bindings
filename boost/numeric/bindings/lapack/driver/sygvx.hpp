@@ -34,30 +34,32 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sygvx( const integer_t itype, const char jobz,
-            const char range, const char uplo, const integer_t n, float* a,
-            const integer_t lda, float* b, const integer_t ldb,
-            const float vl, const float vu, const integer_t il,
-            const integer_t iu, const float abstol, integer_t& m, float* w,
-            float* z, const integer_t ldz, float* work, const integer_t lwork,
-            integer_t* iwork, integer_t* ifail, integer_t& info ) {
-        LAPACK_SSYGVX( &itype, &jobz, &range, &uplo, &n, a, &lda, b, &ldb,
-                &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, &lwork,
-                iwork, ifail, &info );
-    }
-    inline void sygvx( const integer_t itype, const char jobz,
-            const char range, const char uplo, const integer_t n, double* a,
-            const integer_t lda, double* b, const integer_t ldb,
-            const double vl, const double vu, const integer_t il,
-            const integer_t iu, const double abstol, integer_t& m, double* w,
-            double* z, const integer_t ldz, double* work,
-            const integer_t lwork, integer_t* iwork, integer_t* ifail,
-            integer_t& info ) {
-        LAPACK_DSYGVX( &itype, &jobz, &range, &uplo, &n, a, &lda, b, &ldb,
-                &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, &lwork,
-                iwork, ifail, &info );
-    }
+
+inline void sygvx( const integer_t itype, const char jobz, const char range,
+        const char uplo, const integer_t n, float* a, const integer_t lda,
+        float* b, const integer_t ldb, const float vl, const float vu,
+        const integer_t il, const integer_t iu, const float abstol,
+        integer_t& m, float* w, float* z, const integer_t ldz, float* work,
+        const integer_t lwork, integer_t* iwork, integer_t* ifail,
+        integer_t& info ) {
+    LAPACK_SSYGVX( &itype, &jobz, &range, &uplo, &n, a, &lda, b, &ldb, &vl,
+            &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, &lwork, iwork,
+            ifail, &info );
 }
+
+inline void sygvx( const integer_t itype, const char jobz, const char range,
+        const char uplo, const integer_t n, double* a, const integer_t lda,
+        double* b, const integer_t ldb, const double vl, const double vu,
+        const integer_t il, const integer_t iu, const double abstol,
+        integer_t& m, double* w, double* z, const integer_t ldz, double* work,
+        const integer_t lwork, integer_t* iwork, integer_t* ifail,
+        integer_t& info ) {
+    LAPACK_DSYGVX( &itype, &jobz, &range, &uplo, &n, a, &lda, b, &ldb, &vl,
+            &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, &lwork, iwork,
+            ifail, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -197,6 +199,9 @@ inline integer_t sygvx( const integer_t itype, const char jobz,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

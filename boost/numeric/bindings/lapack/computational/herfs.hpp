@@ -33,33 +33,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void herfs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_f* a,
-            const integer_t lda, const traits::complex_f* af,
-            const integer_t ldaf, const integer_t* ipiv,
-            const traits::complex_f* b, const integer_t ldb,
-            traits::complex_f* x, const integer_t ldx, float* ferr,
-            float* berr, traits::complex_f* work, float* rwork,
-            integer_t& info ) {
-        LAPACK_CHERFS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
-                &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
-    inline void herfs( const char uplo, const integer_t n,
-            const integer_t nrhs, const traits::complex_d* a,
-            const integer_t lda, const traits::complex_d* af,
-            const integer_t ldaf, const integer_t* ipiv,
-            const traits::complex_d* b, const integer_t ldb,
-            traits::complex_d* x, const integer_t ldx, double* ferr,
-            double* berr, traits::complex_d* work, double* rwork,
-            integer_t& info ) {
-        LAPACK_ZHERFS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
-                &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
-                traits::complex_ptr(work), rwork, &info );
-    }
+
+inline void herfs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_f* a, const integer_t lda,
+        const traits::complex_f* af, const integer_t ldaf,
+        const integer_t* ipiv, const traits::complex_f* b,
+        const integer_t ldb, traits::complex_f* x, const integer_t ldx,
+        float* ferr, float* berr, traits::complex_f* work, float* rwork,
+        integer_t& info ) {
+    LAPACK_CHERFS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
+            &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
 }
+
+inline void herfs( const char uplo, const integer_t n, const integer_t nrhs,
+        const traits::complex_d* a, const integer_t lda,
+        const traits::complex_d* af, const integer_t ldaf,
+        const integer_t* ipiv, const traits::complex_d* b,
+        const integer_t ldb, traits::complex_d* x, const integer_t ldx,
+        double* ferr, double* berr, traits::complex_d* work, double* rwork,
+        integer_t& info ) {
+    LAPACK_ZHERFS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(af), &ldaf, ipiv, traits::complex_ptr(b),
+            &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
+            traits::complex_ptr(work), rwork, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -185,6 +186,9 @@ inline integer_t herfs( const MatrixA& a, const MatrixAF& af,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

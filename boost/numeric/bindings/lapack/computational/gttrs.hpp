@@ -31,41 +31,44 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gttrs( const char trans, const integer_t n,
-            const integer_t nrhs, const float* dl, const float* d,
-            const float* du, const float* du2, const integer_t* ipiv,
-            float* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_SGTTRS( &trans, &n, &nrhs, dl, d, du, du2, ipiv, b, &ldb,
-                &info );
-    }
-    inline void gttrs( const char trans, const integer_t n,
-            const integer_t nrhs, const double* dl, const double* d,
-            const double* du, const double* du2, const integer_t* ipiv,
-            double* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_DGTTRS( &trans, &n, &nrhs, dl, d, du, du2, ipiv, b, &ldb,
-                &info );
-    }
-    inline void gttrs( const char trans, const integer_t n,
-            const integer_t nrhs, const traits::complex_f* dl,
-            const traits::complex_f* d, const traits::complex_f* du,
-            const traits::complex_f* du2, const integer_t* ipiv,
-            traits::complex_f* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_CGTTRS( &trans, &n, &nrhs, traits::complex_ptr(dl),
-                traits::complex_ptr(d), traits::complex_ptr(du),
-                traits::complex_ptr(du2), ipiv, traits::complex_ptr(b), &ldb,
-                &info );
-    }
-    inline void gttrs( const char trans, const integer_t n,
-            const integer_t nrhs, const traits::complex_d* dl,
-            const traits::complex_d* d, const traits::complex_d* du,
-            const traits::complex_d* du2, const integer_t* ipiv,
-            traits::complex_d* b, const integer_t ldb, integer_t& info ) {
-        LAPACK_ZGTTRS( &trans, &n, &nrhs, traits::complex_ptr(dl),
-                traits::complex_ptr(d), traits::complex_ptr(du),
-                traits::complex_ptr(du2), ipiv, traits::complex_ptr(b), &ldb,
-                &info );
-    }
+
+inline void gttrs( const char trans, const integer_t n, const integer_t nrhs,
+        const float* dl, const float* d, const float* du, const float* du2,
+        const integer_t* ipiv, float* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_SGTTRS( &trans, &n, &nrhs, dl, d, du, du2, ipiv, b, &ldb, &info );
 }
+
+inline void gttrs( const char trans, const integer_t n, const integer_t nrhs,
+        const double* dl, const double* d, const double* du,
+        const double* du2, const integer_t* ipiv, double* b,
+        const integer_t ldb, integer_t& info ) {
+    LAPACK_DGTTRS( &trans, &n, &nrhs, dl, d, du, du2, ipiv, b, &ldb, &info );
+}
+
+inline void gttrs( const char trans, const integer_t n, const integer_t nrhs,
+        const traits::complex_f* dl, const traits::complex_f* d,
+        const traits::complex_f* du, const traits::complex_f* du2,
+        const integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_CGTTRS( &trans, &n, &nrhs, traits::complex_ptr(dl),
+            traits::complex_ptr(d), traits::complex_ptr(du),
+            traits::complex_ptr(du2), ipiv, traits::complex_ptr(b), &ldb,
+            &info );
+}
+
+inline void gttrs( const char trans, const integer_t n, const integer_t nrhs,
+        const traits::complex_d* dl, const traits::complex_d* d,
+        const traits::complex_d* du, const traits::complex_d* du2,
+        const integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
+        integer_t& info ) {
+    LAPACK_ZGTTRS( &trans, &n, &nrhs, traits::complex_ptr(dl),
+            traits::complex_ptr(d), traits::complex_ptr(du),
+            traits::complex_ptr(du2), ipiv, traits::complex_ptr(b), &ldb,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -123,6 +126,9 @@ inline integer_t gttrs( const char trans, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

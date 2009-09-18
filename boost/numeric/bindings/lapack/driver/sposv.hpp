@@ -33,15 +33,16 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void sposv( const char uplo, const integer_t n,
-            const integer_t nrhs, double* a, const integer_t lda,
-            const double* b, const integer_t ldb, double* x,
-            const integer_t ldx, double* work, float* swork, integer_t& iter,
-            integer_t& info ) {
-        LAPACK_DSPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, x, &ldx, work,
-                swork, &iter, &info );
-    }
+
+inline void sposv( const char uplo, const integer_t n, const integer_t nrhs,
+        double* a, const integer_t lda, const double* b, const integer_t ldb,
+        double* x, const integer_t ldx, double* work, float* swork,
+        integer_t& iter, integer_t& info ) {
+    LAPACK_DSPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, x, &ldx, work, swork,
+            &iter, &info );
 }
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -138,6 +139,9 @@ inline integer_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -33,19 +33,22 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void hetri( const char uplo, const integer_t n,
-            traits::complex_f* a, const integer_t lda, const integer_t* ipiv,
-            traits::complex_f* work, integer_t& info ) {
-        LAPACK_CHETRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(work), &info );
-    }
-    inline void hetri( const char uplo, const integer_t n,
-            traits::complex_d* a, const integer_t lda, const integer_t* ipiv,
-            traits::complex_d* work, integer_t& info ) {
-        LAPACK_ZHETRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
-                traits::complex_ptr(work), &info );
-    }
+
+inline void hetri( const char uplo, const integer_t n, traits::complex_f* a,
+        const integer_t lda, const integer_t* ipiv, traits::complex_f* work,
+        integer_t& info ) {
+    LAPACK_CHETRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(work), &info );
 }
+
+inline void hetri( const char uplo, const integer_t n, traits::complex_d* a,
+        const integer_t lda, const integer_t* ipiv, traits::complex_d* work,
+        integer_t& info ) {
+    LAPACK_ZHETRI( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
+            traits::complex_ptr(work), &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -115,6 +118,9 @@ inline integer_t hetri( const char uplo, MatrixA& a,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

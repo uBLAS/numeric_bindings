@@ -31,25 +31,28 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void getrf( const integer_t m, const integer_t n, float* a,
-            const integer_t lda, integer_t* ipiv, integer_t& info ) {
-        LAPACK_SGETRF( &m, &n, a, &lda, ipiv, &info );
-    }
-    inline void getrf( const integer_t m, const integer_t n, double* a,
-            const integer_t lda, integer_t* ipiv, integer_t& info ) {
-        LAPACK_DGETRF( &m, &n, a, &lda, ipiv, &info );
-    }
-    inline void getrf( const integer_t m, const integer_t n,
-            traits::complex_f* a, const integer_t lda, integer_t* ipiv,
-            integer_t& info ) {
-        LAPACK_CGETRF( &m, &n, traits::complex_ptr(a), &lda, ipiv, &info );
-    }
-    inline void getrf( const integer_t m, const integer_t n,
-            traits::complex_d* a, const integer_t lda, integer_t* ipiv,
-            integer_t& info ) {
-        LAPACK_ZGETRF( &m, &n, traits::complex_ptr(a), &lda, ipiv, &info );
-    }
+
+inline void getrf( const integer_t m, const integer_t n, float* a,
+        const integer_t lda, integer_t* ipiv, integer_t& info ) {
+    LAPACK_SGETRF( &m, &n, a, &lda, ipiv, &info );
 }
+
+inline void getrf( const integer_t m, const integer_t n, double* a,
+        const integer_t lda, integer_t* ipiv, integer_t& info ) {
+    LAPACK_DGETRF( &m, &n, a, &lda, ipiv, &info );
+}
+
+inline void getrf( const integer_t m, const integer_t n, traits::complex_f* a,
+        const integer_t lda, integer_t* ipiv, integer_t& info ) {
+    LAPACK_CGETRF( &m, &n, traits::complex_ptr(a), &lda, ipiv, &info );
+}
+
+inline void getrf( const integer_t m, const integer_t n, traits::complex_d* a,
+        const integer_t lda, integer_t* ipiv, integer_t& info ) {
+    LAPACK_ZGETRF( &m, &n, traits::complex_ptr(a), &lda, ipiv, &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -85,6 +88,9 @@ inline integer_t getrf( MatrixA& a, VectorIPIV& ipiv ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

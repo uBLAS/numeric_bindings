@@ -37,31 +37,36 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void geqlf( const integer_t m, const integer_t n, float* a,
-            const integer_t lda, float* tau, float* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_SGEQLF( &m, &n, a, &lda, tau, work, &lwork, &info );
-    }
-    inline void geqlf( const integer_t m, const integer_t n, double* a,
-            const integer_t lda, double* tau, double* work,
-            const integer_t lwork, integer_t& info ) {
-        LAPACK_DGEQLF( &m, &n, a, &lda, tau, work, &lwork, &info );
-    }
-    inline void geqlf( const integer_t m, const integer_t n,
-            traits::complex_f* a, const integer_t lda, traits::complex_f* tau,
-            traits::complex_f* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_CGEQLF( &m, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
-                &info );
-    }
-    inline void geqlf( const integer_t m, const integer_t n,
-            traits::complex_d* a, const integer_t lda, traits::complex_d* tau,
-            traits::complex_d* work, const integer_t lwork, integer_t& info ) {
-        LAPACK_ZGEQLF( &m, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
-                &info );
-    }
+
+inline void geqlf( const integer_t m, const integer_t n, float* a,
+        const integer_t lda, float* tau, float* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_SGEQLF( &m, &n, a, &lda, tau, work, &lwork, &info );
 }
+
+inline void geqlf( const integer_t m, const integer_t n, double* a,
+        const integer_t lda, double* tau, double* work, const integer_t lwork,
+        integer_t& info ) {
+    LAPACK_DGEQLF( &m, &n, a, &lda, tau, work, &lwork, &info );
+}
+
+inline void geqlf( const integer_t m, const integer_t n, traits::complex_f* a,
+        const integer_t lda, traits::complex_f* tau, traits::complex_f* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_CGEQLF( &m, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
+            &info );
+}
+
+inline void geqlf( const integer_t m, const integer_t n, traits::complex_d* a,
+        const integer_t lda, traits::complex_d* tau, traits::complex_d* work,
+        const integer_t lwork, integer_t& info ) {
+    LAPACK_ZGEQLF( &m, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType, typename Enable = void >
@@ -202,6 +207,9 @@ inline integer_t geqlf( MatrixA& a, VectorTAU& tau ) {
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

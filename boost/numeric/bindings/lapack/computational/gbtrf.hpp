@@ -31,29 +31,34 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-    inline void gbtrf( const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, float* ab,
-            const integer_t ldab, integer_t* ipiv, integer_t& info ) {
-        LAPACK_SGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
-    }
-    inline void gbtrf( const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, double* ab,
-            const integer_t ldab, integer_t* ipiv, integer_t& info ) {
-        LAPACK_DGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
-    }
-    inline void gbtrf( const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, traits::complex_f* ab,
-            const integer_t ldab, integer_t* ipiv, integer_t& info ) {
-        LAPACK_CGBTRF( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, ipiv,
-                &info );
-    }
-    inline void gbtrf( const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, traits::complex_d* ab,
-            const integer_t ldab, integer_t* ipiv, integer_t& info ) {
-        LAPACK_ZGBTRF( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, ipiv,
-                &info );
-    }
+
+inline void gbtrf( const integer_t m, const integer_t n, const integer_t kl,
+        const integer_t ku, float* ab, const integer_t ldab, integer_t* ipiv,
+        integer_t& info ) {
+    LAPACK_SGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
 }
+
+inline void gbtrf( const integer_t m, const integer_t n, const integer_t kl,
+        const integer_t ku, double* ab, const integer_t ldab, integer_t* ipiv,
+        integer_t& info ) {
+    LAPACK_DGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
+}
+
+inline void gbtrf( const integer_t m, const integer_t n, const integer_t kl,
+        const integer_t ku, traits::complex_f* ab, const integer_t ldab,
+        integer_t* ipiv, integer_t& info ) {
+    LAPACK_CGBTRF( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, ipiv,
+            &info );
+}
+
+inline void gbtrf( const integer_t m, const integer_t n, const integer_t kl,
+        const integer_t ku, traits::complex_d* ab, const integer_t ldab,
+        integer_t* ipiv, integer_t& info ) {
+    LAPACK_ZGBTRF( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, ipiv,
+            &info );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -91,6 +96,9 @@ inline integer_t gbtrf( const integer_t m, const integer_t n,
     return info;
 }
 
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

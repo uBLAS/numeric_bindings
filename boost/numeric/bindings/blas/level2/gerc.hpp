@@ -25,27 +25,29 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void gerc( const integer_t m, const integer_t n,
-            const traits::complex_f alpha, const traits::complex_f* x,
-            const integer_t incx, const traits::complex_f* y,
-            const integer_t incy, traits::complex_f* a, const integer_t lda ) {
-        BLAS_CGERC( &m, &n, traits::complex_ptr(&alpha),
-                traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,
-                traits::complex_ptr(a), &lda );
-    }
-    inline void gerc( const integer_t m, const integer_t n,
-            const traits::complex_d alpha, const traits::complex_d* x,
-            const integer_t incx, const traits::complex_d* y,
-            const integer_t incy, traits::complex_d* a, const integer_t lda ) {
-        BLAS_ZGERC( &m, &n, traits::complex_ptr(&alpha),
-                traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,
-                traits::complex_ptr(a), &lda );
-    }
+
+inline void gerc( const integer_t m, const integer_t n,
+        const traits::complex_f alpha, const traits::complex_f* x,
+        const integer_t incx, const traits::complex_f* y,
+        const integer_t incy, traits::complex_f* a, const integer_t lda ) {
+    BLAS_CGERC( &m, &n, traits::complex_ptr(&alpha), traits::complex_ptr(x),
+            &incx, traits::complex_ptr(y), &incy, traits::complex_ptr(a),
+            &lda );
 }
+
+inline void gerc( const integer_t m, const integer_t n,
+        const traits::complex_d alpha, const traits::complex_d* x,
+        const integer_t incx, const traits::complex_d* y,
+        const integer_t incy, traits::complex_d* a, const integer_t lda ) {
+    BLAS_ZGERC( &m, &n, traits::complex_ptr(&alpha), traits::complex_ptr(x),
+            &incx, traits::complex_ptr(y), &incy, traits::complex_ptr(a),
+            &lda );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -73,7 +75,7 @@ struct gerc_impl {
     }
 };
 
-// low-level template function for direct calls to level2::gerc
+// generic template function for calling to gerc
 template< typename VectorX, typename VectorY, typename MatrixA >
 inline typename gerc_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -83,6 +85,9 @@ gerc( const typename traits::vector_traits< VectorX >::value_type alpha,
     gerc_impl< value_type >::invoke( alpha, x, y, a );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

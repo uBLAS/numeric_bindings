@@ -25,31 +25,35 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void axpy( const integer_t n, const float a, const float* x,
-            const integer_t incx, float* y, const integer_t incy ) {
-        BLAS_SAXPY( &n, &a, x, &incx, y, &incy );
-    }
-    inline void axpy( const integer_t n, const double a, const double* x,
-            const integer_t incx, double* y, const integer_t incy ) {
-        BLAS_DAXPY( &n, &a, x, &incx, y, &incy );
-    }
-    inline void axpy( const integer_t n, const traits::complex_f a,
-            const traits::complex_f* x, const integer_t incx,
-            traits::complex_f* y, const integer_t incy ) {
-        BLAS_CAXPY( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
-                &incx, traits::complex_ptr(y), &incy );
-    }
-    inline void axpy( const integer_t n, const traits::complex_d a,
-            const traits::complex_d* x, const integer_t incx,
-            traits::complex_d* y, const integer_t incy ) {
-        BLAS_ZAXPY( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
-                &incx, traits::complex_ptr(y), &incy );
-    }
+
+inline void axpy( const integer_t n, const float a, const float* x,
+        const integer_t incx, float* y, const integer_t incy ) {
+    BLAS_SAXPY( &n, &a, x, &incx, y, &incy );
 }
+
+inline void axpy( const integer_t n, const double a, const double* x,
+        const integer_t incx, double* y, const integer_t incy ) {
+    BLAS_DAXPY( &n, &a, x, &incx, y, &incy );
+}
+
+inline void axpy( const integer_t n, const traits::complex_f a,
+        const traits::complex_f* x, const integer_t incx,
+        traits::complex_f* y, const integer_t incy ) {
+    BLAS_CAXPY( &n, traits::complex_ptr(&a), traits::complex_ptr(x), &incx,
+            traits::complex_ptr(y), &incy );
+}
+
+inline void axpy( const integer_t n, const traits::complex_d a,
+        const traits::complex_d* x, const integer_t incx,
+        traits::complex_d* y, const integer_t incy ) {
+    BLAS_ZAXPY( &n, traits::complex_ptr(&a), traits::complex_ptr(x), &incx,
+            traits::complex_ptr(y), &incy );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -72,7 +76,7 @@ struct axpy_impl {
     }
 };
 
-// low-level template function for direct calls to level1::axpy
+// generic template function for calling to axpy
 template< typename VectorX, typename VectorY >
 inline typename axpy_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -82,6 +86,9 @@ axpy( const typename traits::vector_traits< VectorX >::value_type a,
     axpy_impl< value_type >::invoke( a, x, y );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level1
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

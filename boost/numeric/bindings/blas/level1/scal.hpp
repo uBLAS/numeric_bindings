@@ -25,29 +25,31 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void scal( const integer_t n, const float a, const float* x,
-            const integer_t incx ) {
-        BLAS_SSCAL( &n, &a, x, &incx );
-    }
-    inline void scal( const integer_t n, const double a, const double* x,
-            const integer_t incx ) {
-        BLAS_DSCAL( &n, &a, x, &incx );
-    }
-    inline void scal( const integer_t n, const traits::complex_f a,
-            const traits::complex_f* x, const integer_t incx ) {
-        BLAS_CSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
-                &incx );
-    }
-    inline void scal( const integer_t n, const traits::complex_d a,
-            const traits::complex_d* x, const integer_t incx ) {
-        BLAS_ZSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x),
-                &incx );
-    }
+
+inline void scal( const integer_t n, const float a, const float* x,
+        const integer_t incx ) {
+    BLAS_SSCAL( &n, &a, x, &incx );
 }
+
+inline void scal( const integer_t n, const double a, const double* x,
+        const integer_t incx ) {
+    BLAS_DSCAL( &n, &a, x, &incx );
+}
+
+inline void scal( const integer_t n, const traits::complex_f a,
+        const traits::complex_f* x, const integer_t incx ) {
+    BLAS_CSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x), &incx );
+}
+
+inline void scal( const integer_t n, const traits::complex_d a,
+        const traits::complex_d* x, const integer_t incx ) {
+    BLAS_ZSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x), &incx );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -65,7 +67,7 @@ struct scal_impl {
     }
 };
 
-// low-level template function for direct calls to level1::scal
+// generic template function for calling to scal
 template< typename VectorX >
 inline typename scal_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -75,6 +77,9 @@ scal( const typename traits::vector_traits< VectorX >::value_type a,
     scal_impl< value_type >::invoke( a, x );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level1
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

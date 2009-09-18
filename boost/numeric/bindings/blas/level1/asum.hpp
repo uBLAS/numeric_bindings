@@ -25,19 +25,20 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline float asum( const integer_t n, const float* x,
-            const integer_t incx ) {
-        return BLAS_SASUM( &n, x, &incx );
-    }
-    inline double asum( const integer_t n, const double* x,
-            const integer_t incx ) {
-        return BLAS_DASUM( &n, x, &incx );
-    }
+
+inline float asum( const integer_t n, const float* x, const integer_t incx ) {
+    return BLAS_SASUM( &n, x, &incx );
 }
+
+inline double asum( const integer_t n, const double* x,
+        const integer_t incx ) {
+    return BLAS_DASUM( &n, x, &incx );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -55,7 +56,7 @@ struct asum_impl {
     }
 };
 
-// low-level template function for direct calls to level1::asum
+// generic template function for calling to asum
 template< typename VectorX >
 inline typename asum_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -64,6 +65,9 @@ asum( const VectorX& x ) {
     return asum_impl< value_type >::invoke( x );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level1
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

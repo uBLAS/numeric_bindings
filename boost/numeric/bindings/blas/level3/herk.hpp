@@ -25,25 +25,27 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void herk( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const float alpha, const traits::complex_f* a,
-            const integer_t lda, const float beta, traits::complex_f* c,
-            const integer_t ldc ) {
-        BLAS_CHERK( &uplo, &trans, &n, &k, &alpha, traits::complex_ptr(a),
-                &lda, &beta, traits::complex_ptr(c), &ldc );
-    }
-    inline void herk( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const double alpha, const traits::complex_d* a,
-            const integer_t lda, const double beta, traits::complex_d* c,
-            const integer_t ldc ) {
-        BLAS_ZHERK( &uplo, &trans, &n, &k, &alpha, traits::complex_ptr(a),
-                &lda, &beta, traits::complex_ptr(c), &ldc );
-    }
+
+inline void herk( const char uplo, const char trans, const integer_t n,
+        const integer_t k, const float alpha, const traits::complex_f* a,
+        const integer_t lda, const float beta, traits::complex_f* c,
+        const integer_t ldc ) {
+    BLAS_CHERK( &uplo, &trans, &n, &k, &alpha, traits::complex_ptr(a), &lda,
+            &beta, traits::complex_ptr(c), &ldc );
 }
+
+inline void herk( const char uplo, const char trans, const integer_t n,
+        const integer_t k, const double alpha, const traits::complex_d* a,
+        const integer_t lda, const double beta, traits::complex_d* c,
+        const integer_t ldc ) {
+    BLAS_ZHERK( &uplo, &trans, &n, &k, &alpha, traits::complex_ptr(a), &lda,
+            &beta, traits::complex_ptr(c), &ldc );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -62,14 +64,14 @@ struct herk_impl {
                 MatrixC >::value_type >::value) );
         detail::herk( traits::matrix_uplo_tag(c), trans,
                 traits::matrix_num_columns(c),
-                (trans=='N'?traits::matrix_num_columns(a),
-                traits::matrix_num_rows(a)), alpha, traits::matrix_storage(a),
+                (trans=='N' ? traits::matrix_num_columns(a) : traits::matrix_num_rows(a)),
+                alpha, traits::matrix_storage(a),
                 traits::leading_dimension(a), beta, traits::matrix_storage(c),
                 traits::leading_dimension(c) );
     }
 };
 
-// low-level template function for direct calls to level3::herk
+// generic template function for calling to herk
 template< typename MatrixA, typename MatrixC >
 inline typename herk_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -82,6 +84,9 @@ herk( const char trans, const typename traits::type_traits<
     herk_impl< value_type >::invoke( trans, alpha, a, beta, c );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level3
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

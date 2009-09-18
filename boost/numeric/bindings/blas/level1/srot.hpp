@@ -25,17 +25,18 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void srot( const integer_t n, const traits::complex_f* cx,
-            const integer_t incx, const traits::complex_f* cy,
-            const integer_t incy, const float c, const float s ) {
-        BLAS_CSROT( &n, traits::complex_ptr(cx), &incx,
-                traits::complex_ptr(cy), &incy, &c, &s );
-    }
+
+inline void srot( const integer_t n, const traits::complex_f* cx,
+        const integer_t incx, const traits::complex_f* cy,
+        const integer_t incy, const float c, const float s ) {
+    BLAS_CSROT( &n, traits::complex_ptr(cx), &incx, traits::complex_ptr(cy),
+            &incy, &c, &s );
 }
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -58,7 +59,7 @@ struct srot_impl {
     }
 };
 
-// low-level template function for direct calls to level1::srot
+// generic template function for calling to srot
 template< typename VectorCX, typename VectorCY >
 inline typename srot_impl< typename traits::vector_traits<
         VectorCX >::value_type >::return_type
@@ -71,6 +72,9 @@ srot( const integer_t n, const VectorCX& cx, const VectorCY& cy,
     srot_impl< value_type >::invoke( n, cx, cy, c, s );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level1
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

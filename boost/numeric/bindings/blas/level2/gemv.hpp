@@ -25,43 +25,45 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void gemv( const char trans, const integer_t m, const integer_t n,
-            const float alpha, const float* a, const integer_t lda,
-            const float* x, const integer_t incx, const float beta, float* y,
-            const integer_t incy ) {
-        BLAS_SGEMV( &trans, &m, &n, &alpha, a, &lda, x, &incx, &beta, y,
-                &incy );
-    }
-    inline void gemv( const char trans, const integer_t m, const integer_t n,
-            const double alpha, const double* a, const integer_t lda,
-            const double* x, const integer_t incx, const double beta,
-            double* y, const integer_t incy ) {
-        BLAS_DGEMV( &trans, &m, &n, &alpha, a, &lda, x, &incx, &beta, y,
-                &incy );
-    }
-    inline void gemv( const char trans, const integer_t m, const integer_t n,
-            const traits::complex_f alpha, const traits::complex_f* a,
-            const integer_t lda, const traits::complex_f* x,
-            const integer_t incx, const traits::complex_f beta,
-            traits::complex_f* y, const integer_t incy ) {
-        BLAS_CGEMV( &trans, &m, &n, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
-                traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
-    }
-    inline void gemv( const char trans, const integer_t m, const integer_t n,
-            const traits::complex_d alpha, const traits::complex_d* a,
-            const integer_t lda, const traits::complex_d* x,
-            const integer_t incx, const traits::complex_d beta,
-            traits::complex_d* y, const integer_t incy ) {
-        BLAS_ZGEMV( &trans, &m, &n, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
-                traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
-    }
+
+inline void gemv( const char trans, const integer_t m, const integer_t n,
+        const float alpha, const float* a, const integer_t lda,
+        const float* x, const integer_t incx, const float beta, float* y,
+        const integer_t incy ) {
+    BLAS_SGEMV( &trans, &m, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy );
 }
+
+inline void gemv( const char trans, const integer_t m, const integer_t n,
+        const double alpha, const double* a, const integer_t lda,
+        const double* x, const integer_t incx, const double beta, double* y,
+        const integer_t incy ) {
+    BLAS_DGEMV( &trans, &m, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy );
+}
+
+inline void gemv( const char trans, const integer_t m, const integer_t n,
+        const traits::complex_f alpha, const traits::complex_f* a,
+        const integer_t lda, const traits::complex_f* x, const integer_t incx,
+        const traits::complex_f beta, traits::complex_f* y,
+        const integer_t incy ) {
+    BLAS_CGEMV( &trans, &m, &n, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
+            traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
+}
+
+inline void gemv( const char trans, const integer_t m, const integer_t n,
+        const traits::complex_d alpha, const traits::complex_d* a,
+        const integer_t lda, const traits::complex_d* x, const integer_t incx,
+        const traits::complex_d beta, traits::complex_d* y,
+        const integer_t incy ) {
+    BLAS_ZGEMV( &trans, &m, &n, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
+            traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -97,7 +99,7 @@ struct gemv_impl {
     }
 };
 
-// low-level template function for direct calls to level2::gemv
+// generic template function for calling to gemv
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename gemv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -109,6 +111,9 @@ gemv( const char trans, const typename traits::matrix_traits<
     gemv_impl< value_type >::invoke( trans, alpha, a, x, beta, y );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

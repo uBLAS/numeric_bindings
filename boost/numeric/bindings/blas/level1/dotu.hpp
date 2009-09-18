@@ -25,23 +25,25 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline fcomplex_t dotu( const integer_t n, const traits::complex_f* x,
-            const integer_t incx, const traits::complex_f* y,
-            const integer_t incy ) {
-        return BLAS_CDOTU( &n, traits::complex_ptr(x), &incx,
-                traits::complex_ptr(y), &incy );
-    }
-    inline dcomplex_t dotu( const integer_t n, const traits::complex_d* x,
-            const integer_t incx, const traits::complex_d* y,
-            const integer_t incy ) {
-        return BLAS_ZDOTU( &n, traits::complex_ptr(x), &incx,
-                traits::complex_ptr(y), &incy );
-    }
+
+inline fcomplex_t dotu( const integer_t n, const traits::complex_f* x,
+        const integer_t incx, const traits::complex_f* y,
+        const integer_t incy ) {
+    return BLAS_CDOTU( &n, traits::complex_ptr(x), &incx,
+            traits::complex_ptr(y), &incy );
 }
+
+inline dcomplex_t dotu( const integer_t n, const traits::complex_d* x,
+        const integer_t incx, const traits::complex_d* y,
+        const integer_t incy ) {
+    return BLAS_ZDOTU( &n, traits::complex_ptr(x), &incx,
+            traits::complex_ptr(y), &incy );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -63,7 +65,7 @@ struct dotu_impl {
     }
 };
 
-// low-level template function for direct calls to level1::dotu
+// generic template function for calling to dotu
 template< typename VectorX, typename VectorY >
 inline typename dotu_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -72,6 +74,9 @@ dotu( const VectorX& x, const VectorY& y ) {
     return dotu_impl< value_type >::invoke( x, y );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level1
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

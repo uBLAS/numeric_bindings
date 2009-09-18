@@ -25,21 +25,23 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void ger( const integer_t m, const integer_t n, const float alpha,
-            const float* x, const integer_t incx, const float* y,
-            const integer_t incy, float* a, const integer_t lda ) {
-        BLAS_SGER( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
-    }
-    inline void ger( const integer_t m, const integer_t n, const double alpha,
-            const double* x, const integer_t incx, const double* y,
-            const integer_t incy, double* a, const integer_t lda ) {
-        BLAS_DGER( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
-    }
+
+inline void ger( const integer_t m, const integer_t n, const float alpha,
+        const float* x, const integer_t incx, const float* y,
+        const integer_t incy, float* a, const integer_t lda ) {
+    BLAS_SGER( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
 }
+
+inline void ger( const integer_t m, const integer_t n, const double alpha,
+        const double* x, const integer_t incx, const double* y,
+        const integer_t incy, double* a, const integer_t lda ) {
+    BLAS_DGER( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -67,7 +69,7 @@ struct ger_impl {
     }
 };
 
-// low-level template function for direct calls to level2::ger
+// generic template function for calling to ger
 template< typename VectorX, typename VectorY, typename MatrixA >
 inline typename ger_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -79,6 +81,9 @@ ger( const typename traits::type_traits<
     ger_impl< value_type >::invoke( alpha, x, y, a );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -25,19 +25,21 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void rotmg( float& d1, float& d2, float& x1, const float y1,
-            float* sparam ) {
-        BLAS_SROTMG( &d1, &d2, &x1, &y1, sparam );
-    }
-    inline void rotmg( double& d1, double& d2, double& x1, const double y1,
-            double* dparam ) {
-        BLAS_DROTMG( &d1, &d2, &x1, &y1, dparam );
-    }
+
+inline void rotmg( float& d1, float& d2, float& x1, const float y1,
+        float* sparam ) {
+    BLAS_SROTMG( &d1, &d2, &x1, &y1, sparam );
 }
+
+inline void rotmg( double& d1, double& d2, double& x1, const double y1,
+        double* dparam ) {
+    BLAS_DROTMG( &d1, &d2, &x1, &y1, dparam );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -55,7 +57,7 @@ struct rotmg_impl {
     }
 };
 
-// low-level template function for direct calls to level1::rotmg
+// generic template function for calling to rotmg
 template< typename VectorDPARAM >
 inline typename rotmg_impl< typename traits::vector_traits<
         VectorDPARAM >::value_type >::return_type
@@ -72,6 +74,9 @@ rotmg( typename traits::type_traits< typename traits::vector_traits<
     rotmg_impl< value_type >::invoke( d1, d2, x1, y1, dparam );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level1
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

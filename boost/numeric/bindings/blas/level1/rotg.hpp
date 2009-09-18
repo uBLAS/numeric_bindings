@@ -25,27 +25,31 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void rotg( float& a, float& b, float& c, float& s ) {
-        BLAS_SROTG( &a, &b, &c, &s );
-    }
-    inline void rotg( double& a, double& b, double& c, double& s ) {
-        BLAS_DROTG( &a, &b, &c, &s );
-    }
-    inline void rotg( traits::complex_f& a, traits::complex_f& b, float& c,
-            traits::complex_f& s ) {
-        BLAS_CROTG( traits::complex_ptr(&a), traits::complex_ptr(&b), &c,
-                traits::complex_ptr(&s) );
-    }
-    inline void rotg( traits::complex_d& a, traits::complex_d& b, double& c,
-            traits::complex_d& s ) {
-        BLAS_ZROTG( traits::complex_ptr(&a), traits::complex_ptr(&b), &c,
-                traits::complex_ptr(&s) );
-    }
+
+inline void rotg( float& a, float& b, float& c, float& s ) {
+    BLAS_SROTG( &a, &b, &c, &s );
 }
+
+inline void rotg( double& a, double& b, double& c, double& s ) {
+    BLAS_DROTG( &a, &b, &c, &s );
+}
+
+inline void rotg( traits::complex_f& a, traits::complex_f& b, float& c,
+        traits::complex_f& s ) {
+    BLAS_CROTG( traits::complex_ptr(&a), traits::complex_ptr(&b), &c,
+            traits::complex_ptr(&s) );
+}
+
+inline void rotg( traits::complex_d& a, traits::complex_d& b, double& c,
+        traits::complex_d& s ) {
+    BLAS_ZROTG( traits::complex_ptr(&a), traits::complex_ptr(&b), &c,
+            traits::complex_ptr(&s) );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -63,7 +67,7 @@ struct rotg_impl {
     }
 };
 
-// low-level template function for direct calls to level1::rotg
+// generic template function for calling to rotg
 template<  >
 inline typename rotg_impl< typename traits::TODO_traits<
         TODO >::value_type >::return_type
@@ -76,6 +80,9 @@ rotg( typename traits::TODO_traits< TODO >::value_type& a,
     rotg_impl< value_type >::invoke( a, b, c, s );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level1
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

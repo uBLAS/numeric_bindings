@@ -9,14 +9,21 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_HPP
 
-#include <boost/numeric/bindings/blas/swap.hpp>
-#include <boost/numeric/bindings/blas/scale.hpp>
-#include <boost/numeric/bindings/blas/copy.hpp>
-#include <boost/numeric/bindings/blas/axpy.hpp>
-#include <boost/numeric/bindings/blas/dot.hpp>
-#include <boost/numeric/bindings/blas/prec_dot.hpp>
-#include <boost/numeric/bindings/blas/norm_2.hpp>
-#include <boost/numeric/bindings/blas/norm_1.hpp>
-#include <boost/numeric/bindings/blas/norm_inf.hpp>
+#include <boost/numeric/bindings/blas/level1/asum.hpp>
+#include <boost/numeric/bindings/blas/level1/axpy.hpp>
+#include <boost/numeric/bindings/blas/level1/copy.hpp>
+#include <boost/numeric/bindings/blas/level1/dotc.hpp>
+#include <boost/numeric/bindings/blas/level1/dot.hpp>
+#include <boost/numeric/bindings/blas/level1/dotu.hpp>
+#include <boost/numeric/bindings/blas/level1/drot.hpp>
+#include <boost/numeric/bindings/blas/level1/nmr2.hpp>
+#include <boost/numeric/bindings/blas/level1/rotg.hpp>
+#include <boost/numeric/bindings/blas/level1/rot.hpp>
+#include <boost/numeric/bindings/blas/level1/rotmg.hpp>
+#include <boost/numeric/bindings/blas/level1/rotm.hpp>
+#include <boost/numeric/bindings/blas/level1/scal.hpp>
+#include <boost/numeric/bindings/blas/level1/sdot.hpp>
+#include <boost/numeric/bindings/blas/level1/srot.hpp>
+#include <boost/numeric/bindings/blas/level1/swap.hpp>
 
 #endif

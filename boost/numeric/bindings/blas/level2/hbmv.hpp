@@ -25,29 +25,31 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void hbmv( const char uplo, const integer_t n, const integer_t k,
-            const traits::complex_f alpha, const traits::complex_f* a,
-            const integer_t lda, const traits::complex_f* x,
-            const integer_t incx, const traits::complex_f beta,
-            traits::complex_f* y, const integer_t incy ) {
-        BLAS_CHBMV( &uplo, &n, &k, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
-                traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
-    }
-    inline void hbmv( const char uplo, const integer_t n, const integer_t k,
-            const traits::complex_d alpha, const traits::complex_d* a,
-            const integer_t lda, const traits::complex_d* x,
-            const integer_t incx, const traits::complex_d beta,
-            traits::complex_d* y, const integer_t incy ) {
-        BLAS_ZHBMV( &uplo, &n, &k, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
-                traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
-    }
+
+inline void hbmv( const char uplo, const integer_t n, const integer_t k,
+        const traits::complex_f alpha, const traits::complex_f* a,
+        const integer_t lda, const traits::complex_f* x, const integer_t incx,
+        const traits::complex_f beta, traits::complex_f* y,
+        const integer_t incy ) {
+    BLAS_CHBMV( &uplo, &n, &k, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
+            traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
 }
+
+inline void hbmv( const char uplo, const integer_t n, const integer_t k,
+        const traits::complex_d alpha, const traits::complex_d* a,
+        const integer_t lda, const traits::complex_d* x, const integer_t incx,
+        const traits::complex_d beta, traits::complex_d* y,
+        const integer_t incy ) {
+    BLAS_ZHBMV( &uplo, &n, &k, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
+            traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -76,7 +78,7 @@ struct hbmv_impl {
     }
 };
 
-// low-level template function for direct calls to level2::hbmv
+// generic template function for calling to hbmv
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename hbmv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -88,6 +90,9 @@ hbmv( const integer_t k, const typename traits::matrix_traits<
     hbmv_impl< value_type >::invoke( k, alpha, a, x, beta, y );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

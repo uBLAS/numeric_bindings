@@ -25,27 +25,29 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void hpr2( const char uplo, const integer_t n,
-            const traits::complex_f alpha, const traits::complex_f* x,
-            const integer_t incx, const traits::complex_f* y,
-            const integer_t incy, traits::complex_f* ap ) {
-        BLAS_CHPR2( &uplo, &n, traits::complex_ptr(&alpha),
-                traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,
-                traits::complex_ptr(ap) );
-    }
-    inline void hpr2( const char uplo, const integer_t n,
-            const traits::complex_d alpha, const traits::complex_d* x,
-            const integer_t incx, const traits::complex_d* y,
-            const integer_t incy, traits::complex_d* ap ) {
-        BLAS_ZHPR2( &uplo, &n, traits::complex_ptr(&alpha),
-                traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,
-                traits::complex_ptr(ap) );
-    }
+
+inline void hpr2( const char uplo, const integer_t n,
+        const traits::complex_f alpha, const traits::complex_f* x,
+        const integer_t incx, const traits::complex_f* y,
+        const integer_t incy, traits::complex_f* ap ) {
+    BLAS_CHPR2( &uplo, &n, traits::complex_ptr(&alpha),
+            traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,
+            traits::complex_ptr(ap) );
 }
+
+inline void hpr2( const char uplo, const integer_t n,
+        const traits::complex_d alpha, const traits::complex_d* x,
+        const integer_t incx, const traits::complex_d* y,
+        const integer_t incy, traits::complex_d* ap ) {
+    BLAS_ZHPR2( &uplo, &n, traits::complex_ptr(&alpha),
+            traits::complex_ptr(x), &incx, traits::complex_ptr(y), &incy,
+            traits::complex_ptr(ap) );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -73,7 +75,7 @@ struct hpr2_impl {
     }
 };
 
-// low-level template function for direct calls to level2::hpr2
+// generic template function for calling to hpr2
 template< typename VectorX, typename VectorY, typename MatrixAP >
 inline typename hpr2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -83,6 +85,9 @@ hpr2( const typename traits::vector_traits< VectorX >::value_type alpha,
     hpr2_impl< value_type >::invoke( alpha, x, y, ap );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -25,33 +25,36 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void tpsv( const char uplo, const char trans, const char diag,
-            const integer_t n, const float* ap, float* x,
-            const integer_t incx ) {
-        BLAS_STPSV( &uplo, &trans, &diag, &n, ap, x, &incx );
-    }
-    inline void tpsv( const char uplo, const char trans, const char diag,
-            const integer_t n, const double* ap, double* x,
-            const integer_t incx ) {
-        BLAS_DTPSV( &uplo, &trans, &diag, &n, ap, x, &incx );
-    }
-    inline void tpsv( const char uplo, const char trans, const char diag,
-            const integer_t n, const traits::complex_f* ap,
-            traits::complex_f* x, const integer_t incx ) {
-        BLAS_CTPSV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
-                traits::complex_ptr(x), &incx );
-    }
-    inline void tpsv( const char uplo, const char trans, const char diag,
-            const integer_t n, const traits::complex_d* ap,
-            traits::complex_d* x, const integer_t incx ) {
-        BLAS_ZTPSV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
-                traits::complex_ptr(x), &incx );
-    }
+
+inline void tpsv( const char uplo, const char trans, const char diag,
+        const integer_t n, const float* ap, float* x, const integer_t incx ) {
+    BLAS_STPSV( &uplo, &trans, &diag, &n, ap, x, &incx );
 }
+
+inline void tpsv( const char uplo, const char trans, const char diag,
+        const integer_t n, const double* ap, double* x,
+        const integer_t incx ) {
+    BLAS_DTPSV( &uplo, &trans, &diag, &n, ap, x, &incx );
+}
+
+inline void tpsv( const char uplo, const char trans, const char diag,
+        const integer_t n, const traits::complex_f* ap, traits::complex_f* x,
+        const integer_t incx ) {
+    BLAS_CTPSV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
+            traits::complex_ptr(x), &incx );
+}
+
+inline void tpsv( const char uplo, const char trans, const char diag,
+        const integer_t n, const traits::complex_d* ap, traits::complex_d* x,
+        const integer_t incx ) {
+    BLAS_ZTPSV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
+            traits::complex_ptr(x), &incx );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -74,7 +77,7 @@ struct tpsv_impl {
     }
 };
 
-// low-level template function for direct calls to level2::tpsv
+// generic template function for calling to tpsv
 template< typename MatrixAP, typename VectorX >
 inline typename tpsv_impl< typename traits::matrix_traits<
         MatrixAP >::value_type >::return_type
@@ -84,6 +87,9 @@ tpsv( const char trans, const char diag, const MatrixAP& ap,
     tpsv_impl< value_type >::invoke( trans, diag, ap, x );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

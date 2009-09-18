@@ -25,19 +25,21 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void rot( const integer_t n, const float* x, const integer_t incx,
-            float* y, const integer_t incy, const float c, const float s ) {
-        BLAS_SROT( &n, x, &incx, y, &incy, &c, &s );
-    }
-    inline void rot( const integer_t n, const double* x, const integer_t incx,
-            double* y, const integer_t incy, const double c, const double s ) {
-        BLAS_DROT( &n, x, &incx, y, &incy, &c, &s );
-    }
+
+inline void rot( const integer_t n, const float* x, const integer_t incx,
+        float* y, const integer_t incy, const float c, const float s ) {
+    BLAS_SROT( &n, x, &incx, y, &incy, &c, &s );
 }
+
+inline void rot( const integer_t n, const double* x, const integer_t incx,
+        double* y, const integer_t incy, const double c, const double s ) {
+    BLAS_DROT( &n, x, &incx, y, &incy, &c, &s );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -60,7 +62,7 @@ struct rot_impl {
     }
 };
 
-// low-level template function for direct calls to level1::rot
+// generic template function for calling to rot
 template< typename VectorX, typename VectorY >
 inline typename rot_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -72,6 +74,9 @@ rot( const VectorX& x, VectorY& y, const typename traits::type_traits<
     rot_impl< value_type >::invoke( x, y, c, s );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level1
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

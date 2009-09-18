@@ -25,31 +25,33 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void hemm( const char side, const char uplo, const integer_t m,
-            const integer_t n, const traits::complex_f alpha,
-            const traits::complex_f* a, const integer_t lda,
-            const traits::complex_f* b, const integer_t ldb,
-            const traits::complex_f beta, traits::complex_f* c,
-            const integer_t ldc ) {
-        BLAS_CHEMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
-    }
-    inline void hemm( const char side, const char uplo, const integer_t m,
-            const integer_t n, const traits::complex_d alpha,
-            const traits::complex_d* a, const integer_t lda,
-            const traits::complex_d* b, const integer_t ldb,
-            const traits::complex_d beta, traits::complex_d* c,
-            const integer_t ldc ) {
-        BLAS_ZHEMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
-    }
+
+inline void hemm( const char side, const char uplo, const integer_t m,
+        const integer_t n, const traits::complex_f alpha,
+        const traits::complex_f* a, const integer_t lda,
+        const traits::complex_f* b, const integer_t ldb,
+        const traits::complex_f beta, traits::complex_f* c,
+        const integer_t ldc ) {
+    BLAS_CHEMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
 }
+
+inline void hemm( const char side, const char uplo, const integer_t m,
+        const integer_t n, const traits::complex_d alpha,
+        const traits::complex_d* a, const integer_t lda,
+        const traits::complex_d* b, const integer_t ldb,
+        const traits::complex_d beta, traits::complex_d* c,
+        const integer_t ldc ) {
+    BLAS_ZHEMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -79,7 +81,7 @@ struct hemm_impl {
     }
 };
 
-// low-level template function for direct calls to level3::hemm
+// generic template function for calling to hemm
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename hemm_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -91,6 +93,9 @@ hemm( const char side, const typename traits::matrix_traits<
     hemm_impl< value_type >::invoke( side, alpha, a, b, beta, c );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level3
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

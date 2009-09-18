@@ -25,15 +25,16 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline double sdot( const integer_t n, const float* sx,
-            const integer_t incx, const float* sy, const integer_t incy ) {
-        return BLAS_DSDOT( &n, sx, &incx, sy, &incy );
-    }
+
+inline double sdot( const integer_t n, const float* sx, const integer_t incx,
+        const float* sy, const integer_t incy ) {
+    return BLAS_DSDOT( &n, sx, &incx, sy, &incy );
 }
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -55,7 +56,7 @@ struct sdot_impl {
     }
 };
 
-// low-level template function for direct calls to level1::sdot
+// generic template function for calling to sdot
 template< typename VectorSX, typename VectorSY >
 inline typename sdot_impl< typename traits::vector_traits<
         VectorSX >::value_type >::return_type
@@ -65,6 +66,9 @@ sdot( const integer_t n, const VectorSX& sx, const integer_t incx,
     return sdot_impl< value_type >::invoke( n, sx, incx, sy, incy );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level1
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

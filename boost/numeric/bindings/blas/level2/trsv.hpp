@@ -25,33 +25,37 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void trsv( const char uplo, const char trans, const char diag,
-            const integer_t n, const float* a, const integer_t lda, float* x,
-            const integer_t incx ) {
-        BLAS_STRSV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
-    }
-    inline void trsv( const char uplo, const char trans, const char diag,
-            const integer_t n, const double* a, const integer_t lda,
-            double* x, const integer_t incx ) {
-        BLAS_DTRSV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
-    }
-    inline void trsv( const char uplo, const char trans, const char diag,
-            const integer_t n, const traits::complex_f* a,
-            const integer_t lda, traits::complex_f* x, const integer_t incx ) {
-        BLAS_CTRSV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(x), &incx );
-    }
-    inline void trsv( const char uplo, const char trans, const char diag,
-            const integer_t n, const traits::complex_d* a,
-            const integer_t lda, traits::complex_d* x, const integer_t incx ) {
-        BLAS_ZTRSV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
-                traits::complex_ptr(x), &incx );
-    }
+
+inline void trsv( const char uplo, const char trans, const char diag,
+        const integer_t n, const float* a, const integer_t lda, float* x,
+        const integer_t incx ) {
+    BLAS_STRSV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
 }
+
+inline void trsv( const char uplo, const char trans, const char diag,
+        const integer_t n, const double* a, const integer_t lda, double* x,
+        const integer_t incx ) {
+    BLAS_DTRSV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
+}
+
+inline void trsv( const char uplo, const char trans, const char diag,
+        const integer_t n, const traits::complex_f* a, const integer_t lda,
+        traits::complex_f* x, const integer_t incx ) {
+    BLAS_CTRSV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(x), &incx );
+}
+
+inline void trsv( const char uplo, const char trans, const char diag,
+        const integer_t n, const traits::complex_d* a, const integer_t lda,
+        traits::complex_d* x, const integer_t incx ) {
+    BLAS_ZTRSV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
+            traits::complex_ptr(x), &incx );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -75,7 +79,7 @@ struct trsv_impl {
     }
 };
 
-// low-level template function for direct calls to level2::trsv
+// generic template function for calling to trsv
 template< typename MatrixA, typename VectorX >
 inline typename trsv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -84,6 +88,9 @@ trsv( const char trans, const char diag, const MatrixA& a, VectorX& x ) {
     trsv_impl< value_type >::invoke( trans, diag, a, x );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

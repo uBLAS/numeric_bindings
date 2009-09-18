@@ -25,21 +25,23 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void spr2( const char uplo, const integer_t n, const float alpha,
-            const float* x, const integer_t incx, const float* y,
-            const integer_t incy, float* ap ) {
-        BLAS_SSPR2( &uplo, &n, &alpha, x, &incx, y, &incy, ap );
-    }
-    inline void spr2( const char uplo, const integer_t n, const double alpha,
-            const double* x, const integer_t incx, const double* y,
-            const integer_t incy, double* ap ) {
-        BLAS_DSPR2( &uplo, &n, &alpha, x, &incx, y, &incy, ap );
-    }
+
+inline void spr2( const char uplo, const integer_t n, const float alpha,
+        const float* x, const integer_t incx, const float* y,
+        const integer_t incy, float* ap ) {
+    BLAS_SSPR2( &uplo, &n, &alpha, x, &incx, y, &incy, ap );
 }
+
+inline void spr2( const char uplo, const integer_t n, const double alpha,
+        const double* x, const integer_t incx, const double* y,
+        const integer_t incy, double* ap ) {
+    BLAS_DSPR2( &uplo, &n, &alpha, x, &incx, y, &incy, ap );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -67,7 +69,7 @@ struct spr2_impl {
     }
 };
 
-// low-level template function for direct calls to level2::spr2
+// generic template function for calling to spr2
 template< typename VectorX, typename VectorY, typename MatrixAP >
 inline typename spr2_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -79,6 +81,9 @@ spr2( const typename traits::type_traits<
     spr2_impl< value_type >::invoke( alpha, x, y, ap );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

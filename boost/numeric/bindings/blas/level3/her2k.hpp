@@ -25,29 +25,31 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void her2k( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const traits::complex_f alpha,
-            const traits::complex_f* a, const integer_t lda,
-            const traits::complex_f* b, const integer_t ldb, const float beta,
-            traits::complex_f* c, const integer_t ldc ) {
-        BLAS_CHER2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                &beta, traits::complex_ptr(c), &ldc );
-    }
-    inline void her2k( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const traits::complex_d alpha,
-            const traits::complex_d* a, const integer_t lda,
-            const traits::complex_d* b, const integer_t ldb,
-            const double beta, traits::complex_d* c, const integer_t ldc ) {
-        BLAS_ZHER2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                &beta, traits::complex_ptr(c), &ldc );
-    }
+
+inline void her2k( const char uplo, const char trans, const integer_t n,
+        const integer_t k, const traits::complex_f alpha,
+        const traits::complex_f* a, const integer_t lda,
+        const traits::complex_f* b, const integer_t ldb, const float beta,
+        traits::complex_f* c, const integer_t ldc ) {
+    BLAS_CHER2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb, &beta,
+            traits::complex_ptr(c), &ldc );
 }
+
+inline void her2k( const char uplo, const char trans, const integer_t n,
+        const integer_t k, const traits::complex_d alpha,
+        const traits::complex_d* a, const integer_t lda,
+        const traits::complex_d* b, const integer_t ldb, const double beta,
+        traits::complex_d* c, const integer_t ldc ) {
+    BLAS_ZHER2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb, &beta,
+            traits::complex_ptr(c), &ldc );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -70,15 +72,15 @@ struct her2k_impl {
                 MatrixC >::value_type >::value) );
         detail::her2k( traits::matrix_uplo_tag(c), trans,
                 traits::matrix_num_columns(c),
-                (trans=='N'?traits::matrix_num_columns(a),
-                traits::matrix_num_rows(a)), alpha, traits::matrix_storage(a),
+                (trans=='N' ? traits::matrix_num_columns(a) : traits::matrix_num_rows(a)),
+                alpha, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), beta, traits::matrix_storage(c),
                 traits::leading_dimension(c) );
     }
 };
 
-// low-level template function for direct calls to level3::her2k
+// generic template function for calling to her2k
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename her2k_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -90,6 +92,9 @@ her2k( const char trans, const typename traits::matrix_traits<
     her2k_impl< value_type >::invoke( trans, alpha, a, b, beta, c );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level3
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

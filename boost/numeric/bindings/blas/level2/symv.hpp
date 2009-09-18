@@ -25,23 +25,25 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void symv( const char uplo, const integer_t n, const float alpha,
-            const float* a, const integer_t lda, const float* x,
-            const integer_t incx, const float beta, float* y,
-            const integer_t incy ) {
-        BLAS_SSYMV( &uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy );
-    }
-    inline void symv( const char uplo, const integer_t n, const double alpha,
-            const double* a, const integer_t lda, const double* x,
-            const integer_t incx, const double beta, double* y,
-            const integer_t incy ) {
-        BLAS_DSYMV( &uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy );
-    }
+
+inline void symv( const char uplo, const integer_t n, const float alpha,
+        const float* a, const integer_t lda, const float* x,
+        const integer_t incx, const float beta, float* y,
+        const integer_t incy ) {
+    BLAS_SSYMV( &uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy );
 }
+
+inline void symv( const char uplo, const integer_t n, const double alpha,
+        const double* a, const integer_t lda, const double* x,
+        const integer_t incx, const double beta, double* y,
+        const integer_t incy ) {
+    BLAS_DSYMV( &uplo, &n, &alpha, a, &lda, x, &incx, &beta, y, &incy );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -69,7 +71,7 @@ struct symv_impl {
     }
 };
 
-// low-level template function for direct calls to level2::symv
+// generic template function for calling to symv
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename symv_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -83,6 +85,9 @@ symv( const typename traits::type_traits<
     symv_impl< value_type >::invoke( alpha, a, x, beta, y );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

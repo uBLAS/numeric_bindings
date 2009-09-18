@@ -25,23 +25,25 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void her( const char uplo, const integer_t n, const float alpha,
-            const traits::complex_f* x, const integer_t incx,
-            traits::complex_f* a, const integer_t lda ) {
-        BLAS_CHER( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
-                traits::complex_ptr(a), &lda );
-    }
-    inline void her( const char uplo, const integer_t n, const double alpha,
-            const traits::complex_d* x, const integer_t incx,
-            traits::complex_d* a, const integer_t lda ) {
-        BLAS_ZHER( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
-                traits::complex_ptr(a), &lda );
-    }
+
+inline void her( const char uplo, const integer_t n, const float alpha,
+        const traits::complex_f* x, const integer_t incx,
+        traits::complex_f* a, const integer_t lda ) {
+    BLAS_CHER( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
+            traits::complex_ptr(a), &lda );
 }
+
+inline void her( const char uplo, const integer_t n, const double alpha,
+        const traits::complex_d* x, const integer_t incx,
+        traits::complex_d* a, const integer_t lda ) {
+    BLAS_ZHER( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
+            traits::complex_ptr(a), &lda );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -65,7 +67,7 @@ struct her_impl {
     }
 };
 
-// low-level template function for direct calls to level2::her
+// generic template function for calling to her
 template< typename VectorX, typename MatrixA >
 inline typename her_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -77,6 +79,9 @@ her( const typename traits::type_traits<
     her_impl< value_type >::invoke( alpha, x, a );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

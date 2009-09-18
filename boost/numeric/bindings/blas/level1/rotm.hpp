@@ -25,19 +25,21 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level1 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void rotm( const integer_t n, float* x, const integer_t incx,
-            float* y, const integer_t incy, float* param ) {
-        BLAS_SROTM( &n, x, &incx, y, &incy, param );
-    }
-    inline void rotm( const integer_t n, double* x, const integer_t incx,
-            double* y, const integer_t incy, double* param ) {
-        BLAS_DROTM( &n, x, &incx, y, &incy, param );
-    }
+
+inline void rotm( const integer_t n, float* x, const integer_t incx, float* y,
+        const integer_t incy, float* param ) {
+    BLAS_SROTM( &n, x, &incx, y, &incy, param );
 }
+
+inline void rotm( const integer_t n, double* x, const integer_t incx,
+        double* y, const integer_t incy, double* param ) {
+    BLAS_DROTM( &n, x, &incx, y, &incy, param );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -64,7 +66,7 @@ struct rotm_impl {
     }
 };
 
-// low-level template function for direct calls to level1::rotm
+// generic template function for calling to rotm
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -74,6 +76,9 @@ rotm( const integer_t n, VectorX& x, const integer_t incx, VectorY& y,
     rotm_impl< value_type >::invoke( n, x, incx, y, incy, param );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level1
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

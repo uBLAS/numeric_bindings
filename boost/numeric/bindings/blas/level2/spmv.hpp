@@ -25,21 +25,23 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void spmv( const char uplo, const integer_t n, const float alpha,
-            const float* ap, const float* x, const integer_t incx,
-            const float beta, float* y, const integer_t incy ) {
-        BLAS_SSPMV( &uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy );
-    }
-    inline void spmv( const char uplo, const integer_t n, const double alpha,
-            const double* ap, const double* x, const integer_t incx,
-            const double beta, double* y, const integer_t incy ) {
-        BLAS_DSPMV( &uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy );
-    }
+
+inline void spmv( const char uplo, const integer_t n, const float alpha,
+        const float* ap, const float* x, const integer_t incx,
+        const float beta, float* y, const integer_t incy ) {
+    BLAS_SSPMV( &uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy );
 }
+
+inline void spmv( const char uplo, const integer_t n, const double alpha,
+        const double* ap, const double* x, const integer_t incx,
+        const double beta, double* y, const integer_t incy ) {
+    BLAS_DSPMV( &uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -67,7 +69,7 @@ struct spmv_impl {
     }
 };
 
-// low-level template function for direct calls to level2::spmv
+// generic template function for calling to spmv
 template< typename MatrixAP, typename VectorX, typename VectorY >
 inline typename spmv_impl< typename traits::matrix_traits<
         MatrixAP >::value_type >::return_type
@@ -81,6 +83,9 @@ spmv( const typename traits::type_traits<
     spmv_impl< value_type >::invoke( alpha, ap, x, beta, y );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

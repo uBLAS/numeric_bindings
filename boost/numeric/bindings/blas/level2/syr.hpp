@@ -25,21 +25,22 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level2 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void syr( const char uplo, const integer_t n, const float alpha,
-            const float* x, const integer_t incx, float* a,
-            const integer_t lda ) {
-        BLAS_SSYR( &uplo, &n, &alpha, x, &incx, a, &lda );
-    }
-    inline void syr( const char uplo, const integer_t n, const double alpha,
-            const double* x, const integer_t incx, double* a,
-            const integer_t lda ) {
-        BLAS_DSYR( &uplo, &n, &alpha, x, &incx, a, &lda );
-    }
+
+inline void syr( const char uplo, const integer_t n, const float alpha,
+        const float* x, const integer_t incx, float* a, const integer_t lda ) {
+    BLAS_SSYR( &uplo, &n, &alpha, x, &incx, a, &lda );
 }
+
+inline void syr( const char uplo, const integer_t n, const double alpha,
+        const double* x, const integer_t incx, double* a,
+        const integer_t lda ) {
+    BLAS_DSYR( &uplo, &n, &alpha, x, &incx, a, &lda );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -63,7 +64,7 @@ struct syr_impl {
     }
 };
 
-// low-level template function for direct calls to level2::syr
+// generic template function for calling to syr
 template< typename VectorX, typename MatrixA >
 inline typename syr_impl< typename traits::vector_traits<
         VectorX >::value_type >::return_type
@@ -75,6 +76,9 @@ syr( const typename traits::type_traits<
     syr_impl< value_type >::invoke( alpha, x, a );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level2
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

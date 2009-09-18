@@ -25,45 +25,49 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void syr2k( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const float alpha, const float* a,
-            const integer_t lda, const float* b, const integer_t ldb,
-            const float beta, float* c, const integer_t ldc ) {
-        BLAS_SSYR2K( &uplo, &trans, &n, &k, &alpha, a, &lda, b, &ldb, &beta,
-                c, &ldc );
-    }
-    inline void syr2k( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const double alpha, const double* a,
-            const integer_t lda, const double* b, const integer_t ldb,
-            const double beta, double* c, const integer_t ldc ) {
-        BLAS_DSYR2K( &uplo, &trans, &n, &k, &alpha, a, &lda, b, &ldb, &beta,
-                c, &ldc );
-    }
-    inline void syr2k( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const traits::complex_f alpha,
-            const traits::complex_f* a, const integer_t lda,
-            const traits::complex_f* b, const integer_t ldb,
-            const traits::complex_f beta, traits::complex_f* c,
-            const integer_t ldc ) {
-        BLAS_CSYR2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
-    }
-    inline void syr2k( const char uplo, const char trans, const integer_t n,
-            const integer_t k, const traits::complex_d alpha,
-            const traits::complex_d* a, const integer_t lda,
-            const traits::complex_d* b, const integer_t ldb,
-            const traits::complex_d beta, traits::complex_d* c,
-            const integer_t ldc ) {
-        BLAS_ZSYR2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
-    }
+
+inline void syr2k( const char uplo, const char trans, const integer_t n,
+        const integer_t k, const float alpha, const float* a,
+        const integer_t lda, const float* b, const integer_t ldb,
+        const float beta, float* c, const integer_t ldc ) {
+    BLAS_SSYR2K( &uplo, &trans, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c,
+            &ldc );
 }
+
+inline void syr2k( const char uplo, const char trans, const integer_t n,
+        const integer_t k, const double alpha, const double* a,
+        const integer_t lda, const double* b, const integer_t ldb,
+        const double beta, double* c, const integer_t ldc ) {
+    BLAS_DSYR2K( &uplo, &trans, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c,
+            &ldc );
+}
+
+inline void syr2k( const char uplo, const char trans, const integer_t n,
+        const integer_t k, const traits::complex_f alpha,
+        const traits::complex_f* a, const integer_t lda,
+        const traits::complex_f* b, const integer_t ldb,
+        const traits::complex_f beta, traits::complex_f* c,
+        const integer_t ldc ) {
+    BLAS_CSYR2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
+}
+
+inline void syr2k( const char uplo, const char trans, const integer_t n,
+        const integer_t k, const traits::complex_d alpha,
+        const traits::complex_d* a, const integer_t lda,
+        const traits::complex_d* b, const integer_t ldb,
+        const traits::complex_d beta, traits::complex_d* c,
+        const integer_t ldc ) {
+    BLAS_ZSYR2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -86,15 +90,15 @@ struct syr2k_impl {
                 MatrixC >::value_type >::value) );
         detail::syr2k( traits::matrix_uplo_tag(c), trans,
                 traits::matrix_num_columns(c),
-                (trans=='N'?traits::matrix_num_columns(a),
-                traits::matrix_num_rows(a)), alpha, traits::matrix_storage(a),
+                (trans=='N' ? traits::matrix_num_columns(a) : traits::matrix_num_rows(a)),
+                alpha, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), beta, traits::matrix_storage(c),
                 traits::leading_dimension(c) );
     }
 };
 
-// low-level template function for direct calls to level3::syr2k
+// generic template function for calling to syr2k
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename syr2k_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -106,6 +110,9 @@ syr2k( const char trans, const typename traits::matrix_traits<
     syr2k_impl< value_type >::invoke( trans, alpha, a, b, beta, c );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level3
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

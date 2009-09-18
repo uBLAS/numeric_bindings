@@ -25,45 +25,49 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace level3 {
 
 // overloaded functions to call blas
 namespace detail {
-    inline void symm( const char side, const char uplo, const integer_t m,
-            const integer_t n, const float alpha, const float* a,
-            const integer_t lda, const float* b, const integer_t ldb,
-            const float beta, float* c, const integer_t ldc ) {
-        BLAS_SSYMM( &side, &uplo, &m, &n, &alpha, a, &lda, b, &ldb, &beta, c,
-                &ldc );
-    }
-    inline void symm( const char side, const char uplo, const integer_t m,
-            const integer_t n, const double alpha, const double* a,
-            const integer_t lda, const double* b, const integer_t ldb,
-            const double beta, double* c, const integer_t ldc ) {
-        BLAS_DSYMM( &side, &uplo, &m, &n, &alpha, a, &lda, b, &ldb, &beta, c,
-                &ldc );
-    }
-    inline void symm( const char side, const char uplo, const integer_t m,
-            const integer_t n, const traits::complex_f alpha,
-            const traits::complex_f* a, const integer_t lda,
-            const traits::complex_f* b, const integer_t ldb,
-            const traits::complex_f beta, traits::complex_f* c,
-            const integer_t ldc ) {
-        BLAS_CSYMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
-    }
-    inline void symm( const char side, const char uplo, const integer_t m,
-            const integer_t n, const traits::complex_d alpha,
-            const traits::complex_d* a, const integer_t lda,
-            const traits::complex_d* b, const integer_t ldb,
-            const traits::complex_d beta, traits::complex_d* c,
-            const integer_t ldc ) {
-        BLAS_ZSYMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
-                traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-                traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
-    }
+
+inline void symm( const char side, const char uplo, const integer_t m,
+        const integer_t n, const float alpha, const float* a,
+        const integer_t lda, const float* b, const integer_t ldb,
+        const float beta, float* c, const integer_t ldc ) {
+    BLAS_SSYMM( &side, &uplo, &m, &n, &alpha, a, &lda, b, &ldb, &beta, c,
+            &ldc );
 }
+
+inline void symm( const char side, const char uplo, const integer_t m,
+        const integer_t n, const double alpha, const double* a,
+        const integer_t lda, const double* b, const integer_t ldb,
+        const double beta, double* c, const integer_t ldc ) {
+    BLAS_DSYMM( &side, &uplo, &m, &n, &alpha, a, &lda, b, &ldb, &beta, c,
+            &ldc );
+}
+
+inline void symm( const char side, const char uplo, const integer_t m,
+        const integer_t n, const traits::complex_f alpha,
+        const traits::complex_f* a, const integer_t lda,
+        const traits::complex_f* b, const integer_t ldb,
+        const traits::complex_f beta, traits::complex_f* c,
+        const integer_t ldc ) {
+    BLAS_CSYMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
+}
+
+inline void symm( const char side, const char uplo, const integer_t m,
+        const integer_t n, const traits::complex_d alpha,
+        const traits::complex_d* a, const integer_t lda,
+        const traits::complex_d* b, const integer_t ldb,
+        const traits::complex_d beta, traits::complex_d* c,
+        const integer_t ldc ) {
+    BLAS_ZSYMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
+            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
+            traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
+}
+
+} // namespace detail
 
 // value-type based template
 template< typename ValueType >
@@ -93,7 +97,7 @@ struct symm_impl {
     }
 };
 
-// low-level template function for direct calls to level3::symm
+// generic template function for calling to symm
 template< typename MatrixA, typename MatrixB, typename MatrixC >
 inline typename symm_impl< typename traits::matrix_traits<
         MatrixA >::value_type >::return_type
@@ -105,6 +109,9 @@ symm( const char side, const typename traits::matrix_traits<
     symm_impl< value_type >::invoke( side, alpha, a, b, beta, c );
 }
 
-}}}}} // namespace boost::numeric::bindings::blas::level3
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

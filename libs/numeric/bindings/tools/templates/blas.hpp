@@ -21,21 +21,25 @@ namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
-namespace $dirname {
 
 // overloaded functions to call blas
 namespace detail {
-$OVERLOADS}
+
+$OVERLOADS} // namespace detail
 
 $LEVEL1
 $LEVEL2
-}}}}} // namespace boost::numeric::bindings::blas::$dirname
+} // namespace blas
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif
 $TEMPLATE[blas_overloads]
-    inline $RETURN_TYPE $groupname( $LEVEL0 ) {
-        $RETURN_STATEMENTBLAS_$SUBROUTINE( $CALL_C_HEADER );
-    }
+inline $RETURN_TYPE $groupname( $LEVEL0 ) {
+    $RETURN_STATEMENTBLAS_$SUBROUTINE( $CALL_C_HEADER );
+}
+
 $TEMPLATE[blas_level1]
 // value-type based template
 template< typename ValueType >
@@ -54,7 +58,7 @@ $INCLUDE_TEMPLATES
     }
 };
 $TEMPLATE[blas_level2]
-// low-level template function for direct calls to $dirname::$groupname
+// generic template function for calling to $groupname
 template< $TYPES >
 inline typename $groupname_impl< typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type >::return_type
 $groupname( $LEVEL2 ) {

@@ -117,8 +117,8 @@ def call_level0_type( name, properties, arg_map ):
     if properties[ 'trait_type' ] == 'num_rows':
       result = "traits::matrix_num_rows(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'trans_num_columns':
-      result = "(" + properties[ 'trait_of' ][0].lower() + "=='N'?" + \
-               "traits::matrix_num_columns(" + properties[ 'trait_of' ][1].lower() + ")," + \
+      result = "(" + properties[ 'trait_of' ][0].lower() + "=='N' ? " + \
+               "traits::matrix_num_columns(" + properties[ 'trait_of' ][1].lower() + ") : " + \
                "traits::matrix_num_rows(" + properties[ 'trait_of' ][1].lower() + "))"
     if properties[ 'trait_type' ] == 'size':
       my_name = properties[ 'trait_of' ].lower()

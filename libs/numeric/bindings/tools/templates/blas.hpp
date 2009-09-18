@@ -50,7 +50,7 @@ struct $groupname_impl {
     typedef $RETURN_TYPE return_type;
 
 $INCLUDE_TEMPLATES
-    // templated specialization
+    // static template member function
     template< $TYPES >
     static return_type invoke( $LEVEL1 ) {
         $STATIC_ASSERTS
@@ -58,7 +58,7 @@ $INCLUDE_TEMPLATES
     }
 };
 $TEMPLATE[blas_level2]
-// generic template function for calling to $groupname
+// generic template function to call $groupname
 template< $TYPES >
 inline typename $groupname_impl< typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type >::return_type
 $groupname( $LEVEL2 ) {

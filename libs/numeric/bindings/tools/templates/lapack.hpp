@@ -26,17 +26,22 @@ namespace lapack {
 
 // overloaded functions to call lapack
 namespace detail {
-$OVERLOADS}
+
+$OVERLOADS} // namespace detail
 
 $LEVEL1
 $LEVEL2
-}}}} // namespace boost::numeric::bindings::lapack
+} // namespace lapack
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif
 $TEMPLATE[lapack_overloads]
-    inline void $groupname( $LEVEL0 ) {
-        LAPACK_$SUBROUTINE( $CALL_C_HEADER );
-    }
+inline void $groupname( $LEVEL0 ) {
+    LAPACK_$SUBROUTINE( $CALL_C_HEADER );
+}
+
 $TEMPLATE[level1_pre_header]
 // value-type based template
 template< typename ValueType, typename Enable = void >

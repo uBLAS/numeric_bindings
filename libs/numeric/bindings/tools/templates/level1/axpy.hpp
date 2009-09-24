@@ -10,4 +10,6 @@ $TEMPLATE[axpy.all.arguments]
  A        (input) DATATYPE variable alpha
  X        (input) DATATYPE array of length (N)
  Y        (output) DATATYPE array of length (N)
+$TEMPLATE[axpy.all.cblas_alias]
+A,ALPHA
 $TEMPLATE[end]

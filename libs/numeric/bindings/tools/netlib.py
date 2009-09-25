@@ -1218,7 +1218,7 @@ def parse_file( filename, template_map ):
   for argument_name, argument_properties in argument_map.iteritems():
     argument_properties[ 'code' ] = {}
     argument_properties[ 'code' ][ 'lapack_h' ] = c_type( argument_name, argument_properties )
-    argument_properties[ 'code' ][ 'call_c_header' ] = call_c_type( argument_name, argument_properties )
+    argument_properties[ 'code' ][ 'call_blas_header' ] = call_c_type( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'level_0' ] = cpp_type( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'call_level_0' ] = call_level0_type( argument_name, argument_properties, argument_map )
     argument_properties[ 'code' ][ 'level_1' ] = level1_type( argument_name, argument_properties )

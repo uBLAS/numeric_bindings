@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 #  Copyright (c) 2008 Thomas Klimpel and Rutger ter Borg
 #
@@ -9,6 +10,8 @@
 
 import netlib
 import bindings
+import cblas
+import cublas
 
 import re, os.path, copy
 from types import StringType
@@ -51,7 +54,6 @@ def write_functions( info_map, group, template_map, base_dir ):
     includes = [
       '#include <boost/numeric/bindings/traits/traits.hpp>',
       '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
-      '#include <boost/numeric/bindings/blas/detail/blas.h>',
       '#include <boost/mpl/bool.hpp>',
       '#include <boost/type_traits/is_same.hpp>',
       '#include <boost/static_assert.hpp>' ]
@@ -68,12 +70,28 @@ def write_functions( info_map, group, template_map, base_dir ):
       # add the argument list here
       arg_list = []
       lapack_arg_list = []
+      cblas_arg_list = []
       for arg in info_map[ subroutine ][ 'arguments' ]:
+        print "Subroutine ", subroutine, " arg ", arg
         arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] ]
-        lapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_c_header' ] ]
+        lapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_blas_header' ] ]
+        cblas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_cblas_header' ] ]
       sub_template = sub_template.replace( "$LEVEL0", ", ".join( arg_list ) )
-      sub_template = sub_template.replace( "$CALL_C_HEADER", ", ".join( lapack_arg_list ) )
+      sub_template = sub_template.replace( "$CALL_BLAS_HEADER", ", ".join( lapack_arg_list ) )
+      sub_template = sub_template.replace( "$CALL_CBLAS_HEADER", ", ".join( cblas_arg_list ) )
       sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
+      if 'cblas_routine' in info_map[ subroutine ]:
+        cblas_routine = info_map[ subroutine ][ 'cblas_routine' ]
+      else:
+        cblas_routine = '//TODO'
+      sub_template = sub_template.replace( "$CBLAS_ROUTINE", cblas_routine )
+
+      if 'cublas_routine' in info_map[ subroutine ]:
+        cublas_routine = info_map[ subroutine ][ 'cublas_routine' ]
+      else:
+        cublas_routine = '//TODO'
+      sub_template = sub_template.replace( "$CUBLAS_ROUTINE", cublas_routine )
+
       sub_template = sub_template.replace( '$groupname', group_name.lower() )
       sub_template = sub_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'return_value_type' ] )
       sub_template = sub_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
@@ -291,9 +309,15 @@ def read_templates( template_file ):
   return result
 
 lapack_src_path = './blas-1.2/src'
+cblas_h_path = './blas-1.2/cblas/src/cblas.h'
+cublas_h_path = './cublas.h'
 template_src_path = './templates'
 bindings_target_path = '../../../../boost/numeric/bindings/blas/'
 test_target_path = '../test/lapack/'
+
+# Unable to find zdrot in cblas.h and cublas.h
+# Unable to find crotg, csrot, in cblas.h
+skip_blas_files = [ 'zdrot.f', 'crotg.f', 'zrotg.f', 'csrot.f' ]
 
 templates = {}
 templates[ 'PARSERMODE' ] = 'BLAS'
@@ -308,12 +332,15 @@ for root, dirs, files in os.walk( template_src_path ):
 function_info_map = {}
 for lapack_file in os.listdir( lapack_src_path ):
   right_file = re.compile( '^[cdsz].+\.f$' )
-  if right_file.match( lapack_file ) != None:
+  if right_file.match( lapack_file ) != None and lapack_file not in skip_blas_files:
     print "Parsing", lapack_file, "..."
     key, value = netlib.parse_file( os.path.join( lapack_src_path, lapack_file ), templates )
     if key != None and value != None:
-      print "Adding LAPACK subroutine", key
+      print "Adding BLAS subroutine", key
       function_info_map[ key ] = value
+
+cblas.parse_file( cblas_h_path, function_info_map, templates )
+cublas.parse_file( cublas_h_path, function_info_map, templates )
 
 print "Grouping subroutines..."
 

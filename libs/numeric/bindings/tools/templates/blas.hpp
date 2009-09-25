@@ -15,6 +15,15 @@ $TEMPLATE[blas.hpp]
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_$DIRNAME_$GROUPNAME_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_$DIRNAME_$GROUPNAME_HPP
 
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
+#include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
 $INCLUDES
 
 namespace boost {
@@ -22,10 +31,13 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
-$OVERLOADS} // namespace detail
+$OVERLOADS
+} // namespace detail
 
 $LEVEL1
 $LEVEL2
@@ -37,7 +49,13 @@ $LEVEL2
 #endif
 $TEMPLATE[blas_overloads]
 inline $RETURN_TYPE $groupname( $LEVEL0 ) {
-    $RETURN_STATEMENTBLAS_$SUBROUTINE( $CALL_C_HEADER );
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    $RETURN_STATEMENT$CBLAS_ROUTINE( $CALL_CBLAS_HEADER );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    $RETURN_STATEMENT$CUBLAS_ROUTINE( ... ); // FIXME
+#else
+    $RETURN_STATEMENTBLAS_$SUBROUTINE( $CALL_BLAS_HEADER );
+#endif
 }
 
 $TEMPLATE[blas_level1]

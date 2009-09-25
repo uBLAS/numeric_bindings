@@ -78,9 +78,9 @@ def write_functions( info_map, group, template_map, base_dir ):
       lapack_arg_list = []
       for arg in info_map[ subroutine ][ 'arguments' ]:
         arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] ]
-        lapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_c_header' ] ]
+        lapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_blas_header' ] ]
       sub_template = sub_template.replace( "$LEVEL0", ", ".join( arg_list ) )
-      sub_template = sub_template.replace( "$CALL_C_HEADER", ", ".join( lapack_arg_list ) )
+      sub_template = sub_template.replace( "$CALL_BLAS_HEADER", ", ".join( lapack_arg_list ) )
       sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
       sub_template = sub_template.replace( '$groupname', group_name.lower() )
       

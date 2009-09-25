@@ -39,7 +39,7 @@ $LEVEL2
 #endif
 $TEMPLATE[lapack_overloads]
 inline void $groupname( $LEVEL0 ) {
-    LAPACK_$SUBROUTINE( $CALL_C_HEADER );
+    LAPACK_$SUBROUTINE( $CALL_BLAS_HEADER );
 }
 
 $TEMPLATE[level1_pre_header]

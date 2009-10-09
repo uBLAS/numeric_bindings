@@ -44,7 +44,6 @@ inline void tbcon( const char norm, const char uplo, const char diag,
     LAPACK_STBCON( &norm, &uplo, &diag, &n, &kd, ab, &ldab, &rcond, work,
             iwork, &info );
 }
-
 inline void tbcon( const char norm, const char uplo, const char diag,
         const integer_t n, const integer_t kd, const double* ab,
         const integer_t ldab, double& rcond, double* work, integer_t* iwork,
@@ -52,7 +51,6 @@ inline void tbcon( const char norm, const char uplo, const char diag,
     LAPACK_DTBCON( &norm, &uplo, &diag, &n, &kd, ab, &ldab, &rcond, work,
             iwork, &info );
 }
-
 inline void tbcon( const char norm, const char uplo, const char diag,
         const integer_t n, const integer_t kd, const traits::complex_f* ab,
         const integer_t ldab, float& rcond, traits::complex_f* work,
@@ -60,7 +58,6 @@ inline void tbcon( const char norm, const char uplo, const char diag,
     LAPACK_CTBCON( &norm, &uplo, &diag, &n, &kd, traits::complex_ptr(ab),
             &ldab, &rcond, traits::complex_ptr(work), rwork, &info );
 }
-
 inline void tbcon( const char norm, const char uplo, const char diag,
         const integer_t n, const integer_t kd, const traits::complex_d* ab,
         const integer_t ldab, double& rcond, traits::complex_d* work,
@@ -68,7 +65,6 @@ inline void tbcon( const char norm, const char uplo, const char diag,
     LAPACK_ZTBCON( &norm, &uplo, &diag, &n, &kd, traits::complex_ptr(ab),
             &ldab, &rcond, traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

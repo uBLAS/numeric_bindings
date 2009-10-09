@@ -43,7 +43,6 @@ inline void hesv( const char uplo, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(work), &lwork,
             &info );
 }
-
 inline void hesv( const char uplo, const integer_t n, const integer_t nrhs,
         traits::complex_d* a, const integer_t lda, integer_t* ipiv,
         traits::complex_d* b, const integer_t ldb, traits::complex_d* work,
@@ -52,7 +51,6 @@ inline void hesv( const char uplo, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(work), &lwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -91,12 +89,12 @@ struct hesv_impl {
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work(  ));
+                min_size_work());
         detail::hesv( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),
@@ -110,7 +108,7 @@ struct hesv_impl {
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             integer_t& info, minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(  ) );
+        traits::detail::array< value_type > tmp_work( min_size_work() );
         invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
@@ -129,7 +127,7 @@ struct hesv_impl {
         invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work(  ) {
+    static integer_t min_size_work() {
         return 1;
     }
 };

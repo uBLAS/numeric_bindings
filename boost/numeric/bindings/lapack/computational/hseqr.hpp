@@ -45,7 +45,6 @@ inline void hseqr( const char job, const char compz, const integer_t n,
     LAPACK_SHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, wr, wi, z, &ldz,
             work, &lwork, &info );
 }
-
 inline void hseqr( const char job, const char compz, const integer_t n,
         const integer_t ilo, const integer_t ihi, double* h,
         const integer_t ldh, double* wr, double* wi, double* z,
@@ -54,7 +53,6 @@ inline void hseqr( const char job, const char compz, const integer_t n,
     LAPACK_DHSEQR( &job, &compz, &n, &ilo, &ihi, h, &ldh, wr, wi, z, &ldz,
             work, &lwork, &info );
 }
-
 inline void hseqr( const char job, const char compz, const integer_t n,
         const integer_t ilo, const integer_t ihi, traits::complex_f* h,
         const integer_t ldh, traits::complex_f* w, traits::complex_f* z,
@@ -64,7 +62,6 @@ inline void hseqr( const char job, const char compz, const integer_t n,
             traits::complex_ptr(w), traits::complex_ptr(z), &ldz,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 inline void hseqr( const char job, const char compz, const integer_t n,
         const integer_t ilo, const integer_t ihi, traits::complex_d* h,
         const integer_t ldh, traits::complex_d* w, traits::complex_d* z,
@@ -74,7 +71,6 @@ inline void hseqr( const char job, const char compz, const integer_t n,
             traits::complex_ptr(w), traits::complex_ptr(z), &ldz,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

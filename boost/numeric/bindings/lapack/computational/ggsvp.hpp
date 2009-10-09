@@ -48,7 +48,6 @@ inline void ggsvp( const char jobu, const char jobv, const char jobq,
             &tolb, &k, &l, u, &ldu, v, &ldv, q, &ldq, iwork, tau, work,
             &info );
 }
-
 inline void ggsvp( const char jobu, const char jobv, const char jobq,
         const integer_t m, const integer_t p, const integer_t n, double* a,
         const integer_t lda, double* b, const integer_t ldb,
@@ -60,7 +59,6 @@ inline void ggsvp( const char jobu, const char jobv, const char jobq,
             &tolb, &k, &l, u, &ldu, v, &ldv, q, &ldq, iwork, tau, work,
             &info );
 }
-
 inline void ggsvp( const char jobu, const char jobv, const char jobq,
         const integer_t m, const integer_t p, const integer_t n,
         traits::complex_f* a, const integer_t lda, traits::complex_f* b,
@@ -75,7 +73,6 @@ inline void ggsvp( const char jobu, const char jobv, const char jobq,
             traits::complex_ptr(q), &ldq, iwork, rwork,
             traits::complex_ptr(tau), traits::complex_ptr(work), &info );
 }
-
 inline void ggsvp( const char jobu, const char jobv, const char jobq,
         const integer_t m, const integer_t p, const integer_t n,
         traits::complex_d* a, const integer_t lda, traits::complex_d* b,
@@ -90,7 +87,6 @@ inline void ggsvp( const char jobu, const char jobv, const char jobq,
             traits::complex_ptr(q), &ldq, iwork, rwork,
             traits::complex_ptr(tau), traits::complex_ptr(work), &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -131,10 +127,10 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( traits::matrix_num_columns(b) ));
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -194,7 +190,7 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     static integer_t min_size_work( const integer_t n, const integer_t m,
             const integer_t p ) {
-        return std::max(3*n,std::max(m,p));
+        return std::max< std::ptrdiff_t >(3*n,std::max< std::ptrdiff_t >(m,p));
     }
 };
 
@@ -232,10 +228,10 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( traits::matrix_num_columns(b) ));
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -304,7 +300,7 @@ struct ggsvp_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     static integer_t min_size_work( const integer_t n, const integer_t m,
             const integer_t p ) {
-        return std::max(3*n,std::max(m,p));
+        return std::max< std::ptrdiff_t >(3*n,std::max< std::ptrdiff_t >(m,p));
     }
 };
 

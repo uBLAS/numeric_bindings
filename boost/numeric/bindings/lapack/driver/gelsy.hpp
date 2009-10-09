@@ -45,7 +45,6 @@ inline void gelsy( const integer_t m, const integer_t n, const integer_t nrhs,
     LAPACK_SGELSY( &m, &n, &nrhs, a, &lda, b, &ldb, jpvt, &rcond, &rank, work,
             &lwork, &info );
 }
-
 inline void gelsy( const integer_t m, const integer_t n, const integer_t nrhs,
         double* a, const integer_t lda, double* b, const integer_t ldb,
         integer_t* jpvt, const double rcond, integer_t& rank, double* work,
@@ -53,7 +52,6 @@ inline void gelsy( const integer_t m, const integer_t n, const integer_t nrhs,
     LAPACK_DGELSY( &m, &n, &nrhs, a, &lda, b, &ldb, jpvt, &rcond, &rank, work,
             &lwork, &info );
 }
-
 inline void gelsy( const integer_t m, const integer_t n, const integer_t nrhs,
         traits::complex_f* a, const integer_t lda, traits::complex_f* b,
         const integer_t ldb, integer_t* jpvt, const float rcond,
@@ -63,7 +61,6 @@ inline void gelsy( const integer_t m, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(b), &ldb, jpvt, &rcond, &rank,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 inline void gelsy( const integer_t m, const integer_t n, const integer_t nrhs,
         traits::complex_d* a, const integer_t lda, traits::complex_d* b,
         const integer_t ldb, integer_t* jpvt, const double rcond,
@@ -73,7 +70,6 @@ inline void gelsy( const integer_t m, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(b), &ldb, jpvt, &rcond, &rank,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -99,10 +95,11 @@ struct gelsy_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                std::max(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,std::max<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a))) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
@@ -171,10 +168,11 @@ struct gelsy_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                std::max(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,std::max<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a))) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_rows(a),

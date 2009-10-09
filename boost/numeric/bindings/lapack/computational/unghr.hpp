@@ -43,7 +43,6 @@ inline void unghr( const integer_t n, const integer_t ilo,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 inline void unghr( const integer_t n, const integer_t ilo,
         const integer_t ihi, traits::complex_d* a, const integer_t lda,
         const traits::complex_d* tau, traits::complex_d* work,
@@ -52,7 +51,6 @@ inline void unghr( const integer_t n, const integer_t ilo,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -71,7 +69,8 @@ struct unghr_impl {
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(tau) >= n-1 );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));

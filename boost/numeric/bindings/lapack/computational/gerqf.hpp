@@ -43,13 +43,11 @@ inline void gerqf( const integer_t m, const integer_t n, float* a,
         integer_t& info ) {
     LAPACK_SGERQF( &m, &n, a, &lda, tau, work, &lwork, &info );
 }
-
 inline void gerqf( const integer_t m, const integer_t n, double* a,
         const integer_t lda, double* tau, double* work, const integer_t lwork,
         integer_t& info ) {
     LAPACK_DGERQF( &m, &n, a, &lda, tau, work, &lwork, &info );
 }
-
 inline void gerqf( const integer_t m, const integer_t n, traits::complex_f* a,
         const integer_t lda, traits::complex_f* tau, traits::complex_f* work,
         const integer_t lwork, integer_t& info ) {
@@ -57,7 +55,6 @@ inline void gerqf( const integer_t m, const integer_t n, traits::complex_f* a,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 inline void gerqf( const integer_t m, const integer_t n, traits::complex_d* a,
         const integer_t lda, traits::complex_d* tau, traits::complex_d* work,
         const integer_t lwork, integer_t& info ) {
@@ -65,7 +62,6 @@ inline void gerqf( const integer_t m, const integer_t n, traits::complex_d* a,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -88,10 +84,10 @@ struct gerqf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 VectorTAU >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(tau) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::vector_size(tau) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
@@ -146,10 +142,10 @@ struct gerqf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 VectorTAU >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(tau) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::vector_size(tau) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));

@@ -36,26 +36,22 @@ inline void pptrs( const char uplo, const integer_t n, const integer_t nrhs,
         const float* ap, float* b, const integer_t ldb, integer_t& info ) {
     LAPACK_SPPTRS( &uplo, &n, &nrhs, ap, b, &ldb, &info );
 }
-
 inline void pptrs( const char uplo, const integer_t n, const integer_t nrhs,
         const double* ap, double* b, const integer_t ldb, integer_t& info ) {
     LAPACK_DPPTRS( &uplo, &n, &nrhs, ap, b, &ldb, &info );
 }
-
 inline void pptrs( const char uplo, const integer_t n, const integer_t nrhs,
         const traits::complex_f* ap, traits::complex_f* b,
         const integer_t ldb, integer_t& info ) {
     LAPACK_CPPTRS( &uplo, &n, &nrhs, traits::complex_ptr(ap),
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void pptrs( const char uplo, const integer_t n, const integer_t nrhs,
         const traits::complex_d* ap, traits::complex_d* b,
         const integer_t ldb, integer_t& info ) {
     LAPACK_ZPPTRS( &uplo, &n, &nrhs, traits::complex_ptr(ap),
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -76,7 +72,8 @@ struct pptrs_impl {
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::pptrs( traits::matrix_uplo_tag(a), n,
                 traits::matrix_num_columns(b), traits::vector_storage(ap),
                 traits::matrix_storage(b), traits::leading_dimension(b),

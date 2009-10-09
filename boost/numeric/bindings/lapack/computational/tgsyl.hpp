@@ -48,7 +48,6 @@ inline void tgsyl( const char trans, const integer_t ijob, const integer_t m,
     LAPACK_STGSYL( &trans, &ijob, &m, &n, a, &lda, b, &ldb, c, &ldc, d, &ldd,
             e, &lde, f, &ldf, &scale, &dif, work, &lwork, iwork, &info );
 }
-
 inline void tgsyl( const char trans, const integer_t ijob, const integer_t m,
         const integer_t n, const double* a, const integer_t lda,
         const double* b, const integer_t ldb, double* c, const integer_t ldc,
@@ -59,7 +58,6 @@ inline void tgsyl( const char trans, const integer_t ijob, const integer_t m,
     LAPACK_DTGSYL( &trans, &ijob, &m, &n, a, &lda, b, &ldb, c, &ldc, d, &ldd,
             e, &lde, f, &ldf, &scale, &dif, work, &lwork, iwork, &info );
 }
-
 inline void tgsyl( const char trans, const integer_t ijob, const integer_t m,
         const integer_t n, const traits::complex_f* a, const integer_t lda,
         const traits::complex_f* b, const integer_t ldb, traits::complex_f* c,
@@ -74,7 +72,6 @@ inline void tgsyl( const char trans, const integer_t ijob, const integer_t m,
             traits::complex_ptr(f), &ldf, &scale, &dif,
             traits::complex_ptr(work), &lwork, iwork, &info );
 }
-
 inline void tgsyl( const char trans, const integer_t ijob, const integer_t m,
         const integer_t n, const traits::complex_d* a, const integer_t lda,
         const traits::complex_d* b, const integer_t ldb, traits::complex_d* c,
@@ -89,7 +86,6 @@ inline void tgsyl( const char trans, const integer_t ijob, const integer_t m,
             traits::complex_ptr(f), &ldf, &scale, &dif,
             traits::complex_ptr(work), &lwork, iwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

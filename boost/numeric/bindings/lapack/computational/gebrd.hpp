@@ -43,13 +43,11 @@ inline void gebrd( const integer_t m, const integer_t n, float* a,
         float* work, const integer_t lwork, integer_t& info ) {
     LAPACK_SGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
 }
-
 inline void gebrd( const integer_t m, const integer_t n, double* a,
         const integer_t lda, double* d, double* e, double* tauq, double* taup,
         double* work, const integer_t lwork, integer_t& info ) {
     LAPACK_DGEBRD( &m, &n, a, &lda, d, e, tauq, taup, work, &lwork, &info );
 }
-
 inline void gebrd( const integer_t m, const integer_t n, traits::complex_f* a,
         const integer_t lda, float* d, float* e, traits::complex_f* tauq,
         traits::complex_f* taup, traits::complex_f* work,
@@ -58,7 +56,6 @@ inline void gebrd( const integer_t m, const integer_t n, traits::complex_f* a,
             traits::complex_ptr(tauq), traits::complex_ptr(taup),
             traits::complex_ptr(work), &lwork, &info );
 }
-
 inline void gebrd( const integer_t m, const integer_t n, traits::complex_d* a,
         const integer_t lda, double* d, double* e, traits::complex_d* tauq,
         traits::complex_d* taup, traits::complex_d* work,
@@ -67,7 +64,6 @@ inline void gebrd( const integer_t m, const integer_t n, traits::complex_d* a,
             traits::complex_ptr(tauq), traits::complex_ptr(taup),
             traits::complex_ptr(work), &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -101,16 +97,16 @@ struct gebrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 VectorTAUP >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(d) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::vector_size(d) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::vector_size(tauq) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::vector_size(tauq) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::vector_size(taup) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::vector_size(taup) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
@@ -179,16 +175,16 @@ struct gebrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 VectorTAUP >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(d) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::vector_size(d) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::vector_size(tauq) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::vector_size(tauq) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::vector_size(taup) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::vector_size(taup) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_rows(a),

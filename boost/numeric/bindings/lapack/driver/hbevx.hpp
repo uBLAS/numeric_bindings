@@ -46,7 +46,6 @@ inline void hbevx( const char jobz, const char range, const char uplo,
             &m, w, traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
             rwork, iwork, ifail, &info );
 }
-
 inline void hbevx( const char jobz, const char range, const char uplo,
         const integer_t n, const integer_t kd, traits::complex_d* ab,
         const integer_t ldab, traits::complex_d* q, const integer_t ldq,
@@ -59,7 +58,6 @@ inline void hbevx( const char jobz, const char range, const char uplo,
             &m, w, traits::complex_ptr(z), &ldz, traits::complex_ptr(work),
             rwork, iwork, ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -92,7 +90,8 @@ struct hbevx_impl {
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( kd >= 0 );
         BOOST_ASSERT( traits::leading_dimension(ab) >= kd );
-        BOOST_ASSERT( traits::leading_dimension(q) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(q) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(w) >= n );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( n ));

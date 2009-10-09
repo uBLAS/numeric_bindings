@@ -45,7 +45,6 @@ inline void unmrz( const char side, const char trans, const integer_t m,
             &lda, traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 inline void unmrz( const char side, const char trans, const integer_t m,
         const integer_t n, const integer_t k, const integer_t l,
         const traits::complex_d* a, const integer_t lda,
@@ -56,7 +55,6 @@ inline void unmrz( const char side, const char trans, const integer_t m,
             &lda, traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -82,10 +80,11 @@ struct unmrz_impl {
         BOOST_ASSERT( trans == 'N' || trans == 'C' );
         BOOST_ASSERT( traits::matrix_num_rows(c) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,k) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,k) );
         BOOST_ASSERT( traits::vector_size(tau) >= k );
-        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_num_rows(c)) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(c)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
         detail::unmrz( side, trans, traits::matrix_num_rows(c),

@@ -48,7 +48,6 @@ inline void geesx( const char jobvs, const char sort, logical_t* select,
             vs, &ldvs, &rconde, &rcondv, work, &lwork, iwork, &liwork, bwork,
             &info );
 }
-
 inline void geesx( const char jobvs, const char sort, logical_t* select,
         const char sense, const integer_t n, double* a, const integer_t lda,
         integer_t& sdim, double* wr, double* wi, double* vs,
@@ -59,7 +58,6 @@ inline void geesx( const char jobvs, const char sort, logical_t* select,
             vs, &ldvs, &rconde, &rcondv, work, &lwork, iwork, &liwork, bwork,
             &info );
 }
-
 inline void geesx( const char jobvs, const char sort, logical_t* select,
         const char sense, const integer_t n, traits::complex_f* a,
         const integer_t lda, integer_t& sdim, traits::complex_f* w,
@@ -71,7 +69,6 @@ inline void geesx( const char jobvs, const char sort, logical_t* select,
             &ldvs, &rconde, &rcondv, traits::complex_ptr(work), &lwork, rwork,
             bwork, &info );
 }
-
 inline void geesx( const char jobvs, const char sort, logical_t* select,
         const char sense, const integer_t n, traits::complex_d* a,
         const integer_t lda, integer_t& sdim, traits::complex_d* w,
@@ -83,7 +80,6 @@ inline void geesx( const char jobvs, const char sort, logical_t* select,
             &ldvs, &rconde, &rcondv, traits::complex_ptr(work), &lwork, rwork,
             bwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -118,8 +114,8 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( sense == 'N' || sense == 'E' || sense == 'V' ||
                 sense == 'B' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(wr) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(wi) >=
@@ -232,8 +228,8 @@ struct geesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( sense == 'N' || sense == 'E' || sense == 'V' ||
                 sense == 'B' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(w) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

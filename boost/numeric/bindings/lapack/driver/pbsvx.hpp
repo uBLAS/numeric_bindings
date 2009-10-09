@@ -47,7 +47,6 @@ inline void pbsvx( const char fact, const char uplo, const integer_t n,
             &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork,
             &info );
 }
-
 inline void pbsvx( const char fact, const char uplo, const integer_t n,
         const integer_t kd, const integer_t nrhs, double* ab,
         const integer_t ldab, double* afb, const integer_t ldafb, char& equed,
@@ -58,7 +57,6 @@ inline void pbsvx( const char fact, const char uplo, const integer_t n,
             &equed, s, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork,
             &info );
 }
-
 inline void pbsvx( const char fact, const char uplo, const integer_t n,
         const integer_t kd, const integer_t nrhs, traits::complex_f* ab,
         const integer_t ldab, traits::complex_f* afb, const integer_t ldafb,
@@ -70,7 +68,6 @@ inline void pbsvx( const char fact, const char uplo, const integer_t n,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
             &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
 }
-
 inline void pbsvx( const char fact, const char uplo, const integer_t n,
         const integer_t kd, const integer_t nrhs, traits::complex_d* ab,
         const integer_t ldab, traits::complex_d* afb, const integer_t ldafb,
@@ -83,7 +80,6 @@ inline void pbsvx( const char fact, const char uplo, const integer_t n,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
             &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -134,8 +130,10 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::leading_dimension(ab) >= kd+1 );
         BOOST_ASSERT( traits::leading_dimension(afb) >= kd+1 );
         BOOST_ASSERT( equed == 'N' || equed == 'Y' );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -232,8 +230,10 @@ struct pbsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::leading_dimension(ab) >= kd+1 );
         BOOST_ASSERT( traits::leading_dimension(afb) >= kd+1 );
         BOOST_ASSERT( equed == 'N' || equed == 'Y' );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

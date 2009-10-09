@@ -42,7 +42,6 @@ inline void upmtr( const char side, const char uplo, const char trans,
             traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work), &info );
 }
-
 inline void upmtr( const char side, const char uplo, const char trans,
         const integer_t m, const integer_t n, const traits::complex_d* ap,
         const traits::complex_d* tau, traits::complex_d* c,
@@ -51,7 +50,6 @@ inline void upmtr( const char side, const char uplo, const char trans,
             traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work), &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -78,8 +76,8 @@ struct upmtr_impl {
         BOOST_ASSERT( trans == 'N' || trans == 'C' );
         BOOST_ASSERT( traits::matrix_num_rows(c) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_num_rows(c)) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(c)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
         detail::upmtr( side, uplo, trans, traits::matrix_num_rows(c),

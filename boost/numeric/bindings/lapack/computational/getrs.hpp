@@ -37,13 +37,11 @@ inline void getrs( const char trans, const integer_t n, const integer_t nrhs,
         const integer_t ldb, integer_t& info ) {
     LAPACK_SGETRS( &trans, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
 }
-
 inline void getrs( const char trans, const integer_t n, const integer_t nrhs,
         const double* a, const integer_t lda, const integer_t* ipiv,
         double* b, const integer_t ldb, integer_t& info ) {
     LAPACK_DGETRS( &trans, &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
 }
-
 inline void getrs( const char trans, const integer_t n, const integer_t nrhs,
         const traits::complex_f* a, const integer_t lda,
         const integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
@@ -51,7 +49,6 @@ inline void getrs( const char trans, const integer_t n, const integer_t nrhs,
     LAPACK_CGETRS( &trans, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void getrs( const char trans, const integer_t n, const integer_t nrhs,
         const traits::complex_d* a, const integer_t lda,
         const integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
@@ -59,7 +56,6 @@ inline void getrs( const char trans, const integer_t n, const integer_t nrhs,
     LAPACK_ZGETRS( &trans, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -79,12 +75,12 @@ struct getrs_impl {
         BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(ipiv) >=
                 traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::getrs( trans, traits::matrix_num_columns(a),
                 traits::matrix_num_columns(b), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(ipiv),

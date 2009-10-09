@@ -43,27 +43,23 @@ inline void sytrf( const char uplo, const integer_t n, float* a,
         const integer_t lwork, integer_t& info ) {
     LAPACK_SSYTRF( &uplo, &n, a, &lda, ipiv, work, &lwork, &info );
 }
-
 inline void sytrf( const char uplo, const integer_t n, double* a,
         const integer_t lda, integer_t* ipiv, double* work,
         const integer_t lwork, integer_t& info ) {
     LAPACK_DSYTRF( &uplo, &n, a, &lda, ipiv, work, &lwork, &info );
 }
-
 inline void sytrf( const char uplo, const integer_t n, traits::complex_f* a,
         const integer_t lda, integer_t* ipiv, traits::complex_f* work,
         const integer_t lwork, integer_t& info ) {
     LAPACK_CSYTRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 inline void sytrf( const char uplo, const integer_t n, traits::complex_d* a,
         const integer_t lda, integer_t* ipiv, traits::complex_d* work,
         const integer_t lwork, integer_t& info ) {
     LAPACK_ZSYTRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -84,8 +80,8 @@ struct sytrf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
         detail::sytrf( traits::matrix_uplo_tag(a),
@@ -137,8 +133,8 @@ struct sytrf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
         detail::sytrf( traits::matrix_uplo_tag(a),

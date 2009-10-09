@@ -51,7 +51,6 @@ inline void ggevx( const char balanc, const char jobvl, const char jobvr,
             rscale, &abnrm, &bbnrm, rconde, rcondv, work, &lwork, iwork,
             bwork, &info );
 }
-
 inline void ggevx( const char balanc, const char jobvl, const char jobvr,
         const char sense, const integer_t n, double* a, const integer_t lda,
         double* b, const integer_t ldb, double* alphar, double* alphai,
@@ -65,7 +64,6 @@ inline void ggevx( const char balanc, const char jobvl, const char jobvr,
             rscale, &abnrm, &bbnrm, rconde, rcondv, work, &lwork, iwork,
             bwork, &info );
 }
-
 inline void ggevx( const char balanc, const char jobvl, const char jobvr,
         const char sense, const integer_t n, traits::complex_f* a,
         const integer_t lda, traits::complex_f* b, const integer_t ldb,
@@ -82,7 +80,6 @@ inline void ggevx( const char balanc, const char jobvl, const char jobvr,
             &ilo, &ihi, lscale, rscale, &abnrm, &bbnrm, rconde, rcondv,
             traits::complex_ptr(work), &lwork, rwork, iwork, bwork, &info );
 }
-
 inline void ggevx( const char balanc, const char jobvl, const char jobvr,
         const char sense, const integer_t n, traits::complex_d* a,
         const integer_t lda, traits::complex_d* b, const integer_t ldb,
@@ -99,7 +96,6 @@ inline void ggevx( const char balanc, const char jobvl, const char jobvr,
             &ilo, &ihi, lscale, rscale, &abnrm, &bbnrm, rconde, rcondv,
             traits::complex_ptr(work), &lwork, rwork, iwork, bwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -163,10 +159,10 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( sense == 'N' || sense == 'E' || sense == 'V' ||
                 sense == 'B' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(alphar) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(alphai) >=
@@ -332,10 +328,10 @@ struct ggevx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( sense == 'N' || sense == 'E' || sense == 'V' ||
                 sense == 'B' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(alpha) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(beta) >=

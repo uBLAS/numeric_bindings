@@ -39,13 +39,11 @@ inline void opgtr( const char uplo, const integer_t n, const float* ap,
         integer_t& info ) {
     LAPACK_SOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
 }
-
 inline void opgtr( const char uplo, const integer_t n, const double* ap,
         const double* tau, double* q, const integer_t ldq, double* work,
         integer_t& info ) {
     LAPACK_DOPGTR( &uplo, &n, ap, tau, q, &ldq, work, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -74,8 +72,8 @@ struct opgtr_impl {
                 1)/2 );
         BOOST_ASSERT( traits::vector_size(tau) >=
                 traits::matrix_num_columns(q)-1 );
-        BOOST_ASSERT( traits::leading_dimension(q) >= std::max(1,
-                traits::matrix_num_columns(q)) );
+        BOOST_ASSERT( traits::leading_dimension(q) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(q)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(q) ));
         detail::opgtr( uplo, traits::matrix_num_columns(q),

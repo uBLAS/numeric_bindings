@@ -38,12 +38,10 @@ inline void stev( const char jobz, const integer_t n, float* d, float* e,
         float* z, const integer_t ldz, float* work, integer_t& info ) {
     LAPACK_SSTEV( &jobz, &n, d, e, z, &ldz, work, &info );
 }
-
 inline void stev( const char jobz, const integer_t n, double* d, double* e,
         double* z, const integer_t ldz, double* work, integer_t& info ) {
     LAPACK_DSTEV( &jobz, &n, d, e, z, &ldz, work, &info );
 }
-
 } // namespace detail
 
 // value-type based template

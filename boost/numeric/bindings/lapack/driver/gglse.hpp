@@ -45,7 +45,6 @@ inline void gglse( const integer_t m, const integer_t n, const integer_t p,
     LAPACK_SGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
             &info );
 }
-
 inline void gglse( const integer_t m, const integer_t n, const integer_t p,
         double* a, const integer_t lda, double* b, const integer_t ldb,
         double* c, double* d, double* x, double* work, const integer_t lwork,
@@ -53,7 +52,6 @@ inline void gglse( const integer_t m, const integer_t n, const integer_t p,
     LAPACK_DGGLSE( &m, &n, &p, a, &lda, b, &ldb, c, d, x, work, &lwork,
             &info );
 }
-
 inline void gglse( const integer_t m, const integer_t n, const integer_t p,
         traits::complex_f* a, const integer_t lda, traits::complex_f* b,
         const integer_t ldb, traits::complex_f* c, traits::complex_f* d,
@@ -64,7 +62,6 @@ inline void gglse( const integer_t m, const integer_t n, const integer_t p,
             traits::complex_ptr(d), traits::complex_ptr(x),
             traits::complex_ptr(work), &lwork, &info );
 }
-
 inline void gglse( const integer_t m, const integer_t n, const integer_t p,
         traits::complex_d* a, const integer_t lda, traits::complex_d* b,
         const integer_t ldb, traits::complex_d* c, traits::complex_d* d,
@@ -75,7 +72,6 @@ inline void gglse( const integer_t m, const integer_t n, const integer_t p,
             traits::complex_ptr(d), traits::complex_ptr(x),
             traits::complex_ptr(work), &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -108,10 +104,10 @@ struct gglse_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 VectorX >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
         BOOST_ASSERT( traits::vector_size(c) >= traits::matrix_num_rows(a) );
         BOOST_ASSERT( traits::vector_size(d) >= traits::matrix_num_rows(b) );
         BOOST_ASSERT( traits::vector_size(x) >=
@@ -189,10 +185,10 @@ struct gglse_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 VectorX >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
         BOOST_ASSERT( traits::vector_size(c) >= traits::matrix_num_rows(a) );
         BOOST_ASSERT( traits::vector_size(d) >= traits::matrix_num_rows(b) );
         BOOST_ASSERT( traits::vector_size(x) >=

@@ -45,7 +45,6 @@ inline void gelss( const integer_t m, const integer_t n, const integer_t nrhs,
     LAPACK_SGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank, work,
             &lwork, &info );
 }
-
 inline void gelss( const integer_t m, const integer_t n, const integer_t nrhs,
         double* a, const integer_t lda, double* b, const integer_t ldb,
         double* s, const double rcond, integer_t& rank, double* work,
@@ -53,7 +52,6 @@ inline void gelss( const integer_t m, const integer_t n, const integer_t nrhs,
     LAPACK_DGELSS( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank, work,
             &lwork, &info );
 }
-
 inline void gelss( const integer_t m, const integer_t n, const integer_t nrhs,
         traits::complex_f* a, const integer_t lda, traits::complex_f* b,
         const integer_t ldb, float* s, const float rcond, integer_t& rank,
@@ -63,7 +61,6 @@ inline void gelss( const integer_t m, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(b), &ldb, s, &rcond, &rank,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 inline void gelss( const integer_t m, const integer_t n, const integer_t nrhs,
         traits::complex_d* a, const integer_t lda, traits::complex_d* b,
         const integer_t ldb, double* s, const double rcond, integer_t& rank,
@@ -73,7 +70,6 @@ inline void gelss( const integer_t m, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(b), &ldb, s, &rcond, &rank,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -102,13 +98,14 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                std::max(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,std::max<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a))) );
-        BOOST_ASSERT( traits::vector_size(s) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::vector_size(s) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
@@ -180,13 +177,14 @@ struct gelss_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                std::max(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,std::max<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a))) );
-        BOOST_ASSERT( traits::vector_size(s) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::vector_size(s) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_rows(a),

@@ -41,7 +41,6 @@ inline void hecon( const char uplo, const integer_t n,
     LAPACK_CHECON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
             &rcond, traits::complex_ptr(work), &info );
 }
-
 inline void hecon( const char uplo, const integer_t n,
         const traits::complex_d* a, const integer_t lda,
         const integer_t* ipiv, const double anorm, double& rcond,
@@ -49,7 +48,6 @@ inline void hecon( const char uplo, const integer_t n,
     LAPACK_ZHECON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
             &rcond, traits::complex_ptr(work), &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -66,8 +64,8 @@ struct hecon_impl {
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(ipiv) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

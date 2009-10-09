@@ -44,7 +44,6 @@ inline void hpevd( const char jobz, const char uplo, const integer_t n,
             traits::complex_ptr(z), &ldz, traits::complex_ptr(work), &lwork,
             rwork, &lrwork, iwork, &liwork, &info );
 }
-
 inline void hpevd( const char jobz, const char uplo, const integer_t n,
         traits::complex_d* ap, double* w, traits::complex_d* z,
         const integer_t ldz, traits::complex_d* work, const integer_t lwork,
@@ -54,7 +53,6 @@ inline void hpevd( const char jobz, const char uplo, const integer_t n,
             traits::complex_ptr(z), &ldz, traits::complex_ptr(work), &lwork,
             rwork, &lrwork, iwork, &liwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

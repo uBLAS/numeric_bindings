@@ -38,14 +38,12 @@ inline void hegst( const integer_t itype, const char uplo, const integer_t n,
     LAPACK_CHEGST( &itype, &uplo, &n, traits::complex_ptr(a), &lda,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void hegst( const integer_t itype, const char uplo, const integer_t n,
         traits::complex_d* a, const integer_t lda, const traits::complex_d* b,
         const integer_t ldb, integer_t& info ) {
     LAPACK_ZHEGST( &itype, &uplo, &n, traits::complex_ptr(a), &lda,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -65,8 +63,10 @@ struct hegst_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::hegst( itype, traits::matrix_uplo_tag(a), n,
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),

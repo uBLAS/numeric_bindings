@@ -42,7 +42,6 @@ inline void sygv( const integer_t itype, const char jobz, const char uplo,
     LAPACK_SSYGV( &itype, &jobz, &uplo, &n, a, &lda, b, &ldb, w, work, &lwork,
             &info );
 }
-
 inline void sygv( const integer_t itype, const char jobz, const char uplo,
         const integer_t n, double* a, const integer_t lda, double* b,
         const integer_t ldb, double* w, double* work, const integer_t lwork,
@@ -50,7 +49,6 @@ inline void sygv( const integer_t itype, const char jobz, const char uplo,
     LAPACK_DSYGV( &itype, &jobz, &uplo, &n, a, &lda, b, &ldb, w, work, &lwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -76,8 +74,10 @@ struct sygv_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));
         detail::sygv( itype, jobz, traits::matrix_uplo_tag(a), n,

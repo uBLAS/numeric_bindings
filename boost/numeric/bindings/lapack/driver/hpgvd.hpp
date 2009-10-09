@@ -46,7 +46,6 @@ inline void hpgvd( const integer_t itype, const char jobz, const char uplo,
             traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
             &info );
 }
-
 inline void hpgvd( const integer_t itype, const char jobz, const char uplo,
         const integer_t n, traits::complex_d* ap, traits::complex_d* bp,
         double* w, traits::complex_d* z, const integer_t ldz,
@@ -58,7 +57,6 @@ inline void hpgvd( const integer_t itype, const char jobz, const char uplo,
             traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template

@@ -41,26 +41,22 @@ inline void latrz( const integer_t m, const integer_t n, const integer_t l,
         float* a, const integer_t lda, float* tau, float* work ) {
     LAPACK_SLATRZ( &m, &n, &l, a, &lda, tau, work );
 }
-
 inline void latrz( const integer_t m, const integer_t n, const integer_t l,
         double* a, const integer_t lda, double* tau, double* work ) {
     LAPACK_DLATRZ( &m, &n, &l, a, &lda, tau, work );
 }
-
 inline void latrz( const integer_t m, const integer_t n, const integer_t l,
         traits::complex_f* a, const integer_t lda, traits::complex_f* tau,
         traits::complex_f* work ) {
     LAPACK_CLATRZ( &m, &n, &l, traits::complex_ptr(a), &lda,
             traits::complex_ptr(tau), traits::complex_ptr(work) );
 }
-
 inline void latrz( const integer_t m, const integer_t n, const integer_t l,
         traits::complex_d* a, const integer_t lda, traits::complex_d* tau,
         traits::complex_d* work ) {
     LAPACK_ZLATRZ( &m, &n, &l, traits::complex_ptr(a), &lda,
             traits::complex_ptr(tau), traits::complex_ptr(work) );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -84,8 +80,8 @@ struct latrz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
         BOOST_ASSERT( traits::vector_size(tau) >= traits::matrix_num_rows(a) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_rows(a) ));
@@ -132,8 +128,8 @@ struct latrz_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
         BOOST_ASSERT( traits::vector_size(tau) >= traits::matrix_num_rows(a) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_rows(a) ));

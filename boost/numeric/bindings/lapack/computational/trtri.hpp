@@ -36,22 +36,18 @@ inline void trtri( const char uplo, const char diag, const integer_t n,
         float* a, const integer_t lda, integer_t& info ) {
     LAPACK_STRTRI( &uplo, &diag, &n, a, &lda, &info );
 }
-
 inline void trtri( const char uplo, const char diag, const integer_t n,
         double* a, const integer_t lda, integer_t& info ) {
     LAPACK_DTRTRI( &uplo, &diag, &n, a, &lda, &info );
 }
-
 inline void trtri( const char uplo, const char diag, const integer_t n,
         traits::complex_f* a, const integer_t lda, integer_t& info ) {
     LAPACK_CTRTRI( &uplo, &diag, &n, traits::complex_ptr(a), &lda, &info );
 }
-
 inline void trtri( const char uplo, const char diag, const integer_t n,
         traits::complex_d* a, const integer_t lda, integer_t& info ) {
     LAPACK_ZTRTRI( &uplo, &diag, &n, traits::complex_ptr(a), &lda, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -68,8 +64,8 @@ struct trtri_impl {
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::trtri( traits::matrix_uplo_tag(a), diag,
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), info );

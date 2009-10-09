@@ -39,26 +39,22 @@ inline void ptsv( const integer_t n, const integer_t nrhs, float* d, float* e,
         float* b, const integer_t ldb, integer_t& info ) {
     LAPACK_SPTSV( &n, &nrhs, d, e, b, &ldb, &info );
 }
-
 inline void ptsv( const integer_t n, const integer_t nrhs, double* d,
         double* e, double* b, const integer_t ldb, integer_t& info ) {
     LAPACK_DPTSV( &n, &nrhs, d, e, b, &ldb, &info );
 }
-
 inline void ptsv( const integer_t n, const integer_t nrhs, float* d,
         traits::complex_f* e, traits::complex_f* b, const integer_t ldb,
         integer_t& info ) {
     LAPACK_CPTSV( &n, &nrhs, d, traits::complex_ptr(e),
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void ptsv( const integer_t n, const integer_t nrhs, double* d,
         traits::complex_d* e, traits::complex_d* b, const integer_t ldb,
         integer_t& info ) {
     LAPACK_ZPTSV( &n, &nrhs, d, traits::complex_ptr(e),
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -95,7 +91,8 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
         BOOST_ASSERT( traits::vector_size(d) >= n );
         BOOST_ASSERT( traits::vector_size(e) >= n-1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::ptsv( n, traits::matrix_num_columns(b),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::matrix_storage(b), traits::leading_dimension(b),
@@ -130,7 +127,8 @@ struct ptsv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
         BOOST_ASSERT( traits::vector_size(d) >= n );
         BOOST_ASSERT( traits::vector_size(e) >= n-1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::ptsv( n, traits::matrix_num_columns(b),
                 traits::vector_storage(d), traits::vector_storage(e),
                 traits::matrix_storage(b), traits::leading_dimension(b),

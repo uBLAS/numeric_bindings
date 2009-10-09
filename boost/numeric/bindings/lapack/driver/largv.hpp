@@ -39,26 +39,22 @@ inline void largv( const integer_t n, float* x, const integer_t incx,
         float* y, const integer_t incy, float* c, const integer_t incc ) {
     LAPACK_SLARGV( &n, x, &incx, y, &incy, c, &incc );
 }
-
 inline void largv( const integer_t n, double* x, const integer_t incx,
         double* y, const integer_t incy, double* c, const integer_t incc ) {
     LAPACK_DLARGV( &n, x, &incx, y, &incy, c, &incc );
 }
-
 inline void largv( const integer_t n, traits::complex_f* x,
         const integer_t incx, traits::complex_f* y, const integer_t incy,
         float* c, const integer_t incc ) {
     LAPACK_CLARGV( &n, traits::complex_ptr(x), &incx, traits::complex_ptr(y),
             &incy, c, &incc );
 }
-
 inline void largv( const integer_t n, traits::complex_d* x,
         const integer_t incx, traits::complex_d* y, const integer_t incy,
         double* c, const integer_t incc ) {
     LAPACK_ZLARGV( &n, traits::complex_ptr(x), &incx, traits::complex_ptr(y),
             &incy, c, &incc );
 }
-
 } // namespace detail
 
 // value-type based template

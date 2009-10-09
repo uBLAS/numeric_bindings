@@ -48,7 +48,6 @@ inline void hbgvx( const char jobz, const char range, const char uplo,
             traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
             iwork, ifail, &info );
 }
-
 inline void hbgvx( const char jobz, const char range, const char uplo,
         const integer_t n, const integer_t ka, const integer_t kb,
         traits::complex_d* ab, const integer_t ldab, traits::complex_d* bb,
@@ -63,7 +62,6 @@ inline void hbgvx( const char jobz, const char range, const char uplo,
             traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
             iwork, ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template

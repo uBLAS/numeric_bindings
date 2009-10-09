@@ -44,7 +44,6 @@ inline void trevc( const char side, const char howmny, logical_t* select,
     LAPACK_STREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             &mm, &m, work, &info );
 }
-
 inline void trevc( const char side, const char howmny, logical_t* select,
         const integer_t n, const double* t, const integer_t ldt, double* vl,
         const integer_t ldvl, double* vr, const integer_t ldvr,
@@ -52,7 +51,6 @@ inline void trevc( const char side, const char howmny, logical_t* select,
     LAPACK_DTREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             &mm, &m, work, &info );
 }
-
 inline void trevc( const char side, const char howmny,
         const logical_t* select, const integer_t n, traits::complex_f* t,
         const integer_t ldt, traits::complex_f* vl, const integer_t ldvl,
@@ -63,7 +61,6 @@ inline void trevc( const char side, const char howmny,
             traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr,
             &mm, &m, traits::complex_ptr(work), rwork, &info );
 }
-
 inline void trevc( const char side, const char howmny,
         const logical_t* select, const integer_t n, traits::complex_d* t,
         const integer_t ldt, traits::complex_d* vl, const integer_t ldvl,
@@ -74,7 +71,6 @@ inline void trevc( const char side, const char howmny,
             traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr,
             &mm, &m, traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -104,8 +100,8 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
         BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_num_columns(t)) );
+        BOOST_ASSERT( traits::leading_dimension(t) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(t) ));
@@ -169,8 +165,8 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
         BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_num_columns(t)) );
+        BOOST_ASSERT( traits::leading_dimension(t) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(t) ));

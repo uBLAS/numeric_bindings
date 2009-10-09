@@ -43,13 +43,11 @@ inline void gehrd( const integer_t n, const integer_t ilo,
         float* work, const integer_t lwork, integer_t& info ) {
     LAPACK_SGEHRD( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
 }
-
 inline void gehrd( const integer_t n, const integer_t ilo,
         const integer_t ihi, double* a, const integer_t lda, double* tau,
         double* work, const integer_t lwork, integer_t& info ) {
     LAPACK_DGEHRD( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
 }
-
 inline void gehrd( const integer_t n, const integer_t ilo,
         const integer_t ihi, traits::complex_f* a, const integer_t lda,
         traits::complex_f* tau, traits::complex_f* work,
@@ -58,7 +56,6 @@ inline void gehrd( const integer_t n, const integer_t ilo,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 inline void gehrd( const integer_t n, const integer_t ilo,
         const integer_t ihi, traits::complex_d* a, const integer_t lda,
         traits::complex_d* tau, traits::complex_d* work,
@@ -67,7 +64,6 @@ inline void gehrd( const integer_t n, const integer_t ilo,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -90,8 +86,8 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(tau) >=
                 traits::matrix_num_columns(a)-1 );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -146,8 +142,8 @@ struct gehrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(tau) >=
                 traits::matrix_num_columns(a)-1 );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

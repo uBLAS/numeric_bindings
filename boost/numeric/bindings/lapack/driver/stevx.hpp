@@ -42,7 +42,6 @@ inline void stevx( const char jobz, const char range, const integer_t n,
     LAPACK_SSTEVX( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, work, iwork, ifail, &info );
 }
-
 inline void stevx( const char jobz, const char range, const integer_t n,
         double* d, double* e, const double vl, const double vu,
         const integer_t il, const integer_t iu, const double abstol,
@@ -51,7 +50,6 @@ inline void stevx( const char jobz, const char range, const integer_t n,
     LAPACK_DSTEVX( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, work, iwork, ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -83,7 +81,8 @@ struct stevx_impl {
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( traits::vector_size(d) >= n );
-        BOOST_ASSERT( traits::vector_size(e) >= std::max(1,n-1) );
+        BOOST_ASSERT( traits::vector_size(e) >= std::max< std::ptrdiff_t >(1,
+                n-1) );
         BOOST_ASSERT( traits::vector_size(w) >= n );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));

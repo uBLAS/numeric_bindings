@@ -45,7 +45,6 @@ inline void tgevc( const char side, const char howmny,
     LAPACK_STGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
             vr, &ldvr, &mm, &m, work, &info );
 }
-
 inline void tgevc( const char side, const char howmny,
         const logical_t* select, const integer_t n, const double* s,
         const integer_t lds, const double* p, const integer_t ldp, double* vl,
@@ -54,7 +53,6 @@ inline void tgevc( const char side, const char howmny,
     LAPACK_DTGEVC( &side, &howmny, select, &n, s, &lds, p, &ldp, vl, &ldvl,
             vr, &ldvr, &mm, &m, work, &info );
 }
-
 inline void tgevc( const char side, const char howmny,
         const logical_t* select, const integer_t n,
         const traits::complex_f* s, const integer_t lds,
@@ -67,7 +65,6 @@ inline void tgevc( const char side, const char howmny,
             traits::complex_ptr(vr), &ldvr, &mm, &m,
             traits::complex_ptr(work), rwork, &info );
 }
-
 inline void tgevc( const char side, const char howmny,
         const logical_t* select, const integer_t n,
         const traits::complex_d* s, const integer_t lds,
@@ -80,7 +77,6 @@ inline void tgevc( const char side, const char howmny,
             traits::complex_ptr(vr), &ldvr, &mm, &m,
             traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -113,8 +109,10 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(s) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(p) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(s) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(p) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));
@@ -182,8 +180,10 @@ struct tgevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(s) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(p) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(s) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(p) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( n ));

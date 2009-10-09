@@ -37,13 +37,11 @@ inline void sygst( const integer_t itype, const char uplo, const integer_t n,
         integer_t& info ) {
     LAPACK_SSYGST( &itype, &uplo, &n, a, &lda, b, &ldb, &info );
 }
-
 inline void sygst( const integer_t itype, const char uplo, const integer_t n,
         double* a, const integer_t lda, const double* b, const integer_t ldb,
         integer_t& info ) {
     LAPACK_DSYGST( &itype, &uplo, &n, a, &lda, b, &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -63,8 +61,10 @@ struct sygst_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::sygst( itype, traits::matrix_uplo_tag(a), n,
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),

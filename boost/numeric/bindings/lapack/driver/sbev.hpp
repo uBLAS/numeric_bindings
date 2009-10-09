@@ -39,13 +39,11 @@ inline void sbev( const char jobz, const char uplo, const integer_t n,
         float* z, const integer_t ldz, float* work, integer_t& info ) {
     LAPACK_SSBEV( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work, &info );
 }
-
 inline void sbev( const char jobz, const char uplo, const integer_t n,
         const integer_t kd, double* ab, const integer_t ldab, double* w,
         double* z, const integer_t ldz, double* work, integer_t& info ) {
     LAPACK_DSBEV( &jobz, &uplo, &n, &kd, ab, &ldab, w, z, &ldz, work, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -100,7 +98,7 @@ struct sbev_impl {
     }
 
     static integer_t min_size_work( const integer_t n ) {
-        return std::max(1,3*n-2);
+        return std::max< std::ptrdiff_t >(1,3*n-2);
     }
 };
 

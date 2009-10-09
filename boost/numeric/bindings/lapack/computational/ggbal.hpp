@@ -44,7 +44,6 @@ inline void ggbal( const char job, const integer_t n, float* a,
     LAPACK_SGGBAL( &job, &n, a, &lda, b, &ldb, &ilo, &ihi, lscale, rscale,
             work, &info );
 }
-
 inline void ggbal( const char job, const integer_t n, double* a,
         const integer_t lda, double* b, const integer_t ldb, integer_t& ilo,
         integer_t& ihi, double* lscale, double* rscale, double* work,
@@ -52,7 +51,6 @@ inline void ggbal( const char job, const integer_t n, double* a,
     LAPACK_DGGBAL( &job, &n, a, &lda, b, &ldb, &ilo, &ihi, lscale, rscale,
             work, &info );
 }
-
 inline void ggbal( const char job, const integer_t n, traits::complex_f* a,
         const integer_t lda, traits::complex_f* b, const integer_t ldb,
         integer_t& ilo, integer_t& ihi, float* lscale, float* rscale,
@@ -61,7 +59,6 @@ inline void ggbal( const char job, const integer_t n, traits::complex_f* a,
             traits::complex_ptr(b), &ldb, &ilo, &ihi, lscale, rscale, work,
             &info );
 }
-
 inline void ggbal( const char job, const integer_t n, traits::complex_d* a,
         const integer_t lda, traits::complex_d* b, const integer_t ldb,
         integer_t& ilo, integer_t& ihi, double* lscale, double* rscale,
@@ -70,7 +67,6 @@ inline void ggbal( const char job, const integer_t n, traits::complex_d* a,
             traits::complex_ptr(b), &ldb, &ilo, &ihi, lscale, rscale, work,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -102,8 +98,10 @@ struct ggbal_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 VectorRSCALE >::value_type >::value) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
         detail::ggbal( job, n, traits::matrix_storage(a),
@@ -163,8 +161,10 @@ struct ggbal_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixB >::value_type >::value) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
         detail::ggbal( job, n, traits::matrix_storage(a),

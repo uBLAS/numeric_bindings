@@ -44,7 +44,6 @@ inline void lalsd( const char uplo, const integer_t smlsiz, const integer_t n,
     LAPACK_SLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
             work, iwork, &info );
 }
-
 inline void lalsd( const char uplo, const integer_t smlsiz, const integer_t n,
         const integer_t nrhs, double* d, double* e, double* b,
         const integer_t ldb, const double rcond, integer_t& rank,
@@ -52,7 +51,6 @@ inline void lalsd( const char uplo, const integer_t smlsiz, const integer_t n,
     LAPACK_DLALSD( &uplo, &smlsiz, &n, &nrhs, d, e, b, &ldb, &rcond, &rank,
             work, iwork, &info );
 }
-
 inline void lalsd( const char uplo, const integer_t smlsiz, const integer_t n,
         const integer_t nrhs, float* d, float* e, traits::complex_f* b,
         const integer_t ldb, const float rcond, integer_t& rank,
@@ -62,7 +60,6 @@ inline void lalsd( const char uplo, const integer_t smlsiz, const integer_t n,
             &ldb, &rcond, &rank, traits::complex_ptr(work), rwork, iwork,
             &info );
 }
-
 inline void lalsd( const char uplo, const integer_t smlsiz, const integer_t n,
         const integer_t nrhs, double* d, double* e, traits::complex_d* b,
         const integer_t ldb, const double rcond, integer_t& rank,
@@ -72,7 +69,6 @@ inline void lalsd( const char uplo, const integer_t smlsiz, const integer_t n,
             &ldb, &rcond, &rank, traits::complex_ptr(work), rwork, iwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -107,7 +103,8 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 1 );
         BOOST_ASSERT( traits::vector_size(e) >= n-1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n, smlsiz, nlvl,
                 traits::matrix_num_columns(b) ));
@@ -187,7 +184,8 @@ struct lalsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 1 );
         BOOST_ASSERT( traits::vector_size(e) >= n-1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( n, traits::matrix_num_columns(b) ));
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=

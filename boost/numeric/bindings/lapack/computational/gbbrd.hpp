@@ -45,7 +45,6 @@ inline void gbbrd( const char vect, const integer_t m, const integer_t n,
     LAPACK_SGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
             pt, &ldpt, c, &ldc, work, &info );
 }
-
 inline void gbbrd( const char vect, const integer_t m, const integer_t n,
         const integer_t ncc, const integer_t kl, const integer_t ku,
         double* ab, const integer_t ldab, double* d, double* e, double* q,
@@ -54,7 +53,6 @@ inline void gbbrd( const char vect, const integer_t m, const integer_t n,
     LAPACK_DGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
             pt, &ldpt, c, &ldc, work, &info );
 }
-
 inline void gbbrd( const char vect, const integer_t m, const integer_t n,
         const integer_t ncc, const integer_t kl, const integer_t ku,
         traits::complex_f* ab, const integer_t ldab, float* d, float* e,
@@ -66,7 +64,6 @@ inline void gbbrd( const char vect, const integer_t m, const integer_t n,
             traits::complex_ptr(pt), &ldpt, traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work), rwork, &info );
 }
-
 inline void gbbrd( const char vect, const integer_t m, const integer_t n,
         const integer_t ncc, const integer_t kl, const integer_t ku,
         traits::complex_d* ab, const integer_t ldab, double* d, double* e,
@@ -78,7 +75,6 @@ inline void gbbrd( const char vect, const integer_t m, const integer_t n,
             traits::complex_ptr(pt), &ldpt, traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -123,8 +119,10 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( kl >= 0 );
         BOOST_ASSERT( ku >= 0 );
         BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
-        BOOST_ASSERT( traits::vector_size(d) >= std::min(m,n) );
-        BOOST_ASSERT( traits::vector_size(e) >= std::min(m,n)-1 );
+        BOOST_ASSERT( traits::vector_size(d) >= std::min< std::ptrdiff_t >(m,
+                n) );
+        BOOST_ASSERT( traits::vector_size(e) >= std::min< std::ptrdiff_t >(m,
+                n)-1 );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( m, n ));
         detail::gbbrd( vect, m, n, traits::matrix_num_columns(c), kl, ku,
@@ -160,7 +158,7 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     }
 
     static integer_t min_size_work( const integer_t m, const integer_t n ) {
-        return 2*std::max(m,n);
+        return 2*std::max< std::ptrdiff_t >(m,n);
     }
 };
 
@@ -199,8 +197,10 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( kl >= 0 );
         BOOST_ASSERT( ku >= 0 );
         BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
-        BOOST_ASSERT( traits::vector_size(d) >= std::min(m,n) );
-        BOOST_ASSERT( traits::vector_size(e) >= std::min(m,n)-1 );
+        BOOST_ASSERT( traits::vector_size(d) >= std::min< std::ptrdiff_t >(m,
+                n) );
+        BOOST_ASSERT( traits::vector_size(e) >= std::min< std::ptrdiff_t >(m,
+                n)-1 );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( m, n ));
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -240,11 +240,11 @@ struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     }
 
     static integer_t min_size_work( const integer_t m, const integer_t n ) {
-        return std::max(m,n);
+        return std::max< std::ptrdiff_t >(m,n);
     }
 
     static integer_t min_size_rwork( const integer_t m, const integer_t n ) {
-        return std::max(m,n);
+        return std::max< std::ptrdiff_t >(m,n);
     }
 };
 

@@ -42,13 +42,11 @@ inline void larz( const char side, const integer_t m, const integer_t n,
         const float tau, float* c, const integer_t ldc, float* work ) {
     LAPACK_SLARZ( &side, &m, &n, &l, v, &incv, &tau, c, &ldc, work );
 }
-
 inline void larz( const char side, const integer_t m, const integer_t n,
         const integer_t l, const double* v, const integer_t incv,
         const double tau, double* c, const integer_t ldc, double* work ) {
     LAPACK_DLARZ( &side, &m, &n, &l, v, &incv, &tau, c, &ldc, work );
 }
-
 inline void larz( const char side, const integer_t m, const integer_t n,
         const integer_t l, const traits::complex_f* v, const integer_t incv,
         const traits::complex_f tau, traits::complex_f* c,
@@ -57,7 +55,6 @@ inline void larz( const char side, const integer_t m, const integer_t n,
             traits::complex_ptr(&tau), traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work) );
 }
-
 inline void larz( const char side, const integer_t m, const integer_t n,
         const integer_t l, const traits::complex_d* v, const integer_t incv,
         const traits::complex_d tau, traits::complex_d* c,
@@ -66,7 +63,6 @@ inline void larz( const char side, const integer_t m, const integer_t n,
             traits::complex_ptr(&tau), traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work) );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -89,8 +85,8 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
                 VectorV >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_num_rows(c)) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(c)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( side, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c) ));
@@ -144,8 +140,8 @@ struct larz_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
                 VectorV >::value_type, typename traits::matrix_traits<
                 MatrixC >::value_type >::value) );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_num_rows(c)) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(c)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( side, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c) ));

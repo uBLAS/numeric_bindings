@@ -41,7 +41,6 @@ inline void opmtr( const char side, const char uplo, const char trans,
     LAPACK_SOPMTR( &side, &uplo, &trans, &m, &n, ap, tau, c, &ldc, work,
             &info );
 }
-
 inline void opmtr( const char side, const char uplo, const char trans,
         const integer_t m, const integer_t n, const double* ap,
         const double* tau, double* c, const integer_t ldc, double* work,
@@ -49,7 +48,6 @@ inline void opmtr( const char side, const char uplo, const char trans,
     LAPACK_DOPMTR( &side, &uplo, &trans, &m, &n, ap, tau, c, &ldc, work,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -76,8 +74,8 @@ struct opmtr_impl {
         BOOST_ASSERT( trans == 'N' || trans == 'T' );
         BOOST_ASSERT( traits::matrix_num_rows(c) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_num_rows(c)) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(c)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( side, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c) ));

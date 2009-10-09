@@ -46,7 +46,6 @@ inline void syevr( const char jobz, const char range, const char uplo,
             &abstol, &m, w, z, &ldz, isuppz, work, &lwork, iwork, &liwork,
             &info );
 }
-
 inline void syevr( const char jobz, const char range, const char uplo,
         const integer_t n, double* a, const integer_t lda, const double vl,
         const double vu, const integer_t il, const integer_t iu,
@@ -58,7 +57,6 @@ inline void syevr( const char jobz, const char range, const char uplo,
             &abstol, &m, w, z, &ldz, isuppz, work, &lwork, iwork, &liwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -87,11 +85,12 @@ struct syevr_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(w) >=
                 traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::vector_size(isuppz) >= 2*std::max(1,m) );
+        BOOST_ASSERT( traits::vector_size(isuppz) >= 2*std::max<
+                std::ptrdiff_t >(1,m) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=

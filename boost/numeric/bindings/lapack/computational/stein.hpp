@@ -44,7 +44,6 @@ inline void stein( const integer_t n, const float* d, const float* e,
     LAPACK_SSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );
 }
-
 inline void stein( const integer_t n, const double* d, const double* e,
         const integer_t m, const double* w, const integer_t* iblock,
         const integer_t* isplit, double* z, const integer_t ldz, double* work,
@@ -52,7 +51,6 @@ inline void stein( const integer_t n, const double* d, const double* e,
     LAPACK_DSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );
 }
-
 inline void stein( const integer_t n, const float* d, const float* e,
         const integer_t m, const float* w, const integer_t* iblock,
         const integer_t* isplit, traits::complex_f* z, const integer_t ldz,
@@ -60,7 +58,6 @@ inline void stein( const integer_t n, const float* d, const float* e,
     LAPACK_CSTEIN( &n, d, e, &m, w, iblock, isplit, traits::complex_ptr(z),
             &ldz, work, iwork, ifail, &info );
 }
-
 inline void stein( const integer_t n, const double* d, const double* e,
         const integer_t m, const double* w, const integer_t* iblock,
         const integer_t* isplit, traits::complex_d* z, const integer_t ldz,
@@ -68,7 +65,6 @@ inline void stein( const integer_t n, const double* d, const double* e,
     LAPACK_ZSTEIN( &n, d, e, &m, w, iblock, isplit, traits::complex_ptr(z),
             &ldz, work, iwork, ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -110,7 +106,8 @@ struct stein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::vector_size(e) >= n-1 );
         BOOST_ASSERT( traits::vector_size(w) >= n );
         BOOST_ASSERT( traits::vector_size(isplit) >= n );
-        BOOST_ASSERT( traits::leading_dimension(z) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(z) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
@@ -192,7 +189,8 @@ struct stein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::vector_size(e) >= n-1 );
         BOOST_ASSERT( traits::vector_size(w) >= n );
         BOOST_ASSERT( traits::vector_size(isplit) >= n );
-        BOOST_ASSERT( traits::leading_dimension(z) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(z) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=

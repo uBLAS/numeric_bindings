@@ -42,13 +42,11 @@ inline void gecon( const char norm, const integer_t n, const float* a,
         integer_t* iwork, integer_t& info ) {
     LAPACK_SGECON( &norm, &n, a, &lda, &anorm, &rcond, work, iwork, &info );
 }
-
 inline void gecon( const char norm, const integer_t n, const double* a,
         const integer_t lda, const double anorm, double& rcond, double* work,
         integer_t* iwork, integer_t& info ) {
     LAPACK_DGECON( &norm, &n, a, &lda, &anorm, &rcond, work, iwork, &info );
 }
-
 inline void gecon( const char norm, const integer_t n,
         const traits::complex_f* a, const integer_t lda, const float anorm,
         float& rcond, traits::complex_f* work, float* rwork,
@@ -56,7 +54,6 @@ inline void gecon( const char norm, const integer_t n,
     LAPACK_CGECON( &norm, &n, traits::complex_ptr(a), &lda, &anorm, &rcond,
             traits::complex_ptr(work), rwork, &info );
 }
-
 inline void gecon( const char norm, const integer_t n,
         const traits::complex_d* a, const integer_t lda, const double anorm,
         double& rcond, traits::complex_d* work, double* rwork,
@@ -64,7 +61,6 @@ inline void gecon( const char norm, const integer_t n,
     LAPACK_ZGECON( &norm, &n, traits::complex_ptr(a), &lda, &anorm, &rcond,
             traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -85,8 +81,8 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             detail::workspace2< WORK, IWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
@@ -142,8 +138,8 @@ struct gecon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             detail::workspace2< WORK, RWORK > work ) {
         BOOST_ASSERT( norm == '1' || norm == 'O' || norm == 'I' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=

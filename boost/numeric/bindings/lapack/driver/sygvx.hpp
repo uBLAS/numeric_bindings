@@ -46,7 +46,6 @@ inline void sygvx( const integer_t itype, const char jobz, const char range,
             &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, &lwork, iwork,
             ifail, &info );
 }
-
 inline void sygvx( const integer_t itype, const char jobz, const char range,
         const char uplo, const integer_t n, double* a, const integer_t lda,
         double* b, const integer_t ldb, const double vl, const double vu,
@@ -58,7 +57,6 @@ inline void sygvx( const integer_t itype, const char jobz, const char range,
             &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, &lwork, iwork,
             ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -92,8 +90,10 @@ struct sygvx_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(w) >= n );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));

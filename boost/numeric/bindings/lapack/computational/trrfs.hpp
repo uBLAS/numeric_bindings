@@ -45,7 +45,6 @@ inline void trrfs( const char uplo, const char trans, const char diag,
     LAPACK_STRRFS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb, x, &ldx,
             ferr, berr, work, iwork, &info );
 }
-
 inline void trrfs( const char uplo, const char trans, const char diag,
         const integer_t n, const integer_t nrhs, const double* a,
         const integer_t lda, const double* b, const integer_t ldb,
@@ -54,7 +53,6 @@ inline void trrfs( const char uplo, const char trans, const char diag,
     LAPACK_DTRRFS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb, x, &ldx,
             ferr, berr, work, iwork, &info );
 }
-
 inline void trrfs( const char uplo, const char trans, const char diag,
         const integer_t n, const integer_t nrhs, const traits::complex_f* a,
         const integer_t lda, const traits::complex_f* b, const integer_t ldb,
@@ -64,7 +62,6 @@ inline void trrfs( const char uplo, const char trans, const char diag,
             &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
             ferr, berr, traits::complex_ptr(work), rwork, &info );
 }
-
 inline void trrfs( const char uplo, const char trans, const char diag,
         const integer_t n, const integer_t nrhs, const traits::complex_d* a,
         const integer_t lda, const traits::complex_d* b, const integer_t ldb,
@@ -75,7 +72,6 @@ inline void trrfs( const char uplo, const char trans, const char diag,
             &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
             ferr, berr, traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -114,12 +110,12 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -200,12 +196,12 @@ struct trrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

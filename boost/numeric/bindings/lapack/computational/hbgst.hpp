@@ -43,7 +43,6 @@ inline void hbgst( const char vect, const char uplo, const integer_t n,
             traits::complex_ptr(bb), &ldbb, traits::complex_ptr(x), &ldx,
             traits::complex_ptr(work), rwork, &info );
 }
-
 inline void hbgst( const char vect, const char uplo, const integer_t n,
         const integer_t ka, const integer_t kb, traits::complex_d* ab,
         const integer_t ldab, const traits::complex_d* bb,
@@ -53,7 +52,6 @@ inline void hbgst( const char vect, const char uplo, const integer_t n,
             traits::complex_ptr(bb), &ldbb, traits::complex_ptr(x), &ldx,
             traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

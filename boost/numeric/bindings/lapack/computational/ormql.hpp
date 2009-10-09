@@ -42,7 +42,6 @@ inline void ormql( const char side, const char trans, const integer_t m,
     LAPACK_SORMQL( &side, &trans, &m, &n, &k, a, &lda, tau, c, &ldc, work,
             &lwork, &info );
 }
-
 inline void ormql( const char side, const char trans, const integer_t m,
         const integer_t n, const integer_t k, const double* a,
         const integer_t lda, const double* tau, double* c,
@@ -51,7 +50,6 @@ inline void ormql( const char side, const char trans, const integer_t m,
     LAPACK_DORMQL( &side, &trans, &m, &n, &k, a, &lda, tau, c, &ldc, work,
             &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -78,8 +76,8 @@ struct ormql_impl {
         BOOST_ASSERT( traits::matrix_num_rows(c) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
         BOOST_ASSERT( traits::vector_size(tau) >= k );
-        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_num_rows(c)) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(c)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( side, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c) ));

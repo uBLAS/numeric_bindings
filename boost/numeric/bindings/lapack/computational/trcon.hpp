@@ -43,14 +43,12 @@ inline void trcon( const char norm, const char uplo, const char diag,
     LAPACK_STRCON( &norm, &uplo, &diag, &n, a, &lda, &rcond, work, iwork,
             &info );
 }
-
 inline void trcon( const char norm, const char uplo, const char diag,
         const integer_t n, const double* a, const integer_t lda,
         double& rcond, double* work, integer_t* iwork, integer_t& info ) {
     LAPACK_DTRCON( &norm, &uplo, &diag, &n, a, &lda, &rcond, work, iwork,
             &info );
 }
-
 inline void trcon( const char norm, const char uplo, const char diag,
         const integer_t n, const traits::complex_f* a, const integer_t lda,
         float& rcond, traits::complex_f* work, float* rwork,
@@ -58,7 +56,6 @@ inline void trcon( const char norm, const char uplo, const char diag,
     LAPACK_CTRCON( &norm, &uplo, &diag, &n, traits::complex_ptr(a), &lda,
             &rcond, traits::complex_ptr(work), rwork, &info );
 }
-
 inline void trcon( const char norm, const char uplo, const char diag,
         const integer_t n, const traits::complex_d* a, const integer_t lda,
         double& rcond, traits::complex_d* work, double* rwork,
@@ -66,7 +63,6 @@ inline void trcon( const char norm, const char uplo, const char diag,
     LAPACK_ZTRCON( &norm, &uplo, &diag, &n, traits::complex_ptr(a), &lda,
             &rcond, traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -89,8 +85,8 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
@@ -147,8 +143,8 @@ struct trcon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=

@@ -42,7 +42,6 @@ inline void trsyl( const char trana, const char tranb, const integer_t isgn,
     LAPACK_STRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
             &scale, &info );
 }
-
 inline void trsyl( const char trana, const char tranb, const integer_t isgn,
         const integer_t m, const integer_t n, const double* a,
         const integer_t lda, const double* b, const integer_t ldb, double* c,
@@ -50,7 +49,6 @@ inline void trsyl( const char trana, const char tranb, const integer_t isgn,
     LAPACK_DTRSYL( &trana, &tranb, &isgn, &m, &n, a, &lda, b, &ldb, c, &ldc,
             &scale, &info );
 }
-
 inline void trsyl( const char trana, const char tranb, const integer_t isgn,
         const integer_t m, const integer_t n, const traits::complex_f* a,
         const integer_t lda, const traits::complex_f* b, const integer_t ldb,
@@ -60,7 +58,6 @@ inline void trsyl( const char trana, const char tranb, const integer_t isgn,
             &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(c), &ldc,
             &scale, &info );
 }
-
 inline void trsyl( const char trana, const char tranb, const integer_t isgn,
         const integer_t m, const integer_t n, const traits::complex_d* a,
         const integer_t lda, const traits::complex_d* b, const integer_t ldb,
@@ -70,7 +67,6 @@ inline void trsyl( const char trana, const char tranb, const integer_t isgn,
             &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(c), &ldc,
             &scale, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -100,9 +96,12 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( tranb == 'N' || tranb == 'T' || tranb == 'C' );
         BOOST_ASSERT( m >= 0 );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,m) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,m) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,m) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max<
+                std::ptrdiff_t >(1,m) );
         detail::trsyl( trana, tranb, isgn, m, n, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), traits::matrix_storage(c),
@@ -133,9 +132,12 @@ struct trsyl_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( tranb == 'N' || tranb == 'C' );
         BOOST_ASSERT( m >= 0 );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,m) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,m) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,m) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max<
+                std::ptrdiff_t >(1,m) );
         detail::trsyl( trana, tranb, isgn, m, n, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), traits::matrix_storage(c),

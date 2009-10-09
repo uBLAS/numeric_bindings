@@ -42,7 +42,6 @@ inline void spevx( const char jobz, const char range, const char uplo,
     LAPACK_SSPEVX( &jobz, &range, &uplo, &n, ap, &vl, &vu, &il, &iu, &abstol,
             &m, w, z, &ldz, work, iwork, ifail, &info );
 }
-
 inline void spevx( const char jobz, const char range, const char uplo,
         const integer_t n, double* ap, const double vl, const double vu,
         const integer_t il, const integer_t iu, const double abstol,
@@ -51,7 +50,6 @@ inline void spevx( const char jobz, const char range, const char uplo,
     LAPACK_DSPEVX( &jobz, &range, &uplo, &n, ap, &vl, &vu, &il, &iu, &abstol,
             &m, w, z, &ldz, work, iwork, ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template

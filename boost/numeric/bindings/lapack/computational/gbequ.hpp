@@ -42,7 +42,6 @@ inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
     LAPACK_SGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
             &info );
 }
-
 inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
         const integer_t ku, const double* ab, const integer_t ldab, double* r,
         double* c, double& rowcnd, double& colcnd, double& amax,
@@ -50,7 +49,6 @@ inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
     LAPACK_DGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
             &info );
 }
-
 inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
         const integer_t ku, const traits::complex_f* ab, const integer_t ldab,
         float* r, float* c, float& rowcnd, float& colcnd, float& amax,
@@ -58,7 +56,6 @@ inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
     LAPACK_CGBEQU( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, r, c,
             &rowcnd, &colcnd, &amax, &info );
 }
-
 inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
         const integer_t ku, const traits::complex_d* ab, const integer_t ldab,
         double* r, double* c, double& rowcnd, double& colcnd, double& amax,
@@ -66,7 +63,6 @@ inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
     LAPACK_ZGBEQU( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, r, c,
             &rowcnd, &colcnd, &amax, &info );
 }
-
 } // namespace detail
 
 // value-type based template

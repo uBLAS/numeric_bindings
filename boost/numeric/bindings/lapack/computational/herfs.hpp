@@ -46,7 +46,6 @@ inline void herfs( const char uplo, const integer_t n, const integer_t nrhs,
             &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
             traits::complex_ptr(work), rwork, &info );
 }
-
 inline void herfs( const char uplo, const integer_t n, const integer_t nrhs,
         const traits::complex_d* a, const integer_t lda,
         const traits::complex_d* af, const integer_t ldaf,
@@ -59,7 +58,6 @@ inline void herfs( const char uplo, const integer_t n, const integer_t nrhs,
             &ldb, traits::complex_ptr(x), &ldx, ferr, berr,
             traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -93,16 +91,16 @@ struct herfs_impl {
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(af) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(af) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(ipiv) >=
                 traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

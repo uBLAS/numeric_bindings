@@ -42,7 +42,6 @@ inline void ggbak( const char job, const char side, const integer_t n,
     LAPACK_SGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m, v, &ldv,
             &info );
 }
-
 inline void ggbak( const char job, const char side, const integer_t n,
         const integer_t ilo, const integer_t ihi, const double* lscale,
         const double* rscale, const integer_t m, double* v,
@@ -50,7 +49,6 @@ inline void ggbak( const char job, const char side, const integer_t n,
     LAPACK_DGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m, v, &ldv,
             &info );
 }
-
 inline void ggbak( const char job, const char side, const integer_t n,
         const integer_t ilo, const integer_t ihi, const float* lscale,
         const float* rscale, const integer_t m, traits::complex_f* v,
@@ -58,7 +56,6 @@ inline void ggbak( const char job, const char side, const integer_t n,
     LAPACK_CGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m,
             traits::complex_ptr(v), &ldv, &info );
 }
-
 inline void ggbak( const char job, const char side, const integer_t n,
         const integer_t ilo, const integer_t ihi, const double* lscale,
         const double* rscale, const integer_t m, traits::complex_d* v,
@@ -66,7 +63,6 @@ inline void ggbak( const char job, const char side, const integer_t n,
     LAPACK_ZGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m,
             traits::complex_ptr(v), &ldv, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -99,8 +95,8 @@ struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::vector_size(rscale) >=
                 traits::matrix_num_rows(v) );
         BOOST_ASSERT( traits::matrix_num_columns(v) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(v) >= std::max(1,
-                traits::matrix_num_rows(v)) );
+        BOOST_ASSERT( traits::leading_dimension(v) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(v)) );
         detail::ggbak( job, side, traits::matrix_num_rows(v), ilo, ihi,
                 traits::vector_storage(lscale),
                 traits::vector_storage(rscale), traits::matrix_num_columns(v),
@@ -132,8 +128,8 @@ struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::vector_size(rscale) >=
                 traits::matrix_num_rows(v) );
         BOOST_ASSERT( traits::matrix_num_columns(v) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(v) >= std::max(1,
-                traits::matrix_num_rows(v)) );
+        BOOST_ASSERT( traits::leading_dimension(v) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(v)) );
         detail::ggbak( job, side, traits::matrix_num_rows(v), ilo, ihi,
                 traits::vector_storage(lscale),
                 traits::vector_storage(rscale), traits::matrix_num_columns(v),

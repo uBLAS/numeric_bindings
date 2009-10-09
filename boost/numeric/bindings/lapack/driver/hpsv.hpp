@@ -38,14 +38,12 @@ inline void hpsv( const char uplo, const integer_t n, const integer_t nrhs,
     LAPACK_CHPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void hpsv( const char uplo, const integer_t n, const integer_t nrhs,
         traits::complex_d* ap, integer_t* ipiv, traits::complex_d* b,
         const integer_t ldb, integer_t& info ) {
     LAPACK_ZHPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -83,8 +81,8 @@ struct hpsv_impl {
                 traits::matrix_uplo_tag(ap) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(ap) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(ap)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(ap)) );
         detail::hpsv( traits::matrix_uplo_tag(ap),
                 traits::matrix_num_columns(ap), traits::matrix_num_columns(b),
                 traits::matrix_storage(ap), traits::vector_storage(ipiv),

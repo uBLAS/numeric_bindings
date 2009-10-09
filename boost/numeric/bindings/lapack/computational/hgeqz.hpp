@@ -47,7 +47,6 @@ inline void hgeqz( const char job, const char compq, const char compz,
     LAPACK_SHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
             alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
 }
-
 inline void hgeqz( const char job, const char compq, const char compz,
         const integer_t n, const integer_t ilo, const integer_t ihi,
         double* h, const integer_t ldh, double* t, const integer_t ldt,
@@ -57,7 +56,6 @@ inline void hgeqz( const char job, const char compq, const char compz,
     LAPACK_DHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
             alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
 }
-
 inline void hgeqz( const char job, const char compq, const char compz,
         const integer_t n, const integer_t ilo, const integer_t ihi,
         traits::complex_f* h, const integer_t ldh, traits::complex_f* t,
@@ -71,7 +69,6 @@ inline void hgeqz( const char job, const char compq, const char compz,
             traits::complex_ptr(q), &ldq, traits::complex_ptr(z), &ldz,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 inline void hgeqz( const char job, const char compq, const char compz,
         const integer_t n, const integer_t ilo, const integer_t ihi,
         traits::complex_d* h, const integer_t ldh, traits::complex_d* t,
@@ -85,7 +82,6 @@ inline void hgeqz( const char job, const char compq, const char compz,
             traits::complex_ptr(q), &ldq, traits::complex_ptr(z), &ldz,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

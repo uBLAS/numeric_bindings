@@ -41,7 +41,6 @@ inline void sbtrd( const char vect, const char uplo, const integer_t n,
     LAPACK_SSBTRD( &vect, &uplo, &n, &kd, ab, &ldab, d, e, q, &ldq, work,
             &info );
 }
-
 inline void sbtrd( const char vect, const char uplo, const integer_t n,
         const integer_t kd, double* ab, const integer_t ldab, double* d,
         double* e, double* q, const integer_t ldq, double* work,
@@ -49,7 +48,6 @@ inline void sbtrd( const char vect, const char uplo, const integer_t n,
     LAPACK_DSBTRD( &vect, &uplo, &n, &kd, ab, &ldab, d, e, q, &ldq, work,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template

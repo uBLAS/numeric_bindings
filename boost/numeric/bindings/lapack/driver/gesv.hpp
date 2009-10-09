@@ -38,27 +38,23 @@ inline void gesv( const integer_t n, const integer_t nrhs, float* a,
         integer_t& info ) {
     LAPACK_SGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
 }
-
 inline void gesv( const integer_t n, const integer_t nrhs, double* a,
         const integer_t lda, integer_t* ipiv, double* b, const integer_t ldb,
         integer_t& info ) {
     LAPACK_DGESV( &n, &nrhs, a, &lda, ipiv, b, &ldb, &info );
 }
-
 inline void gesv( const integer_t n, const integer_t nrhs,
         traits::complex_f* a, const integer_t lda, integer_t* ipiv,
         traits::complex_f* b, const integer_t ldb, integer_t& info ) {
     LAPACK_CGESV( &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void gesv( const integer_t n, const integer_t nrhs,
         traits::complex_d* a, const integer_t lda, integer_t* ipiv,
         traits::complex_d* b, const integer_t ldb, integer_t& info ) {
     LAPACK_ZGESV( &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -94,12 +90,12 @@ struct gesv_impl {
                 MatrixB >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(ipiv) >=
                 traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::gesv( traits::matrix_num_columns(a),
                 traits::matrix_num_columns(b), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(ipiv),

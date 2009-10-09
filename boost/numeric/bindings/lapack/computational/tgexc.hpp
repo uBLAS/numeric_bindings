@@ -46,7 +46,6 @@ inline void tgexc( const logical_t wantq, const logical_t wantz,
     LAPACK_STGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,
             &ifst, &ilst, work, &lwork, &info );
 }
-
 inline void tgexc( const logical_t wantq, const logical_t wantz,
         const integer_t n, double* a, const integer_t lda, double* b,
         const integer_t ldb, double* q, const integer_t ldq, double* z,
@@ -55,7 +54,6 @@ inline void tgexc( const logical_t wantq, const logical_t wantz,
     LAPACK_DTGEXC( &wantq, &wantz, &n, a, &lda, b, &ldb, q, &ldq, z, &ldz,
             &ifst, &ilst, work, &lwork, &info );
 }
-
 inline void tgexc( const logical_t wantq, const logical_t wantz,
         const integer_t n, traits::complex_f* a, const integer_t lda,
         traits::complex_f* b, const integer_t ldb, traits::complex_f* q,
@@ -65,7 +63,6 @@ inline void tgexc( const logical_t wantq, const logical_t wantz,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
             traits::complex_ptr(z), &ldz, &ifst, &ilst, &info );
 }
-
 inline void tgexc( const logical_t wantq, const logical_t wantz,
         const integer_t n, traits::complex_d* a, const integer_t lda,
         traits::complex_d* b, const integer_t ldb, traits::complex_d* q,
@@ -75,7 +72,6 @@ inline void tgexc( const logical_t wantq, const logical_t wantz,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
             traits::complex_ptr(z), &ldz, &ifst, &ilst, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -105,8 +101,10 @@ struct tgexc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixZ >::value_type >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
         detail::tgexc( wantq, wantz, n, traits::matrix_storage(a),
@@ -143,8 +141,10 @@ struct tgexc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixZ >::value_type >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::tgexc( wantq, wantz, n, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),
                 traits::leading_dimension(b), traits::matrix_storage(q),

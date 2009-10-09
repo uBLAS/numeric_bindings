@@ -43,27 +43,23 @@ inline void getri( const integer_t n, float* a, const integer_t lda,
         integer_t& info ) {
     LAPACK_SGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
 }
-
 inline void getri( const integer_t n, double* a, const integer_t lda,
         const integer_t* ipiv, double* work, const integer_t lwork,
         integer_t& info ) {
     LAPACK_DGETRI( &n, a, &lda, ipiv, work, &lwork, &info );
 }
-
 inline void getri( const integer_t n, traits::complex_f* a,
         const integer_t lda, const integer_t* ipiv, traits::complex_f* work,
         const integer_t lwork, integer_t& info ) {
     LAPACK_CGETRI( &n, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 inline void getri( const integer_t n, traits::complex_d* a,
         const integer_t lda, const integer_t* ipiv, traits::complex_d* work,
         const integer_t lwork, integer_t& info ) {
     LAPACK_ZGETRI( &n, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -82,8 +78,8 @@ struct getri_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void invoke( MatrixA& a, const VectorIPIV& ipiv, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(ipiv) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -134,8 +130,8 @@ struct getri_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void invoke( MatrixA& a, const VectorIPIV& ipiv, integer_t& info,
             detail::workspace1< WORK > work ) {
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(ipiv) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

@@ -39,24 +39,20 @@ inline void poequ( const integer_t n, const float* a, const integer_t lda,
         float* s, float& scond, float& amax, integer_t& info ) {
     LAPACK_SPOEQU( &n, a, &lda, s, &scond, &amax, &info );
 }
-
 inline void poequ( const integer_t n, const double* a, const integer_t lda,
         double* s, double& scond, double& amax, integer_t& info ) {
     LAPACK_DPOEQU( &n, a, &lda, s, &scond, &amax, &info );
 }
-
 inline void poequ( const integer_t n, const traits::complex_f* a,
         const integer_t lda, float* s, float& scond, float& amax,
         integer_t& info ) {
     LAPACK_CPOEQU( &n, traits::complex_ptr(a), &lda, s, &scond, &amax, &info );
 }
-
 inline void poequ( const integer_t n, const traits::complex_d* a,
         const integer_t lda, double* s, double& scond, double& amax,
         integer_t& info ) {
     LAPACK_ZPOEQU( &n, traits::complex_ptr(a), &lda, s, &scond, &amax, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -78,8 +74,8 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorS >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::poequ( traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(s), scond, amax, info );
@@ -98,8 +94,8 @@ struct poequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void invoke( const MatrixA& a, VectorS& s, real_type& scond,
             real_type& amax, integer_t& info ) {
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::poequ( traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::vector_storage(s), scond, amax, info );

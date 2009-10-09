@@ -41,7 +41,6 @@ inline void sposv( const char uplo, const integer_t n, const integer_t nrhs,
     LAPACK_DSPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, x, &ldx, work, swork,
             &iter, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -67,12 +66,12 @@ struct sposv_impl {
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=

@@ -40,14 +40,12 @@ inline void hetrf( const char uplo, const integer_t n, traits::complex_f* a,
     LAPACK_CHETRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 inline void hetrf( const char uplo, const integer_t n, traits::complex_d* a,
         const integer_t lda, integer_t* ipiv, traits::complex_d* work,
         const integer_t lwork, integer_t& info ) {
     LAPACK_ZHETRF( &uplo, &n, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -64,10 +62,10 @@ struct hetrf_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work(  ));
+                min_size_work());
         detail::hetrf( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(ipiv),
@@ -79,7 +77,7 @@ struct hetrf_impl {
     template< typename MatrixA, typename VectorIPIV >
     static void invoke( MatrixA& a, VectorIPIV& ipiv, integer_t& info,
             minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(  ) );
+        traits::detail::array< value_type > tmp_work( min_size_work() );
         invoke( a, ipiv, info, workspace( tmp_work ) );
     }
 
@@ -90,7 +88,7 @@ struct hetrf_impl {
         invoke( a, ipiv, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work(  ) {
+    static integer_t min_size_work() {
         return 1;
     }
 };

@@ -44,7 +44,6 @@ inline void unmql( const char side, const char trans, const integer_t m,
             traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 inline void unmql( const char side, const char trans, const integer_t m,
         const integer_t n, const integer_t k, const traits::complex_d* a,
         const integer_t lda, const traits::complex_d* tau,
@@ -54,7 +53,6 @@ inline void unmql( const char side, const char trans, const integer_t m,
             traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -81,8 +79,8 @@ struct unmql_impl {
         BOOST_ASSERT( traits::matrix_num_rows(c) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
         BOOST_ASSERT( traits::vector_size(tau) >= k );
-        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_num_rows(c)) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(c)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( side, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c) ));

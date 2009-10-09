@@ -43,7 +43,6 @@ inline void stebz( const char range, const char order, const integer_t n,
     LAPACK_SSTEBZ( &range, &order, &n, &vl, &vu, &il, &iu, &abstol, d, e, &m,
             &nsplit, w, iblock, isplit, work, iwork, &info );
 }
-
 inline void stebz( const char range, const char order, const integer_t n,
         const double vl, const double vu, const integer_t il,
         const integer_t iu, const double abstol, const double* d,
@@ -53,7 +52,6 @@ inline void stebz( const char range, const char order, const integer_t n,
     LAPACK_DSTEBZ( &range, &order, &n, &vl, &vu, &il, &iu, &abstol, d, e, &m,
             &nsplit, w, iblock, isplit, work, iwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

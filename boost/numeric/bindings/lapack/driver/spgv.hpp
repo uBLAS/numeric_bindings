@@ -39,13 +39,11 @@ inline void spgv( const integer_t itype, const char jobz, const char uplo,
         const integer_t ldz, float* work, integer_t& info ) {
     LAPACK_SSPGV( &itype, &jobz, &uplo, &n, ap, bp, w, z, &ldz, work, &info );
 }
-
 inline void spgv( const integer_t itype, const char jobz, const char uplo,
         const integer_t n, double* ap, double* bp, double* w, double* z,
         const integer_t ldz, double* work, integer_t& info ) {
     LAPACK_DSPGV( &itype, &jobz, &uplo, &n, ap, bp, w, z, &ldz, work, &info );
 }
-
 } // namespace detail
 
 // value-type based template

@@ -39,13 +39,11 @@ inline void spev( const char jobz, const char uplo, const integer_t n,
         integer_t& info ) {
     LAPACK_SSPEV( &jobz, &uplo, &n, ap, w, z, &ldz, work, &info );
 }
-
 inline void spev( const char jobz, const char uplo, const integer_t n,
         double* ap, double* w, double* z, const integer_t ldz, double* work,
         integer_t& info ) {
     LAPACK_DSPEV( &jobz, &uplo, &n, ap, w, z, &ldz, work, &info );
 }
-
 } // namespace detail
 
 // value-type based template

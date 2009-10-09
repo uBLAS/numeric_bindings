@@ -46,7 +46,6 @@ inline void gtsvx( const char fact, const char trans, const integer_t n,
     LAPACK_SGTSVX( &fact, &trans, &n, &nrhs, dl, d, du, dlf, df, duf, du2,
             ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
 }
-
 inline void gtsvx( const char fact, const char trans, const integer_t n,
         const integer_t nrhs, const double* dl, const double* d,
         const double* du, double* dlf, double* df, double* duf, double* du2,
@@ -56,7 +55,6 @@ inline void gtsvx( const char fact, const char trans, const integer_t n,
     LAPACK_DGTSVX( &fact, &trans, &n, &nrhs, dl, d, du, dlf, df, duf, du2,
             ipiv, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
 }
-
 inline void gtsvx( const char fact, const char trans, const integer_t n,
         const integer_t nrhs, const traits::complex_f* dl,
         const traits::complex_f* d, const traits::complex_f* du,
@@ -72,7 +70,6 @@ inline void gtsvx( const char fact, const char trans, const integer_t n,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
             &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
 }
-
 inline void gtsvx( const char fact, const char trans, const integer_t n,
         const integer_t nrhs, const traits::complex_d* dl,
         const traits::complex_d* d, const traits::complex_d* du,
@@ -88,7 +85,6 @@ inline void gtsvx( const char fact, const char trans, const integer_t n,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
             &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -151,8 +147,10 @@ struct gtsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::vector_size(dl) >= n-1 );
         BOOST_ASSERT( traits::vector_size(d) >= n );
         BOOST_ASSERT( traits::vector_size(du) >= n-1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(b) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -266,8 +264,10 @@ struct gtsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::vector_size(dl) >= n-1 );
         BOOST_ASSERT( traits::vector_size(d) >= n );
         BOOST_ASSERT( traits::vector_size(du) >= n-1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(b) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

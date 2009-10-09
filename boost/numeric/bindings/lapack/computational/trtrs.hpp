@@ -37,14 +37,12 @@ inline void trtrs( const char uplo, const char trans, const char diag,
         const integer_t lda, float* b, const integer_t ldb, integer_t& info ) {
     LAPACK_STRTRS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb, &info );
 }
-
 inline void trtrs( const char uplo, const char trans, const char diag,
         const integer_t n, const integer_t nrhs, const double* a,
         const integer_t lda, double* b, const integer_t ldb,
         integer_t& info ) {
     LAPACK_DTRTRS( &uplo, &trans, &diag, &n, &nrhs, a, &lda, b, &ldb, &info );
 }
-
 inline void trtrs( const char uplo, const char trans, const char diag,
         const integer_t n, const integer_t nrhs, const traits::complex_f* a,
         const integer_t lda, traits::complex_f* b, const integer_t ldb,
@@ -52,7 +50,6 @@ inline void trtrs( const char uplo, const char trans, const char diag,
     LAPACK_CTRTRS( &uplo, &trans, &diag, &n, &nrhs, traits::complex_ptr(a),
             &lda, traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void trtrs( const char uplo, const char trans, const char diag,
         const integer_t n, const integer_t nrhs, const traits::complex_d* a,
         const integer_t lda, traits::complex_d* b, const integer_t ldb,
@@ -60,7 +57,6 @@ inline void trtrs( const char uplo, const char trans, const char diag,
     LAPACK_ZTRTRS( &uplo, &trans, &diag, &n, &nrhs, traits::complex_ptr(a),
             &lda, traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -82,10 +78,10 @@ struct trtrs_impl {
         BOOST_ASSERT( diag == 'N' || diag == 'U' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::trtrs( uplo, trans, diag, traits::matrix_num_columns(a),
                 traits::matrix_num_columns(b), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::matrix_storage(b),

@@ -36,22 +36,18 @@ inline void potrf( const char uplo, const integer_t n, float* a,
         const integer_t lda, integer_t& info ) {
     LAPACK_SPOTRF( &uplo, &n, a, &lda, &info );
 }
-
 inline void potrf( const char uplo, const integer_t n, double* a,
         const integer_t lda, integer_t& info ) {
     LAPACK_DPOTRF( &uplo, &n, a, &lda, &info );
 }
-
 inline void potrf( const char uplo, const integer_t n, traits::complex_f* a,
         const integer_t lda, integer_t& info ) {
     LAPACK_CPOTRF( &uplo, &n, traits::complex_ptr(a), &lda, &info );
 }
-
 inline void potrf( const char uplo, const integer_t n, traits::complex_d* a,
         const integer_t lda, integer_t& info ) {
     LAPACK_ZPOTRF( &uplo, &n, traits::complex_ptr(a), &lda, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -67,8 +63,8 @@ struct potrf_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::potrf( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), info );

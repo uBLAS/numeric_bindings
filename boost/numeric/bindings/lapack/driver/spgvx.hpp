@@ -43,7 +43,6 @@ inline void spgvx( const integer_t itype, const char jobz, const char range,
     LAPACK_SSPGVX( &itype, &jobz, &range, &uplo, &n, ap, bp, &vl, &vu, &il,
             &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail, &info );
 }
-
 inline void spgvx( const integer_t itype, const char jobz, const char range,
         const char uplo, const integer_t n, double* ap, double* bp,
         const double vl, const double vu, const integer_t il,
@@ -53,7 +52,6 @@ inline void spgvx( const integer_t itype, const char jobz, const char range,
     LAPACK_DSPGVX( &itype, &jobz, &range, &uplo, &n, ap, bp, &vl, &vu, &il,
             &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template

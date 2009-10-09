@@ -45,7 +45,6 @@ inline void gees( const char jobvs, const char sort, logical_t* select,
     LAPACK_SGEES( &jobvs, &sort, &select, &n, a, &lda, &sdim, wr, wi, vs,
             &ldvs, work, &lwork, bwork, &info );
 }
-
 inline void gees( const char jobvs, const char sort, logical_t* select,
         const integer_t n, double* a, const integer_t lda, integer_t& sdim,
         double* wr, double* wi, double* vs, const integer_t ldvs,
@@ -54,7 +53,6 @@ inline void gees( const char jobvs, const char sort, logical_t* select,
     LAPACK_DGEES( &jobvs, &sort, &select, &n, a, &lda, &sdim, wr, wi, vs,
             &ldvs, work, &lwork, bwork, &info );
 }
-
 inline void gees( const char jobvs, const char sort, logical_t* select,
         const integer_t n, traits::complex_f* a, const integer_t lda,
         integer_t& sdim, traits::complex_f* w, traits::complex_f* vs,
@@ -64,7 +62,6 @@ inline void gees( const char jobvs, const char sort, logical_t* select,
             &sdim, traits::complex_ptr(w), traits::complex_ptr(vs), &ldvs,
             traits::complex_ptr(work), &lwork, rwork, bwork, &info );
 }
-
 inline void gees( const char jobvs, const char sort, logical_t* select,
         const integer_t n, traits::complex_d* a, const integer_t lda,
         integer_t& sdim, traits::complex_d* w, traits::complex_d* vs,
@@ -74,7 +71,6 @@ inline void gees( const char jobvs, const char sort, logical_t* select,
             &sdim, traits::complex_ptr(w), traits::complex_ptr(vs), &ldvs,
             traits::complex_ptr(work), &lwork, rwork, bwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -107,8 +103,8 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
         BOOST_ASSERT( jobvs == 'N' || jobvs == 'V' );
         BOOST_ASSERT( sort == 'N' || sort == 'S' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(wr) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(wi) >=
@@ -195,8 +191,8 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
         BOOST_ASSERT( jobvs == 'N' || jobvs == 'V' );
         BOOST_ASSERT( sort == 'N' || sort == 'S' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(w) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

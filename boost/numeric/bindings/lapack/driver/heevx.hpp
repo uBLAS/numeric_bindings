@@ -46,7 +46,6 @@ inline void heevx( const char jobz, const char range, const char uplo,
             &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z), &ldz,
             traits::complex_ptr(work), &lwork, rwork, iwork, ifail, &info );
 }
-
 inline void heevx( const char jobz, const char range, const char uplo,
         const integer_t n, traits::complex_d* a, const integer_t lda,
         const double vl, const double vu, const integer_t il,
@@ -58,7 +57,6 @@ inline void heevx( const char jobz, const char range, const char uplo,
             &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z), &ldz,
             traits::complex_ptr(work), &lwork, rwork, iwork, ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -85,8 +83,8 @@ struct heevx_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(w) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

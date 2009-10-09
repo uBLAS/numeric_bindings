@@ -46,7 +46,6 @@ inline void trsna( const char job, const char howmny, const logical_t* select,
     LAPACK_STRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             s, sep, &mm, &m, work, &ldwork, iwork, &info );
 }
-
 inline void trsna( const char job, const char howmny, const logical_t* select,
         const integer_t n, const double* t, const integer_t ldt,
         const double* vl, const integer_t ldvl, const double* vr,
@@ -56,7 +55,6 @@ inline void trsna( const char job, const char howmny, const logical_t* select,
     LAPACK_DTRSNA( &job, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             s, sep, &mm, &m, work, &ldwork, iwork, &info );
 }
-
 inline void trsna( const char job, const char howmny, const logical_t* select,
         const integer_t n, const traits::complex_f* t, const integer_t ldt,
         const traits::complex_f* vl, const integer_t ldvl,
@@ -67,7 +65,6 @@ inline void trsna( const char job, const char howmny, const logical_t* select,
             traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr, s,
             sep, &mm, &m, traits::complex_ptr(work), &ldwork, rwork, &info );
 }
-
 inline void trsna( const char job, const char howmny, const logical_t* select,
         const integer_t n, const traits::complex_d* t, const integer_t ldt,
         const traits::complex_d* vl, const integer_t ldvl,
@@ -79,7 +76,6 @@ inline void trsna( const char job, const char howmny, const logical_t* select,
             traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr, s,
             sep, &mm, &m, traits::complex_ptr(work), &ldwork, rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -117,8 +113,8 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
         BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_num_columns(t)) );
+        BOOST_ASSERT( traits::leading_dimension(t) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
@@ -199,8 +195,8 @@ struct trsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
         BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_num_columns(t)) );
+        BOOST_ASSERT( traits::leading_dimension(t) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));

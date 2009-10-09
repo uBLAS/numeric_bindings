@@ -37,27 +37,23 @@ inline void pbsv( const char uplo, const integer_t n, const integer_t kd,
         const integer_t ldb, integer_t& info ) {
     LAPACK_SPBSV( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
 }
-
 inline void pbsv( const char uplo, const integer_t n, const integer_t kd,
         const integer_t nrhs, double* ab, const integer_t ldab, double* b,
         const integer_t ldb, integer_t& info ) {
     LAPACK_DPBSV( &uplo, &n, &kd, &nrhs, ab, &ldab, b, &ldb, &info );
 }
-
 inline void pbsv( const char uplo, const integer_t n, const integer_t kd,
         const integer_t nrhs, traits::complex_f* ab, const integer_t ldab,
         traits::complex_f* b, const integer_t ldb, integer_t& info ) {
     LAPACK_CPBSV( &uplo, &n, &kd, &nrhs, traits::complex_ptr(ab), &ldab,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void pbsv( const char uplo, const integer_t n, const integer_t kd,
         const integer_t nrhs, traits::complex_d* ab, const integer_t ldab,
         traits::complex_d* b, const integer_t ldb, integer_t& info ) {
     LAPACK_ZPBSV( &uplo, &n, &kd, &nrhs, traits::complex_ptr(ab), &ldab,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -89,8 +85,8 @@ struct pbsv_impl {
         BOOST_ASSERT( kd >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
         BOOST_ASSERT( traits::leading_dimension(ab) >= kd+1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(ab)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(ab)) );
         detail::pbsv( traits::matrix_uplo_tag(ab),
                 traits::matrix_num_columns(ab), kd,
                 traits::matrix_num_columns(b), traits::matrix_storage(ab),

@@ -40,27 +40,23 @@ inline void latrd( const char uplo, const integer_t n, const integer_t nb,
         const integer_t ldw ) {
     LAPACK_SLATRD( &uplo, &n, &nb, a, &lda, e, tau, w, &ldw );
 }
-
 inline void latrd( const char uplo, const integer_t n, const integer_t nb,
         double* a, const integer_t lda, double* e, double* tau, double* w,
         const integer_t ldw ) {
     LAPACK_DLATRD( &uplo, &n, &nb, a, &lda, e, tau, w, &ldw );
 }
-
 inline void latrd( const char uplo, const integer_t n, const integer_t nb,
         traits::complex_f* a, const integer_t lda, float* e,
         traits::complex_f* tau, traits::complex_f* w, const integer_t ldw ) {
     LAPACK_CLATRD( &uplo, &n, &nb, traits::complex_ptr(a), &lda, e,
             traits::complex_ptr(tau), traits::complex_ptr(w), &ldw );
 }
-
 inline void latrd( const char uplo, const integer_t n, const integer_t nb,
         traits::complex_d* a, const integer_t lda, double* e,
         traits::complex_d* tau, traits::complex_d* w, const integer_t ldw ) {
     LAPACK_ZLATRD( &uplo, &n, &nb, traits::complex_ptr(a), &lda, e,
             traits::complex_ptr(tau), traits::complex_ptr(w), &ldw );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -91,8 +87,8 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::leading_dimension(a) >= (ERROR) );
-        BOOST_ASSERT( traits::leading_dimension(w) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(w) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::latrd( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), nb, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(e),
@@ -121,10 +117,10 @@ struct latrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixW >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_uplo_tag(h) == 'U' ||
                 traits::matrix_uplo_tag(h) == 'L' );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(w) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(w) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::latrd( traits::matrix_uplo_tag(h),
                 traits::matrix_num_columns(a), nb, traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(e),

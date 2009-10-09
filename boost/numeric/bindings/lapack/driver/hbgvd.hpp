@@ -47,7 +47,6 @@ inline void hbgvd( const char jobz, const char uplo, const integer_t n,
             traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
             &info );
 }
-
 inline void hbgvd( const char jobz, const char uplo, const integer_t n,
         const integer_t ka, const integer_t kb, traits::complex_d* ab,
         const integer_t ldab, traits::complex_d* bb, const integer_t ldbb,
@@ -60,7 +59,6 @@ inline void hbgvd( const char jobz, const char uplo, const integer_t n,
             traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template

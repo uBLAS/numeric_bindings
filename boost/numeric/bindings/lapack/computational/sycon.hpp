@@ -43,14 +43,12 @@ inline void sycon( const char uplo, const integer_t n, const float* a,
     LAPACK_SSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, iwork,
             &info );
 }
-
 inline void sycon( const char uplo, const integer_t n, const double* a,
         const integer_t lda, const integer_t* ipiv, const double anorm,
         double& rcond, double* work, integer_t* iwork, integer_t& info ) {
     LAPACK_DSYCON( &uplo, &n, a, &lda, ipiv, &anorm, &rcond, work, iwork,
             &info );
 }
-
 inline void sycon( const char uplo, const integer_t n,
         const traits::complex_f* a, const integer_t lda,
         const integer_t* ipiv, const float anorm, float& rcond,
@@ -58,7 +56,6 @@ inline void sycon( const char uplo, const integer_t n,
     LAPACK_CSYCON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
             &rcond, traits::complex_ptr(work), &info );
 }
-
 inline void sycon( const char uplo, const integer_t n,
         const traits::complex_d* a, const integer_t lda,
         const integer_t* ipiv, const double anorm, double& rcond,
@@ -66,7 +63,6 @@ inline void sycon( const char uplo, const integer_t n,
     LAPACK_ZSYCON( &uplo, &n, traits::complex_ptr(a), &lda, ipiv, &anorm,
             &rcond, traits::complex_ptr(work), &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -88,8 +84,8 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             integer_t& info, detail::workspace2< WORK, IWORK > work ) {
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(ipiv) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -147,8 +143,8 @@ struct sycon_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             integer_t& info, detail::workspace1< WORK > work ) {
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(ipiv) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

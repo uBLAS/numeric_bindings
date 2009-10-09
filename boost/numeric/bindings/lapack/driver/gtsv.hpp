@@ -36,27 +36,23 @@ inline void gtsv( const integer_t n, const integer_t nrhs, float* dl,
         float* d, float* du, float* b, const integer_t ldb, integer_t& info ) {
     LAPACK_SGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
 }
-
 inline void gtsv( const integer_t n, const integer_t nrhs, double* dl,
         double* d, double* du, double* b, const integer_t ldb,
         integer_t& info ) {
     LAPACK_DGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
 }
-
 inline void gtsv( const integer_t n, const integer_t nrhs,
         traits::complex_f* dl, traits::complex_f* d, traits::complex_f* du,
         traits::complex_f* b, const integer_t ldb, integer_t& info ) {
     LAPACK_CGTSV( &n, &nrhs, traits::complex_ptr(dl), traits::complex_ptr(d),
             traits::complex_ptr(du), traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void gtsv( const integer_t n, const integer_t nrhs,
         traits::complex_d* dl, traits::complex_d* d, traits::complex_d* du,
         traits::complex_d* b, const integer_t ldb, integer_t& info ) {
     LAPACK_ZGTSV( &n, &nrhs, traits::complex_ptr(dl), traits::complex_ptr(d),
             traits::complex_ptr(du), traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -94,7 +90,8 @@ struct gtsv_impl {
         BOOST_ASSERT( traits::vector_size(dl) >= n-1 );
         BOOST_ASSERT( traits::vector_size(d) >= n );
         BOOST_ASSERT( traits::vector_size(du) >= n-1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::gtsv( n, traits::matrix_num_columns(b),
                 traits::vector_storage(dl), traits::vector_storage(d),
                 traits::vector_storage(du), traits::matrix_storage(b),

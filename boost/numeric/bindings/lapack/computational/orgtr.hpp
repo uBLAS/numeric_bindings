@@ -40,13 +40,11 @@ inline void orgtr( const char uplo, const integer_t n, float* a,
         const integer_t lwork, integer_t& info ) {
     LAPACK_SORGTR( &uplo, &n, a, &lda, tau, work, &lwork, &info );
 }
-
 inline void orgtr( const char uplo, const integer_t n, double* a,
         const integer_t lda, const double* tau, double* work,
         const integer_t lwork, integer_t& info ) {
     LAPACK_DORGTR( &uplo, &n, a, &lda, tau, work, &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -66,7 +64,8 @@ struct orgtr_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(tau) >= n-1 );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));

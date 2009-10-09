@@ -42,7 +42,6 @@ inline void ungtr( const char uplo, const integer_t n, traits::complex_f* a,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 inline void ungtr( const char uplo, const integer_t n, traits::complex_d* a,
         const integer_t lda, const traits::complex_d* tau,
         traits::complex_d* work, const integer_t lwork, integer_t& info ) {
@@ -50,7 +49,6 @@ inline void ungtr( const char uplo, const integer_t n, traits::complex_d* a,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template

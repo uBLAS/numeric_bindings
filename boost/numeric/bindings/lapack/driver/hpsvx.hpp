@@ -45,7 +45,6 @@ inline void hpsvx( const char fact, const char uplo, const integer_t n,
             traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
             traits::complex_ptr(work), rwork, &info );
 }
-
 inline void hpsvx( const char fact, const char uplo, const integer_t n,
         const integer_t nrhs, const traits::complex_d* ap,
         traits::complex_d* afp, integer_t* ipiv, const traits::complex_d* b,
@@ -57,7 +56,6 @@ inline void hpsvx( const char fact, const char uplo, const integer_t n,
             traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
             traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -93,8 +91,10 @@ struct hpsvx_impl {
                 traits::matrix_uplo_tag(ap) == 'L' );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

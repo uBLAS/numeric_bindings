@@ -36,12 +36,10 @@ inline void lacgv( const integer_t n, traits::complex_f* x,
         const integer_t incx ) {
     LAPACK_CLACGV( &n, traits::complex_ptr(x), &incx );
 }
-
 inline void lacgv( const integer_t n, traits::complex_d* x,
         const integer_t incx ) {
     LAPACK_ZLACGV( &n, traits::complex_ptr(x), &incx );
 }
-
 } // namespace detail
 
 // value-type based template

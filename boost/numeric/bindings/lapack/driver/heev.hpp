@@ -42,7 +42,6 @@ inline void heev( const char jobz, const char uplo, const integer_t n,
     LAPACK_CHEEV( &jobz, &uplo, &n, traits::complex_ptr(a), &lda, w,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 inline void heev( const char jobz, const char uplo, const integer_t n,
         traits::complex_d* a, const integer_t lda, double* w,
         traits::complex_d* work, const integer_t lwork, double* rwork,
@@ -50,7 +49,6 @@ inline void heev( const char jobz, const char uplo, const integer_t n,
     LAPACK_ZHEEV( &jobz, &uplo, &n, traits::complex_ptr(a), &lda, w,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -69,8 +67,8 @@ struct heev_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=

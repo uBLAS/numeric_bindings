@@ -42,7 +42,6 @@ inline void spevd( const char jobz, const char uplo, const integer_t n,
     LAPACK_SSPEVD( &jobz, &uplo, &n, ap, w, z, &ldz, work, &lwork, iwork,
             &liwork, &info );
 }
-
 inline void spevd( const char jobz, const char uplo, const integer_t n,
         double* ap, double* w, double* z, const integer_t ldz, double* work,
         const integer_t lwork, integer_t* iwork, const integer_t liwork,
@@ -50,7 +49,6 @@ inline void spevd( const char jobz, const char uplo, const integer_t n,
     LAPACK_DSPEVD( &jobz, &uplo, &n, ap, w, z, &ldz, work, &lwork, iwork,
             &liwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

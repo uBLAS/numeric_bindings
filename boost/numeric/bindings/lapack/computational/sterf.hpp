@@ -35,11 +35,9 @@ namespace detail {
 inline void sterf( const integer_t n, float* d, float* e, integer_t& info ) {
     LAPACK_SSTERF( &n, d, e, &info );
 }
-
 inline void sterf( const integer_t n, double* d, double* e, integer_t& info ) {
     LAPACK_DSTERF( &n, d, e, &info );
 }
-
 } // namespace detail
 
 // value-type based template

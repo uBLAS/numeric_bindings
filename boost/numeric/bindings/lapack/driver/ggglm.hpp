@@ -45,7 +45,6 @@ inline void ggglm( const integer_t n, const integer_t m, const integer_t p,
     LAPACK_SGGGLM( &n, &m, &p, a, &lda, b, &ldb, d, x, y, work, &lwork,
             &info );
 }
-
 inline void ggglm( const integer_t n, const integer_t m, const integer_t p,
         double* a, const integer_t lda, double* b, const integer_t ldb,
         double* d, double* x, double* y, double* work, const integer_t lwork,
@@ -53,7 +52,6 @@ inline void ggglm( const integer_t n, const integer_t m, const integer_t p,
     LAPACK_DGGGLM( &n, &m, &p, a, &lda, b, &ldb, d, x, y, work, &lwork,
             &info );
 }
-
 inline void ggglm( const integer_t n, const integer_t m, const integer_t p,
         traits::complex_f* a, const integer_t lda, traits::complex_f* b,
         const integer_t ldb, traits::complex_f* d, traits::complex_f* x,
@@ -64,7 +62,6 @@ inline void ggglm( const integer_t n, const integer_t m, const integer_t p,
             traits::complex_ptr(x), traits::complex_ptr(y),
             traits::complex_ptr(work), &lwork, &info );
 }
-
 inline void ggglm( const integer_t n, const integer_t m, const integer_t p,
         traits::complex_d* a, const integer_t lda, traits::complex_d* b,
         const integer_t ldb, traits::complex_d* d, traits::complex_d* x,
@@ -75,7 +72,6 @@ inline void ggglm( const integer_t n, const integer_t m, const integer_t p,
             traits::complex_ptr(x), traits::complex_ptr(y),
             traits::complex_ptr(work), &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -109,10 +105,10 @@ struct ggglm_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >=
                 traits::matrix_num_rows(b)-traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(b)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
         BOOST_ASSERT( traits::vector_size(d) >= traits::matrix_num_rows(b) );
         BOOST_ASSERT( traits::vector_size(x) >=
                 traits::matrix_num_columns(a) );
@@ -192,10 +188,10 @@ struct ggglm_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >=
                 traits::matrix_num_rows(b)-traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(b)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
         BOOST_ASSERT( traits::vector_size(d) >= traits::matrix_num_rows(b) );
         BOOST_ASSERT( traits::vector_size(x) >=
                 traits::matrix_num_columns(a) );

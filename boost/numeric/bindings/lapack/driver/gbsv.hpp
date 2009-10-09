@@ -38,13 +38,11 @@ inline void gbsv( const integer_t n, const integer_t kl, const integer_t ku,
         integer_t* ipiv, float* b, const integer_t ldb, integer_t& info ) {
     LAPACK_SGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
 }
-
 inline void gbsv( const integer_t n, const integer_t kl, const integer_t ku,
         const integer_t nrhs, double* ab, const integer_t ldab,
         integer_t* ipiv, double* b, const integer_t ldb, integer_t& info ) {
     LAPACK_DGBSV( &n, &kl, &ku, &nrhs, ab, &ldab, ipiv, b, &ldb, &info );
 }
-
 inline void gbsv( const integer_t n, const integer_t kl, const integer_t ku,
         const integer_t nrhs, traits::complex_f* ab, const integer_t ldab,
         integer_t* ipiv, traits::complex_f* b, const integer_t ldb,
@@ -52,7 +50,6 @@ inline void gbsv( const integer_t n, const integer_t kl, const integer_t ku,
     LAPACK_CGBSV( &n, &kl, &ku, &nrhs, traits::complex_ptr(ab), &ldab, ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void gbsv( const integer_t n, const integer_t kl, const integer_t ku,
         const integer_t nrhs, traits::complex_d* ab, const integer_t ldab,
         integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
@@ -60,7 +57,6 @@ inline void gbsv( const integer_t n, const integer_t kl, const integer_t ku,
     LAPACK_ZGBSV( &n, &kl, &ku, &nrhs, traits::complex_ptr(ab), &ldab, ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -101,8 +97,8 @@ struct gbsv_impl {
         BOOST_ASSERT( traits::leading_dimension(ab) >= 2 );
         BOOST_ASSERT( traits::vector_size(ipiv) >=
                 traits::matrix_num_columns(ab) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(ab)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(ab)) );
         detail::gbsv( traits::matrix_num_columns(ab), kl, ku,
                 traits::matrix_num_columns(b), traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::vector_storage(ipiv),

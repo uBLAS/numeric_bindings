@@ -45,7 +45,6 @@ inline void hegvd( const integer_t itype, const char jobz, const char uplo,
             traits::complex_ptr(b), &ldb, w, traits::complex_ptr(work),
             &lwork, rwork, &lrwork, iwork, &liwork, &info );
 }
-
 inline void hegvd( const integer_t itype, const char jobz, const char uplo,
         const integer_t n, traits::complex_d* a, const integer_t lda,
         traits::complex_d* b, const integer_t ldb, double* w,
@@ -56,7 +55,6 @@ inline void hegvd( const integer_t itype, const char jobz, const char uplo,
             traits::complex_ptr(b), &ldb, w, traits::complex_ptr(work),
             &lwork, rwork, &lrwork, iwork, &liwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -79,8 +77,10 @@ struct hegvd_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( jobz, n ));
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=

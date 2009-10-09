@@ -37,27 +37,23 @@ inline void spsv( const char uplo, const integer_t n, const integer_t nrhs,
         integer_t& info ) {
     LAPACK_SSPSV( &uplo, &n, &nrhs, ap, ipiv, b, &ldb, &info );
 }
-
 inline void spsv( const char uplo, const integer_t n, const integer_t nrhs,
         double* ap, integer_t* ipiv, double* b, const integer_t ldb,
         integer_t& info ) {
     LAPACK_DSPSV( &uplo, &n, &nrhs, ap, ipiv, b, &ldb, &info );
 }
-
 inline void spsv( const char uplo, const integer_t n, const integer_t nrhs,
         traits::complex_f* ap, integer_t* ipiv, traits::complex_f* b,
         const integer_t ldb, integer_t& info ) {
     LAPACK_CSPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void spsv( const char uplo, const integer_t n, const integer_t nrhs,
         traits::complex_d* ap, integer_t* ipiv, traits::complex_d* b,
         const integer_t ldb, integer_t& info ) {
     LAPACK_ZSPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -95,8 +91,8 @@ struct spsv_impl {
                 traits::matrix_uplo_tag(ap) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(ap) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(ap)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(ap)) );
         detail::spsv( traits::matrix_uplo_tag(ap),
                 traits::matrix_num_columns(ap), traits::matrix_num_columns(b),
                 traits::matrix_storage(ap), traits::vector_storage(ipiv),

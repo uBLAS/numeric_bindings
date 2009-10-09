@@ -44,7 +44,6 @@ inline void stevr( const char jobz, const char range, const integer_t n,
     LAPACK_SSTEVR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
 }
-
 inline void stevr( const char jobz, const char range, const integer_t n,
         double* d, double* e, const double vl, const double vu,
         const integer_t il, const integer_t iu, const double abstol,
@@ -54,7 +53,6 @@ inline void stevr( const char jobz, const char range, const integer_t n,
     LAPACK_DSTEVR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -86,9 +84,11 @@ struct stevr_impl {
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( traits::vector_size(d) >= n );
-        BOOST_ASSERT( traits::vector_size(e) >= std::max(1,n-1) );
+        BOOST_ASSERT( traits::vector_size(e) >= std::max< std::ptrdiff_t >(1,
+                n-1) );
         BOOST_ASSERT( traits::vector_size(w) >= n );
-        BOOST_ASSERT( traits::vector_size(isuppz) >= 2*std::max(1,m) );
+        BOOST_ASSERT( traits::vector_size(isuppz) >= 2*std::max<
+                std::ptrdiff_t >(1,m) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=

@@ -38,14 +38,12 @@ inline void hptrs( const char uplo, const integer_t n, const integer_t nrhs,
     LAPACK_CHPTRS( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void hptrs( const char uplo, const integer_t n, const integer_t nrhs,
         const traits::complex_d* ap, const integer_t* ipiv,
         traits::complex_d* b, const integer_t ldb, integer_t& info ) {
     LAPACK_ZHPTRS( &uplo, &n, &nrhs, traits::complex_ptr(ap), ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -68,7 +66,8 @@ struct hptrs_impl {
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
         BOOST_ASSERT( traits::vector_size(ap) >= n*(n+1)/2 );
         BOOST_ASSERT( traits::vector_size(ipiv) >= n );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::hptrs( uplo, n, traits::matrix_num_columns(b),
                 traits::matrix_storage(ap), traits::vector_storage(ipiv),
                 traits::matrix_storage(b), traits::leading_dimension(b),

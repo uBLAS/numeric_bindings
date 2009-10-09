@@ -45,7 +45,6 @@ inline void unmhr( const char side, const char trans, const integer_t m,
             &lda, traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 inline void unmhr( const char side, const char trans, const integer_t m,
         const integer_t n, const integer_t ilo, const integer_t ihi,
         const traits::complex_d* a, const integer_t lda,
@@ -56,7 +55,6 @@ inline void unmhr( const char side, const char trans, const integer_t m,
             &lda, traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
             traits::complex_ptr(work), &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -83,8 +81,8 @@ struct unmhr_impl {
         BOOST_ASSERT( trans == 'N' || trans == 'C' );
         BOOST_ASSERT( traits::matrix_num_rows(c) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(c) >= std::max(1,
-                traits::matrix_num_rows(c)) );
+        BOOST_ASSERT( traits::leading_dimension(c) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(c)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( side, traits::matrix_num_rows(c),
                 traits::matrix_num_columns(c) ));

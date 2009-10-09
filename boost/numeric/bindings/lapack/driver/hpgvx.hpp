@@ -46,7 +46,6 @@ inline void hpgvx( const integer_t itype, const char jobz, const char range,
             traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
             iwork, ifail, &info );
 }
-
 inline void hpgvx( const integer_t itype, const char jobz, const char range,
         const char uplo, const integer_t n, traits::complex_d* ap,
         traits::complex_d* bp, const double vl, const double vu,
@@ -59,7 +58,6 @@ inline void hpgvx( const integer_t itype, const char jobz, const char range,
             traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
             iwork, ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template

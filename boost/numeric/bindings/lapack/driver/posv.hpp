@@ -37,27 +37,23 @@ inline void posv( const char uplo, const integer_t n, const integer_t nrhs,
         integer_t& info ) {
     LAPACK_SPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
 }
-
 inline void posv( const char uplo, const integer_t n, const integer_t nrhs,
         double* a, const integer_t lda, double* b, const integer_t ldb,
         integer_t& info ) {
     LAPACK_DPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
 }
-
 inline void posv( const char uplo, const integer_t n, const integer_t nrhs,
         traits::complex_f* a, const integer_t lda, traits::complex_f* b,
         const integer_t ldb, integer_t& info ) {
     LAPACK_CPOSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void posv( const char uplo, const integer_t n, const integer_t nrhs,
         traits::complex_d* a, const integer_t lda, traits::complex_d* b,
         const integer_t ldb, integer_t& info ) {
     LAPACK_ZPOSV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -86,10 +82,10 @@ struct posv_impl {
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::posv( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),

@@ -44,7 +44,6 @@ inline void ptsvx( const char fact, const integer_t n, const integer_t nrhs,
     LAPACK_SPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,
             ferr, berr, work, &info );
 }
-
 inline void ptsvx( const char fact, const integer_t n, const integer_t nrhs,
         const double* d, const double* e, double* df, double* ef,
         const double* b, const integer_t ldb, double* x, const integer_t ldx,
@@ -53,7 +52,6 @@ inline void ptsvx( const char fact, const integer_t n, const integer_t nrhs,
     LAPACK_DPTSVX( &fact, &n, &nrhs, d, e, df, ef, b, &ldb, x, &ldx, &rcond,
             ferr, berr, work, &info );
 }
-
 inline void ptsvx( const char fact, const integer_t n, const integer_t nrhs,
         const float* d, const traits::complex_f* e, float* df,
         traits::complex_f* ef, const traits::complex_f* b,
@@ -65,7 +63,6 @@ inline void ptsvx( const char fact, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
             traits::complex_ptr(work), rwork, &info );
 }
-
 inline void ptsvx( const char fact, const integer_t n, const integer_t nrhs,
         const double* d, const traits::complex_d* e, double* df,
         traits::complex_d* ef, const traits::complex_d* b,
@@ -77,7 +74,6 @@ inline void ptsvx( const char fact, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
             traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -125,8 +121,10 @@ struct ptsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
         BOOST_ASSERT( traits::vector_size(d) >= n );
         BOOST_ASSERT( traits::vector_size(e) >= n-1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -210,8 +208,10 @@ struct ptsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
         BOOST_ASSERT( traits::vector_size(d) >= n );
         BOOST_ASSERT( traits::vector_size(e) >= n-1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

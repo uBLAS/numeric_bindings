@@ -42,7 +42,6 @@ inline void hetrd( const char uplo, const integer_t n, traits::complex_f* a,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 inline void hetrd( const char uplo, const integer_t n, traits::complex_d* a,
         const integer_t lda, double* d, double* e, traits::complex_d* tau,
         traits::complex_d* work, const integer_t lwork, integer_t& info ) {
@@ -50,7 +49,6 @@ inline void hetrd( const char uplo, const integer_t n, traits::complex_d* a,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -74,14 +72,14 @@ struct hetrd_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(d) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(tau) >=
                 traits::matrix_num_columns(a)-1 );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work(  ));
+                min_size_work());
         detail::hetrd( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(d),
@@ -95,7 +93,7 @@ struct hetrd_impl {
             typename VectorTAU >
     static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAU& tau,
             integer_t& info, minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(  ) );
+        traits::detail::array< value_type > tmp_work( min_size_work() );
         invoke( a, d, e, tau, info, workspace( tmp_work ) );
     }
 
@@ -115,7 +113,7 @@ struct hetrd_impl {
         invoke( a, d, e, tau, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work(  ) {
+    static integer_t min_size_work() {
         return 1;
     }
 };

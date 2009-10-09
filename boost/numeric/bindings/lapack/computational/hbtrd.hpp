@@ -42,7 +42,6 @@ inline void hbtrd( const char vect, const char uplo, const integer_t n,
             e, traits::complex_ptr(q), &ldq, traits::complex_ptr(work),
             &info );
 }
-
 inline void hbtrd( const char vect, const char uplo, const integer_t n,
         const integer_t kd, traits::complex_d* ab, const integer_t ldab,
         double* d, double* e, traits::complex_d* q, const integer_t ldq,
@@ -51,7 +50,6 @@ inline void hbtrd( const char vect, const char uplo, const integer_t n,
             e, traits::complex_ptr(q), &ldq, traits::complex_ptr(work),
             &info );
 }
-
 } // namespace detail
 
 // value-type based template

@@ -47,7 +47,6 @@ inline void tgsna( const char job, const char howmny, const logical_t* select,
     LAPACK_STGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,
             &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
 }
-
 inline void tgsna( const char job, const char howmny, const logical_t* select,
         const integer_t n, const double* a, const integer_t lda,
         const double* b, const integer_t ldb, const double* vl,
@@ -58,7 +57,6 @@ inline void tgsna( const char job, const char howmny, const logical_t* select,
     LAPACK_DTGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,
             &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
 }
-
 inline void tgsna( const char job, const char howmny, const logical_t* select,
         const integer_t n, const traits::complex_f* a, const integer_t lda,
         const traits::complex_f* b, const integer_t ldb,
@@ -71,7 +69,6 @@ inline void tgsna( const char job, const char howmny, const logical_t* select,
             traits::complex_ptr(vr), &ldvr, s, dif, &mm, &m,
             traits::complex_ptr(work), &lwork, iwork, &info );
 }
-
 inline void tgsna( const char job, const char howmny, const logical_t* select,
         const integer_t n, const traits::complex_d* a, const integer_t lda,
         const traits::complex_d* b, const integer_t ldb,
@@ -85,7 +82,6 @@ inline void tgsna( const char job, const char howmny, const logical_t* select,
             traits::complex_ptr(vr), &ldvr, s, dif, &mm, &m,
             traits::complex_ptr(work), &lwork, iwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -126,8 +122,10 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
@@ -226,8 +224,10 @@ struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));

@@ -39,7 +39,6 @@ inline void tbtrs( const char uplo, const char trans, const char diag,
     LAPACK_STBTRS( &uplo, &trans, &diag, &n, &kd, &nrhs, ab, &ldab, b, &ldb,
             &info );
 }
-
 inline void tbtrs( const char uplo, const char trans, const char diag,
         const integer_t n, const integer_t kd, const integer_t nrhs,
         const double* ab, const integer_t ldab, double* b,
@@ -47,7 +46,6 @@ inline void tbtrs( const char uplo, const char trans, const char diag,
     LAPACK_DTBTRS( &uplo, &trans, &diag, &n, &kd, &nrhs, ab, &ldab, b, &ldb,
             &info );
 }
-
 inline void tbtrs( const char uplo, const char trans, const char diag,
         const integer_t n, const integer_t kd, const integer_t nrhs,
         const traits::complex_f* ab, const integer_t ldab,
@@ -56,7 +54,6 @@ inline void tbtrs( const char uplo, const char trans, const char diag,
             traits::complex_ptr(ab), &ldab, traits::complex_ptr(b), &ldb,
             &info );
 }
-
 inline void tbtrs( const char uplo, const char trans, const char diag,
         const integer_t n, const integer_t kd, const integer_t nrhs,
         const traits::complex_d* ab, const integer_t ldab,
@@ -65,7 +62,6 @@ inline void tbtrs( const char uplo, const char trans, const char diag,
             traits::complex_ptr(ab), &ldab, traits::complex_ptr(b), &ldb,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -90,7 +86,8 @@ struct tbtrs_impl {
         BOOST_ASSERT( kd >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
         BOOST_ASSERT( traits::leading_dimension(ab) >= kd+1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::tbtrs( uplo, trans, diag, n, kd,
                 traits::matrix_num_columns(b), traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::matrix_storage(b),

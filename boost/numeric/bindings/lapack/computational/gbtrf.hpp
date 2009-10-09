@@ -37,27 +37,23 @@ inline void gbtrf( const integer_t m, const integer_t n, const integer_t kl,
         integer_t& info ) {
     LAPACK_SGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
 }
-
 inline void gbtrf( const integer_t m, const integer_t n, const integer_t kl,
         const integer_t ku, double* ab, const integer_t ldab, integer_t* ipiv,
         integer_t& info ) {
     LAPACK_DGBTRF( &m, &n, &kl, &ku, ab, &ldab, ipiv, &info );
 }
-
 inline void gbtrf( const integer_t m, const integer_t n, const integer_t kl,
         const integer_t ku, traits::complex_f* ab, const integer_t ldab,
         integer_t* ipiv, integer_t& info ) {
     LAPACK_CGBTRF( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, ipiv,
             &info );
 }
-
 inline void gbtrf( const integer_t m, const integer_t n, const integer_t kl,
         const integer_t ku, traits::complex_d* ab, const integer_t ldab,
         integer_t* ipiv, integer_t& info ) {
     LAPACK_ZGBTRF( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, ipiv,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -77,7 +73,8 @@ struct gbtrf_impl {
         BOOST_ASSERT( kl >= 0 );
         BOOST_ASSERT( ku >= 0 );
         BOOST_ASSERT( traits::leading_dimension(ab) >= 2 );
-        BOOST_ASSERT( traits::vector_size(ipiv) >= std::min(m,n) );
+        BOOST_ASSERT( traits::vector_size(ipiv) >= std::min<
+                std::ptrdiff_t >(m,n) );
         detail::gbtrf( m, n, kl, ku, traits::matrix_storage(ab),
                 traits::leading_dimension(ab), traits::vector_storage(ipiv),
                 info );

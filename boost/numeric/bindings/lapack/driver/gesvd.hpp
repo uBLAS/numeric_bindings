@@ -45,7 +45,6 @@ inline void gesvd( const char jobu, const char jobvt, const integer_t m,
     LAPACK_SGESVD( &jobu, &jobvt, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt,
             work, &lwork, &info );
 }
-
 inline void gesvd( const char jobu, const char jobvt, const integer_t m,
         const integer_t n, double* a, const integer_t lda, double* s,
         double* u, const integer_t ldu, double* vt, const integer_t ldvt,
@@ -53,7 +52,6 @@ inline void gesvd( const char jobu, const char jobvt, const integer_t m,
     LAPACK_DGESVD( &jobu, &jobvt, &m, &n, a, &lda, s, u, &ldu, vt, &ldvt,
             work, &lwork, &info );
 }
-
 inline void gesvd( const char jobu, const char jobvt, const integer_t m,
         const integer_t n, traits::complex_f* a, const integer_t lda,
         float* s, traits::complex_f* u, const integer_t ldu,
@@ -63,7 +61,6 @@ inline void gesvd( const char jobu, const char jobvt, const integer_t m,
             traits::complex_ptr(u), &ldu, traits::complex_ptr(vt), &ldvt,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 inline void gesvd( const char jobu, const char jobvt, const integer_t m,
         const integer_t n, traits::complex_d* a, const integer_t lda,
         double* s, traits::complex_d* u, const integer_t ldu,
@@ -73,7 +70,6 @@ inline void gesvd( const char jobu, const char jobvt, const integer_t m,
             traits::complex_ptr(u), &ldu, traits::complex_ptr(vt), &ldvt,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -108,10 +104,10 @@ struct gesvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 jobvt == 'N' );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(s) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::vector_size(s) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_rows(a),
@@ -187,10 +183,10 @@ struct gesvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 jobvt == 'N' );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(s) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::vector_size(s) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_rows(a),

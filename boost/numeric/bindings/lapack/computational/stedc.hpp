@@ -44,14 +44,12 @@ inline void stedc( const char compz, const integer_t n, float* d, float* e,
     LAPACK_SSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
             &info );
 }
-
 inline void stedc( const char compz, const integer_t n, double* d, double* e,
         double* z, const integer_t ldz, double* work, const integer_t lwork,
         integer_t* iwork, const integer_t liwork, integer_t& info ) {
     LAPACK_DSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
             &info );
 }
-
 inline void stedc( const char compz, const integer_t n, float* d, float* e,
         traits::complex_f* z, const integer_t ldz, traits::complex_f* work,
         const integer_t lwork, float* rwork, const integer_t lrwork,
@@ -60,7 +58,6 @@ inline void stedc( const char compz, const integer_t n, float* d, float* e,
             traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
             &info );
 }
-
 inline void stedc( const char compz, const integer_t n, double* d, double* e,
         traits::complex_d* z, const integer_t ldz, traits::complex_d* work,
         const integer_t lwork, double* rwork, const integer_t lrwork,
@@ -69,7 +66,6 @@ inline void stedc( const char compz, const integer_t n, double* d, double* e,
             traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template

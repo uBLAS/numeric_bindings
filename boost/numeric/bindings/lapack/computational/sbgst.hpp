@@ -41,7 +41,6 @@ inline void sbgst( const char vect, const char uplo, const integer_t n,
     LAPACK_SSBGST( &vect, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, x, &ldx,
             work, &info );
 }
-
 inline void sbgst( const char vect, const char uplo, const integer_t n,
         const integer_t ka, const integer_t kb, double* ab,
         const integer_t ldab, const double* bb, const integer_t ldbb,
@@ -49,7 +48,6 @@ inline void sbgst( const char vect, const char uplo, const integer_t n,
     LAPACK_DSBGST( &vect, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, x, &ldx,
             work, &info );
 }
-
 } // namespace detail
 
 // value-type based template

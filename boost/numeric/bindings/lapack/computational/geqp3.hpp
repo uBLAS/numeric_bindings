@@ -43,13 +43,11 @@ inline void geqp3( const integer_t m, const integer_t n, float* a,
         const integer_t lwork, integer_t& info ) {
     LAPACK_SGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, &info );
 }
-
 inline void geqp3( const integer_t m, const integer_t n, double* a,
         const integer_t lda, integer_t* jpvt, double* tau, double* work,
         const integer_t lwork, integer_t& info ) {
     LAPACK_DGEQP3( &m, &n, a, &lda, jpvt, tau, work, &lwork, &info );
 }
-
 inline void geqp3( const integer_t m, const integer_t n, traits::complex_f* a,
         const integer_t lda, integer_t* jpvt, traits::complex_f* tau,
         traits::complex_f* work, const integer_t lwork, float* rwork,
@@ -58,7 +56,6 @@ inline void geqp3( const integer_t m, const integer_t n, traits::complex_f* a,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             rwork, &info );
 }
-
 inline void geqp3( const integer_t m, const integer_t n, traits::complex_d* a,
         const integer_t lda, integer_t* jpvt, traits::complex_d* tau,
         traits::complex_d* work, const integer_t lwork, double* rwork,
@@ -67,7 +64,6 @@ inline void geqp3( const integer_t m, const integer_t n, traits::complex_d* a,
             traits::complex_ptr(tau), traits::complex_ptr(work), &lwork,
             rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -91,10 +87,10 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 VectorTAU >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(tau) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::vector_size(tau) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
@@ -151,10 +147,10 @@ struct geqp3_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 VectorTAU >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(tau) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::vector_size(tau) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));

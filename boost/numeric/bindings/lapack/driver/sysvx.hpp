@@ -47,7 +47,6 @@ inline void sysvx( const char fact, const char uplo, const integer_t n,
     LAPACK_SSYSVX( &fact, &uplo, &n, &nrhs, a, &lda, af, &ldaf, ipiv, b, &ldb,
             x, &ldx, &rcond, ferr, berr, work, &lwork, iwork, &info );
 }
-
 inline void sysvx( const char fact, const char uplo, const integer_t n,
         const integer_t nrhs, const double* a, const integer_t lda,
         double* af, const integer_t ldaf, integer_t* ipiv, const double* b,
@@ -57,7 +56,6 @@ inline void sysvx( const char fact, const char uplo, const integer_t n,
     LAPACK_DSYSVX( &fact, &uplo, &n, &nrhs, a, &lda, af, &ldaf, ipiv, b, &ldb,
             x, &ldx, &rcond, ferr, berr, work, &lwork, iwork, &info );
 }
-
 inline void sysvx( const char fact, const char uplo, const integer_t n,
         const integer_t nrhs, const traits::complex_f* a, const integer_t lda,
         traits::complex_f* af, const integer_t ldaf, integer_t* ipiv,
@@ -70,7 +68,6 @@ inline void sysvx( const char fact, const char uplo, const integer_t n,
             &ldb, traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 inline void sysvx( const char fact, const char uplo, const integer_t n,
         const integer_t nrhs, const traits::complex_d* a, const integer_t lda,
         traits::complex_d* af, const integer_t ldaf, integer_t* ipiv,
@@ -83,7 +80,6 @@ inline void sysvx( const char fact, const char uplo, const integer_t n,
             &ldb, traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
             traits::complex_ptr(work), &lwork, rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -125,14 +121,14 @@ struct sysvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(af) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(af) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -235,14 +231,14 @@ struct sysvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(af) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(af) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

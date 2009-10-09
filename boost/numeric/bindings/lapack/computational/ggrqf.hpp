@@ -45,7 +45,6 @@ inline void ggrqf( const integer_t m, const integer_t p, const integer_t n,
     LAPACK_SGGRQF( &m, &p, &n, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
 }
-
 inline void ggrqf( const integer_t m, const integer_t p, const integer_t n,
         double* a, const integer_t lda, double* taua, double* b,
         const integer_t ldb, double* taub, double* work,
@@ -53,7 +52,6 @@ inline void ggrqf( const integer_t m, const integer_t p, const integer_t n,
     LAPACK_DGGRQF( &m, &p, &n, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
 }
-
 inline void ggrqf( const integer_t m, const integer_t p, const integer_t n,
         traits::complex_f* a, const integer_t lda, traits::complex_f* taua,
         traits::complex_f* b, const integer_t ldb, traits::complex_f* taub,
@@ -63,7 +61,6 @@ inline void ggrqf( const integer_t m, const integer_t p, const integer_t n,
             traits::complex_ptr(taub), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 inline void ggrqf( const integer_t m, const integer_t p, const integer_t n,
         traits::complex_d* a, const integer_t lda, traits::complex_d* taua,
         traits::complex_d* b, const integer_t ldb, traits::complex_d* taub,
@@ -73,7 +70,6 @@ inline void ggrqf( const integer_t m, const integer_t p, const integer_t n,
             traits::complex_ptr(taub), traits::complex_ptr(work), &lwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -105,15 +101,15 @@ struct ggrqf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(taua) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::vector_size(taua) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(b)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
-        BOOST_ASSERT( traits::vector_size(taub) >=
-                std::min(traits::matrix_num_rows(b),
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::vector_size(taub) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(b),
                 traits::matrix_num_columns(b)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));
@@ -183,15 +179,15 @@ struct ggrqf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(taua) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::vector_size(taua) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(b)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
-        BOOST_ASSERT( traits::vector_size(taub) >=
-                std::min(traits::matrix_num_rows(b),
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::vector_size(taub) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(b),
                 traits::matrix_num_columns(b)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));

@@ -42,7 +42,6 @@ inline void upgtr( const char uplo, const integer_t n,
             traits::complex_ptr(tau), traits::complex_ptr(q), &ldq,
             traits::complex_ptr(work), &info );
 }
-
 inline void upgtr( const char uplo, const integer_t n,
         const traits::complex_d* ap, const traits::complex_d* tau,
         traits::complex_d* q, const integer_t ldq, traits::complex_d* work,
@@ -51,7 +50,6 @@ inline void upgtr( const char uplo, const integer_t n,
             traits::complex_ptr(tau), traits::complex_ptr(q), &ldq,
             traits::complex_ptr(work), &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -80,8 +78,8 @@ struct upgtr_impl {
                 1)/2 );
         BOOST_ASSERT( traits::vector_size(tau) >=
                 traits::matrix_num_columns(q)-1 );
-        BOOST_ASSERT( traits::leading_dimension(q) >= std::max(1,
-                traits::matrix_num_columns(q)) );
+        BOOST_ASSERT( traits::leading_dimension(q) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(q)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(q) ));
         detail::upgtr( uplo, traits::matrix_num_columns(q),

@@ -37,27 +37,23 @@ inline void potrs( const char uplo, const integer_t n, const integer_t nrhs,
         integer_t& info ) {
     LAPACK_SPOTRS( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
 }
-
 inline void potrs( const char uplo, const integer_t n, const integer_t nrhs,
         const double* a, const integer_t lda, double* b, const integer_t ldb,
         integer_t& info ) {
     LAPACK_DPOTRS( &uplo, &n, &nrhs, a, &lda, b, &ldb, &info );
 }
-
 inline void potrs( const char uplo, const integer_t n, const integer_t nrhs,
         const traits::complex_f* a, const integer_t lda, traits::complex_f* b,
         const integer_t ldb, integer_t& info ) {
     LAPACK_CPOTRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void potrs( const char uplo, const integer_t n, const integer_t nrhs,
         const traits::complex_d* a, const integer_t lda, traits::complex_d* b,
         const integer_t ldb, integer_t& info ) {
     LAPACK_ZPOTRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -77,10 +73,10 @@ struct potrs_impl {
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::potrs( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),

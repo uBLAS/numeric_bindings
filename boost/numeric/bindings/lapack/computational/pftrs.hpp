@@ -40,27 +40,23 @@ inline void pftrs( const char transr, const char uplo, const integer_t n,
         integer_t& info ) {
     LAPACK_SPFTRS( &transr, &uplo, &n, &nrhs, a, b, &ldb, &info );
 }
-
 inline void pftrs( const char transr, const char uplo, const integer_t n,
         const integer_t nrhs, const double* a, double* b, const integer_t ldb,
         integer_t& info ) {
     LAPACK_DPFTRS( &transr, &uplo, &n, &nrhs, a, b, &ldb, &info );
 }
-
 inline void pftrs( const char transr, const char uplo, const integer_t n,
         const integer_t nrhs, const traits::complex_f* a,
         traits::complex_f* b, const integer_t ldb, integer_t& info ) {
     LAPACK_CPFTRS( &transr, &uplo, &n, &nrhs, traits::complex_ptr(a),
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void pftrs( const char transr, const char uplo, const integer_t n,
         const integer_t nrhs, const traits::complex_d* a,
         traits::complex_d* b, const integer_t ldb, integer_t& info ) {
     LAPACK_ZPFTRS( &transr, &uplo, &n, &nrhs, traits::complex_ptr(a),
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -87,7 +83,8 @@ struct pftrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
         BOOST_ASSERT( traits::vector_size(a) >= n*(n+1)/2 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::pftrs( transr, traits::matrix_uplo_tag(rfp), n,
                 traits::matrix_num_columns(b), traits::vector_storage(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),
@@ -115,7 +112,8 @@ struct pftrs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
         BOOST_ASSERT( traits::vector_size(a) >= n*(n+1)/2 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::pftrs( transr, traits::matrix_uplo_tag(rfp), n,
                 traits::matrix_num_columns(b), traits::vector_storage(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),

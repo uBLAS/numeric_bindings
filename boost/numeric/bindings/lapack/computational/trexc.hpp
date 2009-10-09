@@ -42,27 +42,23 @@ inline void trexc( const char compq, const integer_t n, float* t,
         integer_t& ilst, float* work, integer_t& info ) {
     LAPACK_STREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, work, &info );
 }
-
 inline void trexc( const char compq, const integer_t n, double* t,
         const integer_t ldt, double* q, const integer_t ldq, integer_t& ifst,
         integer_t& ilst, double* work, integer_t& info ) {
     LAPACK_DTREXC( &compq, &n, t, &ldt, q, &ldq, &ifst, &ilst, work, &info );
 }
-
 inline void trexc( const char compq, const integer_t n, traits::complex_f* t,
         const integer_t ldt, traits::complex_f* q, const integer_t ldq,
         const integer_t ifst, const integer_t ilst, integer_t& info ) {
     LAPACK_CTREXC( &compq, &n, traits::complex_ptr(t), &ldt,
             traits::complex_ptr(q), &ldq, &ifst, &ilst, &info );
 }
-
 inline void trexc( const char compq, const integer_t n, traits::complex_d* t,
         const integer_t ldt, traits::complex_d* q, const integer_t ldq,
         const integer_t ifst, const integer_t ilst, integer_t& info ) {
     LAPACK_ZTREXC( &compq, &n, traits::complex_ptr(t), &ldt,
             traits::complex_ptr(q), &ldq, &ifst, &ilst, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -85,10 +81,10 @@ struct trexc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 MatrixQ >::value_type >::value) );
         BOOST_ASSERT( compq == 'V' || compq == 'N' );
         BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_num_columns(t)) );
-        BOOST_ASSERT( traits::leading_dimension(q) >= std::max(1,
-                traits::matrix_num_columns(t)) );
+        BOOST_ASSERT( traits::leading_dimension(t) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
+        BOOST_ASSERT( traits::leading_dimension(q) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(t) ));
         detail::trexc( compq, traits::matrix_num_columns(t),
@@ -115,10 +111,10 @@ struct trexc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixQ >::value_type >::value) );
         BOOST_ASSERT( compq == 'V' || compq == 'N' );
         BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_num_columns(t)) );
-        BOOST_ASSERT( traits::leading_dimension(q) >= std::max(1,
-                traits::matrix_num_columns(t)) );
+        BOOST_ASSERT( traits::leading_dimension(t) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
+        BOOST_ASSERT( traits::leading_dimension(q) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
         detail::trexc( compq, traits::matrix_num_columns(t),
                 traits::matrix_storage(t), traits::leading_dimension(t),
                 traits::matrix_storage(q), traits::leading_dimension(q), ifst,

@@ -43,7 +43,6 @@ inline void sbgvd( const char jobz, const char uplo, const integer_t n,
     LAPACK_SSBGVD( &jobz, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, w, z,
             &ldz, work, &lwork, iwork, &liwork, &info );
 }
-
 inline void sbgvd( const char jobz, const char uplo, const integer_t n,
         const integer_t ka, const integer_t kb, double* ab,
         const integer_t ldab, double* bb, const integer_t ldbb, double* w,
@@ -52,7 +51,6 @@ inline void sbgvd( const char jobz, const char uplo, const integer_t n,
     LAPACK_DSBGVD( &jobz, &uplo, &n, &ka, &kb, ab, &ldab, bb, &ldbb, w, z,
             &ldz, work, &lwork, iwork, &liwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

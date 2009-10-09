@@ -47,7 +47,6 @@ inline void stemr( const char jobz, const char range, const integer_t n,
     LAPACK_SSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
             &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork, &info );
 }
-
 inline void stemr( const char jobz, const char range, const integer_t n,
         double* d, double* e, const double vl, const double vu,
         const integer_t il, const integer_t iu, integer_t& m, double* w,
@@ -58,7 +57,6 @@ inline void stemr( const char jobz, const char range, const integer_t n,
     LAPACK_DSTEMR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &m, w, z,
             &ldz, &nzc, isuppz, &tryrac, work, &lwork, iwork, &liwork, &info );
 }
-
 inline void stemr( const char jobz, const char range, const integer_t n,
         float* d, float* e, const float vl, const float vu,
         const integer_t il, const integer_t iu, integer_t& m, float* w,
@@ -70,7 +68,6 @@ inline void stemr( const char jobz, const char range, const integer_t n,
             traits::complex_ptr(z), &ldz, &nzc, isuppz, &tryrac, work, &lwork,
             iwork, &liwork, &info );
 }
-
 inline void stemr( const char jobz, const char range, const integer_t n,
         double* d, double* e, const double vl, const double vu,
         const integer_t il, const integer_t iu, integer_t& m, double* w,
@@ -82,7 +79,6 @@ inline void stemr( const char jobz, const char range, const integer_t n,
             traits::complex_ptr(z), &ldz, &nzc, isuppz, &tryrac, work, &lwork,
             iwork, &liwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

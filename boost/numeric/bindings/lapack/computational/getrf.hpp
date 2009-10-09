@@ -36,22 +36,18 @@ inline void getrf( const integer_t m, const integer_t n, float* a,
         const integer_t lda, integer_t* ipiv, integer_t& info ) {
     LAPACK_SGETRF( &m, &n, a, &lda, ipiv, &info );
 }
-
 inline void getrf( const integer_t m, const integer_t n, double* a,
         const integer_t lda, integer_t* ipiv, integer_t& info ) {
     LAPACK_DGETRF( &m, &n, a, &lda, ipiv, &info );
 }
-
 inline void getrf( const integer_t m, const integer_t n, traits::complex_f* a,
         const integer_t lda, integer_t* ipiv, integer_t& info ) {
     LAPACK_CGETRF( &m, &n, traits::complex_ptr(a), &lda, ipiv, &info );
 }
-
 inline void getrf( const integer_t m, const integer_t n, traits::complex_d* a,
         const integer_t lda, integer_t* ipiv, integer_t& info ) {
     LAPACK_ZGETRF( &m, &n, traits::complex_ptr(a), &lda, ipiv, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -66,10 +62,10 @@ struct getrf_impl {
     static void invoke( MatrixA& a, VectorIPIV& ipiv, integer_t& info ) {
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(ipiv) >=
-                std::min(traits::matrix_num_rows(a),
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::vector_size(ipiv) >= std::min<
+                std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         detail::getrf( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),

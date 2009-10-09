@@ -48,7 +48,6 @@ inline void gges( const char jobvsl, const char jobvsr, const char sort,
             &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr, work,
             &lwork, bwork, &info );
 }
-
 inline void gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const integer_t n, double* a, const integer_t lda,
         double* b, const integer_t ldb, integer_t& sdim, double* alphar,
@@ -59,7 +58,6 @@ inline void gges( const char jobvsl, const char jobvsr, const char sort,
             &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr, work,
             &lwork, bwork, &info );
 }
-
 inline void gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const integer_t n, traits::complex_f* a,
         const integer_t lda, traits::complex_f* b, const integer_t ldb,
@@ -73,7 +71,6 @@ inline void gges( const char jobvsl, const char jobvsr, const char sort,
             traits::complex_ptr(vsl), &ldvsl, traits::complex_ptr(vsr),
             &ldvsr, traits::complex_ptr(work), &lwork, rwork, bwork, &info );
 }
-
 inline void gges( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const integer_t n, traits::complex_d* a,
         const integer_t lda, traits::complex_d* b, const integer_t ldb,
@@ -87,7 +84,6 @@ inline void gges( const char jobvsl, const char jobvsr, const char sort,
             traits::complex_ptr(vsl), &ldvsl, traits::complex_ptr(vsr),
             &ldvsr, traits::complex_ptr(work), &lwork, rwork, bwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -132,10 +128,10 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
         BOOST_ASSERT( jobvsr == 'N' || jobvsr == 'V' );
         BOOST_ASSERT( sort == 'N' || sort == 'S' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(alphar) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(alphai) >=
@@ -248,10 +244,10 @@ struct gges_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
         BOOST_ASSERT( jobvsr == 'N' || jobvsr == 'V' );
         BOOST_ASSERT( sort == 'N' || sort == 'S' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(alpha) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(beta) >=

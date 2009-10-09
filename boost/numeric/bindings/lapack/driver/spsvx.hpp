@@ -45,7 +45,6 @@ inline void spsvx( const char fact, const char uplo, const integer_t n,
     LAPACK_SSPSVX( &fact, &uplo, &n, &nrhs, ap, afp, ipiv, b, &ldb, x, &ldx,
             &rcond, ferr, berr, work, iwork, &info );
 }
-
 inline void spsvx( const char fact, const char uplo, const integer_t n,
         const integer_t nrhs, const double* ap, double* afp, integer_t* ipiv,
         const double* b, const integer_t ldb, double* x, const integer_t ldx,
@@ -54,7 +53,6 @@ inline void spsvx( const char fact, const char uplo, const integer_t n,
     LAPACK_DSPSVX( &fact, &uplo, &n, &nrhs, ap, afp, ipiv, b, &ldb, x, &ldx,
             &rcond, ferr, berr, work, iwork, &info );
 }
-
 inline void spsvx( const char fact, const char uplo, const integer_t n,
         const integer_t nrhs, const traits::complex_f* ap,
         traits::complex_f* afp, integer_t* ipiv, const traits::complex_f* b,
@@ -66,7 +64,6 @@ inline void spsvx( const char fact, const char uplo, const integer_t n,
             traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
             traits::complex_ptr(work), rwork, &info );
 }
-
 inline void spsvx( const char fact, const char uplo, const integer_t n,
         const integer_t nrhs, const traits::complex_d* ap,
         traits::complex_d* afp, integer_t* ipiv, const traits::complex_d* b,
@@ -78,7 +75,6 @@ inline void spsvx( const char fact, const char uplo, const integer_t n,
             traits::complex_ptr(x), &ldx, &rcond, ferr, berr,
             traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -120,10 +116,10 @@ struct spsvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::matrix_uplo_tag(ap) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(ap) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(ap)) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_num_columns(ap)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(ap)) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(ap)) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -210,10 +206,10 @@ struct spsvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_uplo_tag(ap) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(ap) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(ap)) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_num_columns(ap)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(ap)) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(ap)) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

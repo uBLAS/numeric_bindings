@@ -42,7 +42,6 @@ inline void hbev( const char jobz, const char uplo, const integer_t n,
             traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
             &info );
 }
-
 inline void hbev( const char jobz, const char uplo, const integer_t n,
         const integer_t kd, traits::complex_d* ab, const integer_t ldab,
         double* w, traits::complex_d* z, const integer_t ldz,
@@ -51,7 +50,6 @@ inline void hbev( const char jobz, const char uplo, const integer_t n,
             traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -112,7 +110,7 @@ struct hbev_impl {
     }
 
     static integer_t min_size_rwork( const integer_t n ) {
-        return std::max(1,3*n-2);
+        return std::max< std::ptrdiff_t >(1,3*n-2);
     }
 };
 

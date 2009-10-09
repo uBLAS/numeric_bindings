@@ -43,7 +43,6 @@ inline void laebz( const integer_t ijob, const integer_t nitmax,
     LAPACK_SLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol, &reltol,
             &pivmin, d, e, e2, nval, ab, c, &mout, nab, work, iwork, &info );
 }
-
 inline void laebz( const integer_t ijob, const integer_t nitmax,
         const integer_t n, const integer_t mmax, const integer_t minp,
         const integer_t nbmin, const double abstol, const double reltol,
@@ -54,7 +53,6 @@ inline void laebz( const integer_t ijob, const integer_t nitmax,
     LAPACK_DLAEBZ( &ijob, &nitmax, &n, &mmax, &minp, &nbmin, &abstol, &reltol,
             &pivmin, d, e, e2, nval, ab, c, &mout, nab, work, iwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

@@ -40,14 +40,12 @@ inline void orghr( const integer_t n, const integer_t ilo,
         float* work, const integer_t lwork, integer_t& info ) {
     LAPACK_SORGHR( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
 }
-
 inline void orghr( const integer_t n, const integer_t ilo,
         const integer_t ihi, double* a, const integer_t lda,
         const double* tau, double* work, const integer_t lwork,
         integer_t& info ) {
     LAPACK_DORGHR( &n, &ilo, &ihi, a, &lda, tau, work, &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -66,7 +64,8 @@ struct orghr_impl {
                 MatrixA >::value_type, typename traits::vector_traits<
                 VectorTAU >::value_type >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(tau) >= n-1 );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));

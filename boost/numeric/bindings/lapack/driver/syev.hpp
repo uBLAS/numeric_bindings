@@ -40,13 +40,11 @@ inline void syev( const char jobz, const char uplo, const integer_t n,
         const integer_t lwork, integer_t& info ) {
     LAPACK_SSYEV( &jobz, &uplo, &n, a, &lda, w, work, &lwork, &info );
 }
-
 inline void syev( const char jobz, const char uplo, const integer_t n,
         double* a, const integer_t lda, double* w, double* work,
         const integer_t lwork, integer_t& info ) {
     LAPACK_DSYEV( &jobz, &uplo, &n, a, &lda, w, work, &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -67,8 +65,8 @@ struct syev_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(a) ));
         detail::syev( jobz, traits::matrix_uplo_tag(a),

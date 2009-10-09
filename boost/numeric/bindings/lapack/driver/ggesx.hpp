@@ -50,7 +50,6 @@ inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
             &ldb, &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr,
             rconde, rcondv, work, &lwork, iwork, &liwork, bwork, &info );
 }
-
 inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const char sense, const integer_t n, double* a,
         const integer_t lda, double* b, const integer_t ldb, integer_t& sdim,
@@ -63,7 +62,6 @@ inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
             &ldb, &sdim, alphar, alphai, beta, vsl, &ldvsl, vsr, &ldvsr,
             rconde, rcondv, work, &lwork, iwork, &liwork, bwork, &info );
 }
-
 inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const char sense, const integer_t n,
         traits::complex_f* a, const integer_t lda, traits::complex_f* b,
@@ -80,7 +78,6 @@ inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
             &ldvsr, rconde, rcondv, traits::complex_ptr(work), &lwork, rwork,
             iwork, &liwork, bwork, &info );
 }
-
 inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
         logical_t* selctg, const char sense, const integer_t n,
         traits::complex_d* a, const integer_t lda, traits::complex_d* b,
@@ -97,7 +94,6 @@ inline void ggesx( const char jobvsl, const char jobvsr, const char sort,
             &ldvsr, rconde, rcondv, traits::complex_ptr(work), &lwork, rwork,
             iwork, &liwork, bwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -152,10 +148,10 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( sense == 'N' || sense == 'E' || sense == 'V' ||
                 sense == 'B' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(alphar) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(alphai) >=
@@ -303,10 +299,10 @@ struct ggesx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( sense == 'N' || sense == 'E' || sense == 'V' ||
                 sense == 'B' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(alpha) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(beta) >=

@@ -45,7 +45,6 @@ inline void sbgvx( const char jobz, const char range, const char uplo,
             q, &ldq, &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, iwork,
             ifail, &info );
 }
-
 inline void sbgvx( const char jobz, const char range, const char uplo,
         const integer_t n, const integer_t ka, const integer_t kb, double* ab,
         const integer_t ldab, double* bb, const integer_t ldbb, double* q,
@@ -57,7 +56,6 @@ inline void sbgvx( const char jobz, const char range, const char uplo,
             q, &ldq, &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, iwork,
             ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template

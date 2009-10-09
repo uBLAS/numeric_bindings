@@ -46,7 +46,6 @@ inline void hsein( const char side, const char eigsrc, const char initv,
     LAPACK_SHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, wr, wi, vl,
             &ldvl, vr, &ldvr, &mm, &m, work, ifaill, ifailr, &info );
 }
-
 inline void hsein( const char side, const char eigsrc, const char initv,
         logical_t* select, const integer_t n, const double* h,
         const integer_t ldh, double* wr, const double* wi, double* vl,
@@ -56,7 +55,6 @@ inline void hsein( const char side, const char eigsrc, const char initv,
     LAPACK_DHSEIN( &side, &eigsrc, &initv, select, &n, h, &ldh, wr, wi, vl,
             &ldvl, vr, &ldvr, &mm, &m, work, ifaill, ifailr, &info );
 }
-
 inline void hsein( const char side, const char eigsrc, const char initv,
         const logical_t* select, const integer_t n,
         const traits::complex_f* h, const integer_t ldh, traits::complex_f* w,
@@ -69,7 +67,6 @@ inline void hsein( const char side, const char eigsrc, const char initv,
             traits::complex_ptr(vr), &ldvr, &mm, &m,
             traits::complex_ptr(work), rwork, ifaill, ifailr, &info );
 }
-
 inline void hsein( const char side, const char eigsrc, const char initv,
         const logical_t* select, const integer_t n,
         const traits::complex_d* h, const integer_t ldh, traits::complex_d* w,
@@ -82,7 +79,6 @@ inline void hsein( const char side, const char eigsrc, const char initv,
             traits::complex_ptr(vr), &ldvr, &mm, &m,
             traits::complex_ptr(work), rwork, ifaill, ifailr, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -127,8 +123,8 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::vector_size(select) >=
                 traits::matrix_num_columns(h) );
         BOOST_ASSERT( traits::matrix_num_columns(h) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(h) >= std::max(1,
-                traits::matrix_num_columns(h)) );
+        BOOST_ASSERT( traits::leading_dimension(h) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(h)) );
         BOOST_ASSERT( traits::vector_size(wr) >=
                 traits::matrix_num_columns(h) );
         BOOST_ASSERT( traits::vector_size(wi) >=
@@ -214,8 +210,8 @@ struct hsein_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::vector_size(select) >=
                 traits::matrix_num_columns(h) );
         BOOST_ASSERT( traits::matrix_num_columns(h) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(h) >= std::max(1,
-                traits::matrix_num_columns(h)) );
+        BOOST_ASSERT( traits::leading_dimension(h) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(h)) );
         BOOST_ASSERT( traits::vector_size(w) >=
                 traits::matrix_num_columns(h) );
         BOOST_ASSERT( mm >= m );

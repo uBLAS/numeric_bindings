@@ -40,13 +40,11 @@ inline void orgbr( const char vect, const integer_t m, const integer_t n,
         float* work, const integer_t lwork, integer_t& info ) {
     LAPACK_SORGBR( &vect, &m, &n, &k, a, &lda, tau, work, &lwork, &info );
 }
-
 inline void orgbr( const char vect, const integer_t m, const integer_t n,
         const integer_t k, double* a, const integer_t lda, const double* tau,
         double* work, const integer_t lwork, integer_t& info ) {
     LAPACK_DORGBR( &vect, &m, &n, &k, a, &lda, tau, work, &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -67,7 +65,8 @@ struct orgbr_impl {
         BOOST_ASSERT( vect == 'Q' || vect == 'P' );
         BOOST_ASSERT( m >= 0 );
         BOOST_ASSERT( k >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,m) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,m) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( m, n ));
         detail::orgbr( vect, m, n, k, traits::matrix_storage(a),

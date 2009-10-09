@@ -42,7 +42,6 @@ inline void hpev( const char jobz, const char uplo, const integer_t n,
             traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
             &info );
 }
-
 inline void hpev( const char jobz, const char uplo, const integer_t n,
         traits::complex_d* ap, double* w, traits::complex_d* z,
         const integer_t ldz, traits::complex_d* work, double* rwork,
@@ -51,7 +50,6 @@ inline void hpev( const char jobz, const char uplo, const integer_t n,
             traits::complex_ptr(z), &ldz, traits::complex_ptr(work), rwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -102,11 +100,11 @@ struct hpev_impl {
     }
 
     static integer_t min_size_work( const integer_t n ) {
-        return std::max(1,2*n-1);
+        return std::max< std::ptrdiff_t >(1,2*n-1);
     }
 
     static integer_t min_size_rwork( const integer_t n ) {
-        return std::max(1,3*n-2);
+        return std::max< std::ptrdiff_t >(1,3*n-2);
     }
 };
 

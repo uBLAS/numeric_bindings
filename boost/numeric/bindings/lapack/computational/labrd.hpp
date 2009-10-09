@@ -41,14 +41,12 @@ inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
         const integer_t ldy ) {
     LAPACK_SLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
 }
-
 inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
         double* a, const integer_t lda, double* d, double* e, double* tauq,
         double* taup, double* x, const integer_t ldx, double* y,
         const integer_t ldy ) {
     LAPACK_DLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
 }
-
 inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
         traits::complex_f* a, const integer_t lda, float* d, float* e,
         traits::complex_f* tauq, traits::complex_f* taup,
@@ -58,7 +56,6 @@ inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
             traits::complex_ptr(tauq), traits::complex_ptr(taup),
             traits::complex_ptr(x), &ldx, traits::complex_ptr(y), &ldy );
 }
-
 inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
         traits::complex_d* a, const integer_t lda, double* d, double* e,
         traits::complex_d* tauq, traits::complex_d* taup,
@@ -68,7 +65,6 @@ inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
             traits::complex_ptr(tauq), traits::complex_ptr(taup),
             traits::complex_ptr(x), &ldx, traits::complex_ptr(y), &ldy );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -106,8 +102,8 @@ struct labrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixY >::value_type >::value) );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
         BOOST_ASSERT( traits::vector_size(d) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(e) >=
@@ -158,8 +154,8 @@ struct labrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
                 MatrixA >::value_type, typename traits::matrix_traits<
                 MatrixY >::value_type >::value) );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
         BOOST_ASSERT( traits::vector_size(d) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(e) >=
@@ -168,10 +164,10 @@ struct labrd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(taup) >=
                 traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(y) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(y) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::labrd( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),

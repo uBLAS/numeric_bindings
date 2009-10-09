@@ -40,13 +40,11 @@ inline void gebak( const char job, const char side, const integer_t n,
         const integer_t m, float* v, const integer_t ldv, integer_t& info ) {
     LAPACK_SGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
 }
-
 inline void gebak( const char job, const char side, const integer_t n,
         const integer_t ilo, const integer_t ihi, const double* scale,
         const integer_t m, double* v, const integer_t ldv, integer_t& info ) {
     LAPACK_DGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
 }
-
 inline void gebak( const char job, const char side, const integer_t n,
         const integer_t ilo, const integer_t ihi, const float* scale,
         const integer_t m, traits::complex_f* v, const integer_t ldv,
@@ -54,7 +52,6 @@ inline void gebak( const char job, const char side, const integer_t n,
     LAPACK_CGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m,
             traits::complex_ptr(v), &ldv, &info );
 }
-
 inline void gebak( const char job, const char side, const integer_t n,
         const integer_t ilo, const integer_t ihi, const double* scale,
         const integer_t m, traits::complex_d* v, const integer_t ldv,
@@ -62,7 +59,6 @@ inline void gebak( const char job, const char side, const integer_t n,
     LAPACK_ZGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m,
             traits::complex_ptr(v), &ldv, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -90,8 +86,8 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::vector_size(scale) >=
                 traits::matrix_num_rows(v) );
         BOOST_ASSERT( traits::matrix_num_columns(v) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(v) >= std::max(1,
-                traits::matrix_num_rows(v)) );
+        BOOST_ASSERT( traits::leading_dimension(v) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(v)) );
         detail::gebak( job, side, traits::matrix_num_rows(v), ilo, ihi,
                 traits::vector_storage(scale), traits::matrix_num_columns(v),
                 traits::matrix_storage(v), traits::leading_dimension(v),
@@ -117,8 +113,8 @@ struct gebak_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::vector_size(scale) >=
                 traits::matrix_num_rows(v) );
         BOOST_ASSERT( traits::matrix_num_columns(v) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(v) >= std::max(1,
-                traits::matrix_num_rows(v)) );
+        BOOST_ASSERT( traits::leading_dimension(v) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(v)) );
         detail::gebak( job, side, traits::matrix_num_rows(v), ilo, ihi,
                 traits::vector_storage(scale), traits::matrix_num_columns(v),
                 traits::matrix_storage(v), traits::leading_dimension(v),

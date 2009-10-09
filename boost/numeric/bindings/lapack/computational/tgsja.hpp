@@ -48,7 +48,6 @@ inline void tgsja( const char jobu, const char jobv, const char jobq,
             &tola, &tolb, alpha, beta, u, &ldu, v, &ldv, q, &ldq, work,
             &ncycle, &info );
 }
-
 inline void tgsja( const char jobu, const char jobv, const char jobq,
         const integer_t m, const integer_t p, const integer_t n,
         const integer_t k, const integer_t l, double* a, const integer_t lda,
@@ -60,7 +59,6 @@ inline void tgsja( const char jobu, const char jobv, const char jobq,
             &tola, &tolb, alpha, beta, u, &ldu, v, &ldv, q, &ldq, work,
             &ncycle, &info );
 }
-
 inline void tgsja( const char jobu, const char jobv, const char jobq,
         const integer_t m, const integer_t p, const integer_t n,
         const integer_t k, const integer_t l, traits::complex_f* a,
@@ -75,7 +73,6 @@ inline void tgsja( const char jobu, const char jobv, const char jobq,
             traits::complex_ptr(v), &ldv, traits::complex_ptr(q), &ldq,
             traits::complex_ptr(work), &ncycle, &info );
 }
-
 inline void tgsja( const char jobu, const char jobv, const char jobq,
         const integer_t m, const integer_t p, const integer_t n,
         const integer_t k, const integer_t l, traits::complex_d* a,
@@ -90,7 +87,6 @@ inline void tgsja( const char jobu, const char jobv, const char jobq,
             traits::complex_ptr(v), &ldv, traits::complex_ptr(q), &ldq,
             traits::complex_ptr(work), &ncycle, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -138,10 +134,10 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
         BOOST_ASSERT( traits::vector_size(alpha) >=
                 traits::matrix_num_columns(b) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -230,10 +226,10 @@ struct tgsja_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
         BOOST_ASSERT( traits::vector_size(alpha) >=
                 traits::matrix_num_columns(b) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

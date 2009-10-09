@@ -45,7 +45,6 @@ inline void sbevx( const char jobz, const char range, const char uplo,
             &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail,
             &info );
 }
-
 inline void sbevx( const char jobz, const char range, const char uplo,
         const integer_t n, const integer_t kd, double* ab,
         const integer_t ldab, double* q, const integer_t ldq, const double vl,
@@ -57,7 +56,6 @@ inline void sbevx( const char jobz, const char range, const char uplo,
             &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, iwork, ifail,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -93,7 +91,8 @@ struct sbevx_impl {
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( kd >= 0 );
         BOOST_ASSERT( traits::leading_dimension(ab) >= kd );
-        BOOST_ASSERT( traits::leading_dimension(q) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(q) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(w) >= n );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n ));

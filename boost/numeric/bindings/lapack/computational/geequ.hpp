@@ -40,27 +40,23 @@ inline void geequ( const integer_t m, const integer_t n, const float* a,
         float& amax, integer_t& info ) {
     LAPACK_SGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
 }
-
 inline void geequ( const integer_t m, const integer_t n, const double* a,
         const integer_t lda, double* r, double* c, double& rowcnd,
         double& colcnd, double& amax, integer_t& info ) {
     LAPACK_DGEEQU( &m, &n, a, &lda, r, c, &rowcnd, &colcnd, &amax, &info );
 }
-
 inline void geequ( const integer_t m, const integer_t n,
         const traits::complex_f* a, const integer_t lda, float* r, float* c,
         float& rowcnd, float& colcnd, float& amax, integer_t& info ) {
     LAPACK_CGEEQU( &m, &n, traits::complex_ptr(a), &lda, r, c, &rowcnd,
             &colcnd, &amax, &info );
 }
-
 inline void geequ( const integer_t m, const integer_t n,
         const traits::complex_d* a, const integer_t lda, double* r, double* c,
         double& rowcnd, double& colcnd, double& amax, integer_t& info ) {
     LAPACK_ZGEEQU( &m, &n, traits::complex_ptr(a), &lda, r, c, &rowcnd,
             &colcnd, &amax, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -87,8 +83,8 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 VectorC >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
         detail::geequ( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(r),
@@ -113,8 +109,8 @@ struct geequ_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 VectorC >::value_type >::value) );
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
         detail::geequ( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(r),

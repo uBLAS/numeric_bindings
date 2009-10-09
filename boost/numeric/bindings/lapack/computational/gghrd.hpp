@@ -39,7 +39,6 @@ inline void gghrd( const char compq, const char compz, const integer_t n,
     LAPACK_SGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );
 }
-
 inline void gghrd( const char compq, const char compz, const integer_t n,
         const integer_t ilo, const integer_t ihi, double* a,
         const integer_t lda, double* b, const integer_t ldb, double* q,
@@ -48,7 +47,6 @@ inline void gghrd( const char compq, const char compz, const integer_t n,
     LAPACK_DGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );
 }
-
 inline void gghrd( const char compq, const char compz, const integer_t n,
         const integer_t ilo, const integer_t ihi, traits::complex_f* a,
         const integer_t lda, traits::complex_f* b, const integer_t ldb,
@@ -58,7 +56,6 @@ inline void gghrd( const char compq, const char compz, const integer_t n,
             &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
             traits::complex_ptr(z), &ldz, &info );
 }
-
 inline void gghrd( const char compq, const char compz, const integer_t n,
         const integer_t ilo, const integer_t ihi, traits::complex_d* a,
         const integer_t lda, traits::complex_d* b, const integer_t ldb,
@@ -68,7 +65,6 @@ inline void gghrd( const char compq, const char compz, const integer_t n,
             &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
             traits::complex_ptr(z), &ldz, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -96,8 +92,10 @@ struct gghrd_impl {
         BOOST_ASSERT( compq == 'N' || compq == 'I' || compq == 'V' );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         detail::gghrd( compq, compz, n, ilo, traits::matrix_num_columns(a),
                 traits::matrix_storage(a), traits::leading_dimension(a),
                 traits::matrix_storage(b), traits::leading_dimension(b),

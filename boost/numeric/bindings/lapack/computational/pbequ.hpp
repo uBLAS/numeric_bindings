@@ -40,27 +40,23 @@ inline void pbequ( const char uplo, const integer_t n, const integer_t kd,
         float& amax, integer_t& info ) {
     LAPACK_SPBEQU( &uplo, &n, &kd, ab, &ldab, s, &scond, &amax, &info );
 }
-
 inline void pbequ( const char uplo, const integer_t n, const integer_t kd,
         const double* ab, const integer_t ldab, double* s, double& scond,
         double& amax, integer_t& info ) {
     LAPACK_DPBEQU( &uplo, &n, &kd, ab, &ldab, s, &scond, &amax, &info );
 }
-
 inline void pbequ( const char uplo, const integer_t n, const integer_t kd,
         const traits::complex_f* ab, const integer_t ldab, float* s,
         float& scond, float& amax, integer_t& info ) {
     LAPACK_CPBEQU( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, s, &scond,
             &amax, &info );
 }
-
 inline void pbequ( const char uplo, const integer_t n, const integer_t kd,
         const traits::complex_d* ab, const integer_t ldab, double* s,
         double& scond, double& amax, integer_t& info ) {
     LAPACK_ZPBEQU( &uplo, &n, &kd, traits::complex_ptr(ab), &ldab, s, &scond,
             &amax, &info );
 }
-
 } // namespace detail
 
 // value-type based template

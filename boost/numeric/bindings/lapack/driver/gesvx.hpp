@@ -46,7 +46,6 @@ inline void gesvx( const char fact, const char trans, const integer_t n,
     LAPACK_SGESVX( &fact, &trans, &n, &nrhs, a, &lda, af, &ldaf, ipiv, &equed,
             r, c, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
 }
-
 inline void gesvx( const char fact, const char trans, const integer_t n,
         const integer_t nrhs, double* a, const integer_t lda, double* af,
         const integer_t ldaf, integer_t* ipiv, char& equed, double* r,
@@ -56,7 +55,6 @@ inline void gesvx( const char fact, const char trans, const integer_t n,
     LAPACK_DGESVX( &fact, &trans, &n, &nrhs, a, &lda, af, &ldaf, ipiv, &equed,
             r, c, b, &ldb, x, &ldx, &rcond, ferr, berr, work, iwork, &info );
 }
-
 inline void gesvx( const char fact, const char trans, const integer_t n,
         const integer_t nrhs, traits::complex_f* a, const integer_t lda,
         traits::complex_f* af, const integer_t ldaf, integer_t* ipiv,
@@ -69,7 +67,6 @@ inline void gesvx( const char fact, const char trans, const integer_t n,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
             &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
 }
-
 inline void gesvx( const char fact, const char trans, const integer_t n,
         const integer_t nrhs, traits::complex_d* a, const integer_t lda,
         traits::complex_d* af, const integer_t ldaf, integer_t* ipiv,
@@ -82,7 +79,6 @@ inline void gesvx( const char fact, const char trans, const integer_t n,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx,
             &rcond, ferr, berr, traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -131,16 +127,16 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(af) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(af) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( equed == 'N' || equed == 'R' || equed == 'C' ||
                 equed == 'B' );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -238,16 +234,16 @@ struct gesvx_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(af) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(af) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( equed == 'N' || equed == 'R' || equed == 'C' ||
                 equed == 'B' );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

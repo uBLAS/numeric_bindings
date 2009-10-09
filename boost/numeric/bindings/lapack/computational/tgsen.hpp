@@ -49,7 +49,6 @@ inline void tgsen( const integer_t ijob, const logical_t wantq,
             alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work,
             &lwork, iwork, &liwork, &info );
 }
-
 inline void tgsen( const integer_t ijob, const logical_t wantq,
         const logical_t wantz, const logical_t* select, const integer_t n,
         double* a, const integer_t lda, double* b, const integer_t ldb,
@@ -62,7 +61,6 @@ inline void tgsen( const integer_t ijob, const logical_t wantq,
             alphar, alphai, beta, q, &ldq, z, &ldz, &m, &pl, &pr, dif, work,
             &lwork, iwork, &liwork, &info );
 }
-
 inline void tgsen( const integer_t ijob, const logical_t wantq,
         const logical_t wantz, const logical_t* select, const integer_t n,
         traits::complex_f* a, const integer_t lda, traits::complex_f* b,
@@ -77,7 +75,6 @@ inline void tgsen( const integer_t ijob, const logical_t wantq,
             traits::complex_ptr(z), &ldz, &m, &pl, &pr, dif,
             traits::complex_ptr(work), &lwork, iwork, &liwork, &info );
 }
-
 inline void tgsen( const integer_t ijob, const logical_t wantq,
         const logical_t wantz, const logical_t* select, const integer_t n,
         traits::complex_d* a, const integer_t lda, traits::complex_d* b,
@@ -93,7 +90,6 @@ inline void tgsen( const integer_t ijob, const logical_t wantq,
             traits::complex_ptr(z), &ldz, &m, &pl, &pr, dif,
             traits::complex_ptr(work), &lwork, iwork, &liwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -141,8 +137,10 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 VectorDIF >::value_type >::value) );
         BOOST_ASSERT( traits::vector_size(select) >= n );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(alphar) >= n );
         BOOST_ASSERT( traits::vector_size(alphai) >= n );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -253,8 +251,10 @@ struct tgsen_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 MatrixZ >::value_type >::value) );
         BOOST_ASSERT( traits::vector_size(select) >= n );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(alpha) >= n );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( $CALL_MIN_SIZE ));

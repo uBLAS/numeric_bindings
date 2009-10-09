@@ -39,7 +39,6 @@ inline void hetrs( const char uplo, const integer_t n, const integer_t nrhs,
     LAPACK_CHETRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 inline void hetrs( const char uplo, const integer_t n, const integer_t nrhs,
         const traits::complex_d* a, const integer_t lda,
         const integer_t* ipiv, traits::complex_d* b, const integer_t ldb,
@@ -47,7 +46,6 @@ inline void hetrs( const char uplo, const integer_t n, const integer_t nrhs,
     LAPACK_ZHETRS( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
             traits::complex_ptr(b), &ldb, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -67,12 +65,12 @@ struct hetrs_impl {
         BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(ipiv) >=
                 traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         detail::hetrs( uplo, traits::matrix_num_columns(a),
                 traits::matrix_num_columns(b), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(ipiv),

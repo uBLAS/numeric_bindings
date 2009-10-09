@@ -46,7 +46,6 @@ inline void ggsvd( const char jobu, const char jobv, const char jobq,
     LAPACK_SGGSVD( &jobu, &jobv, &jobq, &m, &n, &p, &k, &l, a, &lda, b, &ldb,
             alpha, beta, u, &ldu, v, &ldv, q, &ldq, work, iwork, &info );
 }
-
 inline void ggsvd( const char jobu, const char jobv, const char jobq,
         const integer_t m, const integer_t n, const integer_t p, integer_t& k,
         integer_t& l, double* a, const integer_t lda, double* b,
@@ -57,7 +56,6 @@ inline void ggsvd( const char jobu, const char jobv, const char jobq,
     LAPACK_DGGSVD( &jobu, &jobv, &jobq, &m, &n, &p, &k, &l, a, &lda, b, &ldb,
             alpha, beta, u, &ldu, v, &ldv, q, &ldq, work, iwork, &info );
 }
-
 inline void ggsvd( const char jobu, const char jobv, const char jobq,
         const integer_t m, const integer_t n, const integer_t p, integer_t& k,
         integer_t& l, traits::complex_f* a, const integer_t lda,
@@ -72,7 +70,6 @@ inline void ggsvd( const char jobu, const char jobv, const char jobq,
             traits::complex_ptr(q), &ldq, traits::complex_ptr(work), rwork,
             iwork, &info );
 }
-
 inline void ggsvd( const char jobu, const char jobv, const char jobq,
         const integer_t m, const integer_t n, const integer_t p, integer_t& k,
         integer_t& l, traits::complex_d* a, const integer_t lda,
@@ -87,7 +84,6 @@ inline void ggsvd( const char jobu, const char jobv, const char jobq,
             traits::complex_ptr(q), &ldq, traits::complex_ptr(work), rwork,
             iwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -134,10 +130,10 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
         BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
         BOOST_ASSERT( traits::vector_size(alpha) >=
                 traits::matrix_num_columns(b) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -188,7 +184,8 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
 
     static integer_t min_size_work( const integer_t n, const integer_t m,
             const integer_t p ) {
-        return std::max(3*n,std::max(m,p))+n;
+        return std::max< std::ptrdiff_t >(3*n,std::max< std::ptrdiff_t >(m,p))+
+                n;
     }
 
     static integer_t min_size_iwork( const integer_t n ) {
@@ -233,10 +230,10 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_num_rows(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
         BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_rows(b)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
         BOOST_ASSERT( traits::vector_size(alpha) >=
                 traits::matrix_num_columns(b) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
@@ -292,7 +289,8 @@ struct ggsvd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 
     static integer_t min_size_work( const integer_t n, const integer_t m,
             const integer_t p ) {
-        return std::max(3*n,std::max(m,p))+n;
+        return std::max< std::ptrdiff_t >(3*n,std::max< std::ptrdiff_t >(m,p))+
+                n;
     }
 
     static integer_t min_size_rwork( const integer_t n ) {

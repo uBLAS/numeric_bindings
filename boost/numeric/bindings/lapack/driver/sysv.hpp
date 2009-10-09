@@ -45,7 +45,6 @@ inline void sysv( const char uplo, const integer_t n, const integer_t nrhs,
     LAPACK_SSYSV( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, work, &lwork,
             &info );
 }
-
 inline void sysv( const char uplo, const integer_t n, const integer_t nrhs,
         double* a, const integer_t lda, integer_t* ipiv, double* b,
         const integer_t ldb, double* work, const integer_t lwork,
@@ -53,7 +52,6 @@ inline void sysv( const char uplo, const integer_t n, const integer_t nrhs,
     LAPACK_DSYSV( &uplo, &n, &nrhs, a, &lda, ipiv, b, &ldb, work, &lwork,
             &info );
 }
-
 inline void sysv( const char uplo, const integer_t n, const integer_t nrhs,
         traits::complex_f* a, const integer_t lda, integer_t* ipiv,
         traits::complex_f* b, const integer_t ldb, traits::complex_f* work,
@@ -62,7 +60,6 @@ inline void sysv( const char uplo, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(work), &lwork,
             &info );
 }
-
 inline void sysv( const char uplo, const integer_t n, const integer_t nrhs,
         traits::complex_d* a, const integer_t lda, integer_t* ipiv,
         traits::complex_d* b, const integer_t ldb, traits::complex_d* work,
@@ -71,7 +68,6 @@ inline void sysv( const char uplo, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(b), &ldb, traits::complex_ptr(work), &lwork,
             &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -114,12 +110,12 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work(  ));
+                min_size_work());
         detail::sysv( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),
@@ -133,7 +129,7 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(  ) );
+        traits::detail::array< real_type > tmp_work( min_size_work() );
         invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
@@ -152,7 +148,7 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTyp
         invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work(  ) {
+    static integer_t min_size_work() {
         return 1;
     }
 };
@@ -193,12 +189,12 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work(  ));
+                min_size_work());
         detail::sysv( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),
@@ -212,7 +208,7 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
             integer_t& info, minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(  ) );
+        traits::detail::array< value_type > tmp_work( min_size_work() );
         invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
@@ -231,7 +227,7 @@ struct sysv_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
         invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work(  ) {
+    static integer_t min_size_work() {
         return 1;
     }
 };

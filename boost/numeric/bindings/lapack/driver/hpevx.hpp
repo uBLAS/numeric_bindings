@@ -44,7 +44,6 @@ inline void hpevx( const char jobz, const char range, const char uplo,
             &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z), &ldz,
             traits::complex_ptr(work), rwork, iwork, ifail, &info );
 }
-
 inline void hpevx( const char jobz, const char range, const char uplo,
         const integer_t n, traits::complex_d* ap, const double vl,
         const double vu, const integer_t il, const integer_t iu,
@@ -55,7 +54,6 @@ inline void hpevx( const char jobz, const char range, const char uplo,
             &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z), &ldz,
             traits::complex_ptr(work), rwork, iwork, ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template

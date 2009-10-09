@@ -44,7 +44,6 @@ inline void bdsqr( const char uplo, const integer_t n, const integer_t ncvt,
     LAPACK_SBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
             &ldc, work, &info );
 }
-
 inline void bdsqr( const char uplo, const integer_t n, const integer_t ncvt,
         const integer_t nru, const integer_t ncc, double* d, double* e,
         double* vt, const integer_t ldvt, double* u, const integer_t ldu,
@@ -52,7 +51,6 @@ inline void bdsqr( const char uplo, const integer_t n, const integer_t ncvt,
     LAPACK_DBDSQR( &uplo, &n, &ncvt, &nru, &ncc, d, e, vt, &ldvt, u, &ldu, c,
             &ldc, work, &info );
 }
-
 inline void bdsqr( const char uplo, const integer_t n, const integer_t ncvt,
         const integer_t nru, const integer_t ncc, float* d, float* e,
         traits::complex_f* vt, const integer_t ldvt, traits::complex_f* u,
@@ -62,7 +60,6 @@ inline void bdsqr( const char uplo, const integer_t n, const integer_t ncvt,
             traits::complex_ptr(vt), &ldvt, traits::complex_ptr(u), &ldu,
             traits::complex_ptr(c), &ldc, rwork, &info );
 }
-
 inline void bdsqr( const char uplo, const integer_t n, const integer_t ncvt,
         const integer_t nru, const integer_t ncc, double* d, double* e,
         traits::complex_d* vt, const integer_t ldvt, traits::complex_d* u,
@@ -72,7 +69,6 @@ inline void bdsqr( const char uplo, const integer_t n, const integer_t ncvt,
             traits::complex_ptr(vt), &ldvt, traits::complex_ptr(u), &ldu,
             traits::complex_ptr(c), &ldc, rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -109,8 +105,8 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_num_columns(vt) >= 0 );
         BOOST_ASSERT( traits::matrix_num_rows(u) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(u) >= std::max(1,
-                traits::matrix_num_rows(u)) );
+        BOOST_ASSERT( traits::leading_dimension(u) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(u)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( n, traits::matrix_num_columns(vt),
                 traits::matrix_num_rows(u), traits::matrix_num_columns(c) ));
@@ -180,8 +176,8 @@ struct bdsqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_num_columns(vt) >= 0 );
         BOOST_ASSERT( traits::matrix_num_rows(u) >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(u) >= std::max(1,
-                traits::matrix_num_rows(u)) );
+        BOOST_ASSERT( traits::leading_dimension(u) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_rows(u)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( n, traits::matrix_num_columns(vt),
                 traits::matrix_num_rows(u), traits::matrix_num_columns(c) ));

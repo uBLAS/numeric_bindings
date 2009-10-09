@@ -44,7 +44,6 @@ inline void trsen( const char job, const char compq, const logical_t* select,
             traits::complex_ptr(q), &ldq, traits::complex_ptr(w), &m, &s,
             &sep, traits::complex_ptr(work), &lwork, &info );
 }
-
 inline void trsen( const char job, const char compq, const logical_t* select,
         const integer_t n, traits::complex_d* t, const integer_t ldt,
         traits::complex_d* q, const integer_t ldq, traits::complex_d* w,
@@ -54,7 +53,6 @@ inline void trsen( const char job, const char compq, const logical_t* select,
             traits::complex_ptr(q), &ldq, traits::complex_ptr(w), &m, &s,
             &sep, traits::complex_ptr(work), &lwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -82,8 +80,8 @@ struct trsen_impl {
         BOOST_ASSERT( traits::vector_size(select) >=
                 traits::matrix_num_columns(t) );
         BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(t) >= std::max(1,
-                traits::matrix_num_columns(t)) );
+        BOOST_ASSERT( traits::leading_dimension(t) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
         BOOST_ASSERT( traits::vector_size(w) >=
                 traits::matrix_num_columns(t) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

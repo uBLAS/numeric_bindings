@@ -44,7 +44,6 @@ inline void pprfs( const char uplo, const integer_t n, const integer_t nrhs,
     LAPACK_SPPRFS( &uplo, &n, &nrhs, ap, afp, b, &ldb, x, &ldx, ferr, berr,
             work, iwork, &info );
 }
-
 inline void pprfs( const char uplo, const integer_t n, const integer_t nrhs,
         const double* ap, const double* afp, const double* b,
         const integer_t ldb, double* x, const integer_t ldx, double* ferr,
@@ -52,7 +51,6 @@ inline void pprfs( const char uplo, const integer_t n, const integer_t nrhs,
     LAPACK_DPPRFS( &uplo, &n, &nrhs, ap, afp, b, &ldb, x, &ldx, ferr, berr,
             work, iwork, &info );
 }
-
 inline void pprfs( const char uplo, const integer_t n, const integer_t nrhs,
         const traits::complex_f* ap, const traits::complex_f* afp,
         const traits::complex_f* b, const integer_t ldb, traits::complex_f* x,
@@ -63,7 +61,6 @@ inline void pprfs( const char uplo, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(x), &ldx, ferr, berr,
             traits::complex_ptr(work), rwork, &info );
 }
-
 inline void pprfs( const char uplo, const integer_t n, const integer_t nrhs,
         const traits::complex_d* ap, const traits::complex_d* afp,
         const traits::complex_d* b, const integer_t ldb, traits::complex_d* x,
@@ -74,7 +71,6 @@ inline void pprfs( const char uplo, const integer_t n, const integer_t nrhs,
             traits::complex_ptr(x), &ldx, ferr, berr,
             traits::complex_ptr(work), rwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -116,8 +112,10 @@ struct pprfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
         BOOST_ASSERT( traits::vector_size(afp) >= n*(n+1)/2 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -198,8 +196,10 @@ struct pprfs_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( n >= 0 );
         BOOST_ASSERT( traits::matrix_num_columns(x) >= 0 );
         BOOST_ASSERT( traits::vector_size(afp) >= n*(n+1)/2 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
+                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
+                std::ptrdiff_t >(1,n) );
         BOOST_ASSERT( traits::vector_size(berr) >=
                 traits::matrix_num_columns(x) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=

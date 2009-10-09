@@ -44,7 +44,6 @@ inline void syevx( const char jobz, const char range, const char uplo,
     LAPACK_SSYEVX( &jobz, &range, &uplo, &n, a, &lda, &vl, &vu, &il, &iu,
             &abstol, &m, w, z, &ldz, work, &lwork, iwork, ifail, &info );
 }
-
 inline void syevx( const char jobz, const char range, const char uplo,
         const integer_t n, double* a, const integer_t lda, const double vl,
         const double vu, const integer_t il, const integer_t iu,
@@ -54,7 +53,6 @@ inline void syevx( const char jobz, const char range, const char uplo,
     LAPACK_DSYEVX( &jobz, &range, &uplo, &n, a, &lda, &vl, &vu, &il, &iu,
             &abstol, &m, w, z, &ldz, work, &lwork, iwork, ifail, &info );
 }
-
 } // namespace detail
 
 // value-type based template
@@ -83,8 +81,8 @@ struct syevx_impl {
         BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
                 traits::matrix_uplo_tag(a) == 'L' );
         BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max(1,
-                traits::matrix_num_columns(a)) );
+        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
+                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(w) >=
                 traits::matrix_num_columns(a) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=

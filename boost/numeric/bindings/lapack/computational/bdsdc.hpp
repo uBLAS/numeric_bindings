@@ -41,7 +41,6 @@ inline void bdsdc( const char uplo, const char compq, const integer_t n,
     LAPACK_SBDSDC( &uplo, &compq, &n, d, e, u, &ldu, vt, &ldvt, q, iq, work,
             iwork, &info );
 }
-
 inline void bdsdc( const char uplo, const char compq, const integer_t n,
         double* d, double* e, double* u, const integer_t ldu, double* vt,
         const integer_t ldvt, double* q, integer_t* iq, double* work,
@@ -49,7 +48,6 @@ inline void bdsdc( const char uplo, const char compq, const integer_t n,
     LAPACK_DBDSDC( &uplo, &compq, &n, d, e, u, &ldu, vt, &ldvt, q, iq, work,
             iwork, &info );
 }
-
 } // namespace detail
 
 // value-type based template

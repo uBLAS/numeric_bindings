@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 #  Copyright (c) 2008 Thomas Klimpel and Rutger ter Borg
 #
@@ -77,7 +78,10 @@ def proper_indent( input_string ):
     result = result + input_line[ prev_slice : cur_index ]
     all_results += [ result ]
 
-  return "\n".join( all_results ) + "\n"
+  final_result =  "\n".join( all_results ) + "\n"
+  final_result = final_result.replace( '(  )', '()' )
+
+  return final_result
 
 
 
@@ -188,3 +192,43 @@ def write_header( global_info_map, routines, template_map, dest_file ):
   #result = result.replace( "$PARSERMODE", template_map[ "PARSERMODE" ] )
 
   open( dest_file, 'wb' ).write( result )
+
+
+
+#
+# Write the include hierarchy header(s)
+#
+def write_include_hierarchy( global_info_map, routines, template_map, dest_path ):
+
+  parsermode = template_map[ 'PARSERMODE' ].lower()
+
+  for level, level_properties in routines.iteritems():
+    content = ''
+    dest_file = dest_path + '/' + level + '.hpp'
+
+    if template_map[ 'PARSERMODE' ] == 'BLAS':
+      print "something"
+    else:
+      # problem type = general_eigen, etc.
+      # problem properties = the mapped stuff
+      for problem_type, problem_properties in level_properties.iteritems():
+        # the key routines_by_value_type usually has 4 routines for a group of routines
+        if problem_properties.has_key( 'routines_by_value_type' ):
+            group_keys = problem_properties[ 'routines_by_value_type' ].keys()
+            group_keys.sort()
+
+            for r in group_keys:
+                content += '#include <boost/numeric/bindings/' + parsermode + '/' + level + \
+                    '/' + r.lower() + '.hpp>\n'
+
+    result = template_map[ parsermode + '_include_hierarchy' ]
+    result = result.replace( "$CONTENT", content )
+    result = result.replace( "$LEVEL", level.upper() )
+
+    open( dest_file, 'wb' ).write( result )
+
+
+
+
+
+

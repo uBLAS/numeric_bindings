@@ -284,7 +284,7 @@ def expand_nested_list( arg, arg_map, use_arg_map = True ):
     
   if arg[0] == 'max' or arg[0] == 'min':
     print "arg1: ", arg[1]
-    result = 'std::' + arg[0] + '('
+    result = 'std::' + arg[0] + '< std::ptrdiff_t >('
     i = 0
     for a in arg[1]:
       result += expand_nested_list( a, arg_map, use_arg_map )

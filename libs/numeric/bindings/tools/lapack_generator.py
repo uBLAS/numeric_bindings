@@ -564,6 +564,8 @@ print routines
 bindings.write_names_header( function_info_map, routines, templates, bindings_target_path + 'detail/lapack_names.h' )
 bindings.write_header( function_info_map, routines, templates, bindings_target_path + 'detail/lapack.h' )
 
+bindings.write_include_hierarchy( function_info_map, routines, templates, bindings_target_path )
+
 for level, level_properties in routines.iteritems():
   target_path = bindings_target_path + level
   if not os.path.exists( target_path ):

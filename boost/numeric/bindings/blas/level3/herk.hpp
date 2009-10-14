@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_HERK_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_HERK_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,24 +34,46 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void herk( const char uplo, const char trans, const integer_t n,
         const integer_t k, const float alpha, const traits::complex_f* a,
         const integer_t lda, const float beta, traits::complex_f* c,
         const integer_t ldc ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_cherk( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            n, k, alpha, traits::void_ptr(a), lda, beta, traits::void_ptr(c),
+            ldc );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasCherk( uplo, trans, n, k, alpha, traits::void_ptr(a), lda, beta,
+            traits::void_ptr(c), ldc );
+#else
     BLAS_CHERK( &uplo, &trans, &n, &k, &alpha, traits::complex_ptr(a), &lda,
             &beta, traits::complex_ptr(c), &ldc );
+#endif
 }
 
 inline void herk( const char uplo, const char trans, const integer_t n,
         const integer_t k, const double alpha, const traits::complex_d* a,
         const integer_t lda, const double beta, traits::complex_d* c,
         const integer_t ldc ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_zherk( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            n, k, alpha, traits::void_ptr(a), lda, beta, traits::void_ptr(c),
+            ldc );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    // NOT FOUND();
+#else
     BLAS_ZHERK( &uplo, &trans, &n, &k, &alpha, traits::complex_ptr(a), &lda,
             &beta, traits::complex_ptr(c), &ldc );
+#endif
 }
+
 
 } // namespace detail
 

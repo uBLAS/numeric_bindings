@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_GEMM_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_GEMM_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,7 +34,9 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void gemm( const char transa, const char transb, const integer_t m,
@@ -34,8 +44,18 @@ inline void gemm( const char transa, const char transb, const integer_t m,
         const float* a, const integer_t lda, const float* b,
         const integer_t ldb, const float beta, float* c,
         const integer_t ldc ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_sgemm( CblasColMajor,
+            ( transa == 'N' ? CblasNoTrans : ( transa == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( transb == 'N' ? CblasNoTrans : ( transb == 'T' ? CblasTrans : CblasConjTrans ) ),
+            m, n, k, alpha, a, lda, b, ldb, beta, c, ldc );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasSgemm( transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+            ldc );
+#else
     BLAS_SGEMM( &transa, &transb, &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta,
             c, &ldc );
+#endif
 }
 
 inline void gemm( const char transa, const char transb, const integer_t m,
@@ -43,8 +63,18 @@ inline void gemm( const char transa, const char transb, const integer_t m,
         const double* a, const integer_t lda, const double* b,
         const integer_t ldb, const double beta, double* c,
         const integer_t ldc ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_dgemm( CblasColMajor,
+            ( transa == 'N' ? CblasNoTrans : ( transa == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( transb == 'N' ? CblasNoTrans : ( transb == 'T' ? CblasTrans : CblasConjTrans ) ),
+            m, n, k, alpha, a, lda, b, ldb, beta, c, ldc );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasDgemm( transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
+            ldc );
+#else
     BLAS_DGEMM( &transa, &transb, &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta,
             c, &ldc );
+#endif
 }
 
 inline void gemm( const char transa, const char transb, const integer_t m,
@@ -53,9 +83,22 @@ inline void gemm( const char transa, const char transb, const integer_t m,
         const traits::complex_f* b, const integer_t ldb,
         const traits::complex_f beta, traits::complex_f* c,
         const integer_t ldc ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_cgemm( CblasColMajor,
+            ( transa == 'N' ? CblasNoTrans : ( transa == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( transb == 'N' ? CblasNoTrans : ( transb == 'T' ? CblasTrans : CblasConjTrans ) ),
+            m, n, k, traits::void_ptr(&alpha), traits::void_ptr(a), lda,
+            traits::void_ptr(b), ldb, traits::void_ptr(&beta),
+            traits::void_ptr(c), ldc );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasCgemm( transa, transb, m, n, k, traits::void_ptr(alpha),
+            traits::void_ptr(a), lda, traits::void_ptr(b), ldb,
+            traits::void_ptr(beta), traits::void_ptr(c), ldc );
+#else
     BLAS_CGEMM( &transa, &transb, &m, &n, &k, traits::complex_ptr(&alpha),
             traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
             traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
+#endif
 }
 
 inline void gemm( const char transa, const char transb, const integer_t m,
@@ -64,10 +107,24 @@ inline void gemm( const char transa, const char transb, const integer_t m,
         const traits::complex_d* b, const integer_t ldb,
         const traits::complex_d beta, traits::complex_d* c,
         const integer_t ldc ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_zgemm( CblasColMajor,
+            ( transa == 'N' ? CblasNoTrans : ( transa == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( transb == 'N' ? CblasNoTrans : ( transb == 'T' ? CblasTrans : CblasConjTrans ) ),
+            m, n, k, traits::void_ptr(&alpha), traits::void_ptr(a), lda,
+            traits::void_ptr(b), ldb, traits::void_ptr(&beta),
+            traits::void_ptr(c), ldc );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasZgemm( transa, transb, m, n, k, traits::void_ptr(alpha),
+            traits::void_ptr(a), lda, traits::void_ptr(b), ldb,
+            traits::void_ptr(beta), traits::void_ptr(c), ldc );
+#else
     BLAS_ZGEMM( &transa, &transb, &m, &n, &k, traits::complex_ptr(&alpha),
             traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
             traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
+#endif
 }
+
 
 } // namespace detail
 

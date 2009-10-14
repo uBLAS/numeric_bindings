@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SWAP_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SWAP_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,30 +34,57 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void swap( const integer_t n, float* x, const integer_t incx, float* y,
         const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_sswap( n, x, incx, y, incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasSswap( n, x, incx, y, incy );
+#else
     BLAS_SSWAP( &n, x, &incx, y, &incy );
+#endif
 }
 
 inline void swap( const integer_t n, double* x, const integer_t incx,
         double* y, const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_dswap( n, x, incx, y, incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasDswap( n, x, incx, y, incy );
+#else
     BLAS_DSWAP( &n, x, &incx, y, &incy );
+#endif
 }
 
 inline void swap( const integer_t n, traits::complex_f* x,
         const integer_t incx, traits::complex_f* y, const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_cswap( n, traits::void_ptr(x), incx, traits::void_ptr(y), incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasCswap( n, traits::void_ptr(x), incx, traits::void_ptr(y), incy );
+#else
     BLAS_CSWAP( &n, traits::complex_ptr(x), &incx, traits::complex_ptr(y),
             &incy );
+#endif
 }
 
 inline void swap( const integer_t n, traits::complex_d* x,
         const integer_t incx, traits::complex_d* y, const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_zswap( n, traits::void_ptr(x), incx, traits::void_ptr(y), incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    // NOT FOUND();
+#else
     BLAS_ZSWAP( &n, traits::complex_ptr(x), &incx, traits::complex_ptr(y),
             &incy );
+#endif
 }
+
 
 } // namespace detail
 

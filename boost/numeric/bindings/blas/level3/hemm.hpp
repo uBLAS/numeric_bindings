@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_HEMM_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_HEMM_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,7 +34,9 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void hemm( const char side, const char uplo, const integer_t m,
@@ -35,9 +45,21 @@ inline void hemm( const char side, const char uplo, const integer_t m,
         const traits::complex_f* b, const integer_t ldb,
         const traits::complex_f beta, traits::complex_f* c,
         const integer_t ldc ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_chemm( CblasColMajor, ( uplo == 'L' ? CblasLeft : CblasRight ),
+            ( uplo == 'U' ? CblasUpper : CblasLower ), m, n,
+            traits::void_ptr(&alpha), traits::void_ptr(a), lda,
+            traits::void_ptr(b), ldb, traits::void_ptr(&beta),
+            traits::void_ptr(c), ldc );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasChemm( side, uplo, m, n, traits::void_ptr(alpha),
+            traits::void_ptr(a), lda, traits::void_ptr(b), ldb,
+            traits::void_ptr(beta), traits::void_ptr(c), ldc );
+#else
     BLAS_CHEMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
             traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
             traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
+#endif
 }
 
 inline void hemm( const char side, const char uplo, const integer_t m,
@@ -46,10 +68,21 @@ inline void hemm( const char side, const char uplo, const integer_t m,
         const traits::complex_d* b, const integer_t ldb,
         const traits::complex_d beta, traits::complex_d* c,
         const integer_t ldc ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_zhemm( CblasColMajor, ( uplo == 'L' ? CblasLeft : CblasRight ),
+            ( uplo == 'U' ? CblasUpper : CblasLower ), m, n,
+            traits::void_ptr(&alpha), traits::void_ptr(a), lda,
+            traits::void_ptr(b), ldb, traits::void_ptr(&beta),
+            traits::void_ptr(c), ldc );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    // NOT FOUND();
+#else
     BLAS_ZHEMM( &side, &uplo, &m, &n, traits::complex_ptr(&alpha),
             traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
             traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
+#endif
 }
+
 
 } // namespace detail
 

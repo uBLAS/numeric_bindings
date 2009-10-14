@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_TPMV_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_TPMV_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,33 +34,71 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void tpmv( const char uplo, const char trans, const char diag,
         const integer_t n, const float* ap, float* x, const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_stpmv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n, ap, x, incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasStpmv( uplo, trans, diag, n, ap, x, incx );
+#else
     BLAS_STPMV( &uplo, &trans, &diag, &n, ap, x, &incx );
+#endif
 }
 
 inline void tpmv( const char uplo, const char trans, const char diag,
         const integer_t n, const double* ap, double* x,
         const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_dtpmv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n, ap, x, incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    // NOT FOUND();
+#else
     BLAS_DTPMV( &uplo, &trans, &diag, &n, ap, x, &incx );
+#endif
 }
 
 inline void tpmv( const char uplo, const char trans, const char diag,
         const integer_t n, const traits::complex_f* ap, traits::complex_f* x,
         const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_ctpmv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n,
+            traits::void_ptr(ap), traits::void_ptr(x), incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasCtpmv( uplo, trans, diag, n, traits::void_ptr(ap),
+            traits::void_ptr(x), incx );
+#else
     BLAS_CTPMV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
             traits::complex_ptr(x), &incx );
+#endif
 }
 
 inline void tpmv( const char uplo, const char trans, const char diag,
         const integer_t n, const traits::complex_d* ap, traits::complex_d* x,
         const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_ztpmv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n,
+            traits::void_ptr(ap), traits::void_ptr(x), incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    // NOT FOUND();
+#else
     BLAS_ZTPMV( &uplo, &trans, &diag, &n, traits::complex_ptr(ap),
             traits::complex_ptr(x), &incx );
+#endif
 }
+
 
 } // namespace detail
 

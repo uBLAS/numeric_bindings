@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_ROTG_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_ROTG_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,28 +34,31 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void rotg( float& a, float& b, float& c, float& s ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_srotg( &a, &b, &c, &s );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasSrotg( &a, &b, &c, &s );
+#else
     BLAS_SROTG( &a, &b, &c, &s );
+#endif
 }
 
 inline void rotg( double& a, double& b, double& c, double& s ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_drotg( &a, &b, &c, &s );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasDrotg( &a, &b, &c, &s );
+#else
     BLAS_DROTG( &a, &b, &c, &s );
+#endif
 }
 
-inline void rotg( traits::complex_f& a, traits::complex_f& b, float& c,
-        traits::complex_f& s ) {
-    BLAS_CROTG( traits::complex_ptr(&a), traits::complex_ptr(&b), &c,
-            traits::complex_ptr(&s) );
-}
-
-inline void rotg( traits::complex_d& a, traits::complex_d& b, double& c,
-        traits::complex_d& s ) {
-    BLAS_ZROTG( traits::complex_ptr(&a), traits::complex_ptr(&b), &c,
-            traits::complex_ptr(&s) );
-}
 
 } // namespace detail
 
@@ -61,8 +72,8 @@ struct rotg_impl {
 
     // static template member function
     template<  >
-    static return_type invoke( value_type& a, value_type& b, real_type& c,
-            value_type& s ) {
+    static return_type invoke( real_type& a, real_type& b, real_type& c,
+            real_type& s ) {
         detail::rotg( a, b, c, s );
     }
 };
@@ -71,11 +82,12 @@ struct rotg_impl {
 template<  >
 inline typename rotg_impl< typename traits::TODO_traits<
         TODO >::value_type >::return_type
-rotg( typename traits::TODO_traits< TODO >::value_type& a,
-        typename traits::TODO_traits< TODO >::value_type& b,
+rotg( typename traits::type_traits< typename traits::TODO_traits<
+        TODO >::value_type >::real_type& a, typename traits::type_traits<
+        typename traits::TODO_traits< TODO >::value_type >::real_type& b,
         typename traits::type_traits< typename traits::TODO_traits<
-        TODO >::value_type >::real_type& c, typename traits::TODO_traits<
-        TODO >::value_type& s ) {
+        TODO >::value_type >::real_type& c, typename traits::type_traits<
+        typename traits::TODO_traits< TODO >::value_type >::real_type& s ) {
     typedef typename traits::TODO_traits< TODO >::value_type value_type;
     rotg_impl< value_type >::invoke( a, b, c, s );
 }

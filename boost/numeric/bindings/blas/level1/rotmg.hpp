@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_ROTMG_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_ROTMG_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,18 +34,33 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void rotmg( float& d1, float& d2, float& x1, const float y1,
         float* sparam ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_srotmg( &d1, &d2, &x1, &y1, sparam );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasSrotmg( &d1, &d2, &x1, &y1, sparam );
+#else
     BLAS_SROTMG( &d1, &d2, &x1, &y1, sparam );
+#endif
 }
 
 inline void rotmg( double& d1, double& d2, double& x1, const double y1,
         double* dparam ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_drotmg( &d1, &d2, &x1, &y1, dparam );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasDrotmg( &d1, &d2, &x1, &y1, dparam );
+#else
     BLAS_DROTMG( &d1, &d2, &x1, &y1, dparam );
+#endif
 }
+
 
 } // namespace detail
 

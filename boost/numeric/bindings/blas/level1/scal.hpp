@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SCAL_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SCAL_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,28 +34,55 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void scal( const integer_t n, const float a, const float* x,
         const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_sscal( n, a, x, incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasSscal( n, a, x, incx );
+#else
     BLAS_SSCAL( &n, &a, x, &incx );
+#endif
 }
 
 inline void scal( const integer_t n, const double a, const double* x,
         const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_dscal( n, a, x, incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasDscal( n, a, x, incx );
+#else
     BLAS_DSCAL( &n, &a, x, &incx );
+#endif
 }
 
 inline void scal( const integer_t n, const traits::complex_f a,
         const traits::complex_f* x, const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_cscal( n, traits::void_ptr(&a), traits::void_ptr(x), incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasCscal( n, traits::void_ptr(a), traits::void_ptr(x), incx );
+#else
     BLAS_CSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x), &incx );
+#endif
 }
 
 inline void scal( const integer_t n, const traits::complex_d a,
         const traits::complex_d* x, const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_zscal( n, traits::void_ptr(&a), traits::void_ptr(x), incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasZscal( n, traits::void_ptr(a), traits::void_ptr(x), incx );
+#else
     BLAS_ZSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x), &incx );
+#endif
 }
+
 
 } // namespace detail
 

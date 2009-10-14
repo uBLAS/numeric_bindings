@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_SPMV_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_SPMV_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,20 +34,37 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void spmv( const char uplo, const integer_t n, const float alpha,
         const float* ap, const float* x, const integer_t incx,
         const float beta, float* y, const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_sspmv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ), n,
+            alpha, ap, x, incx, beta, y, incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasSspmv( uplo, n, alpha, ap, x, incx, beta, y, incy );
+#else
     BLAS_SSPMV( &uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy );
+#endif
 }
 
 inline void spmv( const char uplo, const integer_t n, const double alpha,
         const double* ap, const double* x, const integer_t incx,
         const double beta, double* y, const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_dspmv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ), n,
+            alpha, ap, x, incx, beta, y, incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    // NOT FOUND();
+#else
     BLAS_DSPMV( &uplo, &n, &alpha, ap, x, &incx, &beta, y, &incy );
+#endif
 }
+
 
 } // namespace detail
 

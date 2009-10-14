@@ -66,11 +66,6 @@ fcomplex_t BLAS_CDOTU( const integer_t* n, const fcomplex_t* x,
 dcomplex_t BLAS_ZDOTU( const integer_t* n, const dcomplex_t* x,
         const integer_t* incx, const dcomplex_t* y, const integer_t* incy );
 
-// Value-type variants of drot
-void BLAS_ZDROT( const integer_t* n, const dcomplex_t* cx,
-        const integer_t* incx, const dcomplex_t* cy, const integer_t* incy,
-        const double* c, const double* s );
-
 // Value-type variants of nrm2
 float BLAS_SNRM2( const integer_t* n, const float* x, const integer_t* incx );
 double BLAS_DNRM2( const integer_t* n, const double* x,
@@ -85,8 +80,6 @@ void BLAS_DROT( const integer_t* n, const double* x, const integer_t* incx,
 // Value-type variants of rotg
 void BLAS_SROTG( float* a, float* b, float* c, float* s );
 void BLAS_DROTG( double* a, double* b, double* c, double* s );
-void BLAS_CROTG( fcomplex_t* a, fcomplex_t* b, float* c, fcomplex_t* s );
-void BLAS_ZROTG( dcomplex_t* a, dcomplex_t* b, double* c, dcomplex_t* s );
 
 // Value-type variants of rotm
 void BLAS_SROTM( const integer_t* n, float* x, const integer_t* incx,
@@ -113,11 +106,6 @@ void BLAS_ZSCAL( const integer_t* n, const dcomplex_t* a, const dcomplex_t* x,
 // Value-type variants of sdot
 double BLAS_DSDOT( const integer_t* n, const float* sx, const integer_t* incx,
         const float* sy, const integer_t* incy );
-
-// Value-type variants of srot
-void BLAS_CSROT( const integer_t* n, const fcomplex_t* cx,
-        const integer_t* incx, const fcomplex_t* cy, const integer_t* incy,
-        const float* c, const float* s );
 
 // Value-type variants of swap
 void BLAS_SSWAP( const integer_t* n, float* x, const integer_t* incx,

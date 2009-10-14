@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_DOTC_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_DOTC_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,22 +34,40 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline fcomplex_t dotc( const integer_t n, const traits::complex_f* x,
         const integer_t incx, const traits::complex_f* y,
         const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    return cblas_cdotc_sub( n, traits::void_ptr(x), incx, traits::void_ptr(y),
+            incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    return cublasCdotc( n, traits::void_ptr(x), incx, traits::void_ptr(y),
+            incy );
+#else
     return BLAS_CDOTC( &n, traits::complex_ptr(x), &incx,
             traits::complex_ptr(y), &incy );
+#endif
 }
 
 inline dcomplex_t dotc( const integer_t n, const traits::complex_d* x,
         const integer_t incx, const traits::complex_d* y,
         const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    return cblas_zdotc_sub( n, traits::void_ptr(x), incx, traits::void_ptr(y),
+            incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    return // NOT FOUND();
+#else
     return BLAS_ZDOTC( &n, traits::complex_ptr(x), &incx,
             traits::complex_ptr(y), &incy );
+#endif
 }
+
 
 } // namespace detail
 

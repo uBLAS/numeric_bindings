@@ -48,9 +48,6 @@
 #define BLAS_CDOTU FORTRAN_ID( cdotu )
 #define BLAS_ZDOTU FORTRAN_ID( zdotu )
 
-// Value-type variants of drot
-#define BLAS_ZDROT FORTRAN_ID( zdrot )
-
 // Value-type variants of nrm2
 #define BLAS_SNRM2 FORTRAN_ID( snrm2 )
 #define BLAS_DNRM2 FORTRAN_ID( dnrm2 )
@@ -62,8 +59,6 @@
 // Value-type variants of rotg
 #define BLAS_SROTG FORTRAN_ID( srotg )
 #define BLAS_DROTG FORTRAN_ID( drotg )
-#define BLAS_CROTG FORTRAN_ID( crotg )
-#define BLAS_ZROTG FORTRAN_ID( zrotg )
 
 // Value-type variants of rotm
 #define BLAS_SROTM FORTRAN_ID( srotm )
@@ -81,9 +76,6 @@
 
 // Value-type variants of sdot
 #define BLAS_DSDOT FORTRAN_ID( dsdot )
-
-// Value-type variants of srot
-#define BLAS_CSROT FORTRAN_ID( csrot )
 
 // Value-type variants of swap
 #define BLAS_SSWAP FORTRAN_ID( sswap )

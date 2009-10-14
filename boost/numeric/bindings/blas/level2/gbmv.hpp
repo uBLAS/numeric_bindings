@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_GBMV_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_GBMV_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,7 +34,9 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void gbmv( const char trans, const integer_t m, const integer_t n,
@@ -34,8 +44,16 @@ inline void gbmv( const char trans, const integer_t m, const integer_t n,
         const float* a, const integer_t lda, const float* x,
         const integer_t incx, const float beta, float* y,
         const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_sgbmv( CblasColMajor,
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasSgbmv( trans, m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy );
+#else
     BLAS_SGBMV( &trans, &m, &n, &kl, &ku, &alpha, a, &lda, x, &incx, &beta, y,
             &incy );
+#endif
 }
 
 inline void gbmv( const char trans, const integer_t m, const integer_t n,
@@ -43,8 +61,16 @@ inline void gbmv( const char trans, const integer_t m, const integer_t n,
         const double* a, const integer_t lda, const double* x,
         const integer_t incx, const double beta, double* y,
         const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_dgbmv( CblasColMajor,
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            m, n, kl, ku, alpha, a, lda, x, incx, beta, y, incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    // NOT FOUND();
+#else
     BLAS_DGBMV( &trans, &m, &n, &kl, &ku, &alpha, a, &lda, x, &incx, &beta, y,
             &incy );
+#endif
 }
 
 inline void gbmv( const char trans, const integer_t m, const integer_t n,
@@ -53,9 +79,21 @@ inline void gbmv( const char trans, const integer_t m, const integer_t n,
         const traits::complex_f* x, const integer_t incx,
         const traits::complex_f beta, traits::complex_f* y,
         const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_cgbmv( CblasColMajor,
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            m, n, kl, ku, traits::void_ptr(&alpha), traits::void_ptr(a), lda,
+            traits::void_ptr(x), incx, traits::void_ptr(&beta),
+            traits::void_ptr(y), incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasCgbmv( trans, m, n, kl, ku, traits::void_ptr(alpha),
+            traits::void_ptr(a), lda, traits::void_ptr(x), incx,
+            traits::void_ptr(beta), traits::void_ptr(y), incy );
+#else
     BLAS_CGBMV( &trans, &m, &n, &kl, &ku, traits::complex_ptr(&alpha),
             traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
             traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
+#endif
 }
 
 inline void gbmv( const char trans, const integer_t m, const integer_t n,
@@ -64,10 +102,21 @@ inline void gbmv( const char trans, const integer_t m, const integer_t n,
         const traits::complex_d* x, const integer_t incx,
         const traits::complex_d beta, traits::complex_d* y,
         const integer_t incy ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_zgbmv( CblasColMajor,
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            m, n, kl, ku, traits::void_ptr(&alpha), traits::void_ptr(a), lda,
+            traits::void_ptr(x), incx, traits::void_ptr(&beta),
+            traits::void_ptr(y), incy );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    // NOT FOUND();
+#else
     BLAS_ZGBMV( &trans, &m, &n, &kl, &ku, traits::complex_ptr(&alpha),
             traits::complex_ptr(a), &lda, traits::complex_ptr(x), &incx,
             traits::complex_ptr(&beta), traits::complex_ptr(y), &incy );
+#endif
 }
+
 
 } // namespace detail
 

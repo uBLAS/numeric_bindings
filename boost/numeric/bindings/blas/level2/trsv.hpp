@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_TRSV_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_TRSV_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,34 +34,72 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void trsv( const char uplo, const char trans, const char diag,
         const integer_t n, const float* a, const integer_t lda, float* x,
         const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_strsv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n, a, lda, x, incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasStrsv( uplo, trans, diag, n, a, lda, x, incx );
+#else
     BLAS_STRSV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
+#endif
 }
 
 inline void trsv( const char uplo, const char trans, const char diag,
         const integer_t n, const double* a, const integer_t lda, double* x,
         const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_dtrsv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n, a, lda, x, incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasDtrsv( uplo, trans, diag, n, a, lda, x, incx );
+#else
     BLAS_DTRSV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
+#endif
 }
 
 inline void trsv( const char uplo, const char trans, const char diag,
         const integer_t n, const traits::complex_f* a, const integer_t lda,
         traits::complex_f* x, const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_ctrsv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n,
+            traits::void_ptr(a), lda, traits::void_ptr(x), incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasCtrsv( uplo, trans, diag, n, traits::void_ptr(a), lda,
+            traits::void_ptr(x), incx );
+#else
     BLAS_CTRSV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
             traits::complex_ptr(x), &incx );
+#endif
 }
 
 inline void trsv( const char uplo, const char trans, const char diag,
         const integer_t n, const traits::complex_d* a, const integer_t lda,
         traits::complex_d* x, const integer_t incx ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_ztrsv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n,
+            traits::void_ptr(a), lda, traits::void_ptr(x), incx );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    // NOT FOUND();
+#else
     BLAS_ZTRSV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
             traits::complex_ptr(x), &incx );
+#endif
 }
+
 
 } // namespace detail
 

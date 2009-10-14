@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SROT_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SROT_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,15 +34,24 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void srot( const integer_t n, const traits::complex_f* cx,
         const integer_t incx, const traits::complex_f* cy,
         const integer_t incy, const float c, const float s ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    //TODO( ... ); // FIXME
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasCsrot( ... ); // FIXME
+#else
     BLAS_CSROT( &n, traits::complex_ptr(cx), &incx, traits::complex_ptr(cy),
             &incy, &c, &s );
+#endif
 }
+
 
 } // namespace detail
 

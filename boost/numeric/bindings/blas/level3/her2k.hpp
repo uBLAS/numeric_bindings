@@ -14,8 +14,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_HER2K_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_HER2K_HPP
 
-#include <boost/mpl/bool.hpp>
+// Include header of configured BLAS interface
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#endif
+
+#include <boost/mpl/bool.hpp>
 #include <boost/numeric/bindings/traits/traits.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
 #include <boost/static_assert.hpp>
@@ -26,7 +34,9 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// overloaded functions to call blas
+// The detail namespace is used for overloads on value type,
+// and to dispatch to the right routine
+
 namespace detail {
 
 inline void her2k( const char uplo, const char trans, const integer_t n,
@@ -34,9 +44,20 @@ inline void her2k( const char uplo, const char trans, const integer_t n,
         const traits::complex_f* a, const integer_t lda,
         const traits::complex_f* b, const integer_t ldb, const float beta,
         traits::complex_f* c, const integer_t ldc ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_cher2k( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            n, k, traits::void_ptr(&alpha), traits::void_ptr(a), lda,
+            traits::void_ptr(b), ldb, beta, traits::void_ptr(c), ldc );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    cublasCher2k( uplo, trans, n, k, traits::void_ptr(alpha),
+            traits::void_ptr(a), lda, traits::void_ptr(b), ldb, beta,
+            traits::void_ptr(c), ldc );
+#else
     BLAS_CHER2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
             traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb, &beta,
             traits::complex_ptr(c), &ldc );
+#endif
 }
 
 inline void her2k( const char uplo, const char trans, const integer_t n,
@@ -44,10 +65,20 @@ inline void her2k( const char uplo, const char trans, const integer_t n,
         const traits::complex_d* a, const integer_t lda,
         const traits::complex_d* b, const integer_t ldb, const double beta,
         traits::complex_d* c, const integer_t ldc ) {
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+    cblas_zher2k( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
+            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
+            n, k, traits::void_ptr(&alpha), traits::void_ptr(a), lda,
+            traits::void_ptr(b), ldb, beta, traits::void_ptr(c), ldc );
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+    // NOT FOUND();
+#else
     BLAS_ZHER2K( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
             traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb, &beta,
             traits::complex_ptr(c), &ldc );
+#endif
 }
+
 
 } // namespace detail
 

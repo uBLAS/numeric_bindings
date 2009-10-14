@@ -71,25 +71,38 @@ def write_functions( info_map, group, template_map, base_dir ):
       arg_list = []
       lapack_arg_list = []
       cblas_arg_list = []
+      cublas_arg_list = []
+
+      if info_map[ subroutine ][ "has_cblas_order_arg" ]:
+        cblas_arg_list += [ "CblasColMajor" ]
+
       for arg in info_map[ subroutine ][ 'arguments' ]:
         print "Subroutine ", subroutine, " arg ", arg
         arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] ]
         lapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_blas_header' ] ]
         cblas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_cblas_header' ] ]
+
       sub_template = sub_template.replace( "$LEVEL0", ", ".join( arg_list ) )
       sub_template = sub_template.replace( "$CALL_BLAS_HEADER", ", ".join( lapack_arg_list ) )
       sub_template = sub_template.replace( "$CALL_CBLAS_HEADER", ", ".join( cblas_arg_list ) )
       sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
+
+      # CBLAS stuff
       if 'cblas_routine' in info_map[ subroutine ]:
         cblas_routine = info_map[ subroutine ][ 'cblas_routine' ]
       else:
-        cblas_routine = '//TODO'
+        cblas_routine = '// TODO'
       sub_template = sub_template.replace( "$CBLAS_ROUTINE", cblas_routine )
 
+      # CUBLAS stuff
       if 'cublas_routine' in info_map[ subroutine ]:
         cublas_routine = info_map[ subroutine ][ 'cublas_routine' ]
+        for arg in info_map[ subroutine ][ 'arguments' ]:
+          cublas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_cublas_header' ] ]
       else:
-        cublas_routine = '//TODO'
+        cublas_routine = '// NOT FOUND'
+
+      sub_template = sub_template.replace( "$CALL_CUBLAS_HEADER", ", ".join( cublas_arg_list ) )
       sub_template = sub_template.replace( "$CUBLAS_ROUTINE", cublas_routine )
 
       sub_template = sub_template.replace( '$groupname', group_name.lower() )

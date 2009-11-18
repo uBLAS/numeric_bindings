@@ -9,7 +9,8 @@
 #ifndef BOOST_NUMERIC_BINDINGS_TRANSPOSE_HPP
 #define BOOST_NUMERIC_BINDINGS_TRANSPOSE_HPP
 
-#include <boost/numeric/bindings/detail/adaptor.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
+#include <boost/numeric/bindings/tensor_rank.hpp>
 #include <boost/mpl/max.hpp>
 
 namespace boost {
@@ -41,11 +42,10 @@ private:
 template< typename T, typename Id, typename Enable >
 struct adaptor< transpose_wrapper<T>, Id, Enable > {
 
-    typedef typename adaptor_access<T>::value_type value_type;
+    typedef typename value_type<T>::type value_type;
     typedef typename boost::mpl::max<
-            boost::mpl::int_<2>, 
-            typename adaptor_access<T>::tensor_rank
-        >::type tensor_rank;
+            boost::mpl::int_<2>,
+            typename tensor_rank<T>::type >::type tensor_rank;
 
     static std::ptrdiff_t size1( Id const& t ) {
         return tensor_size2( t.get() );

@@ -17,11 +17,11 @@ namespace bindings {
 
 template< typename T >
 struct value_type {
-    typedef typename detail::adaptor_access< T >::value_type type;
+    typedef typename detail::property_at< T, detail::tag::value_type >::type type;
 };
 
-} // bindings
-} // numeric
-} // boost
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

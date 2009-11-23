@@ -16,10 +16,10 @@ namespace numeric {
 namespace bindings {
 
 template< typename T >
-struct tensor_rank: detail::adaptor_access< T >::tensor_rank {};
+struct tensor_rank: mpl::int_< detail::property_at< T, detail::tag::entity >::type::value > {};
 
-} // bindings
-} // numeric
-} // boost
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

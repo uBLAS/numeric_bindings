@@ -10,7 +10,6 @@
 #define BOOST_NUMERIC_BINDINGS_STD_VECTOR_HPP
 
 #include <boost/numeric/bindings/detail/adaptor.hpp>
-#include <boost/numeric/bindings/detail/dense.hpp>
 #include <vector>
 
 namespace boost {
@@ -21,19 +20,26 @@ namespace detail {
 template< typename T, typename Alloc, typename Id, typename Enable >
 struct adaptor< std::vector< T, Alloc >, Id, Enable > {
 
-    // Generic information
-    typedef typename Id::value_type value_type;
-    typedef boost::mpl::int_<1> tensor_rank;
+    typedef typename copy_const< Id, T >::type value_type;
+    typedef mpl::map<
+        mpl::pair< tag::value_type, value_type >,
+        mpl::pair< tag::entity, tag::vector >,
+        mpl::pair< tag::data_structure, tag::linear_array >
+    > property_map;
 
-    static std::ptrdiff_t size1( std::vector< T, Alloc > const& t ) {
+    static std::ptrdiff_t size1( Id const& t ) {
         return t.size();
+    }
+
+    static value_type* data( Id& t ) {
+        return &t.front();
     }
 
 };
 
-} // detail
-} // bindings
-} // numeric
-} // boost
+} // namespace detail
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

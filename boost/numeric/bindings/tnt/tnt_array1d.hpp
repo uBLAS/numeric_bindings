@@ -6,19 +6,19 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_UBLAS_VECTOR_HPP
-#define BOOST_NUMERIC_BINDINGS_UBLAS_VECTOR_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_TNT_ARRAY1D_HPP
+#define BOOST_NUMERIC_BINDINGS_TNT_ARRAY1D_HPP
 
 #include <boost/numeric/bindings/detail/adaptor.hpp>
-#include <boost/numeric/ublas/vector.hpp>
+#include <tnt_array1d.h>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace detail {
 
-template< typename T, typename Alloc, typename Id, typename Enable >
-struct adaptor< boost::numeric::ublas::vector< T, Alloc >, Id, Enable > {
+template< typename T, typename Id, typename Enable >
+struct adaptor< TNT::Array1D< T >, Id, Enable > {
 
     typedef typename copy_const< Id, T >::type value_type;
     typedef mpl::map<
@@ -28,11 +28,11 @@ struct adaptor< boost::numeric::ublas::vector< T, Alloc >, Id, Enable > {
     > property_map;
 
     static std::ptrdiff_t size1( Id const& t ) {
-        return t.size();
+        return t.dim();
     }
 
     static value_type* data( Id& t ) {
-        return &t.data()[0];
+        return &t[0];
     }
 
 };

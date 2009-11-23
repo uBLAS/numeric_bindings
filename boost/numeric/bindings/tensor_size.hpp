@@ -60,9 +60,9 @@ inline std::ptrdiff_t tensor_size2( T const& t ) {
     return tensor_size_impl<T,2>::size2( t );
 }
 
-} // bindings
-} // numeric
-} // boost
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif
 

@@ -18,8 +18,8 @@ namespace bindings {
 template< typename T >
 struct is_real: boost::is_floating_point<T> {};
 
-} // bindings
-} // numeric
-} // boost
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

@@ -18,8 +18,8 @@ namespace bindings {
 template< typename T >
 struct is_complex: boost::is_complex<T> {};
 
-} // bindings
-} // numeric
-} // boost
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

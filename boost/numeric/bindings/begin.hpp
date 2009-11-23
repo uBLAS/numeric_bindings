@@ -15,7 +15,6 @@
 namespace boost {
 namespace numeric {
 namespace bindings {
-
 namespace result_of {
 
 template< typename T >
@@ -23,7 +22,7 @@ struct begin {
     typedef detail::dense_iterator< typename value_type<T>::type > type;
 };
 
-}
+} // namespace result_of
 
 template< typename T >
 detail::dense_iterator< typename value_type<T>::type > begin( T& t ) {
@@ -37,8 +36,8 @@ detail::dense_iterator< typename value_type<T const>::type > begin( T const& t )
         detail::adaptor_access<T const>::data( t ) );
 }
 
-} // bindings
-} // numeric
-} // boost
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

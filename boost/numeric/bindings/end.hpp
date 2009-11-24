@@ -11,6 +11,7 @@
 
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/detail/dense_iterator.hpp>
+#include <boost/numeric/bindings/size.hpp>
 
 namespace boost {
 namespace numeric {
@@ -27,13 +28,13 @@ struct end {
 template< typename T >
 detail::dense_iterator< typename value_type<T>::type > end( T& t ) {
     return detail::dense_iterator< typename value_type<T>::type >(
-        detail::adaptor_access<T>::data( t ) ) + tensor_size1( t );
+        detail::adaptor_access<T>::data( t ) ) + size<1>( t );
 }
 
 template< typename T >
 detail::dense_iterator< typename value_type<T const>::type > end( T const& t ) {
     return detail::dense_iterator< typename value_type<T const>::type >(
-        detail::adaptor_access<T const>::data( t ) ) + tensor_size1( t );
+        detail::adaptor_access<T const>::data( t ) ) + size<1>( t );
 }
 
 } // namespace bindings

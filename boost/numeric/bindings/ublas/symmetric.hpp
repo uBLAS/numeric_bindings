@@ -25,6 +25,8 @@ struct adaptor< ublas::symmetric_matrix< T, F1, F2, A >, Id, Enable > {
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::matrix >,
+        mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
+        mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
         mpl::pair< tag::matrix_type, tag::symmetric >,
         mpl::pair< tag::data_structure, tag::triangular_array >,
         mpl::pair< tag::data_side, typename to_bindings_tag<F1>::type >,

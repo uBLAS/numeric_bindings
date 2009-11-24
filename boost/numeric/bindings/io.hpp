@@ -13,6 +13,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/end.hpp>
+#include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/detail/adaptable_type.hpp>
 
 namespace boost {
@@ -22,7 +23,7 @@ namespace detail {
 
 template< typename Stream, typename T >
 Stream& pretty_print( Stream& os, T const& t ) {
-    os << "[" << vector_size(t) << "] ";
+    os << "[" << size<1>(t) << "] ";
     for( typename result_of::begin<T const>::type i = begin(t); i != end(t); ++i ) {
         os << *i << " ";
     }

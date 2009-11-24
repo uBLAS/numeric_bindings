@@ -10,6 +10,7 @@
 #define BOOST_NUMERIC_BINDINGS_IDENTITY_HPP
 
 #include <boost/numeric/bindings/detail/adaptable_type.hpp>
+#include <boost/numeric/bindings/size.hpp>
 #include <boost/ref.hpp>
 
 namespace boost {
@@ -30,8 +31,8 @@ struct adaptor< identity_wrapper<T>, Id, Enable > {
     typedef adaptor< typename boost::remove_const<T>::type, T > underlying_adaptor;
     typedef typename underlying_adaptor::property_map property_map;
 
-    static std::ptrdiff_t size1( Id const& id ) {
-        return underlying_adaptor::size1( id.get() );
+    static typename result_of::size<T,1>::type size1( Id const& id ) {
+        return size<1>( id.get() );
     }
 
     static typename mpl::at< property_map, tag::value_type >::type* data( Id& id ) {

@@ -9,15 +9,24 @@
 #ifndef BOOST_NUMERIC_BINDINGS_MATRIX_NUM_ROWS_HPP
 #define BOOST_NUMERIC_BINDINGS_MATRIX_NUM_ROWS_HPP
 
-#include <boost/numeric/bindings/tensor_size.hpp>
+#include <boost/numeric/bindings/size.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 
+namespace result_of {
+
 template< typename T >
-inline std::ptrdiff_t matrix_num_rows( T const& t ) {
-    return tensor_size1( t );
+struct num_rows {
+    typedef typename result_of::size<T,1>::type type;
+};
+
+} // namespace result_of
+
+template< typename T >
+inline typename result_of::num_rows<T>::type num_rows( T const& t ) {
+    return size<1>( t );
 }
 
 } // bindings

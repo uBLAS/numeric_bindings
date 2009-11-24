@@ -24,6 +24,7 @@ struct adaptor< std::valarray< T >, Id, Enable > {
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::vector >,
+        mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::data_structure, tag::linear_array >
     > property_map;
 

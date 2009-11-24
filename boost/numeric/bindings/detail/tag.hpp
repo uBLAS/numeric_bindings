@@ -33,6 +33,13 @@ struct scalar: tensor<0> {};
 struct vector: tensor<1> {};
 struct matrix: tensor<2> {};
 
+template< int Dimension >
+struct size_type: mpl::int_< Dimension > {};
+
+template< int Dimension >
+struct stride_type: mpl::int_< Dimension > {};
+
+struct contiguous: mpl::int_<1> {};
 
 struct linear_array {};
 struct triangular_array {};

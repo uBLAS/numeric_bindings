@@ -23,6 +23,7 @@ struct adaptor< ublas::mapped_vector< T, A >, Id, Enable > {
     typedef mpl::map<
         mpl::pair< tag::value_type, T >,
         mpl::pair< tag::entity, tag::vector >,
+        mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::data_structure, tag::associative_array >
     > property_map;
 

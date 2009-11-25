@@ -43,6 +43,8 @@ struct adaptor_access< T,
         typename boost::enable_if< is_adaptable<T> >::type >:
     adaptor< typename boost::remove_const<T>::type, T > {};
 
+
+
 template< typename T, typename Key >
 struct property_has_key: mpl::has_key< typename adaptor_access<T>::property_map, Key > {};
 
@@ -51,12 +53,16 @@ struct property_at {
     typedef typename mpl::at< typename adaptor_access<T>::property_map, Key >::type type;
 };
 
+template< typename T, typename Key, typename Value >
+struct is_same_at {
+};
+
 } // detail
 } // bindings
 } // numeric
 } // boost
 
-// Include support for POD types
+// include support for POD types
 #include <boost/numeric/bindings/detail/pod.hpp>
 
 #endif

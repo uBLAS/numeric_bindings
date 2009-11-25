@@ -18,26 +18,46 @@ namespace numeric {
 namespace bindings {
 namespace detail {
 
+template< typename DataOrder, int StrideDimension >
+struct select_stride {};
+
+template<>
+struct select_stride< tag::row_major, 1 > {
+    typedef std::ptrdiff_t type;
+};
+
+template<>
+struct select_stride< tag::row_major, 2 > {
+    typedef tag::contiguous type;
+};
+
+template<>
+struct select_stride< tag::column_major, 1 > {
+    typedef tag::contiguous type;
+};
+
+template<>
+struct select_stride< tag::column_major, 2 > {
+    typedef std::ptrdiff_t type;
+};
+
+
+
+
 template< typename T, typename F, typename A, typename Id, typename Enable >
 struct adaptor< boost::numeric::ublas::matrix< T, F, A >, Id, Enable > {
 
     typedef typename copy_const< Id, T >::type value_type;
+    typedef typename detail::to_bindings_tag<F>::type data_order;
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::matrix >,
         mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
         mpl::pair< tag::data_structure, tag::linear_array >,
-
-        // either tag::column_major or tag::row_major
-        mpl::pair< tag::data_order, typename detail::to_bindings_tag<F>::type >,
-
-        //
-        // is either contiguous in case of column/row major stuff, or it is dynamic, too.
-        //
-        mpl::pair< tag::stride_type<1>, std::ptrdiff_t >,
-        mpl::pair< tag::stride_type<2>, std::ptrdiff_t >,
-
+        mpl::pair< tag::data_order, data_order >,
+        mpl::pair< tag::stride_type<1>, typename select_stride< data_order, 1 >::type >,
+        mpl::pair< tag::stride_type<2>, typename select_stride< data_order, 2 >::type >
     > property_map;
 
     static std::ptrdiff_t size1( Id const& t ) {
@@ -53,10 +73,11 @@ struct adaptor< boost::numeric::ublas::matrix< T, F, A >, Id, Enable > {
     }
 
     static std::ptrdiff_t stride1( Id const& t ) {
-        
+        return t.size2();
     }
 
     static std::ptrdiff_t stride2( Id const& t ) {
+        return t.size1();
     }
 
 };

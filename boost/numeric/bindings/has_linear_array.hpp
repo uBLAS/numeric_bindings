@@ -17,8 +17,9 @@ namespace numeric {
 namespace bindings {
 
 template< typename T >
-struct has_linear_array: is_same< typename detail::property_at< T, detail::tag::data_structure >::type,
-                                  detail::tag::linear_array >::type {};
+struct has_linear_array: 
+        detail::is_same_at< T, detail::tag::data_structure, detail::tag::linear_array > {};
+
 
 } // namespace bindings
 } // namespace numeric

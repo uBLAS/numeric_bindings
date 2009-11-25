@@ -11,6 +11,7 @@
 
 #include <boost/numeric/bindings/detail/adaptable_type.hpp>
 #include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 #include <boost/ref.hpp>
 
 namespace boost {

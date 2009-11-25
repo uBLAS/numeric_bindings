@@ -6,8 +6,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_MATRIX_NUM_COLUMNS_HPP
-#define BOOST_NUMERIC_BINDINGS_MATRIX_NUM_COLUMNS_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_NUM_COLUMNS_HPP
+#define BOOST_NUMERIC_BINDINGS_NUM_COLUMNS_HPP
 
 #include <boost/numeric/bindings/size.hpp>
 
@@ -33,4 +33,3 @@ inline typename result_of::num_columns<T>::type num_columns( T const& t ) {
 } // boost
 
 #endif
-

@@ -24,7 +24,8 @@ struct adaptor< T, Id, typename boost::enable_if< is_numeric<T> >::type > {
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::scalar >,
-        mpl::pair< tag::size_type<1>, mpl::int_<1> >
+        mpl::pair< tag::size_type<1>, mpl::int_<1> >,
+        mpl::pair< tag::stride_type<1>, mpl::int_<0> >
     > property_map;
 
     static value_type* data( Id& t ) {
@@ -41,7 +42,7 @@ struct adaptor< T[N], Id, typename boost::enable_if< is_numeric<T> >::type > {
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::vector >,
         mpl::pair< tag::size_type<1>, mpl::int_<N> >,
-        mpl::pair< tag::data_structure, tag::linear_array >
+        mpl::pair< tag::data_structure, tag::linear_array >,
         mpl::pair< tag::stride_type<1>, tag::contiguous >
     > property_map;
 
@@ -63,8 +64,8 @@ struct adaptor< T[N][M], Id, typename boost::enable_if< is_numeric<T> >::type > 
         mpl::pair< tag::matrix_type, tag::general >,
         mpl::pair< tag::data_structure, tag::linear_array >,
         mpl::pair< tag::data_order, tag::row_major >,
-        mpl::pair< tag::stride_type<1>, tag::contiguous >,
-        mpl::pair< tag::stride_type<2>, mpl::int_<N> >
+        mpl::pair< tag::stride_type<1>, mpl::int_<N> >,
+        mpl::pair< tag::stride_type<2>, tag::contiguous >
     > property_map;
 
     static value_type* data( Id& t ) {

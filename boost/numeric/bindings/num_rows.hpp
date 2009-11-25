@@ -6,15 +6,14 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_MATRIX_NUM_ROWS_HPP
-#define BOOST_NUMERIC_BINDINGS_MATRIX_NUM_ROWS_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_NUM_ROWS_HPP
+#define BOOST_NUMERIC_BINDINGS_NUM_ROWS_HPP
 
 #include <boost/numeric/bindings/size.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
-
 namespace result_of {
 
 template< typename T >
@@ -29,9 +28,8 @@ inline typename result_of::num_rows<T>::type num_rows( T const& t ) {
     return size<1>( t );
 }
 
-} // bindings
-} // numeric
-} // boost
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif
-

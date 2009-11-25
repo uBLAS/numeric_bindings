@@ -31,11 +31,10 @@ struct adaptable_type {
 
 };
 
-
-} // detail
-} // bindings
-} // numeric
-} // boost
+} // namespace detail
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 template< typename T >
 std::ostream& operator<<( std::ostream& os,

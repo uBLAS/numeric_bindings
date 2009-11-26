@@ -24,8 +24,13 @@ struct adaptor< TNT::Fortran_Array2D< T >, Id, Enable > {
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::matrix >,
+        mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
+        mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
         mpl::pair< tag::data_structure, tag::linear_array >,
-        mpl::pair< tag::data_order, tag::column_major >
+        mpl::pair< tag::data_order, tag::column_major >,
+        mpl::pair< tag::stride_type<1>, tag::contiguous >,
+        mpl::pair< tag::stride_type<2>, std::ptrdiff_t >
+
     > property_map;
 
     static std::ptrdiff_t size1( Id const& t ) {
@@ -38,6 +43,10 @@ struct adaptor< TNT::Fortran_Array2D< T >, Id, Enable > {
 
     static value_type* data( Id& t ) {
         return &t(1,1);
+    }
+
+    static std::ptrdiff_t stride2( Id const& t ) {
+        return t.dim1();
     }
 
 };

@@ -41,11 +41,10 @@ struct stride_type: mpl::int_< Dimension > {};
 
 struct contiguous: mpl::int_<1> {};
 
+// Supported data structures
 struct linear_array {};
 struct triangular_array {};
-struct associative_array {};
-struct compressed {};
-struct coordinate {};
+struct yale_sparse {};
 
 struct structure {};
 struct general {};
@@ -63,24 +62,6 @@ struct unit_upper {};
 struct unit_lower {};
 
 } // tag
-
-template< typename T >
-struct to_bindings_tag {};
-
-template< typename T >
-struct erase_unit {
-    typedef T type;
-};
-
-template<>
-struct erase_unit< tag::unit_upper > {
-    typedef tag::upper type;
-};
-
-template<>
-struct erase_unit< tag::unit_lower > {
-    typedef tag::lower type;
-};
 
 } // namespace detail
 } // namespace bindings

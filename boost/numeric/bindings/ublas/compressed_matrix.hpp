@@ -6,31 +6,29 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_UBLAS_SYMMETRIC_HPP
-#define BOOST_NUMERIC_BINDINGS_UBLAS_SYMMETRIC_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_UBLAS_COMPRESSED_MATRIX_HPP
+#define BOOST_NUMERIC_BINDINGS_UBLAS_COMPRESSED_MATRIX_HPP
 
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
-#include <boost/numeric/ublas/symmetric.hpp>
+#include <boost/numeric/ublas/matrix_sparse.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace detail {
 
-template< typename T, typename F1, typename F2, typename A, typename Id, typename Enable >
-struct adaptor< ublas::symmetric_matrix< T, F1, F2, A >, Id, Enable > {
+template< typename T, typename F, std::size_t IB, typename IA, typename TA, typename Id, typename Enable >
+struct adaptor< ublas::compressed_matrix< T, F, IB, IA, TA >, Id, Enable > {
 
-    typedef typename copy_const< Id, T >::type value_type;
+    typedef typename convert_to< tag::data_order, F >::type data_order;
     typedef mpl::map<
-        mpl::pair< tag::value_type, value_type >,
-        mpl::pair< tag::entity, tag::matrix >,
+        mpl::pair< tag::value_type, T >,
+        mpl::pair< tag::entity, tag::vector >,
         mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
-        mpl::pair< tag::matrix_type, tag::symmetric >,
-        mpl::pair< tag::data_structure, tag::triangular_array >,
-        mpl::pair< tag::data_side, typename convert_to< tag::data_side, F1 >::type >,
-        mpl::pair< tag::data_order, typename convert_to< tag::data_order, F2 >::type >
+        mpl::pair< tag::data_structure, tag::yale_sparse >,
+        mpl::pair< tag::data_order, data_order >
     > property_map;
 
     static std::ptrdiff_t size1( Id const& t ) {
@@ -40,6 +38,14 @@ struct adaptor< ublas::symmetric_matrix< T, F1, F2, A >, Id, Enable > {
     static std::ptrdiff_t size2( Id const& t ) {
         return t.size2();
     }
+/*
+    static void index_data( Id& t ) {
+        return t.index_data()
+    }
+
+    static void value_data( Id& t ) {
+        return t.value_data();
+    }*/
 
 };
 

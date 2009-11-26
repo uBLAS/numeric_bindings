@@ -9,9 +9,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_END_HPP
 #define BOOST_NUMERIC_BINDINGS_END_HPP
 
-#include <boost/numeric/bindings/detail/adaptor.hpp>
-#include <boost/numeric/bindings/detail/dense_iterator.hpp>
-#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/begin.hpp>
 
 namespace boost {
 namespace numeric {
@@ -20,21 +18,19 @@ namespace result_of {
 
 template< typename T >
 struct end {
-    typedef detail::dense_iterator< typename value_type<T>::type > type;
+    typedef typename begin<T>::type type;
 };
 
 } // namespace result_of
 
 template< typename T >
-detail::dense_iterator< typename value_type<T>::type > end( T& t ) {
-    return detail::dense_iterator< typename value_type<T>::type >(
-        detail::adaptor_access<T>::data( t ) ) + size<1>( t );
+typename result_of::end<T>::type end( T& t ) {
+    return typename result_of::end<T>::type( data( t ), stride<1>( t ) ) + size<1>( t );
 }
 
 template< typename T >
-detail::dense_iterator< typename value_type<T const>::type > end( T const& t ) {
-    return detail::dense_iterator< typename value_type<T const>::type >(
-        detail::adaptor_access<T const>::data( t ) ) + size<1>( t );
+typename result_of::end<T const>::type end( T const& t ) {
+    return typename result_of::end<T const>::type( data( t ), stride<1>( t ) ) + size<1>( t );
 }
 
 } // namespace bindings

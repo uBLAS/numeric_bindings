@@ -9,8 +9,11 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BEGIN_HPP
 #define BOOST_NUMERIC_BINDINGS_BEGIN_HPP
 
+#include <boost/numeric/bindings/data.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value_type.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
-#include <boost/numeric/bindings/detail/dense_iterator.hpp>
+#include <boost/numeric/bindings/detail/linear_iterator.hpp>
 
 namespace boost {
 namespace numeric {
@@ -19,21 +22,22 @@ namespace result_of {
 
 template< typename T >
 struct begin {
-    typedef detail::dense_iterator< typename value_type<T>::type > type;
+    typedef detail::linear_iterator<
+        typename value_type<T>::type,
+        typename stride<T,1>::type
+    > type;
 };
 
 } // namespace result_of
 
 template< typename T >
-detail::dense_iterator< typename value_type<T>::type > begin( T& t ) {
-    return detail::dense_iterator< typename value_type<T>::type >(
-        detail::adaptor_access<T>::data( t ) );
+typename result_of::begin<T>::type begin( T& t ) {
+    return typename result_of::begin<T>::type( data( t ), stride<1>( t ) );
 }
 
 template< typename T >
-detail::dense_iterator< typename value_type<T const>::type > begin( T const& t ) {
-    return detail::dense_iterator< typename value_type<T const>::type>(
-        detail::adaptor_access<T const>::data( t ) );
+typename result_of::begin<T const>::type begin( T const& t ) {
+    return typename result_of::begin<T const>::type( data( t ), stride<1>( t ) );
 }
 
 } // namespace bindings

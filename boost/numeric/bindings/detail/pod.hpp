@@ -64,7 +64,7 @@ struct adaptor< T[N][M], Id, typename boost::enable_if< is_numeric<T> >::type > 
         mpl::pair< tag::matrix_type, tag::general >,
         mpl::pair< tag::data_structure, tag::linear_array >,
         mpl::pair< tag::data_order, tag::row_major >,
-        mpl::pair< tag::stride_type<1>, mpl::int_<N> >,
+        mpl::pair< tag::stride_type<1>, mpl::int_<M> >,
         mpl::pair< tag::stride_type<2>, tag::contiguous >
     > property_map;
 

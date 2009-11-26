@@ -6,8 +6,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_STD_HPP
-#define BOOST_NUMERIC_BINDINGS_STD_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_TNT_HPP
+#define BOOST_NUMERIC_BINDINGS_TNT_HPP
 
 #include <boost/numeric/bindings/tnt/array1d.hpp>
 #include <boost/numeric/bindings/tnt/array2d.hpp>

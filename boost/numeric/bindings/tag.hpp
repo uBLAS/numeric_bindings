@@ -6,13 +6,12 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_DETAIL_TAG_HPP
-#define BOOST_NUMERIC_BINDINGS_DETAIL_TAG_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_TAG_HPP
+#define BOOST_NUMERIC_BINDINGS_TAG_HPP
 
 namespace boost {
 namespace numeric {
 namespace bindings {
-namespace detail {
 namespace tag {
 
 // key: entity
@@ -61,9 +60,7 @@ struct lower {};
 struct unit_upper {};
 struct unit_lower {};
 
-} // tag
-
-} // namespace detail
+} // namespace tag
 } // namespace bindings
 } // namespace numeric
 } // namespace boost

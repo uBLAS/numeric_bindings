@@ -72,14 +72,14 @@ namespace result_of {
 
 template< typename T, int Dimension >
 struct size {
-    typedef typename detail::size_impl< T, detail::tag::size_type<Dimension> >::result_type type;
+    typedef typename detail::size_impl< T, tag::size_type<Dimension> >::result_type type;
 };
 
 } // namespace result_of
 
 template< int Dimension, typename T >
 inline typename result_of::size< T const, Dimension >::type size( T const& t ) {
-    return detail::size_impl< T const, detail::tag::size_type<Dimension> >::size( t );
+    return detail::size_impl< T const, tag::size_type<Dimension> >::size( t );
 }
 
 template< typename T >

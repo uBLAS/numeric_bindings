@@ -9,8 +9,8 @@
 #ifndef BOOST_NUMERIC_BINDINGS_HAS_LINEAR_ARRAY_HPP
 #define BOOST_NUMERIC_BINDINGS_HAS_LINEAR_ARRAY_HPP
 
-#include <boost/type_traits/is_same.hpp>
-#include <boost/numeric/bindings/detail/adaptor.hpp>
+#include <boost/numeric/bindings/detail/property_map.hpp>
+#include <boost/numeric/bindings/tag.hpp>
 
 namespace boost {
 namespace numeric {
@@ -18,7 +18,7 @@ namespace bindings {
 
 template< typename T >
 struct has_linear_array: 
-        detail::is_same_at< T, detail::tag::data_structure, detail::tag::linear_array > {};
+        detail::is_same_at< T, tag::data_structure, tag::linear_array > {};
 
 
 } // namespace bindings

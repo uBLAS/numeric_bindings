@@ -16,7 +16,7 @@ namespace numeric {
 namespace bindings {
 
 template< typename T >
-struct tensor_rank: mpl::int_< detail::property_at< T, detail::tag::entity >::type::value > {};
+struct tensor_rank: mpl::int_< detail::property_at< T, tag::entity >::type::value > {};
 
 } // namespace bindings
 } // namespace numeric

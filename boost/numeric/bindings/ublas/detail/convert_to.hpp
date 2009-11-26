@@ -10,7 +10,7 @@
 #define BOOST_NUMERIC_BINDINGS_UBLAS_DETAIL_CONVERT_TO_HPP
 
 #include <boost/numeric/bindings/detail/convert_to.hpp>
-#include <boost/numeric/bindings/detail/tag.hpp>
+#include <boost/numeric/bindings/tag.hpp>
 #include <boost/numeric/ublas/fwd.hpp>
 
 namespace boost {

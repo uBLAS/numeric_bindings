@@ -69,14 +69,14 @@ namespace result_of {
 
 template< typename T, int Dimension >
 struct stride {
-    typedef typename detail::stride_impl< T, detail::tag::stride_type<Dimension> >::result_type type;
+    typedef typename detail::stride_impl< T, tag::stride_type<Dimension> >::result_type type;
 };
 
 } // namespace result_of
 
 template< int Dimension, typename T >
 inline typename result_of::stride< T const, Dimension >::type stride( T const& t ) {
-    return detail::stride_impl< T const, detail::tag::stride_type<Dimension> >::stride( t );
+    return detail::stride_impl< T const, tag::stride_type<Dimension> >::stride( t );
 }
 
 template< typename T >

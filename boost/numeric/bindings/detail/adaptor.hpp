@@ -10,9 +10,9 @@
 #define BOOST_NUMERIC_BINDINGS_DETAIL_ADAPTOR_HPP
 
 #include <boost/utility/enable_if.hpp>
-#include <boost/numeric/bindings/is_numeric.hpp>
-#include <boost/numeric/bindings/detail/tag.hpp>
 #include <boost/numeric/bindings/detail/copy_const.hpp>
+#include <boost/numeric/bindings/is_numeric.hpp>
+#include <boost/numeric/bindings/tag.hpp>
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/mpl/map.hpp>
 

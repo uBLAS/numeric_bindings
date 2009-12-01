@@ -1,0 +1,69 @@
+$TEMPLATE[lapack.qbk]
+
+[section x$GROUPNAME]
+
+[section Prototype]
+[endsect]
+
+[section Description]
+
+Numeric_bindings routine $groupname, or $BLAS_FRIENDLY_NAME, is a value-type based
+dispatching routine to routines in BLAS. It's name, $groupname, is made
+up by stripping the first character from the BLAS routines 
+$SUBROUTINES.
+
+A $BLAS_FRIENDLY_NAME is defined as
+equation stuff here
+
+where A is a matrix with a symmetric data structure, B is a matrix, C is an
+integer containing ..., and x and y are vectors. 
+
+Compile-time dispatching of this routine is determind by the value type of tensor A,
+and should be the same type the numeric_bindings meta-function `typename tensor_traits<A>::value_type`.
+Table xx illustrates to which specific routines this dispatching will take place. 
+
+[table x$GROUPNAME dispatching of routines
+$DISPATCH_TABLE
+]
+
+[endsect]
+
+[section Definition]
+Defined in header [headerref $header].
+[endsect]
+
+[section Parameters or Requirements on Types]
+
+The tensor_traits<>::value_type of A, B, and C should be the same.
+Tensor C should be mutable.
+
+[endsect]
+
+[section Complexity]
+[endsect]
+
+[section Example]
+``
+#include <$header>
+using namespace boost::numeric::bindings;
+
+lapack::$groupname( x, y, z );
+
+``
+
+this will output
+
+``
+[5] 0 1 2 3 4 5
+``
+
+[endsect]
+
+[section Notes]
+[endsect]
+
+[section See Also]
+[endsect]
+
+[endsect]
+$TEMPLATE[end]

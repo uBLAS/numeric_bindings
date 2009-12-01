@@ -9,4 +9,6 @@ $TEMPLATE[dotc.all.arguments]
            The increment of Y
  X         (input) DATATYPE
  Y         (input) DATATYPE
+$TEMPLATE[dotc.friendly_name]
+TODO
 $TEMPLATE[end]

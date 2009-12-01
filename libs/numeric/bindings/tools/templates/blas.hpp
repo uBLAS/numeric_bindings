@@ -64,7 +64,7 @@ template< typename ValueType >
 struct $groupname_impl {
 
     typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef typename remove_imaginary<ValueType>::type real_type;
     typedef $RETURN_TYPE return_type;
 
 $INCLUDE_TEMPLATES
@@ -72,15 +72,17 @@ $INCLUDE_TEMPLATES
     template< $TYPES >
     static return_type invoke( $LEVEL1 ) {
         $STATIC_ASSERTS
+        $ASSERTS
         $RETURN_STATEMENTdetail::$groupname( $CALL_LEVEL0 );
     }
 };
 $TEMPLATE[blas_level2]
 // generic template function to call $groupname
 template< $TYPES >
-inline typename $groupname_impl< typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type >::return_type
+inline typename $groupname_impl< typename tensor_traits< $FIRST_TYPENAME >::value_type >::return_type
 $groupname( $LEVEL2 ) {
-    typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
+    typedef typename tensor_traits< $FIRST_TYPENAME >::value_type value_type;
+    $STATIC_ASSERTS
     $RETURN_STATEMENT$groupname_impl< value_type >::invoke( $CALL_LEVEL1 );
 }
 $TEMPLATE[end]

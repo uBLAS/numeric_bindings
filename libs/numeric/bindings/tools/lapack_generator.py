@@ -8,8 +8,7 @@
 # http://www.boost.org/LICENSE_1_0.txt)
 #
 
-import netlib
-import bindings
+import netlib, bindings, documentation
 
 import re, os.path, copy
 from types import StringType
@@ -416,6 +415,29 @@ def write_functions( info_map, group, template_map, base_dir ):
     open( os.path.join( base_dir, filename ), 'wb' ).write( result )
 
 #
+# Write the many (low-level) documentation files
+#
+def write_documentation( info_map, group, template_map, base_dir ):
+
+    for group_name, subroutines in group.iteritems():
+        filename = group_name.lower() + '.qbk'
+        result = template_map[ 'lapack.qbk' ]
+
+        result = result.replace( '$GROUPNAME', group_name )
+        result = result.replace( '$groupname', group_name.lower() )
+
+        result = result.replace( '$SUBROUTINES', documentation.readable_join( subroutines ) )
+
+        result = result.replace( '$header', 'boost/numeric/bindings/blas/' + group_name.lower() + '.hpp' )
+
+        result = result.replace( '$DISPATCH_TABLE', documentation.write_dispatch_table( subroutines, info_map ) )
+        #result = result.replace( '$BLAS_FRIENDLY_NAME', documentation.blas_friendly_name( group_name, info_map, template_map ) )
+
+        print "Writing " + base_dir + "/" + filename
+        open( os.path.join( base_dir, filename ), 'wb' ).write( result )
+
+
+#
 # Write the (many) driver routine test cases to cpp files.
 #
 def write_test_case( info_map, group, template_map, base_dir, level_name ):
@@ -458,13 +480,14 @@ def read_templates( template_file ):
 
 lapack_src_path = './lapack-3.2.0/SRC'
 template_src_path = './templates'
-bindings_target_path = '../../../../boost/numeric/bindings/lapack/'
+bindings_impl_target_path = '../../../../boost/numeric/bindings/lapack/'
 test_target_path = '../test/lapack/'
+bindings_doc_target_path = '../doc/lapack/'
 
 templates = {}
 templates[ 'PARSERMODE' ] = 'LAPACK'
 for root, dirs, files in os.walk( template_src_path ):
-  right_file = re.compile( '^.+\.(cpp|h|hpp|txt)$' )
+  right_file = re.compile( '^.+\.(cpp|h|hpp|txt|qbk)$' )
   for template_file in files:
     if right_file.match( template_file ) != None:
       path_to_template_file = os.path.join( root, template_file )
@@ -561,21 +584,30 @@ for name in value_type_groups.keys():
 print routines 
 
 
-bindings.write_names_header( function_info_map, routines, templates, bindings_target_path + 'detail/lapack_names.h' )
-bindings.write_header( function_info_map, routines, templates, bindings_target_path + 'detail/lapack.h' )
+bindings.write_names_header( function_info_map, routines, templates, bindings_impl_target_path + 'detail/lapack_names.h' )
+bindings.write_header( function_info_map, routines, templates, bindings_impl_target_path + 'detail/lapack.h' )
 
-bindings.write_include_hierarchy( function_info_map, routines, templates, bindings_target_path )
+bindings.write_include_hierarchy( function_info_map, routines, templates, bindings_impl_target_path )
+
 
 for level, level_properties in routines.iteritems():
-  target_path = bindings_target_path + level
-  if not os.path.exists( target_path ):
-    os.mkdir( target_path )
+  impl_target_path = bindings_impl_target_path + level
+  if not os.path.exists( impl_target_path ):
+    print "Creating directory " + impl_target_path
+    os.mkdir( impl_target_path )
+
+  doc_target_path = bindings_doc_target_path + level
+  if not os.path.exists( doc_target_path ):
+    print "Creating directory " + doc_target_path
+    os.mkdir( doc_target_path )
+
   #if not os.path.exists( test_target_path + level ):
   #  os.mkdir( test_target_path + level )
 
   for problem_type, problem_properties in level_properties.iteritems():
     if problem_properties.has_key( 'routines_by_value_type' ):
-      write_functions( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, target_path )
+      write_functions( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, impl_target_path )
+      write_documentation( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, doc_target_path )
 
       #write_test_case( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, test_target_path + level, level )
 

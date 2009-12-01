@@ -9,4 +9,6 @@ $TEMPLATE[scal.all.arguments]
  A         (input) DATATYPE
 $TEMPLATE[scal.all.cblas_alias]
 A,ALPHA
+$TEMPLATE[scal.friendly_name]
+scale
 $TEMPLATE[end]

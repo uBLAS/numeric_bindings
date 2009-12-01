@@ -8,10 +8,7 @@
 # http://www.boost.org/LICENSE_1_0.txt)
 #
 
-import netlib
-import bindings
-import cblas
-import cublas
+import netlib, bindings, cblas, cublas, documentation
 
 import re, os.path, copy
 from types import StringType
@@ -41,7 +38,7 @@ def group_by_value_type( global_info_map ):
 
  
 #
-# Write the (many) driver routine file(s).
+# Write the (many) routine file(s).
 #
 def write_functions( info_map, group, template_map, base_dir ):
   #
@@ -213,7 +210,20 @@ def write_functions( info_map, group, template_map, base_dir ):
       # Level 2 replacements
       # some special stuff is done here, such as replacing real_type with a 
       # type-traits deduction, etc..
-      level2_template = level2_template.replace( "$LEVEL2", ", ".join( level2_arg_list ) )
+      # more important: all non-const and const variants of functions are written here
+      level2_functions = []
+      level2_arg_lists, level2_static_asserts = bindings.generate_const_variants( level2_arg_list )
+      for level2_idx in range( 0, len( level2_arg_lists ) ):
+        level2_function = level2_template.replace( "$LEVEL2", \
+                ", ".join( level2_arg_lists[ level2_idx ] ) )
+        if len( level2_static_asserts ) > 0:
+          level2_function = level2_function.replace( "$STATIC_ASSERTS", \
+                "\n".join( level2_static_asserts[ level2_idx ] ) )
+        level2_functions.append( level2_function )
+
+      level2_template = "\n".join( level2_functions )
+
+      #level2_template = level2_template.replace( "$LEVEL2", ", ".join( level2_arg_list ) )
 
       if len(level1_type_arg_list)>0:
         first_typename = level1_type_arg_list[0].split(" ")[-1]
@@ -226,6 +236,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       level2_template = level2_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
       level2_template = level2_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
       level2_template = level2_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
+      level2_template = level2_template.replace( '\n    $STATIC_ASSERTS', '' )
 
       level1_map[ value_type ] = bindings.proper_indent( level1_template )
       level2_map[ value_type ] = bindings.proper_indent( level2_template )
@@ -281,6 +292,27 @@ def write_functions( info_map, group, template_map, base_dir ):
 
 
 #
+# Write the many (low-level) documentation files
+#
+def write_documentation( info_map, group, template_map, base_dir ):
+
+    for group_name, subroutines in group.iteritems():
+        filename = group_name.lower() + '.qbk'
+        result = template_map[ 'blas.qbk' ]
+
+        result = result.replace( '$GROUPNAME', group_name )
+        result = result.replace( '$groupname', group_name.lower() )
+
+        result = result.replace( '$SUBROUTINES', documentation.readable_join( subroutines ) )
+
+        result = result.replace( '$header', 'boost/numeric/bindings/blas/' + group_name.lower() + '.hpp' )
+
+        result = result.replace( '$DISPATCH_TABLE', documentation.write_dispatch_table( subroutines, info_map ) )
+        result = result.replace( '$BLAS_FRIENDLY_NAME', documentation.blas_friendly_name( group_name, info_map, template_map ) )
+
+        open( os.path.join( base_dir, filename ), 'wb' ).write( result )
+
+#
 # Write the (many) driver routine test cases to cpp files.
 #
 def write_test_case( info_map, group, template_map, base_dir, level_name ):
@@ -325,8 +357,9 @@ lapack_src_path = './blas-1.2/src'
 cblas_h_path = './blas-1.2/cblas/src/cblas.h'
 cublas_h_path = './cublas.h'
 template_src_path = './templates'
-bindings_target_path = '../../../../boost/numeric/bindings/blas/'
+bindings_impl_target_path = '../../../../boost/numeric/bindings/blas/'
 test_target_path = '../test/lapack/'
+bindings_doc_target_path = '../doc/blas/'
 
 # Unable to find zdrot in cblas.h and cublas.h
 # Unable to find crotg, csrot, in cblas.h
@@ -335,7 +368,7 @@ skip_blas_files = [ 'zdrot.f', 'crotg.f', 'zrotg.f', 'csrot.f' ]
 templates = {}
 templates[ 'PARSERMODE' ] = 'BLAS'
 for root, dirs, files in os.walk( template_src_path ):
-  right_file = re.compile( '^.+\.(cpp|h|hpp|txt)$' )
+  right_file = re.compile( '^.+\.(cpp|h|hpp|txt|qbk)$' )
   for template_file in files:
     if right_file.match( template_file ) != None:
       path_to_template_file = os.path.join( root, template_file )
@@ -386,18 +419,25 @@ for name in value_type_groups.keys():
 
 print routines 
 
-
-bindings.write_names_header( function_info_map, routines, templates, bindings_target_path + 'detail/blas_names.h' )
-bindings.write_header( function_info_map, routines, templates, bindings_target_path + 'detail/blas.h' )
+bindings.write_names_header( function_info_map, routines, templates, bindings_impl_target_path + 'detail/blas_names.h' )
+bindings.write_header( function_info_map, routines, templates, bindings_impl_target_path + 'detail/blas.h' )
 
 for level, level_properties in routines.iteritems():
-  target_path = bindings_target_path + level
-  if not os.path.exists( target_path ):
-    print "Creating directory " + target_path
-    os.mkdir( target_path )
+  impl_target_path = bindings_impl_target_path + level
+  if not os.path.exists( impl_target_path ):
+    print "Creating directory " + impl_target_path
+    os.mkdir( impl_target_path )
+
+  doc_target_path = bindings_doc_target_path + level
+  if not os.path.exists( doc_target_path ):
+    print "Creating directory " + doc_target_path
+    os.mkdir( doc_target_path )
 
   print level_properties
 
   if level_properties.has_key( 'routines_by_value_type' ):
     print "has key..." 
-    write_functions( function_info_map, level_properties[ 'routines_by_value_type' ], templates, target_path )
+    write_functions( function_info_map, level_properties[ 'routines_by_value_type' ], templates, impl_target_path )
+    write_documentation( function_info_map, level_properties[ 'routines_by_value_type' ], templates, doc_target_path )
+
+

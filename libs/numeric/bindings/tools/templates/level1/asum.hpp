@@ -6,4 +6,6 @@ $TEMPLATE[asum.all.arguments]
  INCX      (input) INTEGER
            The increment of X
  X         (input) DATATYPE array of length (N)
+$TEMPLATE[asum.friendly_name]
+absolute sum
 $TEMPLATE[end]

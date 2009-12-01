@@ -113,13 +113,13 @@ def call_level0_type( name, properties, arg_map ):
     if properties[ 'trait_type' ] == 'lda':
       result = "traits::leading_dimension(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'num_columns':
-      result = "traits::matrix_num_columns(" + properties[ 'trait_of' ].lower() + ")"
+      result = "num_columns(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'num_rows':
-      result = "traits::matrix_num_rows(" + properties[ 'trait_of' ].lower() + ")"
+      result = "num_rows(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'trans_num_columns':
       result = "(" + properties[ 'trait_of' ][0].lower() + "=='N' ? " + \
-               "traits::matrix_num_columns(" + properties[ 'trait_of' ][1].lower() + ") : " + \
-               "traits::matrix_num_rows(" + properties[ 'trait_of' ][1].lower() + "))"
+               "num_columns(" + properties[ 'trait_of' ][1].lower() + ") : " + \
+               "num_rows(" + properties[ 'trait_of' ][1].lower() + "))"
     if properties[ 'trait_type' ] == 'size':
       my_name = properties[ 'trait_of' ].lower()
       referring_to_properties = arg_map[ properties[ 'trait_of' ] ]
@@ -173,8 +173,8 @@ def level2_type( name, properties ):
         "_traits< $FIRST_TYPENAME >::value_type >::real_type" )
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
       properties[ 'value_type' ] == 'DOUBLE COMPLEX':
-      result = result.replace( "value_type", "typename traits::$TYPEOF_FIRST_TYPENAME" + \
-        "_traits< $FIRST_TYPENAME >::value_type" )
+      result = result.replace( "value_type", "typename tensor_traits" + \
+        "< $FIRST_TYPENAME >::value_type" )
   return result
 
 
@@ -218,12 +218,12 @@ def keyword_typename( name, properties ):
 def level1_static_assert( name, properties ):
   result = None
   if 'workspace' not in properties[ 'io' ]:
-    if properties[ 'type' ] == 'matrix':
-      result = "typename traits::matrix_traits< " + level1_typename( name, properties ).replace( "typename ", "") + " >::value_type"
-    elif properties[ 'type' ] == 'vector':
-      result = "typename traits::vector_traits< " + level1_typename( name, properties ).replace( "typename ", "") + " >::value_type"
+    if properties[ 'type' ] == 'matrix' or properties[ 'type' ] == 'vector':
+      #result = level1_typename( name, properties ).replace( "typename ", "" )
+      result = "typename tensor_traits< " + level1_typename( name, properties ).replace( "typename ", "" ) + " >::value_type"
     elif properties[ 'type' ] == 'scalar':
-      result = "TODO"
+      result = "TODO HOOK"
+      #result = "typename tensor_traits< " + level1_type( name, properties ) + " >::value_type"
   return result
 
 
@@ -305,6 +305,13 @@ def expand_nested_list( arg, arg_map, use_arg_map = True ):
   print "ERROR: Don't know what to do!!"
   return 'ERROR'
 
+
+#
+#
+# TODO Fix this is multiple conditions are true, make
+#      sure multiple combinations of asserts are possible
+#
+#
 def level1_assert( name, properties, arg_map ):
   result = None
   
@@ -318,6 +325,14 @@ def level1_assert( name, properties, arg_map ):
     
   if properties.has_key( 'assert_ge' ) and not properties.has_key( 'workspace_query_for' ):
     result = "BOOST_ASSERT( " + call_level0_type( name, properties, arg_map ) + " >= " + expand_nested_list( properties[ 'assert_ge' ], arg_map ) + ' );'
+
+  #if properties[ 'type' ] == 'vector' and properties[ 'call_level1' ] != None:
+    #result = "BOOST_ASSERT( min_tensor_rank( " + call_level1_type( name, properties ) + \
+             #" ) <= 1 );"
+
+  #if properties[ 'type' ] == 'matrix':
+    #result = "BOOST_ASSERT( min_tensor_rank( " + call_level1_type( name, properties ) + \
+             #" ) <= 2 );"
       
   if 'workspace' in properties[ 'io' ]:
     min_workspace_call = min_workspace_call_type( name, properties, arg_map )

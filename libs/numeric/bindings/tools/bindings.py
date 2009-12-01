@@ -208,6 +208,7 @@ def write_include_hierarchy( global_info_map, routines, template_map, dest_path 
 
     if template_map[ 'PARSERMODE' ] == 'BLAS':
       print "something"
+
     else:
       # problem type = general_eigen, etc.
       # problem properties = the mapped stuff
@@ -228,7 +229,46 @@ def write_include_hierarchy( global_info_map, routines, template_map, dest_path 
     open( dest_file, 'wb' ).write( result )
 
 
+#
+# Generate const-overloads
+#
 
+def generate_const_variants( argument_list ):
+    print "Generating const variants for ", argument_list
+    permute_indices = []
+    result = []
+    static_asserts = []
 
+    for i in range( 0, len(argument_list) ):
+        argument = argument_list[i]
+        if 'const' not in argument[0:5] and '&' in argument:
+            permute_indices.append( i )
 
+    print " To be permuted: ", permute_indices
+
+    for i in range( 0, pow( 2, len( permute_indices ) ) ):
+        #print "i: ", i
+        new_arg_list = []
+        new_arg_list += argument_list
+        new_asserts = []
+        for j in range( 0, len( permute_indices ) ):
+            if ( i & (1<<j) ):
+                #print permute_indices[j], ": const " + argument_list[ permute_indices[ j ] ]
+                new_arg_list[ permute_indices[ j ] ] = "const " + argument_list[ permute_indices[ j ] ]
+                arg = new_arg_list[ permute_indices[ j ] ]
+                new_asserts.append( "BOOST_STATIC_ASSERT( (is_mutable< " + 
+                    arg[ :arg.find("&" ) ] + " >::value) );" )
+            else:
+                arg = new_arg_list[ permute_indices[ j ] ]
+                new_asserts.append( "BOOST_STATIC_ASSERT( (is_mutable< " + 
+                    arg[ :arg.find("&" ) ] + " >::value) );" )
+
+           # else:
+                #print permute_indices[j], "don't add const"
+        result.append( new_arg_list )
+        static_asserts.append( new_asserts )
+        #new_arg_list = []
+
+    #print "result: ", result
+    return result, static_asserts
 

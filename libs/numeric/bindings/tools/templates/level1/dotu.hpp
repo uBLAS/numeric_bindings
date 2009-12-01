@@ -9,4 +9,6 @@ $TEMPLATE[dotu.all.arguments]
            The increment of Y
  X         (input) DATATYPE
  Y         (input) DATATYPE
+$TEMPLATE[dotu.friendly_name]
+TODO
 $TEMPLATE[end]

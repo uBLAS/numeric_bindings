@@ -10,6 +10,7 @@
 #define BOOST_NUMERIC_BINDINGS_NOOP_HPP
 
 #include <boost/numeric/bindings/detail/adaptable_type.hpp>
+#include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/ref.hpp>
@@ -32,12 +33,12 @@ struct adaptor< noop_wrapper<T>, Id, Enable > {
     typedef adaptor< typename boost::remove_const<T>::type, T > underlying_adaptor;
     typedef typename underlying_adaptor::property_map property_map;
 
-    static typename result_of::size<T,1>::type size1( Id const& id ) {
+    static typename result_of::size<T,1>::type size1( const Id& id ) {
         return size<1>( id.get() );
     }
 
-    static typename mpl::at< property_map, tag::value_type >::type* data( Id& id ) {
-        return underlying_adaptor::data( id.get() );
+    static typename result_of::begin< T, tag::value >::type begin_value_array( Id& id ) {
+        return begin< tag::value >( id.get() );
     }
 
 };
@@ -59,8 +60,8 @@ detail::noop_wrapper<T> noop( T& underlying ) {
 }
 
 template< typename T >
-detail::noop_wrapper<T const> noop( T const& underlying ) {
-    return detail::noop_wrapper<T const>( underlying );
+detail::noop_wrapper<const T> noop( const T& underlying ) {
+    return detail::noop_wrapper<const T>( underlying );
 }
 
 } // namespace bindings

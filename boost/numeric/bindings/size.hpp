@@ -10,7 +10,7 @@
 #define BOOST_NUMERIC_BINDINGS_SIZE_HPP
 
 #include <boost/numeric/bindings/detail/get.hpp>
-#include <boost/numeric/bindings/tensor_rank.hpp>
+#include <boost/numeric/bindings/rank.hpp>
 #include <boost/mpl/min.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/less_equal.hpp>
@@ -26,7 +26,7 @@ struct size_impl {
 
     typedef typename result_of_get< T, Key >::type result_type;
 
-    static result_type size( T const& t ) {
+    static result_type size( const T& t ) {
         return get< Key >( t );
     }
 
@@ -35,13 +35,13 @@ struct size_impl {
 template< typename T, typename Key >
 struct size_impl< T, Key,
         typename boost::enable_if< typename mpl::and_<
-            mpl::greater< Key, tensor_rank<T> >,
+            mpl::greater< Key, rank<T> >,
             is_same_at< T, tag::size_type<1>, std::ptrdiff_t >
         >::type >::type > {
 
     typedef std::ptrdiff_t result_type;
 
-    static result_type size( T const& t ) {
+    static result_type size( const T& t ) {
         return std::min< std::ptrdiff_t >( size_impl<T, tag::size_type<1> >::size(t), 1 );
     }
 
@@ -50,7 +50,7 @@ struct size_impl< T, Key,
 template< typename T, typename Key >
 struct size_impl< T, Key,
         typename boost::enable_if< typename mpl::and_<
-            mpl::greater< Key, tensor_rank<T> >,
+            mpl::greater< Key, rank<T> >,
             mpl::not_< is_same_at< T, tag::size_type<1>, std::ptrdiff_t > >
         >::type >::type > {
 
@@ -59,7 +59,7 @@ struct size_impl< T, Key,
         mpl::int_<1>
     >::type result_type;
 
-    static result_type size( T const& t ) {
+    static result_type size( const T& t ) {
         return result_type();
     }
 
@@ -78,12 +78,12 @@ struct size {
 } // namespace result_of
 
 template< int Dimension, typename T >
-inline typename result_of::size< T const, Dimension >::type size( T const& t ) {
-    return detail::size_impl< T const, tag::size_type<Dimension> >::size( t );
+inline typename result_of::size< const T, Dimension >::type size( const T& t ) {
+    return detail::size_impl< const T, tag::size_type<Dimension> >::size( t );
 }
 
 template< typename T >
-inline std::ptrdiff_t size( T const& t, std::size_t dimension ) {
+inline std::ptrdiff_t size( const T& t, std::size_t dimension ) {
     switch( dimension ) {
         case 1: return size<1>(t);
         case 2: return size<2>(t);

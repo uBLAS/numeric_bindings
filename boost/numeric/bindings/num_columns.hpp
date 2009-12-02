@@ -24,7 +24,7 @@ struct num_columns {
 } // namespace result_of
 
 template< typename T >
-inline typename result_of::num_columns<T>::type num_columns( T const& t ) {
+inline typename result_of::num_columns<T>::type num_columns( const T& t ) {
     return size<2>( t );
 }
 

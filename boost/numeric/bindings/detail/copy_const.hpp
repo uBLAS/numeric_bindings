@@ -10,8 +10,8 @@
 #define BOOST_NUMERIC_BINDINGS_DETAIL_COPY_CONST_HPP
 
 #include <boost/mpl/if.hpp>
-#include <boost/type_traits/is_const.hpp>
 #include <boost/type_traits/add_const.hpp>
+#include <boost/type_traits/is_const.hpp>
 
 namespace boost {
 namespace numeric {
@@ -24,9 +24,9 @@ struct copy_const {
         typename add_const<Target>::type, Target >::type type;
 };
 
-} // detail
-} // bindings
-} // numeric
-} // boost
+} // namespace detail
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

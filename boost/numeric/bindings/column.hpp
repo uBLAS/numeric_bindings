@@ -9,11 +9,11 @@
 #ifndef BOOST_NUMERIC_BINDINGS_COLUMN_HPP
 #define BOOST_NUMERIC_BINDINGS_COLUMN_HPP
 
-#include <boost/numeric/bindings/data.hpp>
+#include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptable_type.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
-#include <boost/numeric/bindings/value_type.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/ref.hpp>
 
 namespace boost {
@@ -36,7 +36,7 @@ struct column_wrapper:
 template< typename T, typename Id, typename Enable >
 struct adaptor< column_wrapper<T>, Id, Enable > {
 
-    typedef typename value_type<T>::type value_type;
+    typedef typename value<T>::type value_type;
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::vector >,
@@ -45,15 +45,15 @@ struct adaptor< column_wrapper<T>, Id, Enable > {
         mpl::pair< tag::stride_type<1>, typename result_of::stride<T,1>::type >
     > property_map;
 
-    static typename result_of::size<T,1>::type size1( Id const& id ) {
+    static typename result_of::size<T,1>::type size1( const Id& id ) {
         return size<1>( id.get() );
     }
 
-    static typename result_of::data<T>::type data( Id& id ) {
-        return bindings::data( id.get() ) + id.m_index * stride<2>( id.get() );
+    static typename result_of::begin<T,tag::value>::type begin_value_array( Id& id ) {
+        return begin<tag::value>( id.get() ) + id.m_index * stride<2>( id.get() );
     }
 
-    static typename result_of::stride<T,1>::type stride1( Id const& id ) {
+    static typename result_of::stride<T,1>::type stride1( const Id& id ) {
         return stride<1>( id.get() );
     }
 
@@ -77,8 +77,8 @@ detail::column_wrapper<T> column( T& underlying, std::size_t index ) {
 }
 
 template< typename T >
-detail::column_wrapper<T const> column( T const& underlying, std::size_t index ) {
-    return detail::column_wrapper<T const>( underlying, index );
+detail::column_wrapper<const T> column( const T& underlying, std::size_t index ) {
+    return detail::column_wrapper<const T>( underlying, index );
 }
 
 } // namespace bindings

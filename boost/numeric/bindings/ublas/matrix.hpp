@@ -9,9 +9,11 @@
 #ifndef BOOST_NUMERIC_BINDINGS_UBLAS_MATRIX_HPP
 #define BOOST_NUMERIC_BINDINGS_UBLAS_MATRIX_HPP
 
+#include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/detail/if_row_major.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
+#include <boost/numeric/bindings/ublas/unbounded_array.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 
 namespace boost {
@@ -37,23 +39,23 @@ struct adaptor< boost::numeric::ublas::matrix< T, F, A >, Id, Enable > {
             typename if_row_major< data_order, tag::contiguous, std::ptrdiff_t >::type >
     > property_map;
 
-    static std::ptrdiff_t size1( Id const& t ) {
+    static std::ptrdiff_t size1( const Id& t ) {
         return t.size1();
     }
 
-    static std::ptrdiff_t size2( Id const& t ) {
+    static std::ptrdiff_t size2( const Id& t ) {
         return t.size2();
     }
 
-    static value_type* data( Id& t ) {
-        return &t.data()[0];
+    static value_type* begin_value_array( Id& t ) {
+        return begin< tag::value >( t.data() );
     }
 
-    static std::ptrdiff_t stride1( Id const& t ) {
+    static std::ptrdiff_t stride1( const Id& t ) {
         return t.size2();
     }
 
-    static std::ptrdiff_t stride2( Id const& t ) {
+    static std::ptrdiff_t stride2( const Id& t ) {
         return t.size1();
     }
 

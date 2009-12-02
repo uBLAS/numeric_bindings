@@ -11,7 +11,7 @@
 
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/detail/get.hpp>
-#include <boost/numeric/bindings/tensor_rank.hpp>
+#include <boost/numeric/bindings/rank.hpp>
 #include <boost/mpl/min.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/less_equal.hpp>
@@ -27,7 +27,7 @@ struct stride_impl {
 
     typedef typename result_of_get< T, Key >::type result_type;
 
-    static result_type stride( T const& t ) {
+    static result_type stride( const T& t ) {
         return get< Key >( t );
     }
 
@@ -36,13 +36,13 @@ struct stride_impl {
 template< typename T, typename Key >
 struct stride_impl< T, Key,
         typename boost::enable_if< typename mpl::and_<
-            mpl::greater< Key, tensor_rank<T> >,
+            mpl::greater< Key, rank<T> >,
             is_same_at< T, tag::stride_type<1>, std::ptrdiff_t >
         >::type >::type > {
 
     typedef std::ptrdiff_t result_type;
 
-    static result_type stride( T const& t ) {
+    static result_type stride( const T& t ) {
         return 0;
     }
 
@@ -51,13 +51,13 @@ struct stride_impl< T, Key,
 template< typename T, typename Key >
 struct stride_impl< T, Key,
         typename boost::enable_if< typename mpl::and_<
-            mpl::greater< Key, tensor_rank<T> >,
+            mpl::greater< Key, rank<T> >,
             mpl::not_< is_same_at< T, tag::stride_type<1>, std::ptrdiff_t > >
         >::type >::type > {
 
     typedef typename mpl::int_<0> result_type;
 
-    static result_type stride( T const& t ) {
+    static result_type stride( const T& t ) {
         return result_type();
     }
 
@@ -75,12 +75,12 @@ struct stride {
 } // namespace result_of
 
 template< int Dimension, typename T >
-inline typename result_of::stride< T const, Dimension >::type stride( T const& t ) {
-    return detail::stride_impl< T const, tag::stride_type<Dimension> >::stride( t );
+inline typename result_of::stride< const T, Dimension >::type stride( const T& t ) {
+    return detail::stride_impl< const T, tag::stride_type<Dimension> >::stride( t );
 }
 
 template< typename T >
-inline std::ptrdiff_t stride( T const& t, std::size_t dimension ) {
+inline std::ptrdiff_t stride( const T& t, std::size_t dimension ) {
     switch( dimension ) {
         case 1: return stride<1>(t);
         case 2: return stride<2>(t);

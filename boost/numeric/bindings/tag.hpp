@@ -16,8 +16,9 @@ namespace tag {
 
 // key: entity
 struct value_type {};
-struct entity {};
+struct value {};
 
+struct entity {};
 struct matrix_type {};
 struct matrix_side {};
 

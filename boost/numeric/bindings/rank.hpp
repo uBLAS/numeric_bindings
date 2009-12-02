@@ -6,8 +6,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_VALUE_TYPE_HPP
-#define BOOST_NUMERIC_BINDINGS_VALUE_TYPE_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_TENSOR_RANK_HPP
+#define BOOST_NUMERIC_BINDINGS_TENSOR_RANK_HPP
 
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 
@@ -16,9 +16,7 @@ namespace numeric {
 namespace bindings {
 
 template< typename T >
-struct value_type {
-    typedef typename detail::property_at< T, tag::value_type >::type type;
-};
+struct rank: mpl::int_< detail::property_at< T, tag::entity >::type::value > {};
 
 } // namespace bindings
 } // namespace numeric

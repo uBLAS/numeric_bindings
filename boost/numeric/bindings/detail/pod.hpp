@@ -28,7 +28,7 @@ struct adaptor< T, Id, typename boost::enable_if< is_numeric<T> >::type > {
         mpl::pair< tag::stride_type<1>, mpl::int_<0> >
     > property_map;
 
-    static value_type* data( Id& t ) {
+    static value_type* begin_value_array( Id& t ) {
         return &t;
     }
 
@@ -46,7 +46,7 @@ struct adaptor< T[N], Id, typename boost::enable_if< is_numeric<T> >::type > {
         mpl::pair< tag::stride_type<1>, tag::contiguous >
     > property_map;
 
-    static value_type* data( Id& t ) {
+    static value_type* begin_value_array( Id& t ) {
         return &t[0];
     }
 
@@ -68,7 +68,7 @@ struct adaptor< T[N][M], Id, typename boost::enable_if< is_numeric<T> >::type > 
         mpl::pair< tag::stride_type<2>, tag::contiguous >
     > property_map;
 
-    static value_type* data( Id& t ) {
+    static value_type* begin_value_array( Id& t ) {
         return &t[0][0];
     }
 

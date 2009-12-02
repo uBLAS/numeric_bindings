@@ -25,7 +25,7 @@ struct get_dispatch {};
 template<> \
 struct get_dispatch< tag::size_type<which> > { \
     template< typename T > \
-    static std::ptrdiff_t invoke( T const& t ) { \
+    static std::ptrdiff_t invoke( const T& t ) { \
         return detail::adaptor_access<T>:: \
         BOOST_PP_CAT( size, which )( t ); \
     } \
@@ -34,7 +34,7 @@ struct get_dispatch< tag::size_type<which> > { \
 template<> \
 struct get_dispatch< tag::stride_type<which> > { \
     template< typename T > \
-    static std::ptrdiff_t invoke( T const& t ) { \
+    static std::ptrdiff_t invoke( const T& t ) { \
         return detail::adaptor_access<T>:: \
         BOOST_PP_CAT( stride, which )( t ); \
     } \
@@ -51,7 +51,7 @@ struct get_impl< T, Key, typename boost::enable_if<
 
     typedef std::ptrdiff_t result_type;
 
-    static std::ptrdiff_t invoke( T const& t ) {
+    static std::ptrdiff_t invoke( const T& t ) {
         return get_dispatch<Key>::invoke( t );
     }
 
@@ -63,7 +63,7 @@ struct get_impl< T, Key, typename boost::enable_if<
 
     typedef typename property_at< T, Key >::type result_type;
 
-    static result_type invoke( T const& t ) {
+    static result_type invoke( const T& t ) {
         return result_type();
     }
 
@@ -75,7 +75,7 @@ struct result_of_get {
 };
 
 template< typename Key, typename T >
-typename result_of_get< T, Key >::type get( T const& t ) {
+typename result_of_get< T, Key >::type get( const T& t ) {
     return get_impl< T, Key >::invoke( t );
 }
 

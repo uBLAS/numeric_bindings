@@ -9,6 +9,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_UBLAS_COMPRESSED_MATRIX_HPP
 #define BOOST_NUMERIC_BINDINGS_UBLAS_COMPRESSED_MATRIX_HPP
 
+#include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
@@ -31,21 +32,21 @@ struct adaptor< ublas::compressed_matrix< T, F, IB, IA, TA >, Id, Enable > {
         mpl::pair< tag::data_order, data_order >
     > property_map;
 
-    static std::ptrdiff_t size1( Id const& t ) {
+    static std::ptrdiff_t size1( const Id& t ) {
         return t.size1();
     }
 
-    static std::ptrdiff_t size2( Id const& t ) {
+    static std::ptrdiff_t size2( const Id& t ) {
         return t.size2();
     }
 /*
     static void index_data( Id& t ) {
         return t.index_data()
-    }
-
-    static void value_data( Id& t ) {
-        return t.value_data();
     }*/
+
+    static value_type* begin_value_array( Id& t ) {
+        return begin< tag::value >( t.value_data() );
+    }
 
 };
 

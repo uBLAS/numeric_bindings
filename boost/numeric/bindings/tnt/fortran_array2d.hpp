@@ -33,19 +33,19 @@ struct adaptor< TNT::Fortran_Array2D< T >, Id, Enable > {
 
     > property_map;
 
-    static std::ptrdiff_t size1( Id const& t ) {
+    static std::ptrdiff_t size1( const Id& t ) {
         return t.dim1();
     }
 
-    static std::ptrdiff_t size2( Id const& t ) {
+    static std::ptrdiff_t size2( const Id& t ) {
         return t.dim2();
     }
 
-    static value_type* data( Id& t ) {
+    static value_type* begin_value_array( Id& t ) {
         return &t(1,1);
     }
 
-    static std::ptrdiff_t stride2( Id const& t ) {
+    static std::ptrdiff_t stride2( const Id& t ) {
         return t.dim1();
     }
 

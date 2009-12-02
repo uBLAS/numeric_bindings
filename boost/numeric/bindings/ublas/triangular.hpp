@@ -34,12 +34,16 @@ struct adaptor< ublas::triangular_matrix< T, F1, F2, A >, Id, Enable > {
         mpl::pair< tag::data_order, typename convert_to< tag::data_order, F2 >::type >
     > property_map;
 
-    static std::ptrdiff_t size1( Id const& t ) {
+    static std::ptrdiff_t size1( const Id& t ) {
         return t.size1();
     }
 
-    static std::ptrdiff_t size2( Id const& t ) {
+    static std::ptrdiff_t size2( const Id& t ) {
         return t.size2();
+    }
+
+    static value_type* begin_value_array( Id& t ) {
+        return begin< tag::value >( t.data() );
     }
 
 };

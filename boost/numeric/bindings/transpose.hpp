@@ -9,7 +9,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_TRANSPOSE_HPP
 #define BOOST_NUMERIC_BINDINGS_TRANSPOSE_HPP
 
-#include <boost/numeric/bindings/value_type.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/numeric/bindings/entity.hpp>
 #include <boost/mpl/max.hpp>
 
@@ -24,16 +24,16 @@ struct transpose_wrapper: reference_wrapper<T> {}
 template< typename T, typename Id, typename Enable >
 struct adaptor< transpose_wrapper<T>, Id, Enable > {
 
-    typedef typename value_type<T>::type value_type;
+    typedef typename value<T>::type value_type;
     typedef typename boost::mpl::max<
             boost::mpl::int_<2>,
             typename entity<T>::type >::type entity;
 
-    static std::ptrdiff_t size1( Id const& t ) {
+    static std::ptrdiff_t size1( const Id& t ) {
         return bindings::tensor_size2( t.get() );
     }
 
-    static std::ptrdiff_t size2( Id const& t ) {
+    static std::ptrdiff_t size2( const Id& t ) {
         return bindings::tensor_size1( t.get() );
     }
 
@@ -48,8 +48,8 @@ detail::transpose_wrapper<T> trans( T& underlying ) {
 }
 
 template< typename T >
-detail::transpose_wrapper<T const> trans( T const& underlying ) {
-    return detail::transpose_wrapper<T const>( underlying );
+detail::transpose_wrapper<const T> trans( const T& underlying ) {
+    return detail::transpose_wrapper<const T>( underlying );
 }
 
 } // namespace bindings

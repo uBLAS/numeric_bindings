@@ -58,23 +58,23 @@ struct adaptor< Eigen::Matrix< T, Rows, Cols, Options >, Id, Enable > {
             typename if_row_major< data_order, tag::contiguous, size_type1 >::type >
     > property_map;
 
-    static std::ptrdiff_t size1( Id const& t ) {
+    static std::ptrdiff_t size1( const Id& t ) {
         return t.rows();
     }
 
-    static std::ptrdiff_t size2( Id const& t ) {
+    static std::ptrdiff_t size2( const Id& t ) {
         return t.cols();
     }
 
-    static value_type* data( Id& t ) {
+    static value_type* begin_value_array( Id& t ) {
         return t.data();
     }
 
-    static std::ptrdiff_t stride1( Id const& t ) {
+    static std::ptrdiff_t stride1( const Id& t ) {
         return t.cols();
     }
 
-    static std::ptrdiff_t stride2( Id const& t ) {
+    static std::ptrdiff_t stride2( const Id& t ) {
         return t.rows();
     }
 

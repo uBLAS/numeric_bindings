@@ -9,6 +9,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_UBLAS_COMPRESSED_VECTOR_HPP
 #define BOOST_NUMERIC_BINDINGS_UBLAS_COMPRESSED_VECTOR_HPP
 
+#include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/ublas/vector_sparse.hpp>
 
@@ -28,7 +29,7 @@ struct adaptor< ublas::compressed_vector< T, IB, IA, TA >, Id, Enable > {
         mpl::pair< tag::data_structure, tag::yale_sparse >
     > property_map;
 
-    static std::ptrdiff_t size1( Id const& t ) {
+    static std::ptrdiff_t size1( const Id& t ) {
         return t.size();
     }
 
@@ -36,9 +37,10 @@ struct adaptor< ublas::compressed_vector< T, IB, IA, TA >, Id, Enable > {
 //       //  t.index_data();
 //     }
 // 
-//     static void value_data( Id& t ) {
-//         //t.value_data();
-//     }
+
+    static value_type* begin_value_array( Id& t ) {
+        return begin< tag::value >( t.value_data() );
+    }
 
 };
 

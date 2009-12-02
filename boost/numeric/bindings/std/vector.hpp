@@ -29,11 +29,11 @@ struct adaptor< std::vector< T, Alloc >, Id, Enable > {
         mpl::pair< tag::stride_type<1>, tag::contiguous >
     > property_map;
 
-    static std::ptrdiff_t size1( Id const& t ) {
+    static std::ptrdiff_t size1( const Id& t ) {
         return t.size();
     }
 
-    static value_type* data( Id& t ) {
+    static value_type* begin_value_array( Id& t ) {
         return &t.front();
     }
 

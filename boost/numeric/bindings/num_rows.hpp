@@ -24,7 +24,7 @@ struct num_rows {
 } // namespace result_of
 
 template< typename T >
-inline typename result_of::num_rows<T>::type num_rows( T const& t ) {
+inline typename result_of::num_rows<T>::type num_rows( const T& t ) {
     return size<1>( t );
 }
 

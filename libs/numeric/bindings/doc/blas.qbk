@@ -1,5 +1,11 @@
 
-[section:blas BLAS Bindings]
+[section:blas BLAS]
+
+BLAS consists of three levels of routines: 
+
+* *level 1* routines involve scalar-vector and vector-vector operations, like computing an inne product,
+* *level 2* routines cover vector-matrix operations, and
+* *level 3* routines perform matrix-matrix operations.
 
 [table Level 1 BLAS
     [         [BLAS] [Boost.Numeric_Bindings Equivalent]]
@@ -10,14 +16,14 @@
     [         [xSWAP]     [ [funcref blas::swap] ] ]
     [         [xSCAL]     [ [funcref blas::scale] ] ]
     [         [xCOPY]     [ [funcref blas::copy] ] ]
-    [         [xAXPY]     [ [funcref blas::add] ] ]
+    [         [xAXPY]     [ [funcref blas::transform] ] ]
     [         [xDOT]      [ [funcref blas::dot] ] ]
     [         [xDOTU]     [ [funcref blas::dot] ] ]
     [         [xDOTC]     [ [funcref blas::dot] ] ]
-    [         [xxDOT]     [ [funcref blas::prec_dot] ] ]
+    [         [xxDOT]     [ [funcref blas::dot] ] ]
     [         [xNRM2]     [ [funcref blas::norm_2] ] ]
-    [         [xASUM]     [ [funcref blas::norm_1] ] ] 
-    [         [IxAMAX]    [ [funcref blas::norm_inf], [funcref blas::index_norm_inf]  ] ]
+    [         [xASUM]     [ [funcref blas::abs_sum] ] ] 
+    [         [IxAMAX]    [ [funcref blas::index_norm_inf] ] ]
 ]
 
 [table Level 2 BLAS
@@ -60,5 +66,22 @@
     [  [xTRSM]      [ [funcref blas::forward_solve], [funcref blas::back_solve] ] ]
 ]
 
+
+[include blas/level1.qbk]
+[include blas/level2.qbk]
+[include blas/level3.qbk]
+
 [endsect]
+
+
+
+
+
+
+
+
+
+
+
+
 

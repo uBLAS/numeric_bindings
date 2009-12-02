@@ -1,5 +1,5 @@
 
-[section:lapack LAPACK Bindings]
+[section:lapack LAPACK]
 
 Here, the high-level LAPACK bindings will be described.
 
@@ -31,6 +31,9 @@ Like with lapack, the bindings focus on the first two levels of routines: driver
 
 
 `lapack::solve( a, b );`
+
+[include lapack/computational.qbk]
+[include lapack/driver.qbk]
 
 [endsect]
 

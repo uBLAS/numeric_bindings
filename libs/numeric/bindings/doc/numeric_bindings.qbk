@@ -1,9 +1,10 @@
 [article Boost.Numeric_Bindings
     [quickbook 1.4]
-    [version alpha]
-    [authors [author1],[author2]]
-    [copyright 2008 author1 author2]
+    [copyright 2002-2009 Rutger ter Borg, Krešimir Fresl, Thomas Klimpel, Toon Knapen, Karl Meerbergen]
     [purpose C++ bindings to widely used numeric libraries.]
+    [id numeric_bindings]
+    [dirname numeric/bindings/]
+    [authors [Authors, Various]]
     [license
         Distributed under the Boost Software License, Version 1.0.
         (See accompanying file LICENSE_1_0.txt or copy at
@@ -11,14 +12,27 @@
     ]
 ]
 
+[def __unspecified__            /unspecified/]
+
 [section:preface Preface]
-
-
 [endsect]
 
 [section:introduction Introduction]
 
-Boost.Numeric_Bindings is a library for high-performance numeric computing. 
+Boost.Numeric_Bindings is a C++ library for numeric computing. It
+is a generic layer between linear algebra algorithms and data containers. 
+
+For the data container part, it supports both compile-time statically sized 
+and run-time dynamically sized vectors, matrices, through a 
+traits system. Currently it includes traits for C-arrays, 
+for standard vectors, for uBLAS' containers, Eigen containers, 
+TNT, Boost.Array, to name a few. It offers compile-time inspection, iterators, and views on all mentioned containers.
+
+For the algorithm part, 
+it provides a C++ interface to algorithms offered by 
+BLAS, LAPACK, and more. This covers algorithms from most 
+vendor-provided math libraries, such as the reference BLAS, 
+ATLAS, Intel's MKL, AMD's CML, NVidia's CUDA, etc.. 
 
 The Bindings Library contains bindings to popular non-boost 
 (numeric) libraries, usually written in Fortran or C. 
@@ -29,38 +43,135 @@ original API of the external library. This generic API accepts a whole range of
 data structures from different origins and usually hides or reduces the 
 complexity of the original API.
 
-For instance, [@http://math-atlas.sourceforge.net/ ATLAS] a C library
-implementing BLAS (and few LAPACK routines), represents matrices
-by means of a pointer and the dimensions. Now boost also contains
-matrix classes [@http://www.boost.org/libs/numeric/ublas/doc/index.htm uBLAS] 
-and there are also other matrix libraries in widespread use.
+E.g., it allows you to write
 
-Therefore the Bindings library features a generic interface 
-for ATLAS which provides the possibility
-to call e.g. the matrix-multiplication routine of ATLAS using matrices defined
-in uBLAS, TNT, etc.
+``
+double a[5] = { 1,2,3,4,5 };
+double b[5][5];
+...
+``
+
+In scope are container adaptors and algorithms:
+
+* Adaptors for a wide variety of foreign container types, supporting both 
+  compile-time statically sized and run-time dynamically sized containers.
+  At the moment, the library includes bindings for C-style arrays, 
+  ISO C++ standard vectors, uBLAS', Eigen2, TNT, Boost.Array, 
+  to name a few.
+* Meta-adaptors to create views on these containers, 
+  such as row, transpose, and upper. These are convenient when addressing BLAS or LAPACK.
+* Iterators supporting different strategies to inspect and modify all containers 
+  mentioned above. This invites users to write container-independent algorithms.
+* A BLAS module supporting cblas, blas, and cublas backends. This covers algorithms from 
+  the reference BLAS, ATLAS, Intel's MKL, AMD's CML, NVidia's CUBLAS, and 
+  many more vendor-specific BLASs.
+* LAPACK. 
+
+Out of scope:
+
+* Another set of containers.
+* A domain-specific language.
+
+What's hopefully to be added in the future:
+
+* Backends for BLAS / LAPACK containing compile-time implementations, e.g., for 
+  small and/or statically sized objects. 
+* Support for FFT libraries.
 
 [endsect]
 
-[section:traits Datatype Concepts and Traits]
+[include tutorial.qbk]
+
+[section:organization Library Organization]
+
+Boost.Numeric_Bindings is organized as a generic layer between 
+linear algebra algorithms and matrix and vector classes. The 
+following hierarchy is available:
+
+* blas
+ * level1
+ * level2
+ * level3
+* lapack
+ * auxiliary
+ * computational
+ * driver
+* std
+* ublas
+* tnt
+
+The library is header-only, i.e., there is no need to compile or create shared library files for it.
+
+Example
+
+If you would like to include the whole of BLAS, just do a 
+
+``#include <boost/numeric/bindings/blas.hpp``
+
+or, if you desire BLAS level2 only, doing a 
+
+``#include <boost/numeric/bindings/blas/level2.hpp``
+
+or, if you only want include per-operation, doing a 
+
+``#include <boost/numeric/bindings/blas/level3/gemm.hpp``
+
+will be the most granular level. 
+
 [endsect]
 
-[section:tutorial Tutorial]
+[section:containers Containers]
+[endsect]
 
+[section Views]
 
+[section Functions]
 
+[section trans]
+[endsect]
+[section upper]
+[endsect]
+[section lower]
+[endsect]
+[section row]
+[endsect]
+[section column]
+[endsect]
 
+[endsect]
+
+[section Metafunctions]
+
+[section trans]
+[endsect]
+[section upper]
+[endsect]
+[section lower]
+[endsect]
+[section row]
+[endsect]
+[section column]
+[endsect]
+
+[endsect]
 
 [endsect]
 
 
+[include traits.qbk]
+
+
+[section Algorithms]
 [include blas.qbk]
+
 [include lapack.qbk]
 
 
+[endsect]
+
 [section:license License]
 
-Copyright 2008 author1, author2.
+Copyright 2002-2009 author1, author2.
 Distributed under the Boost Software License, Version 1.0. (See
 accompanying file LICENSE_1_0.txt or copy at
 [@http://www.boost.org/LICENSE_1_0.txt])

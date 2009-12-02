@@ -1,0 +1,147 @@
+
+[section Functions]
+
+[section begin]
+
+``
+// Entity stuff, e.g., in case of Matrix:
+begin< tag::index<1> >(m)        // Row iterator
+begin< tag::index<2> >(m)        // Column iterator
+begin< tag::row >(m)            // Same as <1>
+begin< tag::column >(m)         // Same as <2>
+begin< tag::major >(m)          // Depends on data_order
+begin< tag::minor >(m)          // Depends on data_order
+
+// Data stuff, e.g.,:
+begin< tag::value >(m)          // Begin of value array or main diagonal
+begin< tag::inner >(m)          // Begin of Yale sparse index array of row/columns
+begin< tag::outer >(m)          // Begin of Yale sparse starting points in row/columns
+begin< tag::subdiagonal >(m)    // Begin of subdiagonal value array
+begin< tag::superdiagonal >(m)  // Begin of superdiagonal value array
+
+// Convenience
+begin1(m)                       // Convenience for tagged version
+begin2(m)                       // Convenience for tagged version
+begin_row(m)                    // Convenience for tagged version
+begin_column(m)                 // Convenience for tagged version
+begin_major(m)                  // Convenience for tagged version
+begin_minor(m)                  // Convenience for tagged version
+
+begin_value(m)                  // Convenience for tagged version
+begin_inner(m)                  // Convenience for tagged version
+begin_outer(m)                  // Convenience for tagged version
+
+begin_subdiagonal(m)            // Convenience for tagged version
+begin_superdiagonal(m)          // Convenience for tagged version
+``
+
+[endsect]
+
+[section end]
+Identical to begin for semantics.
+[endsect]
+
+[section minimal_rank]
+
+This function returns the minimal rank needed to represent the underlying,
+0 <= minimal_rank <= rank.
+
+[endsect]
+
+[section size]
+Identical to begin for semantics.
+[endsect]
+
+[section stride]
+
+Only defined in case of 
+
+``
+// E.g., for matrices
+stride< 1 >(m)                   // Stride for increment of index 1
+stride< 2 >(m)                   // Stride for increment of index 2
+stride< tag::major >(m)          // Depends on data_order
+stride< tag::minor >(m)          // Depends on data_order
+
+// Convenience stuff
+stride1(m)
+stride_major(m)
+stride_minor(m)
+
+``
+
+
+[endsect]
+
+[endsect]
+
+[section Metafunctions]
+
+
+[section begin]
+
+[heading Description]
+Returns the result type of begin
+
+[heading Synopsis]
+``
+template< typename T >
+struct begin {
+    typedef __unspecified__ type;
+};
+``
+
+[heading Expression Semantics]
+``
+result_of::begin<T>::type
+``
+
+[endsect]
+
+[section rank]
+[heading Description]
+Returns the rank of the underlying
+
+[heading Synopsis]
+``
+template< typename T >
+struct rank: integral_constant {};
+``
+[endsect]
+
+
+
+[section size]
+
+[heading Description]
+Returns the result type of size
+
+[heading Synopsis]
+``
+template< typename T >
+struct size {
+    typedef __unspecified__ type;
+};
+``
+[endsect]
+
+
+
+
+[section value]
+[heading Description]
+Returns the value type of the underlying
+
+[heading Synopsis]
+``
+template< typename T >
+struct value {
+    typedef __unspecified__ type;
+};
+``
+[endsect]
+
+
+[endsect]
+
+

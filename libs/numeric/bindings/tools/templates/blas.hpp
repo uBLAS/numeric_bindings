@@ -79,9 +79,9 @@ $INCLUDE_TEMPLATES
 $TEMPLATE[blas_level2]
 // generic template function to call $groupname
 template< $TYPES >
-inline typename $groupname_impl< typename tensor_traits< $FIRST_TYPENAME >::value_type >::return_type
+inline typename $groupname_impl< typename value< $FIRST_TYPENAME >::type >::return_type
 $groupname( $LEVEL2 ) {
-    typedef typename tensor_traits< $FIRST_TYPENAME >::value_type value_type;
+    typedef typename value< $FIRST_TYPENAME >::type value_type;
     $STATIC_ASSERTS
     $RETURN_STATEMENT$groupname_impl< value_type >::invoke( $CALL_LEVEL1 );
 }

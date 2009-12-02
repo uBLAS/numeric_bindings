@@ -103,12 +103,12 @@ def call_c_type( name, properties ):
 def call_level0_type( name, properties, arg_map ):
   result = ''
   if properties[ 'type' ] == 'matrix':
-    result = "traits::matrix_storage(" + name.lower() + ")"
+    result = "begin_value(" + name.lower() + ")"
   elif properties[ 'type' ] == 'vector':
     my_name = name.lower()
     if 'workspace' in properties[ 'io' ]:
       my_name = 'work.select(' + workspace_type( name, properties ) + '())'
-    result = "traits::vector_storage(" + my_name + ")"
+    result = "begin_value(" + my_name + ")"
   elif properties.has_key( 'trait_type' ):
     if properties[ 'trait_type' ] == 'lda':
       result = "traits::leading_dimension(" + properties[ 'trait_of' ].lower() + ")"
@@ -409,7 +409,7 @@ def opt_workspace_query_type( name, properties, arg_map ):
     if properties.has_key( 'workspace_query_by' ):
       result = '&opt_size_' + name.lower();
     else:
-      result = 'traits::vector_storage(tmp_' + name.lower() + ')'
+      result = 'begin_value(tmp_' + name.lower() + ')'
   else:
     result = call_level0_type( name, properties, arg_map )
   return result

@@ -42,8 +42,8 @@ struct adaptor< ublas::triangular_matrix< T, F1, F2, A >, Id, Enable > {
         return t.size2();
     }
 
-    static value_type* begin_value_array( Id& t ) {
-        return begin< tag::value >( t.data() );
+    static value_type* begin_value( Id& t ) {
+        return bindings::begin_value( t.data() );
     }
 
 };

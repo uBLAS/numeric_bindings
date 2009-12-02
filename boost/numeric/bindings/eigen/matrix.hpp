@@ -66,7 +66,7 @@ struct adaptor< Eigen::Matrix< T, Rows, Cols, Options >, Id, Enable > {
         return t.cols();
     }
 
-    static value_type* begin_value_array( Id& t ) {
+    static value_type* begin_value( Id& t ) {
         return t.data();
     }
 

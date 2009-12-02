@@ -26,7 +26,7 @@ struct end_impl< T, tag::value > {
     typedef typename value<T>::type* result_type;
 
     static result_type invoke( T& t ) {
-        return adaptor_access<T>::begin_value_array( t );
+        return adaptor_access<T>::begin_value( t );
     }
 
 };

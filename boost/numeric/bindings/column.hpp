@@ -49,7 +49,7 @@ struct adaptor< column_wrapper<T>, Id, Enable > {
         return size<1>( id.get() );
     }
 
-    static typename result_of::begin<T,tag::value>::type begin_value_array( Id& id ) {
+    static typename result_of::begin<T,tag::value>::type begin_value( Id& id ) {
         return begin<tag::value>( id.get() ) + id.m_index * stride<2>( id.get() );
     }
 

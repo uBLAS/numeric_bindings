@@ -33,7 +33,7 @@ struct adaptor< TNT::Array1D< T >, Id, Enable > {
         return t.dim();
     }
 
-    static value_type* begin_value_array( Id& t ) {
+    static value_type* begin_value( Id& t ) {
         return &t[0];
     }
 

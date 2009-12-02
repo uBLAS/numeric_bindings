@@ -41,7 +41,7 @@ struct adaptor< TNT::Fortran_Array2D< T >, Id, Enable > {
         return t.dim2();
     }
 
-    static value_type* begin_value_array( Id& t ) {
+    static value_type* begin_value( Id& t ) {
         return &t(1,1);
     }
 

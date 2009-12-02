@@ -38,8 +38,8 @@ struct adaptor< ublas::compressed_vector< T, IB, IA, TA >, Id, Enable > {
 //     }
 // 
 
-    static value_type* begin_value_array( Id& t ) {
-        return begin< tag::value >( t.value_data() );
+    static value_type* begin_value( Id& t ) {
+        return bindings::begin_value( t.value_data() );
     }
 
 };

@@ -33,8 +33,8 @@ struct adaptor< ublas::vector< T, Alloc >, Id, Enable > {
         return t.size();
     }
 
-    static value_type* begin_value_array( Id& t ) {
-        return begin< tag::value >( t.data() );
+    static value_type* begin_value( Id& t ) {
+        return bindings::begin_value( t.data() );
     }
 
 };

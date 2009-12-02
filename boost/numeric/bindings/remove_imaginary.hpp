@@ -23,6 +23,11 @@ struct remove_imaginary< std::complex<T> > {
     typedef T type;
 };
 
+template< typename T >
+struct remove_imaginary< const std::complex<T> > {
+    typedef const T type;
+};
+
 } // namespace bindings
 } // namespace numeric
 } // namespace boost

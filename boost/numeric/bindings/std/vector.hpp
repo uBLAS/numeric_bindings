@@ -33,7 +33,7 @@ struct adaptor< std::vector< T, Alloc >, Id, Enable > {
         return t.size();
     }
 
-    static value_type* begin_value_array( Id& t ) {
+    static value_type* begin_value( Id& t ) {
         return &t.front();
     }
 

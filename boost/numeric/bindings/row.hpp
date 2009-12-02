@@ -49,8 +49,8 @@ struct adaptor< row_wrapper<T>, Id, Enable > {
         return size<2>( id.get() );
     }
 
-    static typename result_of::begin<T,tag::value>::type begin_value_array( Id& id ) {
-        return begin< tag::value >( id.get() ) + id.m_index * stride<1>( id.get() );
+    static typename result_of::begin<T,tag::value>::type begin_value( Id& id ) {
+        return bindings::begin_value( id.get() ) + id.m_index * stride<1>( id.get() );
     }
 
     static typename result_of::stride<T,2>::type stride1( const Id& id ) {

@@ -47,8 +47,8 @@ struct adaptor< boost::numeric::ublas::matrix< T, F, A >, Id, Enable > {
         return t.size2();
     }
 
-    static value_type* begin_value_array( Id& t ) {
-        return begin< tag::value >( t.data() );
+    static value_type* begin_value( Id& t ) {
+        return bindings::begin_value( t.data() );
     }
 
     static std::ptrdiff_t stride1( const Id& t ) {

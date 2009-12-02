@@ -37,8 +37,8 @@ struct adaptor< noop_wrapper<T>, Id, Enable > {
         return size<1>( id.get() );
     }
 
-    static typename result_of::begin< T, tag::value >::type begin_value_array( Id& id ) {
-        return begin< tag::value >( id.get() );
+    static typename result_of::begin< T, tag::value >::type begin_value( Id& id ) {
+        return bindings::begin_value( id.get() );
     }
 
 };

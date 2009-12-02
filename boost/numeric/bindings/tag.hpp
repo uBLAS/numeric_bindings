@@ -39,6 +39,9 @@ struct size_type: mpl::int_< Dimension > {};
 template< int Dimension >
 struct stride_type: mpl::int_< Dimension > {};
 
+template< int Dimension >
+struct index: mpl::int_< Dimension > {};
+
 struct contiguous: mpl::int_<1> {};
 
 // Supported data structures

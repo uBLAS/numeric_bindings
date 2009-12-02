@@ -170,12 +170,12 @@ def level2_type( name, properties ):
   if result != None:
     if properties[ 'value_type' ] == 'REAL' or properties[ 'value_type' ] == 'DOUBLE PRECISION':
       result = result.replace( "real_type", \
-        "typename traits::type_traits< typename traits::tensor_traits" + \
-        "< $FIRST_TYPENAME >::value_type >::real_type" )
+        "typename traits::type_traits< typename value" + \
+        "< $FIRST_TYPENAME >::type >::real_type" )
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
       properties[ 'value_type' ] == 'DOUBLE COMPLEX':
-      result = result.replace( "value_type", "typename tensor_traits" + \
-        "< $FIRST_TYPENAME >::value_type" )
+      result = result.replace( "value_type", "typename value" + \
+        "< $FIRST_TYPENAME >::type" )
   return result
 
 
@@ -221,10 +221,10 @@ def level1_static_assert( name, properties ):
   if 'workspace' not in properties[ 'io' ]:
     if properties[ 'type' ] == 'matrix' or properties[ 'type' ] == 'vector':
       #result = level1_typename( name, properties ).replace( "typename ", "" )
-      result = "typename tensor_traits< " + level1_typename( name, properties ).replace( "typename ", "" ) + " >::value_type"
+      result = "typename value< " + level1_typename( name, properties ).replace( "typename ", "" ) + " >::type"
     elif properties[ 'type' ] == 'scalar':
       result = "TODO HOOK"
-      #result = "typename tensor_traits< " + level1_type( name, properties ) + " >::value_type"
+      #result = "typename value< " + level1_type( name, properties ) + " >::type"
   return result
 
 

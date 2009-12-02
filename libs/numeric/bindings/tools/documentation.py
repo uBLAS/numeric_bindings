@@ -184,8 +184,8 @@ def write_documentation( info_map, group, template_map, base_dir ):
                     readable_arg = "Scalar" + splitted[1]
                     if 'const' in arg:
                         readable_arg = 'const ' + readable_arg
-                elif '::value_type' in arg:
-                    splitted = arg.split( "::value_type" )
+                elif '::type' in arg:
+                    splitted = arg.split( "::type" )
                     readable_arg = "Scalar" + splitted[1]
                     if 'const' in arg:
                         readable_arg = 'const ' + readable_arg

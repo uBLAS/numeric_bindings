@@ -1,14 +1,12 @@
 $TEMPLATE[blas.qbk]
 
-[section x$GROUPNAME]
+[section $groupname]
 
-[section Prototype]
+[heading Prototype]
 There $PROTOTYPE_OVERLOADS `$groupname` available, please see below.
 $PROTOTYPES
 
-[endsect]
-
-[section Description]
+[heading Description]
 
 `$groupname` (short for $FRIENDLY_NAME) provides a C++
 interface to BLAS routines $SUBROUTINES. 
@@ -16,21 +14,18 @@ $PURPOSE
 
 The selection of the BLAS routine is done during compile-time, 
 and is determined by the type of values contained in type `$FIRST_TYPENAME`.
-The type of values is obtained through the tensor-traits 
-type-definition `typename tensor_traits<$FIRST_TYPENAME>::value_type`.
-Table xx illustrates to which specific routinev this dispatching will take place. 
+The type of values is obtained through the `value` meta-function
+ `typename value<$FIRST_TYPENAME>::type`.
+Table X below illustrates to which specific routine this dispatching will take place. 
 
 [table Dispatching of $groupname.
 $DISPATCH_TABLE
 ]
 
-[endsect]
-
-[section Definition]
+[heading Definition]
 Defined in header [headerref $header].
-[endsect]
 
-[section Parameters or Requirements on Types]
+[heading Parameters or Requirements on Types]
 
 [variablelist Parameters
     [[MatrixA] [The definition of term 1]]
@@ -42,15 +37,9 @@ Defined in header [headerref $header].
     ]]
 ]
 
-The tensor_traits<>::value_type of A, B, and C should be the same.
-Tensor C should be mutable.
+[heading Complexity]
 
-[endsect]
-
-[section Complexity]
-[endsect]
-
-[section Example]
+[heading Example]
 ``
 #include <$header>
 using namespace boost::numeric::bindings;
@@ -65,16 +54,11 @@ this will output
 [5] 0 1 2 3 4 5
 ``
 
-[endsect]
+[heading Notes]
 
-[section Notes]
-[endsect]
-
-[section See Also]
+[heading See Also]
 
 * Originating Fortran source files $ORIGINATING_SOURCES at Netlib.
-
-[endsect]
 
 [endsect]
 $TEMPLATE[blas_prototype.qbk]

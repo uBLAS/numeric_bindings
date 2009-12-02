@@ -3,26 +3,23 @@ $TEMPLATE[lapack.qbk]
 [section x$GROUPNAME]
 
 [section Prototype]
+There $PROTOTYPE_OVERLOADS `$groupname` available, please see below.
+$PROTOTYPES
 [endsect]
 
 [section Description]
 
-Numeric_bindings routine $groupname, or $BLAS_FRIENDLY_NAME, is a value-type based
-dispatching routine to routines in BLAS. It's name, $groupname, is made
-up by stripping the first character from the BLAS routines 
-$SUBROUTINES.
+`$groupname` (short for $FRIENDLY_NAME) provides a C++
+interface to LAPACK routines $SUBROUTINES. 
+$PURPOSE
 
-A $BLAS_FRIENDLY_NAME is defined as
-equation stuff here
-
-where A is a matrix with a symmetric data structure, B is a matrix, C is an
-integer containing ..., and x and y are vectors. 
-
-Compile-time dispatching of this routine is determind by the value type of tensor A,
-and should be the same type the numeric_bindings meta-function `typename tensor_traits<A>::value_type`.
+The selection of the LAPACK routine is done during compile-time, 
+and is determined by the type of values contained in type `$FIRST_TYPENAME`.
+The type of values is obtained through the tensor-traits 
+type-definition `typename tensor_traits<$FIRST_TYPENAME>::value_type`.
 Table xx illustrates to which specific routines this dispatching will take place. 
 
-[table x$GROUPNAME dispatching of routines
+[table Dispatching of $groupname
 $DISPATCH_TABLE
 ]
 
@@ -33,6 +30,16 @@ Defined in header [headerref $header].
 [endsect]
 
 [section Parameters or Requirements on Types]
+
+[variablelist Parameters
+    [[MatrixA] [The definition of term 1]]
+    [[MatrixB] [The definition of term 2]]
+    [[MatrixC] [
+    The definition of term 3.
+
+    Definitions may contain paragraphs.
+    ]]
+]
 
 The tensor_traits<>::value_type of A, B, and C should be the same.
 Tensor C should be mutable.
@@ -63,7 +70,18 @@ this will output
 [endsect]
 
 [section See Also]
+
+* Originating Fortran source files $ORIGINATING_SOURCES at Netlib.
+
 [endsect]
 
 [endsect]
+$TEMPLATE[lapack_doc_include_hierarchy]
+
+$CONTENT
+
+$TEMPLATE[lapack_prototype.qbk]
+``
+$groupname( $LEVEL2 );
+``
 $TEMPLATE[end]

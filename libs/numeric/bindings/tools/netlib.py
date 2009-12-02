@@ -169,8 +169,9 @@ def level2_type( name, properties ):
 
   if result != None:
     if properties[ 'value_type' ] == 'REAL' or properties[ 'value_type' ] == 'DOUBLE PRECISION':
-      result = result.replace( "real_type", "typename traits::type_traits< typename traits::$TYPEOF_FIRST_TYPENAME" + \
-        "_traits< $FIRST_TYPENAME >::value_type >::real_type" )
+      result = result.replace( "real_type", \
+        "typename traits::type_traits< typename traits::tensor_traits" + \
+        "< $FIRST_TYPENAME >::value_type >::real_type" )
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
       properties[ 'value_type' ] == 'DOUBLE COMPLEX':
       result = result.replace( "value_type", "typename tensor_traits" + \
@@ -858,7 +859,7 @@ def parse_file( filename, template_map ):
   # and stopping before the "Arguments" block.
   subroutine_purpose = ''
   if purpose_line_nr > 0 and arguments_line_nr > 0:
-    subroutine_purpose = "//" + "\n//".join( comments[ purpose_line_nr+3:arguments_line_nr-1 ] )
+    subroutine_purpose = "\n".join( comments[ purpose_line_nr+3:arguments_line_nr-1 ] )
 
   # try to see if we are overriding the arguments piece
   arguments_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.arguments'

@@ -415,29 +415,6 @@ def write_functions( info_map, group, template_map, base_dir ):
     open( os.path.join( base_dir, filename ), 'wb' ).write( result )
 
 #
-# Write the many (low-level) documentation files
-#
-def write_documentation( info_map, group, template_map, base_dir ):
-
-    for group_name, subroutines in group.iteritems():
-        filename = group_name.lower() + '.qbk'
-        result = template_map[ 'lapack.qbk' ]
-
-        result = result.replace( '$GROUPNAME', group_name )
-        result = result.replace( '$groupname', group_name.lower() )
-
-        result = result.replace( '$SUBROUTINES', documentation.readable_join( subroutines ) )
-
-        result = result.replace( '$header', 'boost/numeric/bindings/blas/' + group_name.lower() + '.hpp' )
-
-        result = result.replace( '$DISPATCH_TABLE', documentation.write_dispatch_table( subroutines, info_map ) )
-        #result = result.replace( '$BLAS_FRIENDLY_NAME', documentation.blas_friendly_name( group_name, info_map, template_map ) )
-
-        print "Writing " + base_dir + "/" + filename
-        open( os.path.join( base_dir, filename ), 'wb' ).write( result )
-
-
-#
 # Write the (many) driver routine test cases to cpp files.
 #
 def write_test_case( info_map, group, template_map, base_dir, level_name ):
@@ -588,7 +565,9 @@ bindings.write_names_header( function_info_map, routines, templates, bindings_im
 bindings.write_header( function_info_map, routines, templates, bindings_impl_target_path + 'detail/lapack.h' )
 
 bindings.write_include_hierarchy( function_info_map, routines, templates, bindings_impl_target_path )
-
+templates[ 'PARSERMODE' ] = 'LAPACK_DOC'
+bindings.write_include_hierarchy( function_info_map, routines, templates, bindings_doc_target_path )
+templates[ 'PARSERMODE' ] = 'LAPACK'
 
 for level, level_properties in routines.iteritems():
   impl_target_path = bindings_impl_target_path + level
@@ -607,7 +586,7 @@ for level, level_properties in routines.iteritems():
   for problem_type, problem_properties in level_properties.iteritems():
     if problem_properties.has_key( 'routines_by_value_type' ):
       write_functions( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, impl_target_path )
-      write_documentation( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, doc_target_path )
+      documentation.write_documentation( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, doc_target_path )
 
       #write_test_case( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, test_target_path + level, level )
 

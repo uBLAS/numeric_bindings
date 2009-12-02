@@ -292,27 +292,6 @@ def write_functions( info_map, group, template_map, base_dir ):
 
 
 #
-# Write the many (low-level) documentation files
-#
-def write_documentation( info_map, group, template_map, base_dir ):
-
-    for group_name, subroutines in group.iteritems():
-        filename = group_name.lower() + '.qbk'
-        result = template_map[ 'blas.qbk' ]
-
-        result = result.replace( '$GROUPNAME', group_name )
-        result = result.replace( '$groupname', group_name.lower() )
-
-        result = result.replace( '$SUBROUTINES', documentation.readable_join( subroutines ) )
-
-        result = result.replace( '$header', 'boost/numeric/bindings/blas/' + group_name.lower() + '.hpp' )
-
-        result = result.replace( '$DISPATCH_TABLE', documentation.write_dispatch_table( subroutines, info_map ) )
-        result = result.replace( '$BLAS_FRIENDLY_NAME', documentation.blas_friendly_name( group_name, info_map, template_map ) )
-
-        open( os.path.join( base_dir, filename ), 'wb' ).write( result )
-
-#
 # Write the (many) driver routine test cases to cpp files.
 #
 def write_test_case( info_map, group, template_map, base_dir, level_name ):
@@ -341,6 +320,7 @@ def write_cmakefile( level_properties, template_map, base_dir ):
   result = template_map[ 'CMakeLists.txt' ]
   result = result.replace( '$ENTRIES', entries )
   open( os.path.join( base_dir, filename ), 'wb' ).write( result )
+
 
 
 def read_templates( template_file ):
@@ -438,6 +418,6 @@ for level, level_properties in routines.iteritems():
   if level_properties.has_key( 'routines_by_value_type' ):
     print "has key..." 
     write_functions( function_info_map, level_properties[ 'routines_by_value_type' ], templates, impl_target_path )
-    write_documentation( function_info_map, level_properties[ 'routines_by_value_type' ], templates, doc_target_path )
+    documentation.write_documentation( function_info_map, level_properties[ 'routines_by_value_type' ], templates, doc_target_path )
 
 

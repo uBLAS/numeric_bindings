@@ -12,4 +12,6 @@ $TEMPLATE[axpy.all.arguments]
  Y        (output) DATATYPE array of length (N)
 $TEMPLATE[axpy.all.cblas_alias]
 A,ALPHA
+$TEMPLATE[axpy.friendly_name]
+a times x plus y
 $TEMPLATE[end]

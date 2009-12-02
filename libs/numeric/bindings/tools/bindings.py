@@ -204,7 +204,10 @@ def write_include_hierarchy( global_info_map, routines, template_map, dest_path 
 
   for level, level_properties in routines.iteritems():
     content = ''
-    dest_file = dest_path + '/' + level + '.hpp'
+    postfix = '.hpp'
+    if template_map[ 'PARSERMODE' ] == 'LAPACK_DOC':
+        postfix = '.qbk'
+    dest_file = dest_path + '/' + level + postfix
 
     if template_map[ 'PARSERMODE' ] == 'BLAS':
       print "something"
@@ -219,8 +222,12 @@ def write_include_hierarchy( global_info_map, routines, template_map, dest_path 
             group_keys.sort()
 
             for r in group_keys:
-                content += '#include <boost/numeric/bindings/' + parsermode + '/' + level + \
-                    '/' + r.lower() + '.hpp>\n'
+                if template_map[ 'PARSERMODE' ] == 'LAPACK':
+                    content += '#include <boost/numeric/bindings/' + parsermode + '/' + level + \
+                        '/' + r.lower() + '.hpp>\n'
+                if template_map[ 'PARSERMODE' ] == 'LAPACK_DOC':
+                    content += '[include ' + level + \
+                        '/' + r.lower() + '.qbk]\n'
 
     result = template_map[ parsermode + '_include_hierarchy' ]
     result = result.replace( "$CONTENT", content )

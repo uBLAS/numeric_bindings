@@ -22,6 +22,12 @@ Table X below illustrates to which specific routine this dispatching will take p
 $DISPATCH_TABLE
 ]
 
+The original routines $SUBROUTINES have $NO_ARGUMENTS_LEVEL0 arguments,
+whereas `$groupname` requires $NO_ARGUMENTS_LEVEL2 arguments.
+
+[table Deduction of arguments of $groupname.
+]
+
 [heading Definition]
 Defined in header [headerref $header].
 

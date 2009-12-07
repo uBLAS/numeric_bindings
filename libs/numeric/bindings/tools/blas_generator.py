@@ -51,8 +51,12 @@ def write_functions( info_map, group, template_map, base_dir ):
     includes = [
       '#include <boost/numeric/bindings/traits/traits.hpp>',
       '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
+      '#include <boost/numeric/bindings/remove_imaginary.hpp>', 
+      '#include <boost/numeric/bindings/is_mutable.hpp>', 
+      '#include <boost/numeric/bindings/value.hpp>', 
       '#include <boost/mpl/bool.hpp>',
       '#include <boost/type_traits/is_same.hpp>',
+      '#include <boost/type_traits/remove_const.hpp>',
       '#include <boost/static_assert.hpp>' ]
       
     if template_map.has_key( group_name.lower() + '.includes' ):
@@ -171,9 +175,9 @@ def write_functions( info_map, group, template_map, base_dir ):
           arg_A = static_asserts[0]
           for arg_B in static_asserts[1:]:
             print "Adding static assert for argA", arg_A, " argb", arg_B
-            assert_line = 'BOOST_STATIC_ASSERT( (boost::is_same< ' + \
-                info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ', ' + \
-                info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + \
+            assert_line = 'BOOST_STATIC_ASSERT( (is_same< ' + \
+                'typename remove_const< typename value< ' + info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type, ' + \
+                'typename remove_const< typename value< ' + info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type' \
                 ' >::value) );'
             level1_static_assert_list += [ assert_line ]
 
@@ -218,7 +222,7 @@ def write_functions( info_map, group, template_map, base_dir ):
                 ", ".join( level2_arg_lists[ level2_idx ] ) )
         if len( level2_static_asserts ) > 0:
           level2_function = level2_function.replace( "$STATIC_ASSERTS", \
-                "\n".join( level2_static_asserts[ level2_idx ] ) )
+                "\n    ".join( level2_static_asserts[ level2_idx ] ) )
         level2_functions.append( level2_function )
 
       level2_template = "\n".join( level2_functions )
@@ -302,15 +306,15 @@ def write_test_case( info_map, group, template_map, base_dir, level_name ):
     result = template_map[ 'test_case.cpp' ]
     result = result.replace( '$groupname', group_name.lower() )
     result = result.replace( '$levelname', level_name.lower() )
+    result = result.replace( '$library', 'blas' )
 
     open( os.path.join( base_dir, filename ), 'wb' ).write( result )
 
 def write_cmakefile( level_properties, template_map, base_dir ):
   
   entries = '' 
-  for problem_type, problem_properties in level_properties.iteritems():
-    if problem_properties.has_key( 'routines_by_value_type' ):
-      group = problem_properties[ 'routines_by_value_type' ]
+  if level_properties.has_key( 'routines_by_value_type' ):
+      group = level_properties[ 'routines_by_value_type' ]
       for group_name, subroutines in group.iteritems():
         sub_result = template_map[ 'CMakeLists.entry' ]
         sub_result = sub_result.replace( '$groupname', group_name.lower() )
@@ -338,7 +342,7 @@ cblas_h_path = './blas-1.2/cblas/src/cblas.h'
 cublas_h_path = './cublas.h'
 template_src_path = './templates'
 bindings_impl_target_path = '../../../../boost/numeric/bindings/blas/'
-test_target_path = '../test/lapack/'
+test_target_path = '../test/blas/'
 bindings_doc_target_path = '../doc/blas/'
 
 # Unable to find zdrot in cblas.h and cublas.h
@@ -413,11 +417,17 @@ for level, level_properties in routines.iteritems():
     print "Creating directory " + doc_target_path
     os.mkdir( doc_target_path )
 
+  if not os.path.exists( test_target_path + level ):
+    print "Creating directory " + doc_target_path
+    os.mkdir( test_target_path + level )
+
   print level_properties
 
   if level_properties.has_key( 'routines_by_value_type' ):
     print "has key..." 
     write_functions( function_info_map, level_properties[ 'routines_by_value_type' ], templates, impl_target_path )
     documentation.write_documentation( function_info_map, level_properties[ 'routines_by_value_type' ], templates, doc_target_path )
+    write_test_case( function_info_map, level_properties[ 'routines_by_value_type' ], templates, test_target_path + level, level )
 
+  write_cmakefile( level_properties, templates, test_target_path + level )
 

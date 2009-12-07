@@ -8,5 +8,5 @@ $TEMPLATE[copy.all.arguments]
  INCY      (input) INTEGER
            The increment of Y
  X         (input) DATATYPE array of length (N)
- Y         (input) DATATYPE array of length (N)
+ Y         (output) DATATYPE array of length (N)
 $TEMPLATE[end]

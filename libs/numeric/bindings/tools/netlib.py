@@ -87,13 +87,13 @@ def call_c_type( name, properties ):
   if properties[ 'type' ] == 'vector' or properties[ 'type' ] == 'matrix':
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
        properties[ 'value_type' ] == 'DOUBLE COMPLEX':
-      result = 'traits::complex_ptr(' + name.lower() + ')'
+      result = 'detail::complex_ptr(' + name.lower() + ')'
     else:
       result = name.lower()
   elif properties[ 'type' ] == 'scalar':
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
        properties[ 'value_type' ] == 'DOUBLE COMPLEX':
-      result = 'traits::complex_ptr(&' + name.lower() + ')'
+      result = 'detail::complex_ptr(&' + name.lower() + ')'
     else:
       result = '&' + name.lower()
   
@@ -111,26 +111,31 @@ def call_level0_type( name, properties, arg_map ):
     result = "begin_value(" + my_name + ")"
   elif properties.has_key( 'trait_type' ):
     if properties[ 'trait_type' ] == 'lda':
-      result = "traits::leading_dimension(" + properties[ 'trait_of' ].lower() + ")"
+      result = "stride_major(" + properties[ 'trait_of' ].lower() + ")"
+      #result = "traits::leading_dimension(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'num_columns':
       result = "num_columns(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'num_rows':
       result = "num_rows(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'trans_num_columns':
-      result = "(" + properties[ 'trait_of' ][0].lower() + "=='N' ? " + \
-               "num_columns(" + properties[ 'trait_of' ][1].lower() + ") : " + \
-               "num_rows(" + properties[ 'trait_of' ][1].lower() + "))"
+      result = "size_major(" + properties[ 'trait_of' ][1].lower() + ")"
+      #result = "(" + properties[ 'trait_of' ][0].lower() + "=='N' ? " + \
+               #"num_columns(" + properties[ 'trait_of' ][1].lower() + ") : " + \
+               #"num_rows(" + properties[ 'trait_of' ][1].lower() + "))"
     if properties[ 'trait_type' ] == 'size':
       my_name = properties[ 'trait_of' ].lower()
       referring_to_properties = arg_map[ properties[ 'trait_of' ] ]
       if 'workspace' in referring_to_properties[ 'io' ]:
         my_name = 'work.select(' + workspace_type( properties[ 'trait_of' ].lower(), referring_to_properties ) + \
                   '())'
-      result = "traits::vector_size(" + my_name + ")"
+      result = "size(" + my_name + ")"
     if properties[ 'trait_type' ] == 'uplo':
       result = "traits::matrix_uplo_tag(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'stride':
-      result = "traits::vector_stride(" + properties[ 'trait_of' ].lower() + ")"
+      result = "stride(" + properties[ 'trait_of' ].lower() + ")"
+
+    if properties[ 'trait_type' ] == 'trans':
+      result = "trans_tag()"
 
   else:
     result = name.lower()
@@ -170,8 +175,8 @@ def level2_type( name, properties ):
   if result != None:
     if properties[ 'value_type' ] == 'REAL' or properties[ 'value_type' ] == 'DOUBLE PRECISION':
       result = result.replace( "real_type", \
-        "typename traits::type_traits< typename value" + \
-        "< $FIRST_TYPENAME >::type >::real_type" )
+        "typename remove_imaginary< typename value" + \
+        "< $FIRST_TYPENAME >::type >::type" )
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
       properties[ 'value_type' ] == 'DOUBLE COMPLEX':
       result = result.replace( "value_type", "typename value" + \
@@ -220,8 +225,8 @@ def level1_static_assert( name, properties ):
   result = None
   if 'workspace' not in properties[ 'io' ]:
     if properties[ 'type' ] == 'matrix' or properties[ 'type' ] == 'vector':
-      #result = level1_typename( name, properties ).replace( "typename ", "" )
-      result = "typename value< " + level1_typename( name, properties ).replace( "typename ", "" ) + " >::type"
+      result = level1_typename( name, properties ).replace( "typename ", "" )
+      #result = "typename value< " + level1_typename( name, properties ).replace( "typename ", "" ) + " >::type"
     elif properties[ 'type' ] == 'scalar':
       result = "TODO HOOK"
       #result = "typename value< " + level1_type( name, properties ) + " >::type"
@@ -339,12 +344,12 @@ def level1_assert( name, properties, arg_map ):
     min_workspace_call = min_workspace_call_type( name, properties, arg_map )
     if min_workspace_call == None:
       min_workspace_call = '$CALL_MIN_SIZE'
-    result = 'BOOST_ASSERT( traits::vector_size(work.select(' + workspace_type( name, properties ) + '())) >= ' + \
+    result = 'BOOST_ASSERT( size(work.select(' + workspace_type( name, properties ) + '())) >= ' + \
              'min_size_' + name.lower() + '( ' + min_workspace_call + ' ));'
 
   # assert_size is vector-type specific
   elif properties.has_key( 'assert_size' ):
-    result = "BOOST_ASSERT( traits::vector_size(" + call_level1_type( name, properties ) + ") >= " + \
+    result = "BOOST_ASSERT( size(" + call_level1_type( name, properties ) + ") >= " + \
       expand_nested_list( properties[ 'assert_size' ], arg_map ) + ' );'
 
   return result
@@ -1108,6 +1113,7 @@ def parse_file( filename, template_map ):
     # Try to get which variables are valid, to put this in asserts.
     #
     elif argument_properties[ 'value_type' ] == 'CHARACTER':
+      print "Trying to find assert chars..."
       match_statements = re.compile( '=(\s|or|\'[0-9A-Z]\')+[:,]', re.M ).finditer( comment_block )
       for statement in match_statements:
         print "Statement:",statement.group(0)
@@ -1119,6 +1125,19 @@ def parse_file( filename, template_map ):
           if not letter in argument_properties[ 'assert_char' ]:
             argument_properties[ 'assert_char' ] += [ letter ]
 
+      # Try alternative regex, works for e.g. TRANS in some BLAS routines
+      match_statements = re.compile( argument_name + '\s+=(\s|or|\'[0-9A-Z]\')+', re.M ).finditer( comment_block )
+      for statement in match_statements:
+        print "Statement:",statement.group(0)
+        match_letters = re.compile( '\'([0-9A-Z])\'' ).findall( statement.group(0) )
+        for letter in match_letters:
+          print "Letter",letter
+          if not argument_properties.has_key( 'assert_char' ):
+            argument_properties[ 'assert_char' ] = []
+          if not letter in argument_properties[ 'assert_char' ]:
+            argument_properties[ 'assert_char' ] += [ letter ]
+
+      # Uplo character detection
       if argument_name == 'UPLO':
         # see if the traits are overruled through the template system
         traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
@@ -1139,6 +1158,11 @@ def parse_file( filename, template_map ):
             print "adding uplo trait"
             argument_properties[ 'trait_type' ] = 'uplo'
             argument_properties[ 'trait_of' ] = uplo_trait_of
+
+      # Transpose character detection
+      if argument_name[0:5] == 'TRANS':
+        argument_properties[ 'trait_type' ] = 'trans'
+        argument_properties[ 'trait_of' ] = 'A'
 
     #
     # Minimal workspace dimension recognition

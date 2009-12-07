@@ -10,11 +10,6 @@ $TEMPLATE[CMakeLists.txt]
 # PLEASE DO NOT EDIT!
 #
 
-enable_language( Fortran )
-find_package( LAPACK REQUIRED )
-
-#include_directories( . )
-
 $ENTRIES
 
 $TEMPLATE[CMakeLists.entry]

@@ -41,9 +41,36 @@ blas_op = \
     }
 
 number_to_text = \
-    { 2 :    'two',
+    { 1 :    'one',
+      2 :    'two',
       3 :    'three',
-      4 :    'four'
+      4 :    'four',
+      5 :    'five',
+      6 :    'six',
+      7 :    'seven',
+      8 :    'eight',
+      9 :    'nine',
+      10:    'ten',
+      11:    'eleven',
+      12:    'twelve',
+      13:    'thirteen',
+      14:    'fourteen',
+      15:    'fifteen',
+      16:    'sixteen',
+      17:    'seventeen',
+      18:    'eighteen',
+      19:    'nineteen',
+      20:    'twenty',
+      21:    'twenty-one',
+      22:    'twenty-two',
+      23:    'twenty-three',
+      24:    'twenty-four',
+      25:    'twenty-five',
+      26:    'twenty-six',
+      27:    'twenty-seven',
+      28:    'twenty-eight',
+      29:    'twenty-nine',
+      30:    'thirty',
     }
 
 def readable_join( some_tuple, last_word = "and" ):
@@ -163,6 +190,9 @@ def write_documentation( info_map, group, template_map, base_dir ):
         prototypes = []
         first_typename = None
         originating_sources = []
+        no_arguments_level0 = []
+        no_arguments_level2 = []
+
         for subroutine in subroutines:
             if parsermode == 'blas':
                 originating_sources.append( "[@http://www.netlib.org/blas/" +
@@ -175,6 +205,13 @@ def write_documentation( info_map, group, template_map, base_dir ):
             for arg in info_map[ subroutine ][ 'arguments' ]:
                 if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] != None:
                     level2_arg_list_pre += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] ]
+
+            # Keep track of the numbers of arguments
+            if len( info_map[ subroutine ][ 'arguments' ] ) not in no_arguments_level0:
+                no_arguments_level0.append( len( info_map[ subroutine ][ 'arguments' ] ) )
+
+            if len( level2_arg_list_pre ) not in no_arguments_level2:
+                no_arguments_level2.append( len( level2_arg_list_pre ) )
 
             level2_arg_list = []
             for arg in level2_arg_list_pre:
@@ -220,6 +257,17 @@ def write_documentation( info_map, group, template_map, base_dir ):
 
         result = result.replace( '$SUBROUTINES', readable_join( subroutines ) )
         result = result.replace( '$header', 'boost/numeric/bindings/' + parsermode + '/' + group_name.lower() + '.hpp' )
+
+
+        if len( no_arguments_level0 ) == 1:
+            result = result.replace( '$NO_ARGUMENTS_LEVEL0', number_to_text[ no_arguments_level0[0] ] )
+        else:
+            result = result.replace( '$NO_ARGUMENTS_LEVEL0', "TODO" )
+
+        if len( no_arguments_level2 ) == 1:
+            result = result.replace( '$NO_ARGUMENTS_LEVEL2', number_to_text[ no_arguments_level2[0] ] )
+        else:
+            result = result.replace( '$NO_ARGUMENTS_LEVEL2', "TODO" )
 
         if parsermode == 'blas':
             result = result.replace( '$DISPATCH_TABLE', write_blas_dispatch_table( subroutines, info_map ) )

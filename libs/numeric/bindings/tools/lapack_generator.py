@@ -425,6 +425,7 @@ def write_test_case( info_map, group, template_map, base_dir, level_name ):
     result = template_map[ 'test_case.cpp' ]
     result = result.replace( '$groupname', group_name.lower() )
     result = result.replace( '$levelname', level_name.lower() )
+    result = result.replace( '$library', 'lapack' )
 
     open( os.path.join( base_dir, filename ), 'wb' ).write( result )
 
@@ -580,16 +581,16 @@ for level, level_properties in routines.iteritems():
     print "Creating directory " + doc_target_path
     os.mkdir( doc_target_path )
 
-  #if not os.path.exists( test_target_path + level ):
-  #  os.mkdir( test_target_path + level )
+  if not os.path.exists( test_target_path + level ):
+    print "Creating directory " + doc_target_path
+    os.mkdir( test_target_path + level )
 
   for problem_type, problem_properties in level_properties.iteritems():
     if problem_properties.has_key( 'routines_by_value_type' ):
       write_functions( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, impl_target_path )
       documentation.write_documentation( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, doc_target_path )
+      write_test_case( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, test_target_path + level, level )
 
-      #write_test_case( function_info_map, problem_properties[ 'routines_by_value_type' ], templates, test_target_path + level, level )
-
-  #write_cmakefile( level_properties, templates, test_target_path + level )
+  write_cmakefile( level_properties, templates, test_target_path + level )
 
 

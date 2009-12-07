@@ -5,7 +5,7 @@ $TEMPLATE[scal.all.arguments]
            The length of array X
  INCX      (input) INTEGER
            The increment of X
- X         (input) DATATYPE array of length (N)
+ X         (input/output) DATATYPE array of length (N)
  A         (input) DATATYPE
 $TEMPLATE[scal.all.cblas_alias]
 A,ALPHA

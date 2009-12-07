@@ -59,12 +59,14 @@ inline $RETURN_TYPE $groupname( $LEVEL0 ) {
 }
 
 $TEMPLATE[blas_level1]
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class
+//
+template< typename Value >
 struct $groupname_impl {
 
-    typedef ValueType value_type;
-    typedef typename remove_imaginary<ValueType>::type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
     typedef $RETURN_TYPE return_type;
 
 $INCLUDE_TEMPLATES
@@ -77,7 +79,9 @@ $INCLUDE_TEMPLATES
     }
 };
 $TEMPLATE[blas_level2]
-// generic template function to call $groupname
+//
+// Generic template function to call $groupname
+//
 template< $TYPES >
 inline typename $groupname_impl< typename value< $FIRST_TYPENAME >::type >::return_type
 $groupname( $LEVEL2 ) {

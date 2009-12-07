@@ -62,22 +62,22 @@ $CONTENT
 #endif
 $TEMPLATE[level1_pre_header]
 // value-type based template
-template< typename ValueType, typename Enable = void >
+template< typename Value, typename Enable = void >
 struct $groupname_impl{};
 
 $TEMPLATE[level1_header1]
 // value-type based template
-template< typename ValueType >
+template< typename Value >
 struct $groupname_impl {
 
 $TEMPLATE[level1_header2]
 // $SPECIALIZATION specialization
-template< typename ValueType >
-struct $groupname_impl< ValueType, typename boost::enable_if< traits::is_$SPECIALIZATION<ValueType> >::type > {
+template< typename Value >
+struct $groupname_impl< Value, typename boost::enable_if< traits::is_$SPECIALIZATION<Value> >::type > {
 
 $TEMPLATE[level1_workspace]
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename traits::type_traits<Value>::real_type real_type;
 
 $INCLUDE_TEMPLATES
     // user-defined workspace specialization
@@ -142,8 +142,8 @@ $TEMPLATE[min_size_func]
     }
 
 $TEMPLATE[level1_noworkspace]
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename traits::type_traits<Value>::real_type real_type;
 
 $INCLUDE_TEMPLATES
     // templated specialization

@@ -7,6 +7,6 @@ $TEMPLATE[swap.all.arguments]
            The increment of X
  INCY      (input) INTEGER
            The increment of Y
- X        (output) DATATYPE
- Y        (output) DATATYPE
+ X        (input/output) DATATYPE
+ Y        (input/output) DATATYPE
 $TEMPLATE[end]

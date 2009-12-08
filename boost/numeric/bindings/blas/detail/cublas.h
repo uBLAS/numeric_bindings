@@ -9,6 +9,8 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_CUBLAS_H
 #define BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_CUBLAS_H
 
-#include <cublas.h>
+extern "C" {
+#include <cublas.h> 
+}
 
 #endif

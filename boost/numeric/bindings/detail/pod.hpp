@@ -50,6 +50,10 @@ struct adaptor< T[N], Id, typename boost::enable_if< is_numeric<T> >::type > {
         return &t[0];
     }
 
+    static value_type* end_value( Id& t ) {
+        return &t[N];
+    }
+
 };
 
 template< typename T, std::size_t N, std::size_t M, typename Id >
@@ -70,6 +74,10 @@ struct adaptor< T[N][M], Id, typename boost::enable_if< is_numeric<T> >::type > 
 
     static value_type* begin_value( Id& t ) {
         return &t[0][0];
+    }
+
+    static value_type* end_value( Id& t ) {
+        return &t[N][M];
     }
 
 };

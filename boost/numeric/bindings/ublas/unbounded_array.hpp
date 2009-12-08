@@ -37,6 +37,10 @@ struct adaptor< ublas::unbounded_array< T, Alloc >, Id, Enable > {
         return t.begin();
     }
 
+    static value_type* end_value( Id& t ) {
+        return t.end();
+    }
+
 };
 
 } // namespace detail

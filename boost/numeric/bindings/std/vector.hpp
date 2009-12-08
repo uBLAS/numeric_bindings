@@ -37,6 +37,10 @@ struct adaptor< std::vector< T, Alloc >, Id, Enable > {
         return &t.front();
     }
 
+    static value_type* end_value( Id& t ) {
+        return &t.front() + t.size();
+    }
+
 };
 
 } // namespace detail

@@ -9,6 +9,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_DETAIL_PROPERTY_MAP_HPP
 #define BOOST_NUMERIC_BINDINGS_DETAIL_PROPERTY_MAP_HPP
 
+#include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/has_key.hpp>
 #include <boost/type_traits/is_same.hpp>

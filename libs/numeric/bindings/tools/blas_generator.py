@@ -49,15 +49,20 @@ def write_functions( info_map, group, template_map, base_dir ):
 
     filename = group_name.lower() + '.hpp'
     includes = [
-      '#include <boost/numeric/bindings/traits/traits.hpp>',
-      '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
+      #'#include <boost/numeric/bindings/detail/void_ptr.hpp>',
+      #'#include <boost/numeric/bindings/traits/traits.hpp>',
+      #'#include <boost/numeric/bindings/traits/type_traits.hpp>', 
       '#include <boost/numeric/bindings/remove_imaginary.hpp>', 
       '#include <boost/numeric/bindings/is_mutable.hpp>', 
       '#include <boost/numeric/bindings/value.hpp>', 
-      '#include <boost/mpl/bool.hpp>',
+      '#include <boost/numeric/bindings/stride.hpp>',
+      '#include <boost/numeric/bindings/size.hpp>',
+      #'#include <boost/mpl/bool.hpp>',
       '#include <boost/type_traits/is_same.hpp>',
       '#include <boost/type_traits/remove_const.hpp>',
-      '#include <boost/static_assert.hpp>' ]
+      '#include <boost/static_assert.hpp>',
+      '#include <boost/assert.hpp>',
+    ]
       
     if template_map.has_key( group_name.lower() + '.includes' ):
       includes += template_map[ group_name.lower() + '.includes' ].splitlines()
@@ -87,6 +92,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       sub_template = sub_template.replace( "$CALL_BLAS_HEADER", ", ".join( lapack_arg_list ) )
       sub_template = sub_template.replace( "$CALL_CBLAS_HEADER", ", ".join( cblas_arg_list ) )
       sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
+      sub_template = sub_template.replace( "$SPECIALIZATION", documentation.routine_value_type[ subroutine[0] ] )
 
       # CBLAS stuff
       if 'cblas_routine' in info_map[ subroutine ]:
@@ -220,7 +226,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       for level2_idx in range( 0, len( level2_arg_lists ) ):
         level2_function = level2_template.replace( "$LEVEL2", \
                 ", ".join( level2_arg_lists[ level2_idx ] ) )
-        if len( level2_static_asserts ) > 0:
+        if len( "".join(level2_static_asserts[ level2_idx ] ) ) > 0:
           level2_function = level2_function.replace( "$STATIC_ASSERTS", \
                 "\n    ".join( level2_static_asserts[ level2_idx ] ) )
         level2_functions.append( level2_function )
@@ -240,7 +246,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       level2_template = level2_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
       level2_template = level2_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
       level2_template = level2_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
-      level2_template = level2_template.replace( '\n    $STATIC_ASSERTS', '' )
+      level2_template = level2_template.replace( '    $STATIC_ASSERTS\n', '' )
 
       level1_map[ value_type ] = bindings.proper_indent( level1_template )
       level2_map[ value_type ] = bindings.proper_indent( level2_template )

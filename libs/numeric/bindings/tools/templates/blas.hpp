@@ -31,15 +31,24 @@ namespace numeric {
 namespace bindings {
 namespace blas {
 
-// The detail namespace is used for overloads on value type,
-// and to dispatch to the right routine
-
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end BLAS routine.
+//
 namespace detail {
 
 $OVERLOADS
 } // namespace detail
 
 $LEVEL1
+
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. 
+// In the documentation the const-overloads are collapsed. Consult the
+// static assert lists (if available) to check what kind of overload it is.
+//
+
 $LEVEL2
 } // namespace blas
 } // namespace bindings
@@ -48,6 +57,9 @@ $LEVEL2
 
 #endif
 $TEMPLATE[blas_overloads]
+//
+// Overloaded function for the $SPECIALIZATION value type.
+//
 inline $RETURN_TYPE $groupname( $LEVEL0 ) {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
     $RETURN_STATEMENT$CBLAS_ROUTINE( $CALL_CBLAS_HEADER );
@@ -60,7 +72,8 @@ inline $RETURN_TYPE $groupname( $LEVEL0 ) {
 
 $TEMPLATE[blas_level1]
 //
-// Value-type based template class
+// Value-type based template class. Use this class if you need a type
+// for dispatching to $groupname.
 //
 template< typename Value >
 struct $groupname_impl {
@@ -70,7 +83,11 @@ struct $groupname_impl {
     typedef $RETURN_TYPE return_type;
 
 $INCLUDE_TEMPLATES
-    // static template member function
+    //
+    // Static member function that
+    // 1) Deduces the required arguments for dispatching to BLAS, and
+    // 2) Asserts that most arguments make sense.
+    //
     template< $TYPES >
     static return_type invoke( $LEVEL1 ) {
         $STATIC_ASSERTS
@@ -80,8 +97,8 @@ $INCLUDE_TEMPLATES
 };
 $TEMPLATE[blas_level2]
 //
-// Generic template function to call $groupname
-//
+// Overloaded function for $groupname
+// 
 template< $TYPES >
 inline typename $groupname_impl< typename value< $FIRST_TYPENAME >::type >::return_type
 $groupname( $LEVEL2 ) {

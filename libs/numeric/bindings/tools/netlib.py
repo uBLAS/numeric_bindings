@@ -14,11 +14,18 @@ from types import StringType
 # for debugging purposes
 import pprint
 
+fortran_integer_type = 'std::ptrdiff_t'
+
+complex_float_type = 'std::complex<float>'  
+complex_double_type = 'std::complex<double>'
+
+fortran_complex_float_ptr = 'void'    # was fcomplex_t
+fortran_complex_double_ptr = 'void'   # was dcomplex_t
 
 global_type_map = { 
   'CHARACTER': 'char',
   'LOGICAL': 'logical_t', 
-  'INTEGER': 'integer_t',
+  'INTEGER': fortran_integer_type,
   'REAL': 'float', 
   'DOUBLE PRECISION': 'double' }
 
@@ -37,16 +44,16 @@ templates = {}
 
 def value_type( fortran_type ):
   m_type_map = global_type_map
-  m_type_map[ 'COMPLEX' ] = 'fcomplex_t'
-  m_type_map[ 'COMPLEX*16' ] = 'dcomplex_t'
-  m_type_map[ 'DOUBLE COMPLEX' ] = 'dcomplex_t'
+  m_type_map[ 'COMPLEX' ] = fortran_complex_float_ptr
+  m_type_map[ 'COMPLEX*16' ] = fortran_complex_double_ptr
+  m_type_map[ 'DOUBLE COMPLEX' ] = fortran_complex_double_ptr
   return m_type_map[ fortran_type ]
   
 def c_type( name, properties ):
   m_type_map = global_type_map
-  m_type_map[ 'COMPLEX' ] = 'fcomplex_t'
-  m_type_map[ 'COMPLEX*16' ] = 'dcomplex_t'
-  m_type_map[ 'DOUBLE COMPLEX' ] = 'dcomplex_t'
+  m_type_map[ 'COMPLEX' ] = fortran_complex_float_ptr
+  m_type_map[ 'COMPLEX*16' ] = fortran_complex_double_ptr
+  m_type_map[ 'DOUBLE COMPLEX' ] = fortran_complex_double_ptr
 
   result = m_type_map[ properties[ 'value_type' ] ];
   if properties[ 'io' ] == [ 'input' ]:
@@ -59,9 +66,10 @@ def c_type( name, properties ):
   
 def cpp_type( name, properties ):
   m_type_map = global_type_map
-  m_type_map[ 'COMPLEX' ] = 'traits::complex_f'
-  m_type_map[ 'COMPLEX*16' ] = 'traits::complex_d'
-  m_type_map[ 'DOUBLE COMPLEX' ] = 'traits::complex_d'
+
+  m_type_map[ 'COMPLEX' ] = complex_float_type
+  m_type_map[ 'COMPLEX*16' ] = complex_double_type
+  m_type_map[ 'DOUBLE COMPLEX' ] = complex_double_type
   
   result = m_type_map[ properties[ 'value_type' ] ]
   
@@ -87,13 +95,17 @@ def call_c_type( name, properties ):
   if properties[ 'type' ] == 'vector' or properties[ 'type' ] == 'matrix':
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
        properties[ 'value_type' ] == 'DOUBLE COMPLEX':
-      result = 'detail::complex_ptr(' + name.lower() + ')'
+      #result = 'detail::complex_ptr(' + name.lower() + ')'
+      #result = 'bindings::detail::void_ptr(' + name.lower() + ')'
+      result = '' + name.lower() + ''
     else:
       result = name.lower()
   elif properties[ 'type' ] == 'scalar':
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
        properties[ 'value_type' ] == 'DOUBLE COMPLEX':
-      result = 'detail::complex_ptr(&' + name.lower() + ')'
+      #result = 'detail::complex_ptr(&' + name.lower() + ')'
+      result = '&' + name.lower() + ''
+      #result = 'bindings::detail::void_ptr(&' + name.lower() + ')'
     else:
       result = '&' + name.lower()
   
@@ -161,8 +173,8 @@ def level1_type( name, properties ):
         result = result.replace( "double", "real_type" )
       if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
         properties[ 'value_type' ] == 'DOUBLE COMPLEX':
-         result = result.replace( "traits::complex_d", "value_type" )
-         result = result.replace( "traits::complex_f", "value_type" )
+         result = result.replace( complex_float_type, "value_type" )
+         result = result.replace( complex_double_type, "value_type" )
 
   return result
 
@@ -366,7 +378,7 @@ def workspace_type( name, properties ):
   result = None
   if 'workspace' in properties[ 'io' ]:
     if properties[ 'value_type' ] == 'INTEGER':
-      result = 'integer_t'
+      result = fortran_integer_type
     elif properties[ 'value_type' ] == 'LOGICAL':
       result = 'bool'
     elif properties[ 'value_type' ] == 'REAL' or properties[ 'value_type' ] == 'DOUBLE PRECISION':
@@ -1140,10 +1152,10 @@ def parse_file( filename, template_map ):
       # Uplo character detection
       if argument_name == 'UPLO':
         # see if the traits are overruled through the template system
+        # the trait_of key will be added below
         traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
         if my_has_key( traits_key, template_map ):
           argument_properties[ 'trait_type' ] = 'uplo'
-          argument_properties[ 'trait_of' ] = template_map[ my_has_key( traits_key, template_map ) ].strip()
         
         else:
           match_uplo = re.compile( '([Uu]pper|[Ll]ower)(or|triangular|triangle|triangles|part|of|the|band|hermitian|symmetric|input|matrix|\s)+([A-Z]+)', re.M ).findall( comment_block )
@@ -1163,6 +1175,12 @@ def parse_file( filename, template_map ):
       if argument_name[0:5] == 'TRANS':
         argument_properties[ 'trait_type' ] = 'trans'
         argument_properties[ 'trait_of' ] = 'A'
+
+      # check for existance of trait_of definition in template file(s)
+      traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
+      if my_has_key( traits_key, template_map ):
+        argument_properties[ 'trait_of' ] = template_map[ my_has_key( traits_key, template_map ) ].strip()
+
 
     #
     # Minimal workspace dimension recognition

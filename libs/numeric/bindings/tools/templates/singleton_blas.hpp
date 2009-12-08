@@ -15,7 +15,6 @@ $TEMPLATE[blas.h]
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_BLAS_H
 #define BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_BLAS_H
 
-#include <boost/numeric/bindings/traits/type.h>
 #include <boost/numeric/bindings/blas/detail/blas_names.h>
 
 extern "C" {

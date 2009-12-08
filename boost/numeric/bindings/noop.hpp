@@ -11,6 +11,7 @@
 
 #include <boost/numeric/bindings/detail/adaptable_type.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/stride.hpp>
 #include <boost/ref.hpp>
@@ -37,8 +38,12 @@ struct adaptor< noop_wrapper<T>, Id, Enable > {
         return size<1>( id.get() );
     }
 
-    static typename result_of::begin< T, tag::value >::type begin_value( Id& id ) {
+    static typename result_of::begin_value< T >::type begin_value( Id& id ) {
         return bindings::begin_value( id.get() );
+    }
+
+    static typename result_of::end_value< T >::type end_value( Id& id ) {
+        return bindings::end_value( id.get() );
     }
 
 };

@@ -67,7 +67,7 @@ struct stride_impl< T, Key,
 
 namespace result_of {
 
-template< typename T, int Dimension >
+template< typename T, int Dimension = 1 >
 struct stride {
     typedef typename detail::stride_impl< T, tag::stride_type<Dimension> >::result_type type;
 };
@@ -79,16 +79,24 @@ inline typename result_of::stride< const T, Dimension >::type stride( const T& t
     return detail::stride_impl< const T, tag::stride_type<Dimension> >::stride( t );
 }
 
+// Overloads for types with rank <= 1 (scalars, vectors)
+// In theory, we could provide overloads for matrices here, too, 
+// if their minimal_rank is at most 1.
+
 template< typename T >
-inline std::ptrdiff_t stride( const T& t, std::size_t dimension ) {
-    switch( dimension ) {
-        case 1: return stride<1>(t);
-        case 2: return stride<2>(t);
-        case 3: return stride<3>(t);
-        case 4: return stride<4>(t);
-        default: return 0;
-    }
+typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
+    typename result_of::stride<T>::type >::type
+stride( T& t ) {
+    return detail::stride_impl<T, tag::stride_type<1> >::stride( t );
 }
+
+template< typename T >
+typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
+    typename result_of::stride< const T >::type >::type
+stride( const T& t ) {
+    return detail::stride_impl<const T, tag::stride_type<1> >::stride( t );
+}
+
 
 } // namespace bindings
 } // namespace numeric

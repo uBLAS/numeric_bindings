@@ -9,6 +9,8 @@
 #ifndef BOOST_NUMERIC_BINDINGS_REMOVE_IMAGINARY_HPP
 #define BOOST_NUMERIC_BINDINGS_REMOVE_IMAGINARY_HPP
 
+#include <complex>
+
 namespace boost {
 namespace numeric {
 namespace bindings {

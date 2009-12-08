@@ -70,7 +70,7 @@ struct size_impl< T, Key,
 
 namespace result_of {
 
-template< typename T, int Dimension >
+template< typename T, int Dimension = 1 >
 struct size {
     typedef typename detail::size_impl< T, tag::size_type<Dimension> >::result_type type;
 };
@@ -82,15 +82,23 @@ inline typename result_of::size< const T, Dimension >::type size( const T& t ) {
     return detail::size_impl< const T, tag::size_type<Dimension> >::size( t );
 }
 
+
+// Overloads for types with rank <= 1 (scalars, vectors)
+// In theory, we could provide overloads for matrices here, too, 
+// if their minimal_rank is at most 1.
+
 template< typename T >
-inline std::ptrdiff_t size( const T& t, std::size_t dimension ) {
-    switch( dimension ) {
-        case 1: return size<1>(t);
-        case 2: return size<2>(t);
-        case 3: return size<3>(t);
-        case 4: return size<4>(t);
-        default: return 0;
-    }
+typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
+    typename result_of::size<T>::type >::type
+size( T& t ) {
+    return detail::size_impl<T, tag::size_type<1> >::size( t );
+}
+
+template< typename T >
+typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
+    typename result_of::size< const T >::type >::type
+size( const T& t ) {
+    return detail::size_impl<const T, tag::size_type<1> >::size( t );
 }
 
 } // namespace bindings

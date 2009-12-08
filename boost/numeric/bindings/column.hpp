@@ -49,8 +49,13 @@ struct adaptor< column_wrapper<T>, Id, Enable > {
         return size<1>( id.get() );
     }
 
-    static typename result_of::begin<T,tag::value>::type begin_value( Id& id ) {
-        return begin<tag::value>( id.get() ) + id.m_index * stride<2>( id.get() );
+    static typename result_of::begin_value< T >::type begin_value( Id& id ) {
+        return bindings::begin_value( id.get() ) + id.m_index * stride<2>( id.get() );
+    }
+
+    static typename result_of::end_value< T >::type end_value( Id& id ) {
+        // TODO subtract some stuff from the true end
+        return bindings::end_value( id.get() );
     }
 
     static typename result_of::stride<T,1>::type stride1( const Id& id ) {

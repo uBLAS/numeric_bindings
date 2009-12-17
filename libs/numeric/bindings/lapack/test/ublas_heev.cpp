@@ -8,9 +8,10 @@
 
 #include "ublas_heev.hpp"
 
-#include <boost/numeric/bindings/lapack/heev.hpp>
+#include <boost/numeric/bindings/lapack/driver/heev.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>
+#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -22,11 +23,12 @@ namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
 
 
-template <typename T, typename W, char UPLO>
+template <typename T, typename W, typename UPLO>
 int do_memory_uplo(int n, W& workspace ) {
    typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
 
    typedef ublas::matrix<T, ublas::column_major>     matrix_type ;
+   typedef ublas::hermitian_adaptor<matrix_type, UPLO> hermitian_type ;
    typedef ublas::vector<real_type>                  vector_type ;
 
    // Set matrix
@@ -38,23 +40,27 @@ int do_memory_uplo(int n, W& workspace ) {
    matrix_type a2( a );
 
    // Compute Schur decomposition.
-   lapack::heev( 'V', UPLO, a, e1, workspace ) ;
+   hermitian_type h_a( a );
+   lapack::heev( 'V', h_a, e1, workspace ) ;
 
    if (check_residual( a2, e1, a )) return 255 ;
 
-   lapack::heev( 'N', UPLO, a2, e2, workspace ) ;
+   hermitian_type h_a2( a2 );
+   lapack::heev( 'N', h_a2, e2, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
    // Test for a matrix range
    fill( a ); a2.assign( a );
 
    typedef ublas::matrix_range< matrix_type > matrix_range ;
+   typedef ublas::hermitian_adaptor<matrix_range, UPLO> hermitian_range_type ;
 
    ublas::range r(1,n-1) ;
    matrix_range a_r( a, r, r );
    ublas::vector_range< vector_type> e_r( e1, r );
 
-   lapack::heev( 'V', UPLO, a_r, e_r, workspace );
+   hermitian_range_type h_a_r( a_r );
+   lapack::heev( 'V', h_a_r, e_r, workspace );
 
    matrix_range a2_r( a2, r, r );
    if (check_residual( a2_r, e_r, a_r )) return 255 ;
@@ -66,9 +72,9 @@ int do_memory_uplo(int n, W& workspace ) {
 template <typename T, typename W>
 int do_memory_type(int n, W workspace) {
    std::cout << "  upper\n" ;
-   if (do_memory_uplo<T,W,'U'>(n, workspace)) return 255 ;
+   if (do_memory_uplo<T,W,ublas::upper>(n, workspace)) return 255 ;
    std::cout << "  lower\n" ;
-   if (do_memory_uplo<T,W,'L'>(n, workspace)) return 255 ;
+   if (do_memory_uplo<T,W,ublas::lower>(n, workspace)) return 255 ;
    return 0 ;
 }
 

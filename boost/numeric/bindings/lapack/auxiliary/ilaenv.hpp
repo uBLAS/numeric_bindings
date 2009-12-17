@@ -15,7 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_ILAENV_HPP
 
 #include <cstring> 
-#include <boost/numeric/bindings/lapack/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack.h>
 
 namespace boost { namespace numeric { namespace bindings { namespace lapack {
 

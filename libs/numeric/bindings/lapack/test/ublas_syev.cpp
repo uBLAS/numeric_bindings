@@ -8,7 +8,7 @@
 
 #include "ublas_heev.hpp"
 
-#include <boost/numeric/bindings/lapack/syev.hpp>
+#include <boost/numeric/bindings/lapack/driver/syev.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>
@@ -36,11 +36,12 @@ struct translate_uplo<'L'> {
   typedef ublas::lower_tag type ;
 } ;
 
-template <typename T, typename W, char UPLO>
+template <typename T, typename W, typename UPLO>
 int do_memory_uplo(int n, W& workspace ) {
    typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
 
    typedef ublas::matrix<T, ublas::column_major>     matrix_type ;
+   typedef ublas::symmetric_adaptor<matrix_type, UPLO> symmetric_type ;
    typedef ublas::vector<real_type>                  vector_type ;
 
    // Set matrix
@@ -52,30 +53,34 @@ int do_memory_uplo(int n, W& workspace ) {
    matrix_type a2( a );
 
    // Compute eigen decomposition.
-   lapack::syev( 'V', UPLO, a, e1, workspace ) ;
+   symmetric_type s_a( a );
+   lapack::syev( 'V', s_a, e1, workspace ) ;
 
    if (check_residual( a2, e1, a )) return 255 ;
 
-   lapack::syev( 'N', UPLO, a2, e2, workspace ) ;
+   symmetric_type s_a2( a2 );
+   lapack::syev( 'N', s_a2, e2, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
    // Test for a matrix range
    fill( a ); a2.assign( a );
 
    typedef ublas::matrix_range< matrix_type > matrix_range ;
+   typedef ublas::symmetric_adaptor<matrix_range, UPLO> symmetric_range_type;
 
    ublas::range r(1,n-1) ;
    matrix_range a_r( a, r, r );
    ublas::vector_range< vector_type> e_r( e1, r );
 
-   lapack::syev('V', UPLO,  a_r, e_r, workspace );
+   symmetric_range_type s_a_r( a_r );
+   lapack::syev('V',  s_a_r, e_r, workspace );
 
    matrix_range a2_r( a2, r, r );
    if (check_residual( a2_r, e_r, a_r )) return 255 ;
 
    // Test for symmetric_adaptor
    fill( a ); a2.assign( a );
-   ublas::symmetric_adaptor< matrix_type, typename translate_uplo<UPLO>::type > a_uplo( a ) ;
+   ublas::symmetric_adaptor< matrix_type, UPLO> a_uplo( a ) ;
    lapack::syev( 'V', a_uplo, e1, workspace ) ;
    if (check_residual( a2, e1, a )) return 255 ;
 
@@ -86,9 +91,9 @@ int do_memory_uplo(int n, W& workspace ) {
 template <typename T, typename W>
 int do_memory_type(int n, W workspace) {
    std::cout << "  upper\n" ;
-   if (do_memory_uplo<T,W,'U'>(n, workspace)) return 255 ;
+   if (do_memory_uplo<T,W,ublas::upper>(n, workspace)) return 255 ;
    std::cout << "  lower\n" ;
-   if (do_memory_uplo<T,W,'L'>(n, workspace)) return 255 ;
+   if (do_memory_uplo<T,W,ublas::lower>(n, workspace)) return 255 ;
    return 0 ;
 }
 

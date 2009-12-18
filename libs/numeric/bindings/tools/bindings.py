@@ -279,3 +279,21 @@ def generate_const_variants( argument_list ):
     #print "result: ", result
     return result, static_asserts
 
+#
+# Generate the call to the value_tye meta-func
+#
+def value_type( arg ):
+    return 'typename value< ' + arg + ' >::type'
+
+
+
+
+
+
+
+
+
+
+
+
+

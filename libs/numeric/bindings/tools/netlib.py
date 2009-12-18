@@ -8,7 +8,7 @@
 # http://www.boost.org/LICENSE_1_0.txt)
 #
 
-import re, os.path, copy
+import re, os.path, copy, bindings
 from types import StringType
 
 # for debugging purposes
@@ -187,12 +187,10 @@ def level2_type( name, properties ):
   if result != None:
     if properties[ 'value_type' ] == 'REAL' or properties[ 'value_type' ] == 'DOUBLE PRECISION':
       result = result.replace( "real_type", \
-        "typename remove_imaginary< typename value" + \
-        "< $FIRST_TYPENAME >::type >::type" )
+        "typename remove_imaginary< " + bindings.value_type( "$FIRST_TYPENAME" ) + ' >::type' )
     if properties[ 'value_type' ][ 0:7] == 'COMPLEX' or \
       properties[ 'value_type' ] == 'DOUBLE COMPLEX':
-      result = result.replace( "value_type", "typename value" + \
-        "< $FIRST_TYPENAME >::type" )
+      result = result.replace( "value_type", bindings.value_type( "$FIRST_TYPENAME" ) )
   return result
 
 

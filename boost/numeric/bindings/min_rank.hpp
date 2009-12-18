@@ -6,8 +6,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_MIN_TENSOR_RANK_HPP
-#define BOOST_NUMERIC_BINDINGS_MIN_TENSOR_RANK_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_MIN_RANK_HPP
+#define BOOST_NUMERIC_BINDINGS_MIN_RANK_HPP
 
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 

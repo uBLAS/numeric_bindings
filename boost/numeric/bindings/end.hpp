@@ -30,18 +30,18 @@ struct end_impl< T, tag::value > {
 
 };
 
-template< typename T, int Dimension >
-struct end_impl<T, mpl::int_<Dimension> > {
+template< typename T, int N >
+struct end_impl< T, tag::index<N> > {
 
-    typedef mpl::int_<Dimension> dim_type;
+    typedef tag::index<N> index_type;
 
     typedef linear_iterator<
         typename value<T>::type,
-        typename result_of::stride<T,Dimension>::type
+        typename result_of::stride< T, index_type >::type
     > result_type;
 
     static result_type invoke( T& t ) {
-        return result_type( end_value( t ), stride<Dimension>(t) );
+        return result_type( end_value( t ), stride(t, index_type() ) );
     }
 
 };
@@ -50,7 +50,7 @@ struct end_impl<T, mpl::int_<Dimension> > {
 
 namespace result_of {
 
-template< typename T, typename Tag = mpl::int_<1> >
+template< typename T, typename Tag = tag::index<1> >
 struct end {
     typedef typename detail::end_impl<T,Tag>::result_type type;
 };
@@ -60,28 +60,19 @@ struct end {
 // Free Functions
 //
 
-// Overloads like begin< tag::value, etc. >
-
-template< typename Tag, typename T >
-typename result_of::end<T,Tag>::type end( T& t ) {
+//
+// Overloads like end( t, tag );
+//
+template< typename T, typename Tag >
+inline typename result_of::end<T,Tag>::type
+end( T& t, Tag ) {
     return detail::end_impl<T,Tag>::invoke( t );
 }
 
-template< typename Tag, typename T >
-typename result_of::end<const T,Tag>::type end( const T& t ) {
+template< typename T, typename Tag >
+inline typename result_of::end<const T,Tag>::type
+end( const T& t, Tag ) {
     return detail::end_impl<const T,Tag>::invoke( t );
-}
-
-// Overloads like end<1>, end<2>, etc..
-
-template< int Dimension, typename T >
-typename result_of::end<T, mpl::int_<Dimension> >::type end( T& t ) {
-    return detail::end_impl<T, mpl::int_<Dimension> >( t );
-}
-
-template< int Dimension, typename T >
-typename result_of::end<const T, mpl::int_<Dimension> >::type end( const T& t ) {
-    return detail::end_impl<const T, mpl::int_<Dimension> >( t );
 }
 
 // Overloads for types with rank <= 1 (scalars, vectors)
@@ -90,25 +81,25 @@ typename result_of::end<const T, mpl::int_<Dimension> >::type end( const T& t ) 
 
 template< typename T >
 typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
-    typename result_of::end< T, mpl::int_<1> >::type >::type
+    typename result_of::end< T, tag::index<1> >::type >::type
 end( T& t ) {
-    return detail::end_impl<T,mpl::int_<1> >::invoke( t );
+    return detail::end_impl<T,tag::index<1> >::invoke( t );
 }
 
 template< typename T >
 typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
     typename result_of::end< const T >::type >::type
 end( const T& t ) {
-    return detail::end_impl<const T,mpl::int_<1> >::invoke( t );
+    return detail::end_impl<const T, tag::index<1> >::invoke( t );
 }
 
 #define GENERATE_END_INDEX( z, which, unused ) \
-GENERATE_ITER_FUNCS( end, which, mpl::int_<which> )
+GENERATE_FUNCTIONS( end, which, mpl::int_<which> )
 
-BOOST_PP_REPEAT_FROM_TO(1,2,GENERATE_END_INDEX,~)
-GENERATE_ITER_FUNCS( end, _value, tag::value )
-GENERATE_ITER_FUNCS( end, _row, mpl::int_<1> )
-GENERATE_ITER_FUNCS( end, _column, mpl::int_<2> )
+BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_END_INDEX,~)
+GENERATE_FUNCTIONS( end, _value, tag::value )
+GENERATE_FUNCTIONS( end, _row, mpl::int_<1> )
+GENERATE_FUNCTIONS( end, _column, mpl::int_<2> )
 
 
 } // namespace bindings

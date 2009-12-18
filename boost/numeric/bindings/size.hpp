@@ -9,48 +9,50 @@
 #ifndef BOOST_NUMERIC_BINDINGS_SIZE_HPP
 #define BOOST_NUMERIC_BINDINGS_SIZE_HPP
 
+#include <boost/numeric/bindings/detail/generate_functions.hpp>
 #include <boost/numeric/bindings/detail/get.hpp>
 #include <boost/numeric/bindings/rank.hpp>
-#include <boost/mpl/min.hpp>
 #include <boost/mpl/and.hpp>
-#include <boost/mpl/less_equal.hpp>
+#include <boost/mpl/min.hpp>
 #include <boost/mpl/greater.hpp>
+#include <boost/mpl/less_equal.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace detail {
 
-template< typename T, typename Key, typename Enable = void >
+template< typename T, typename Index, typename Enable = void >
 struct size_impl {
 
-    typedef typename result_of_get< T, Key >::type result_type;
+    typedef typename tag::size_type< Index::value > key_type;
+    typedef typename result_of_get< T, key_type >::type result_type;
 
-    static result_type size( const T& t ) {
-        return get< Key >( t );
+    static result_type invoke( const T& t ) {
+        return get< key_type >( t );
     }
 
 };
 
-template< typename T, typename Key >
-struct size_impl< T, Key,
+template< typename T, typename Index >
+struct size_impl< T, Index,
         typename boost::enable_if< typename mpl::and_<
-            mpl::greater< Key, rank<T> >,
+            mpl::greater< Index, rank<T> >,
             is_same_at< T, tag::size_type<1>, std::ptrdiff_t >
         >::type >::type > {
 
     typedef std::ptrdiff_t result_type;
 
-    static result_type size( const T& t ) {
-        return std::min< std::ptrdiff_t >( size_impl<T, tag::size_type<1> >::size(t), 1 );
+    static result_type invoke( const T& t ) {
+        return std::min< std::ptrdiff_t >( size_impl<T, tag::index<1> >::invoke(t), 1 );
     }
 
 };
 
-template< typename T, typename Key >
-struct size_impl< T, Key,
+template< typename T, typename Index >
+struct size_impl< T, Index,
         typename boost::enable_if< typename mpl::and_<
-            mpl::greater< Key, rank<T> >,
+            mpl::greater< Index, rank<T> >,
             mpl::not_< is_same_at< T, tag::size_type<1>, std::ptrdiff_t > >
         >::type >::type > {
 
@@ -59,7 +61,7 @@ struct size_impl< T, Key,
         mpl::int_<1>
     >::type result_type;
 
-    static result_type size( const T& t ) {
+    static result_type invoke( const T& t ) {
         return result_type();
     }
 
@@ -70,36 +72,39 @@ struct size_impl< T, Key,
 
 namespace result_of {
 
-template< typename T, int Dimension = 1 >
+template< typename T, typename Tag = tag::index<1> >
 struct size {
-    typedef typename detail::size_impl< T, tag::size_type<Dimension> >::result_type type;
+    BOOST_STATIC_ASSERT( (is_tag<Tag>::value) );
+    typedef typename detail::size_impl< T, Tag >::result_type type;
 };
 
 } // namespace result_of
 
-template< int Dimension, typename T >
-inline typename result_of::size< const T, Dimension >::type size( const T& t ) {
-    return detail::size_impl< const T, tag::size_type<Dimension> >::size( t );
+//
+// Overloads for free template functions size( x, tag ), 
+//
+template< typename T, typename Tag >
+inline typename result_of::size< const T, Tag >::type
+size( const T& t, Tag ) {
+    return detail::size_impl< const T, Tag >::invoke( t );
 }
 
-
-// Overloads for types with rank <= 1 (scalars, vectors)
+// Overloads for free template function size( x )
+// Valid for types with rank <= 1 (scalars, vectors)
 // In theory, we could provide overloads for matrices here, too, 
 // if their minimal_rank is at most 1.
 
 template< typename T >
 typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
-    typename result_of::size<T>::type >::type
-size( T& t ) {
-    return detail::size_impl<T, tag::size_type<1> >::size( t );
-}
-
-template< typename T >
-typename boost::enable_if< mpl::less< rank<T>, mpl::int_<2> >,
     typename result_of::size< const T >::type >::type
 size( const T& t ) {
-    return detail::size_impl<const T, tag::size_type<1> >::size( t );
+    return detail::size_impl< const T, tag::index<1> >::invoke( t );
 }
+
+#define GENERATE_SIZE_INDEX( z, which, unused ) \
+GENERATE_FUNCTIONS( size, which, tag::index<which> )
+
+BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_SIZE_INDEX,~)
 
 } // namespace bindings
 } // namespace numeric

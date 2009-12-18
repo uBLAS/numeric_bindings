@@ -18,14 +18,14 @@ namespace result_of {
 
 template< typename T >
 struct num_columns {
-    typedef typename result_of::size<T,2>::type type;
+    typedef typename result_of::size2<T>::type type;
 };
 
 } // namespace result_of
 
 template< typename T >
 inline typename result_of::num_columns<T>::type num_columns( const T& t ) {
-    return size<2>( t );
+    return size2( t );
 }
 
 } // bindings

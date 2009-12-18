@@ -34,8 +34,8 @@ struct adaptor< noop_wrapper<T>, Id, Enable > {
     typedef adaptor< typename boost::remove_const<T>::type, T > underlying_adaptor;
     typedef typename underlying_adaptor::property_map property_map;
 
-    static typename result_of::size<T,1>::type size1( const Id& id ) {
-        return size<1>( id.get() );
+    static typename result_of::size1<T>::type size1( const Id& id ) {
+        return bindings::size1( id.get() );
     }
 
     static typename result_of::begin_value< T >::type begin_value( Id& id ) {

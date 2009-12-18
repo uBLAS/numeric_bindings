@@ -23,7 +23,7 @@ namespace detail {
 
 template< typename Stream, typename T >
 Stream& pretty_print( Stream& os, const T& t ) {
-    os << "[" << size<1>(t) << "] ";
+    os << "[" << size1(t) << "] ";
     typename result_of::begin< const T >::type i = begin(t);
     if ( i != end(t) ) {
         os << *i;

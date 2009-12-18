@@ -20,7 +20,7 @@ namespace bindings {
 namespace detail {
 
 template< typename T >
-struct trans_wrapper: reference_wrapper<T> {}
+struct trans_wrapper: reference_wrapper<T> {};
 
 template< typename T, typename Id, typename Enable >
 struct adaptor< trans_wrapper<T>, Id, Enable > {

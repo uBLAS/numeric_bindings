@@ -6,18 +6,17 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_DETAIL_GENERATE_ITER_FUNCS_HPP
-#define BOOST_NUMERIC_BINDINGS_DETAIL_GENERATE_ITER_FUNCS_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_DETAIL_GENERATE_FUNCTIONS_HPP
+#define BOOST_NUMERIC_BINDINGS_DETAIL_GENERATE_FUNCTIONS_HPP
 
 #include <boost/preprocessor/repetition.hpp>
 #include <boost/preprocessor/cat.hpp>
 
-
 //
-// Convenience functions
+// Macro used to generate convenience functions
 //
 
-#define GENERATE_ITER_FUNCS( function_name, suffix, tag ) \
+#define GENERATE_FUNCTIONS( function_name, suffix, tag ) \
 \
 namespace result_of {\
 \

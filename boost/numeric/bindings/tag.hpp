@@ -9,62 +9,90 @@
 #ifndef BOOST_NUMERIC_BINDINGS_TAG_HPP
 #define BOOST_NUMERIC_BINDINGS_TAG_HPP
 
+#include <boost/mpl/bool.hpp>
+#include <boost/mpl/int.hpp>
+
 namespace boost {
 namespace numeric {
 namespace bindings {
-namespace tag {
 
-// key: entity
-struct value_type {};
-struct value {};
+template< typename T >
+struct is_tag: mpl::bool_<false> {};
 
-struct entity {};
-struct matrix_type {};
-struct matrix_side {};
+#define ADD_TAG( tag_name ) \
+\
+namespace tag { \
+struct tag_name {}; \
+} \
+\
+template<> \
+struct is_tag< tag::tag_name >: \
+    mpl::bool_< true > {};
 
-struct data_structure {};
-struct data_order {};
-struct data_side {};
 
-template< int Rank >
-struct tensor: mpl::int_< Rank > {};
+#define ADD_INT_TEMPLATE_TAG( tag_name ) \
+\
+namespace tag { \
+template< int N >\
+struct tag_name: mpl::int_< N > {}; \
+} \
+template< int N > \
+struct is_tag< tag::tag_name<N> >: mpl::bool_< true > {};
 
-struct scalar: tensor<0> {};
-struct vector: tensor<1> {};
-struct matrix: tensor<2> {};
 
-template< int Dimension >
-struct size_type: mpl::int_< Dimension > {};
+#define ADD_TAG_ALIAS( tag_name, other_tag_name ) \
+\
+namespace tag { \
+struct tag_name: other_tag_name {}; \
+} \
+\
+template<> \
+struct is_tag< tag::tag_name >: \
+    mpl::bool_< true > {};
 
-template< int Dimension >
-struct stride_type: mpl::int_< Dimension > {};
 
-template< int Dimension >
-struct index: mpl::int_< Dimension > {};
+ADD_TAG( value_type )
+ADD_TAG( value )
+ADD_TAG( value_transform )
 
-struct contiguous: mpl::int_<1> {};
+ADD_TAG( entity )
+ADD_TAG( matrix_type )
+ADD_TAG( matrix_side )
+
+ADD_TAG( data_structure )
+ADD_TAG( data_order )
+ADD_TAG( data_side )
+
+ADD_INT_TEMPLATE_TAG( tensor )
+ADD_INT_TEMPLATE_TAG( size_type )
+ADD_INT_TEMPLATE_TAG( stride_type )
+ADD_INT_TEMPLATE_TAG( index )
 
 // Supported data structures
-struct linear_array {};
-struct triangular_array {};
-struct yale_sparse {};
+ADD_TAG( linear_array )
+ADD_TAG( triangular_array )
+ADD_TAG( yale_sparse )
 
-struct structure {};
-struct general {};
-struct triangular {};
-struct symmetric {};
+ADD_TAG( structure )
+ADD_TAG( general )
+ADD_TAG( triangular )
+ADD_TAG( symmetric )
 
-struct num_strides {};
+ADD_TAG( num_strides )
 
-struct row_major {};
-struct column_major {};
+ADD_TAG( row_major )
+ADD_TAG( column_major )
 
-struct upper {};
-struct lower {};
-struct unit_upper {};
-struct unit_lower {};
+ADD_TAG( upper )
+ADD_TAG( lower )
+ADD_TAG( unit_upper )
+ADD_TAG( unit_lower )
 
-} // namespace tag
+ADD_TAG_ALIAS( scalar, tensor<0> )
+ADD_TAG_ALIAS( vector, tensor<1> )
+ADD_TAG_ALIAS( matrix, tensor<2> )
+ADD_TAG_ALIAS( contiguous, mpl::int_<1> )
+
 } // namespace bindings
 } // namespace numeric
 } // namespace boost

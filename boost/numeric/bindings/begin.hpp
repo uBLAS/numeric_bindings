@@ -59,7 +59,6 @@ namespace result_of {
 template< typename T, typename Tag = tag::index<1> >
 struct begin {
     BOOST_STATIC_ASSERT( (is_tag<Tag>::value) );
-    BOOST_STATIC_ASSERT( (mpl::not_< is_tag<T> >::value) );
     typedef typename detail::begin_impl<T,Tag>::result_type type;
 };
 

@@ -52,6 +52,7 @@ namespace result_of {
 
 template< typename T, typename Tag = tag::index<1> >
 struct end {
+    BOOST_STATIC_ASSERT( (is_tag<Tag>::value) );
     typedef typename detail::end_impl<T,Tag>::result_type type;
 };
 

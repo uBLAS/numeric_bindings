@@ -40,17 +40,18 @@ struct adaptor< column_wrapper<T>, Id, Enable > {
     typedef mpl::map<
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::vector >,
-        mpl::pair< tag::size_type<1>, typename result_of::size<T,1>::type >,
+        mpl::pair< tag::size_type<1>, typename result_of::size1<T>::type >,
         mpl::pair< tag::data_structure, tag::linear_array >,
-        mpl::pair< tag::stride_type<1>, typename result_of::stride<T,1>::type >
+        mpl::pair< tag::stride_type<1>, typename result_of::stride1<T>::type >
     > property_map;
 
-    static typename result_of::size<T,1>::type size1( const Id& id ) {
-        return size<1>( id.get() );
+    static typename result_of::size1<T>::type size1( const Id& id ) {
+        return bindings::size1( id.get() );
     }
 
     static typename result_of::begin_value< T >::type begin_value( Id& id ) {
-        return bindings::begin_value( id.get() ) + id.m_index * stride<2>( id.get() );
+        return bindings::begin_value( id.get() ) +
+            id.m_index * bindings::stride2( id.get() );
     }
 
     static typename result_of::end_value< T >::type end_value( Id& id ) {
@@ -58,8 +59,8 @@ struct adaptor< column_wrapper<T>, Id, Enable > {
         return bindings::end_value( id.get() );
     }
 
-    static typename result_of::stride<T,1>::type stride1( const Id& id ) {
-        return stride<1>( id.get() );
+    static typename result_of::stride1<T>::type stride1( const Id& id ) {
+        return bindings::stride1( id.get() );
     }
 
 };

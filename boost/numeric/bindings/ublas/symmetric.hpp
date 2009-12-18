@@ -45,6 +45,10 @@ struct adaptor< ublas::symmetric_matrix< T, F1, F2, A >, Id, Enable > {
         return bindings::begin_value( t.data() );
     }
 
+    static value_type* end_value( Id& t ) {
+        return bindings::end_value( t.data() );
+    }
+
 };
 
 } // namespace detail

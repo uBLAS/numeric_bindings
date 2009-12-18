@@ -37,6 +37,10 @@ struct adaptor< ublas::vector< T, Alloc >, Id, Enable > {
         return bindings::begin_value( t.data() );
     }
 
+    static value_type* end_value( Id& t ) {
+        return bindings::end_value( t.data() );
+    }
+
 };
 
 } // namespace detail

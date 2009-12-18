@@ -9,7 +9,8 @@
 
 #include "ublas_heev.hpp"
 
-#include <boost/numeric/bindings/lapack/hbevx.hpp>
+#include <boost/numeric/bindings/lapack/driver/hbevx.hpp>
+#include <boost/numeric/bindings/lapack/driver/sbevx.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
@@ -18,12 +19,51 @@
 #include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
 #include <boost/numeric/ublas/hermitian.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <boost/type_traits/is_complex.hpp>
+#include <boost/mpl/if.hpp>
 
 #include <iostream>
 
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
+namespace traits = boost::numeric::bindings::traits;
+
+struct apply_real {
+  template< typename MatrixAB, typename MatrixQ, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL, typename Workspace >
+  static inline integer_t hbevx( const char jobz, const char range,
+        const integer_t n, const integer_t kd, MatrixAB& ab, MatrixQ& q,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    return lapack::sbevx( jobz, range, n, kd, ab, q, vl, vu,
+            il, iu, abstol, m, w, z, ifail, work );
+  }
+};
+
+struct apply_complex {
+  template< typename MatrixAB, typename MatrixQ, typename VectorW,
+        typename MatrixZ, typename VectorIFAIL, typename Workspace >
+  static inline integer_t hbevx( const char jobz, const char range,
+        const integer_t n, const integer_t kd, MatrixAB& ab, MatrixQ& q,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixAB >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    return lapack::hbevx( jobz, range, n, kd, ab, q, vl, vu,
+            il, iu, abstol, m, w, z, ifail, work );
+  }
+};
 
 
 template <typename U>
@@ -46,6 +86,7 @@ int upper<ublas::upper>() { return 2; }
 
 template <typename T, typename W, typename UPLO, typename Orientation>
 int do_memory_uplo(int n, W& workspace ) {
+   typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
    typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
 
    typedef ublas::banded_matrix<T, Orientation>      banded_type ;
@@ -69,11 +110,13 @@ int do_memory_uplo(int n, W& workspace ) {
 
 
    // Compute Schur decomposition.
-   lapack::hbevx( 'V', 'A', h, q, vl, vu, il, iu, abstol, m, e1, z, ifail, workspace ) ;
+   apply_t::hbevx( 'V', 'A', traits::matrix_size2( h ), traits::matrix_upper_bandwidth( h ),
+     h, q, vl, vu, il, iu, abstol, m, e1, z, ifail, workspace ) ;
 
    if (check_residual( h2, e1, z )) return 255 ;
 
-   lapack::hbevx( 'N', 'A', h2, q, vl, vu, il, iu, abstol, m, e2, z, ifail, workspace ) ;
+   apply_t::hbevx( 'N', 'A', traits::matrix_size2( h2 ), traits::matrix_upper_bandwidth( h2 ),
+     h2, q, vl, vu, il, iu, abstol, m, e2, z, ifail, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
    // Test for a matrix range
@@ -88,7 +131,8 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::matrix_range< matrix_type> z_r( z, r, r );
    ublas::vector<integer_t> ifail_r(n-2);
 
-   lapack::hbevx( 'V', 'A', h_r, q, vl, vu, il, iu, abstol, m, e_r, z_r, ifail_r, workspace ) ;
+   apply_t::hbevx( 'V', 'A', traits::matrix_size2( h_r ), traits::matrix_upper_bandwidth( h_r ),
+     h_r, q, vl, vu, il, iu, abstol, m, e_r, z_r, ifail_r, workspace ) ;
 
    banded_range a2_r( a2, r, r );
    ublas::hermitian_adaptor< banded_range, UPLO> h2_r( a2_r );

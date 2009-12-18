@@ -9,23 +9,62 @@
 
 #include "ublas_heev.hpp"
 
-#include <boost/numeric/bindings/lapack/heevx.hpp>
+#include <boost/numeric/bindings/lapack/driver/heevx.hpp>
+#include <boost/numeric/bindings/lapack/driver/syevx.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <boost/type_traits/is_complex.hpp>
+#include <boost/mpl/if.hpp>
 
 #include <iostream>
 
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
+namespace traits = boost::numeric::bindings::traits;
+
+struct apply_real {
+  template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+  static inline integer_t heevx( const char jobz, const char range, MatrixA& a,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    return lapack::syevx( jobz, range, a, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
+  }
+};
+
+struct apply_complex {
+  template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+  static inline integer_t heevx( const char jobz, const char range, MatrixA& a,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vl,
+        const typename traits::type_traits< typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type vu, const integer_t il,
+        const integer_t iu, const typename traits::type_traits<
+        typename traits::matrix_traits<
+        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    return lapack::heevx( jobz, range, a, vl, vu, il, iu,
+            abstol, m, w, z, ifail, work );
+  }
+};
 
 
 template <typename T, typename W, typename UPLO>
 int do_memory_uplo(int n, W& workspace ) {
+   typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
    typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
 
    typedef ublas::matrix<T, ublas::column_major>     matrix_type ;
@@ -47,13 +86,13 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::vector<integer_t> ifail(n);
    
    hermitian_type h_a( a );
-   lapack::heevx( 'V', 'A', h_a, real_type(0.0), real_type(1.0), 2, n-1, real_type(1e-28), m,
+   apply_t::heevx( 'V', 'A', h_a, real_type(0.0), real_type(1.0), 2, n-1, real_type(1e-28), m,
                   e1, z, ifail, workspace ) ;
 
    if (check_residual( a2, e1, z )) return 255 ;
 
    hermitian_type h_a2( a2 );
-   lapack::heevx( 'N', 'A', h_a2, real_type(0.0), real_type(1.0), 2, n-1, real_type(1e-28), m,
+   apply_t::heevx( 'N', 'A', h_a2, real_type(0.0), real_type(1.0), 2, n-1, real_type(1e-28), m,
                   e2, z, ifail, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
@@ -70,7 +109,7 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::vector<integer_t> ifail_r(n-2);
 
    hermitian_range_type h_a_r( a_r );
-   lapack::heevx( 'V', 'A', h_a_r, real_type(0.0), real_type(1.0), 2, n-1, real_type(1e-28), m,
+   apply_t::heevx( 'V', 'A', h_a_r, real_type(0.0), real_type(1.0), 2, n-1, real_type(1e-28), m,
                   e_r, z_r, ifail_r, workspace );
 
    matrix_range a2_r( a2, r, r );

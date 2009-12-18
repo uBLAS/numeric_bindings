@@ -8,7 +8,8 @@
 
 #include "ublas_heev.hpp"
 
-#include <boost/numeric/bindings/lapack/hbev.hpp>
+#include <boost/numeric/bindings/lapack/driver/hbev.hpp>
+#include <boost/numeric/bindings/lapack/driver/sbev.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
@@ -17,12 +18,35 @@
 #include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
 #include <boost/numeric/ublas/hermitian.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <boost/type_traits/is_complex.hpp>
+#include <boost/mpl/if.hpp>
 
 #include <iostream>
 
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
+namespace traits = boost::numeric::bindings::traits;
+
+struct apply_real {
+  template< typename MatrixAB, typename VectorW, typename MatrixZ,
+        typename Workspace >
+  static inline integer_t hbev( const char jobz, const integer_t n,
+        const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+        Workspace work ) {
+    return lapack::sbev( jobz, n, kd, ab, w, z, work );
+  }
+};
+
+struct apply_complex {
+  template< typename MatrixAB, typename VectorW, typename MatrixZ,
+        typename Workspace >
+  static inline integer_t hbev( const char jobz, const integer_t n,
+        const integer_t kd, MatrixAB& ab, VectorW& w, MatrixZ& z,
+        Workspace work ) {
+    return lapack::hbev( jobz, n, kd, ab, w, z, work );
+  }
+};
 
 
 template <typename U>
@@ -45,6 +69,7 @@ int upper<ublas::upper>() { return 2; }
 
 template <typename T, typename W, typename UPLO, typename Orientation>
 int do_memory_uplo(int n, W& workspace ) {
+   typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
    typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
 
    typedef ublas::banded_matrix<T, Orientation>      banded_type ;
@@ -63,11 +88,14 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::hermitian_adaptor<banded_type, UPLO> h( a ), h2( a2 );
 
    // Compute Schur decomposition.
-   lapack::hbev( h, e1, z, workspace ) ;
+   apply_t::hbev( 'V', traits::matrix_size2( h ), traits::matrix_upper_bandwidth( h ),
+     h, e1, z, workspace ) ;
 
    if (check_residual( h2, e1, z )) return 255 ;
 
-   lapack::hbev( h2, e2, workspace ) ;
+   matrix_type dummy_z( n, n );
+   apply_t::hbev( 'N', traits::matrix_size2( h2 ), traits::matrix_upper_bandwidth( h2 ),
+     h2, e2, dummy_z, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
    // Test for a matrix range
@@ -81,7 +109,8 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::vector_range< vector_type> e_r( e1, r );
    ublas::matrix_range< matrix_type> z_r( z, r, r );
 
-   lapack::hbev( h_r, e_r, z_r, workspace );
+   apply_t::hbev( 'V', traits::matrix_size2( h_r ), traits::matrix_upper_bandwidth( h_r ),
+     h_r, e_r, z_r, workspace );
 
    banded_range a2_r( a2, r, r );
    ublas::hermitian_adaptor< banded_range, UPLO> h2_r( a2_r );

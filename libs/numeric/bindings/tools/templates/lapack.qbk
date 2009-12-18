@@ -40,10 +40,6 @@ Defined in header [headerref $header].
     ]]
 ]
 
-The tensor_traits<>::value_type of A, B, and C should be the same.
-Tensor C should be mutable.
-
-
 
 [heading Complexity]
 

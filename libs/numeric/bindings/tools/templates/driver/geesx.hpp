@@ -11,17 +11,17 @@ $TEMPLATE[geesx.real.min_size_iwork]
 if ( sense == 'N' || sense == 'E' )
     return 1;
 else
-    return std::max( 1, n*n/4 );
+    return std::max< $INTEGER_TYPE >( 1, n*n/4 );
 $TEMPLATE[geesx.all.min_size_work.args]
 N, SENSE
 $TEMPLATE[geesx.real.min_size_work]
 if ( sense == 'N' )
-    return std::max( 1, 3*n );
+    return std::max< $INTEGER_TYPE >( 1, 3*n );
 else
-    return std::max( 1, n+n*n/2 );
+    return std::max< $INTEGER_TYPE >( 1, n+n*n/2 );
 $TEMPLATE[geesx.complex.min_size_work]
 if ( sense == 'N' )
-    return std::max( 1, 2*n );
+    return std::max< $INTEGER_TYPE >( 1, 2*n );
 else
-    return std::max( 1, n*n/2 );
+    return std::max< $INTEGER_TYPE >( 1, n*n/2 );
 $TEMPLATE[end]

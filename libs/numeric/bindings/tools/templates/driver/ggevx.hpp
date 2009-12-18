@@ -23,28 +23,28 @@ $TEMPLATE[ggevx.complex.min_size_rwork.args]
 BALANC, N
 $TEMPLATE[ggevx.complex.min_size_rwork]
 if ( balanc == 'S' || balanc == 'B' )
-    return std::max( 1, 6*n );
+    return std::max< $INTEGER_TYPE >( 1, 6*n );
 else
-    return std::max( 1, 2*n );
+    return std::max< $INTEGER_TYPE >( 1, 2*n );
 $TEMPLATE[ggevx.real.min_size_work.args]
 BALANC,JOBVL,JOBVR,SENSE,N
 $TEMPLATE[ggevx.real.min_size_work]
 if ( balanc == 'S' || balanc == 'B' || jobvl == 'V' || jobvr == 'V' )
-    return std::max( 1, 6*n );
+    return std::max< $INTEGER_TYPE >( 1, 6*n );
 if ( sense == 'E' )
-    return std::max( 1, 10*n );
+    return std::max< $INTEGER_TYPE >( 1, 10*n );
 if ( sense == 'V' || sense == 'B' )
     return 2*n*n + 8*n + 16;
-return std::max( 1, 2*n );
+return std::max< $INTEGER_TYPE >( 1, 2*n );
 $TEMPLATE[ggevx.complex.min_size_work.args]
 SENSE, N
 $TEMPLATE[ggevx.complex.min_size_work]
 if ( sense == 'N' )
-    return std::max( 1, 2*n );
+    return std::max< $INTEGER_TYPE >( 1, 2*n );
 else {
     if ( sense == 'E' )
-        return std::max( 1, 4*n );
+        return std::max< $INTEGER_TYPE >( 1, 4*n );
     else
-        return std::max( 1, 2*n*n+2*n );
+        return std::max< $INTEGER_TYPE >( 1, 2*n*n+2*n );
 }
 $TEMPLATE[end]

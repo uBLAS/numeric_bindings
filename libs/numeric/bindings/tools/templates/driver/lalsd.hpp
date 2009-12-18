@@ -15,12 +15,12 @@ return 9*n + 2*n*smlsiz + 8*n*nlvl + 3*smlsiz*nrhs + smlsiz_plus_one * smlsiz_pl
 $TEMPLATE[lalsd.all.extra_variables]
 NLVL
 $TEMPLATE[lalsd.complex.NLVL.init]
-integer_t nlvl = std::max( 0, static_cast<integer_t>(
-    std::log(static_cast<real_type>(std::min(traits::matrix_size2(b),n))/
+integer_t nlvl = std::max< $INTEGER_TYPE >( 0, static_cast<integer_t>(
+    std::log(static_cast<real_type>(std::min< $INTEGER_TYPE >(traits::matrix_size2(b),n))/
     static_cast<real_type>(smlsiz+1)) /
     std::log(static_cast<real_type>(2.))) + 1 );
 $TEMPLATE[lalsd.real.NLVL.init]
-integer_t nlvl = std::max( 0, static_cast<integer_t>(
+integer_t nlvl = std::max< $INTEGER_TYPE >( 0, static_cast<integer_t>(
     std::log(static_cast<real_type>(n)/static_cast<real_type>(smlsiz+1)) /
     std::log(static_cast<real_type>(2.)) ) + 1 );
 $TEMPLATE[end]

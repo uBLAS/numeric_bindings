@@ -3,19 +3,19 @@ MINMN
 $TEMPLATE[gesdd.all.extra_opt_variables]
 MINMN
 $TEMPLATE[gesdd.all.MINMN.init]
-integer_t minmn = std::min( traits::matrix_num_rows(a), traits::matrix_num_columns(a) );
+integer_t minmn = std::min< $INTEGER_TYPE >( traits::matrix_num_rows(a), traits::matrix_num_columns(a) );
 $TEMPLATE[gesdd.all.min_size_work.args]
 M, N, JOBZ, MINMN
 $TEMPLATE[gesdd.real.min_size_work]
 if ( n == 0 ) return 1;
-if ( jobz == 'N' ) return 3*minmn + std::max( std::max(m,n), 7*minmn );
-if ( jobz == 'O' ) return 3*minmn*minmn + std::max( std::max( m,n ), 5*minmn*minmn + 4*minmn );
-return 3*minmn*minmn + std::max( std::max( m,n ), 4*minmn*minmn + 4*minmn );
+if ( jobz == 'N' ) return 3*minmn + std::max< $INTEGER_TYPE >( std::max< $INTEGER_TYPE >(m,n), 7*minmn );
+if ( jobz == 'O' ) return 3*minmn*minmn + std::max< $INTEGER_TYPE >( std::max< $INTEGER_TYPE >( m,n ), 5*minmn*minmn + 4*minmn );
+return 3*minmn*minmn + std::max< $INTEGER_TYPE >( std::max< $INTEGER_TYPE >( m,n ), 4*minmn*minmn + 4*minmn );
 $TEMPLATE[gesdd.complex.min_size_work]
 if ( n == 0 ) return 1;
-if ( jobz == 'N' ) return 2*minmn + std::max( m,n );
-if ( jobz == 'O' ) return 2*(minmn*minmn + minmn) + std::max( m, n );
-return minmn*minmn + 2*minmn + std::max( m, n );
+if ( jobz == 'N' ) return 2*minmn + std::max< $INTEGER_TYPE >( m,n );
+if ( jobz == 'O' ) return 2*(minmn*minmn + minmn) + std::max< $INTEGER_TYPE >( m, n );
+return minmn*minmn + 2*minmn + std::max< $INTEGER_TYPE >( m, n );
 $TEMPLATE[gesdd.all.min_size_iwork.args]
 MINMN
 $TEMPLATE[gesdd.all.min_size_iwork]

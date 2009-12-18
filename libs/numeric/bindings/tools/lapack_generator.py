@@ -56,11 +56,17 @@ def write_functions( info_map, group, template_map, base_dir ):
     
     filename = group_name.lower() + '.hpp'
     includes = [ '#include <boost/assert.hpp>',
-      '#include <boost/numeric/bindings/traits/traits.hpp>',
-      '#include <boost/numeric/bindings/traits/type_traits.hpp>', 
+      '#include <boost/numeric/bindings/remove_imaginary.hpp>',
+      '#include <boost/numeric/bindings/value.hpp>',
+      '#include <boost/numeric/bindings/begin.hpp>',
+      '#include <boost/numeric/bindings/size.hpp>',
+      '#include <boost/numeric/bindings/stride.hpp>',
+      #'#include <boost/numeric/bindings/traits/traits.hpp>',
+      #'#include <boost/numeric/bindings/traits/type_traits.hpp>', 
       '#include <boost/numeric/bindings/lapack/detail/lapack.h>',
-      '#include <boost/mpl/bool.hpp>',
+      #'#include <boost/mpl/bool.hpp>',
       '#include <boost/type_traits/is_same.hpp>',
+      '#include <boost/type_traits/remove_const.hpp>',
       '#include <boost/static_assert.hpp>' ]
 
     if template_map.has_key( group_name.lower() + '.includes' ):
@@ -177,8 +183,8 @@ def write_functions( info_map, group, template_map, base_dir ):
           for arg_B in static_asserts[1:]:
             print "Adding static assert for argA", arg_A, " argb", arg_B
             assert_line = 'BOOST_STATIC_ASSERT( (boost::is_same< ' + \
-                info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ', ' + \
-                info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + \
+                'typename remove_const< typename value< ' + info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type, ' + \
+                'typename remove_const< typename value< ' + info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type' \
                 ' >::value) );'
             level1_static_assert_list += [ assert_line ]
 
@@ -406,6 +412,7 @@ def write_functions( info_map, group, template_map, base_dir ):
     result = result.replace( '$groupname', group_name.lower() )
     result = result.replace( '$DIRNAME', base_dir.split("/")[-1].upper() )
     result = result.replace( '$dirname', base_dir.split("/")[-1].lower() )
+    result = result.replace( '$INTEGER_TYPE', netlib.fortran_integer_type )
 
     # replace the global variables as last (this is convenient)
     #result = result.replace( '$INDENT', '    ' )

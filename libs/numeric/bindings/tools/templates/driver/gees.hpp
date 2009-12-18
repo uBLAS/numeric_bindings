@@ -1,7 +1,7 @@
 $TEMPLATE[gees.real.min_size_work.args]
 N
 $TEMPLATE[gees.real.min_size_work]
-return std::max( 1, 3*n );
+return std::max< $INTEGER_TYPE >( 1, 3*n );
 $TEMPLATE[gees.all.min_size_bwork.args]
 N, SORT
 $TEMPLATE[gees.all.min_size_bwork]
@@ -12,5 +12,5 @@ else
 $TEMPLATE[gees.complex.min_size_work.args]
 N
 $TEMPLATE[gees.complex.min_size_work]
-return std::max( 1, 2*n );
+return std::max< $INTEGER_TYPE >( 1, 2*n );
 $TEMPLATE[end]

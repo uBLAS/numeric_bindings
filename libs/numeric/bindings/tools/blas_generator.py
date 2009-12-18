@@ -292,6 +292,7 @@ def write_functions( info_map, group, template_map, base_dir ):
     result = result.replace( '$groupname', group_name.lower() )
     result = result.replace( '$DIRNAME', base_dir.split("/")[-1].upper() )
     result = result.replace( '$dirname', base_dir.split("/")[-1].lower() )
+    result = result.replace( '$INTEGER_TYPE', netlib.fortran_integer_type )
 
     # replace the global variables as last (this is convenient)
     #result = result.replace( '$INDENT', '    ' )

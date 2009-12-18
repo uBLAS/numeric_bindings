@@ -22,9 +22,10 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK routine.
+//
 namespace detail {
 
 $OVERLOADS} // namespace detail
@@ -73,11 +74,11 @@ struct $groupname_impl {
 $TEMPLATE[level1_header2]
 // $SPECIALIZATION specialization
 template< typename Value >
-struct $groupname_impl< Value, typename boost::enable_if< traits::is_$SPECIALIZATION<Value> >::type > {
+struct $groupname_impl< Value, typename boost::enable_if< is_$SPECIALIZATION< Value > >::type > {
 
 $TEMPLATE[level1_workspace]
     typedef Value value_type;
-    typedef typename traits::type_traits<Value>::real_type real_type;
+    typedef typename remove_imaginary< Value >::type real_type;
 
 $INCLUDE_TEMPLATES
     // user-defined workspace specialization
@@ -118,18 +119,16 @@ $TEMPLATE[level2_workspace]
 // template function to call $groupname
 template< $TYPES, typename Workspace >
 inline integer_t $groupname( $LEVEL2, Workspace work ) {
-    typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
     integer_t info(0);
-    $groupname_impl< value_type >::invoke( $CALL_LEVEL1, work );
+    $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, work );
     return info;
 }
 
 // template function to call $groupname, default workspace type
 template< $TYPES >
 inline integer_t $groupname( $LEVEL2 ) {
-    typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
     integer_t info(0);
-    $groupname_impl< value_type >::invoke( $CALL_LEVEL1, optimal_workspace() );
+    $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, optimal_workspace() );
     return info;
 }
 $TEMPLATE[setup_min_workspace]
@@ -143,7 +142,7 @@ $TEMPLATE[min_size_func]
 
 $TEMPLATE[level1_noworkspace]
     typedef Value value_type;
-    typedef typename traits::type_traits<Value>::real_type real_type;
+    typedef typename remove_imaginary< Value >::type real_type;
 
 $INCLUDE_TEMPLATES
     // templated specialization
@@ -159,9 +158,8 @@ $TEMPLATE[level2_noworkspace]
 // template function to call $groupname
 template< $TYPES >
 inline integer_t $groupname( $LEVEL2 ) {
-    typedef typename traits::$TYPEOF_FIRST_TYPENAME_traits< $FIRST_TYPENAME >::value_type value_type;
     integer_t info(0);
-    $groupname_impl< value_type >::invoke( $CALL_LEVEL1 );
+    $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
     return info;
 }
 $TEMPLATE[end]

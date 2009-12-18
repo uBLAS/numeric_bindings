@@ -8,25 +8,52 @@
 
 #include "ublas_heev.hpp"
 
-#include <boost/numeric/bindings/lapack/hegv.hpp>
+#include <boost/numeric/bindings/lapack/driver/hegv.hpp>
+#include <boost/numeric/bindings/lapack/driver/sygv.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <boost/type_traits/is_complex.hpp>
+#include <boost/mpl/if.hpp>
 
 #include <iostream>
 
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
+namespace traits = boost::numeric::bindings::traits;
+
+struct apply_real {
+  template< typename MatrixA, typename MatrixB, typename VectorW,
+        typename Workspace >
+  static inline integer_t hegv( const integer_t itype, const char jobz,
+        const integer_t n, MatrixA& a, MatrixB& b, VectorW& w,
+        Workspace work ) {
+    return lapack::sygv( itype, jobz, n, a, b, w, work );
+  }
+};
+
+struct apply_complex {
+  template< typename MatrixA, typename MatrixB, typename VectorW,
+        typename Workspace >
+  static inline integer_t hegv( const integer_t itype, const char jobz,
+        const integer_t n, MatrixA& a, MatrixB& b, VectorW& w,
+        Workspace work ) {
+    return lapack::hegv( itype, jobz, n, a, b, w, work );
+  }
+};
 
 
-template <typename T, typename W, char UPLO>
+template <typename T, typename W, typename UPLO>
 int do_memory_uplo(int n, W& workspace ) {
+   typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
    typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
 
    typedef ublas::matrix<T, ublas::column_major>     matrix_type ;
+   typedef ublas::hermitian_adaptor<matrix_type, UPLO> hermitian_type ;
    typedef ublas::vector<real_type>                  vector_type ;
 
    // Set matrix
@@ -41,24 +68,28 @@ int do_memory_uplo(int n, W& workspace ) {
    for (int i = 0; i < n; ++i) b(i,i) = 1;
 
    // Compute eigen decomposition.
-   lapack::hegv( 1, 'V', UPLO, a, b, e1, workspace ) ;
+   hermitian_type h_a( a );
+   apply_t::hegv( 1, 'V', traits::matrix_size2( h_a ), h_a, b, e1, workspace ) ;
 
    if (check_residual( a2, e1, a )) return 255 ;
 
-   lapack::hegv( 1, 'N', UPLO, a2, b, e2, workspace ) ;
+   hermitian_type h_a2( a2 );
+   apply_t::hegv( 1, 'N', traits::matrix_size2( h_a2 ), h_a2 , b, e2, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
    // Test for a matrix range
    fill( a ); a2.assign( a );
 
    typedef ublas::matrix_range< matrix_type > matrix_range ;
+   typedef ublas::hermitian_adaptor<matrix_range, UPLO> hermitian_range_type ;
 
    ublas::range r(1,n-1) ;
    matrix_range a_r( a, r, r );
    ublas::vector_range< vector_type> e_r( e1, r );
    matrix_range b_r( b, r, r );
 
-   lapack::hegv(1, 'V', UPLO,  a_r, b_r, e_r, workspace );
+   hermitian_range_type h_a_r( a_r );
+   apply_t::hegv(1, 'V', traits::matrix_size2( h_a_r ), h_a_r, b_r, e_r, workspace );
 
    matrix_range a2_r( a2, r, r );
    if (check_residual( a2_r, e_r, a_r )) return 255 ;
@@ -70,9 +101,9 @@ int do_memory_uplo(int n, W& workspace ) {
 template <typename T, typename W>
 int do_memory_type(int n, W workspace) {
    std::cout << "  upper\n" ;
-   if (do_memory_uplo<T,W,'U'>(n, workspace)) return 255 ;
+   if (do_memory_uplo<T,W,ublas::upper>(n, workspace)) return 255 ;
    std::cout << "  lower\n" ;
-   if (do_memory_uplo<T,W,'L'>(n, workspace)) return 255 ;
+   if (do_memory_uplo<T,W,ublas::lower>(n, workspace)) return 255 ;
    return 0 ;
 }
 
@@ -124,7 +155,7 @@ int do_value_type() {
 
    std::cout << " workspace array\n";
    Workspace<T> work( n );
-   do_memory_type<T,typename Workspace<T>::type >( n, work() );
+   if (do_memory_type<T,typename Workspace<T>::type >( n, work() ) ) return 255 ;
    return 0;
 } // do_value_type()
 
@@ -137,11 +168,11 @@ int main() {
    std::cout << "double\n" ;
    if (do_value_type<double>()) return 255;
 
-//   std::cout << "complex<float>\n" ;
-//   if (do_value_type< std::complex<float> >()) return 255;
+   std::cout << "complex<float>\n" ;
+   if (do_value_type< std::complex<float> >()) return 255;
 
-//   std::cout << "complex<double>\n" ;
-//   if (do_value_type< std::complex<double> >()) return 255;
+   std::cout << "complex<double>\n" ;
+   if (do_value_type< std::complex<double> >()) return 255;
 
    std::cout << "Regression test succeeded\n" ;
    return 0;

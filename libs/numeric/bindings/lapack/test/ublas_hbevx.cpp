@@ -205,7 +205,7 @@ int do_value_type() {
 
    std::cout << " workspace array\n";
    Workspace<T> work( n );
-   do_memory_type<T,typename Workspace<T>::type >( n, work() );
+   if (do_memory_type<T,typename Workspace<T>::type >( n, work() ) ) return 255 ;
    return 0;
 } // do_value_type()
 

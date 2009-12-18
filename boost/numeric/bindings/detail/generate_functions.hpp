@@ -24,7 +24,7 @@ template< typename T > \
 struct BOOST_PP_CAT( function_name, suffix ) { \
     typedef typename detail::\
     BOOST_PP_CAT( function_name, _impl ) \
-    <T,tag>::result_type type; \
+    <T, tag >::result_type type; \
 }; \
 \
 }\

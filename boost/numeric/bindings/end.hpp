@@ -33,15 +33,15 @@ struct end_impl< T, tag::value > {
 template< typename T, int N >
 struct end_impl< T, tag::index<N> > {
 
-    typedef tag::index<N> index_type;
+    typedef tag::index<N> tag_type;
 
     typedef linear_iterator<
         typename value<T>::type,
-        typename result_of::stride< T, index_type >::type
+        typename result_of::stride< T, tag_type >::type
     > result_type;
 
     static result_type invoke( T& t ) {
-        return result_type( end_value( t ), stride(t, index_type() ) );
+        return result_type( end_value( t ), stride(t, tag_type() ) );
     }
 
 };
@@ -99,8 +99,8 @@ GENERATE_FUNCTIONS( end, which, mpl::int_<which> )
 
 BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_END_INDEX,~)
 GENERATE_FUNCTIONS( end, _value, tag::value )
-GENERATE_FUNCTIONS( end, _row, mpl::int_<1> )
-GENERATE_FUNCTIONS( end, _column, mpl::int_<2> )
+GENERATE_FUNCTIONS( end, _row, tag::index<1> )
+GENERATE_FUNCTIONS( end, _column, tag::index<2> )
 
 
 } // namespace bindings

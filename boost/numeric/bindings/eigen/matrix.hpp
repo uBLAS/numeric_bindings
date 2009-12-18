@@ -70,6 +70,10 @@ struct adaptor< Eigen::Matrix< T, Rows, Cols, Options >, Id, Enable > {
         return t.data();
     }
 
+    static value_type* end_value( Id& t ) {
+        return t.data() + t.size();
+    }
+
     static std::ptrdiff_t stride1( const Id& t ) {
         return t.cols();
     }

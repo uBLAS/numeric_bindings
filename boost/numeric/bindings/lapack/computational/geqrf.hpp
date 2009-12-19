@@ -90,7 +90,7 @@ struct geqrf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( traits::matrix_num_columns(a) ));
         detail::geqrf( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),
@@ -103,7 +103,7 @@ struct geqrf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     static void invoke( MatrixA& a, VectorTAU& tau, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+                traits::matrix_num_columns(a) ) );
         invoke( a, tau, info, workspace( tmp_work ) );
     }
 
@@ -121,8 +121,8 @@ struct geqrf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         invoke( a, tau, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_work( const integer_t n ) {
+        return std::max< std::ptrdiff_t >( 1, n );
     }
 };
 
@@ -148,7 +148,7 @@ struct geqrf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( traits::matrix_num_columns(a) ));
         detail::geqrf( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(tau),
@@ -161,7 +161,7 @@ struct geqrf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     static void invoke( MatrixA& a, VectorTAU& tau, integer_t& info,
             minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+                traits::matrix_num_columns(a) ) );
         invoke( a, tau, info, workspace( tmp_work ) );
     }
 
@@ -179,8 +179,8 @@ struct geqrf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         invoke( a, tau, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_work( const integer_t n ) {
+        return std::max< std::ptrdiff_t >( 1, n );
     }
 };
 

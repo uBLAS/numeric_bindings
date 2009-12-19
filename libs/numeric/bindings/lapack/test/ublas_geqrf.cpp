@@ -8,13 +8,17 @@
 
 #include "../../blas/test/random.hpp"
 
-#include <boost/numeric/bindings/lapack/geqrf.hpp>
-#include <boost/numeric/bindings/lapack/ormqr.hpp>
-#include <boost/numeric/bindings/lapack/orgqr.hpp>
+#include <boost/numeric/bindings/lapack/computational/geqrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/ormqr.hpp>
+#include <boost/numeric/bindings/lapack/computational/orgqr.hpp>
+#include <boost/numeric/bindings/lapack/computational/unmqr.hpp>
+#include <boost/numeric/bindings/lapack/computational/ungqr.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/ublas/triangular.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <boost/type_traits/is_complex.hpp>
+#include <boost/mpl/if.hpp>
 
 #include <iostream>
 #include <limits>
@@ -22,6 +26,37 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
+namespace traits = boost::numeric::bindings::traits;
+
+struct apply_real {
+  template< typename MatrixA, typename VectorTAU, typename Workspace >
+  static inline integer_t orgqr( const integer_t m, const integer_t n,
+        const integer_t k, MatrixA& a, const VectorTAU& tau, Workspace work ) {
+    return lapack::orgqr( m, n, k, a, tau, work );
+  }
+  template< typename MatrixA, typename VectorTAU, typename MatrixC,
+        typename Workspace >
+  static inline integer_t ormqr( const char side, const char trans,
+        const integer_t k, const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+        Workspace work ) {
+    return lapack::ormqr( side, trans, k, a, tau, c, work );
+  }
+};
+
+struct apply_complex {
+  template< typename MatrixA, typename VectorTAU, typename Workspace >
+  static inline integer_t orgqr( const integer_t m, const integer_t n,
+        const integer_t k, MatrixA& a, const VectorTAU& tau, Workspace work ) {
+    return lapack::ungqr( m, n, k, a, tau, work );
+  }
+  template< typename MatrixA, typename VectorTAU, typename MatrixC,
+        typename Workspace >
+  static inline integer_t ormqr( const char side, const char trans,
+        const integer_t k, const MatrixA& a, const VectorTAU& tau, MatrixC& c,
+        Workspace work ) {
+    return lapack::unmqr( side, trans, k, a, tau, c, work );
+  }
+};
 
 
 // Randomize a matrix
@@ -66,6 +101,7 @@ ublas::triangular_adaptor<const M, ublas::upper> upper_part(const M& m) {
 
 template <typename T, typename W>
 int do_memory_type(int n, W workspace) {
+   typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
    typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
    typedef std::complex< real_type >                                            complex_type ;
 
@@ -84,14 +120,14 @@ int do_memory_type(int n, W workspace) {
    lapack::geqrf( a, tau, workspace ) ;
 
    // Apply the orthogonal transformations to a2
-   lapack::ormqr( 'L', transpose<T>::value, a, tau, a2, workspace );
+   apply_t::ormqr( 'L', transpose<T>::value, traits::vector_size (tau), a, tau, a2, workspace );
 
    // The upper triangular parts of a and a2 must be equal.
    if (norm_frobenius( upper_part( a - a2 ) )
             > std::numeric_limits<real_type>::epsilon() * 10.0 * norm_frobenius( upper_part( a ) ) ) return 255 ;
 
    // Generate orthogonal matrix
-   lapack::orgqr( a, tau, workspace );
+   apply_t::orgqr( traits::matrix_size1 (a), traits::matrix_size2 (a), traits::vector_size (tau), a, tau, workspace );
 
    // The result of lapack::ormqr and the equivalent matrix product must be equal.
    if (norm_frobenius( a2 - prod(herm(a), a3) )

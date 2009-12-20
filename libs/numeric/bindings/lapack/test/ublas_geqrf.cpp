@@ -146,7 +146,7 @@ int do_value_type() {
    if (do_memory_type<T,lapack::minimal_workspace>( n, lapack::minimal_workspace() ) ) return 255 ;
 
    ublas::vector<T> work( n );
-   do_memory_type<T, lapack::detail::workspace1<ublas::vector<T> > >( n, lapack::workspace(work) );
+   if (do_memory_type<T, lapack::detail::workspace1<ublas::vector<T> > >( n, lapack::workspace(work) ) ) return 255 ;
    return 0;
 } // do_value_type()
 

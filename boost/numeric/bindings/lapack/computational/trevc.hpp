@@ -102,7 +102,6 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
         BOOST_ASSERT( traits::leading_dimension(t) >= std::max<
                 std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
-        BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( traits::matrix_num_columns(t) ));
         detail::trevc( side, howmny, traits::vector_storage(select),
@@ -111,6 +110,7 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 traits::leading_dimension(vl), traits::matrix_storage(vr),
                 traits::leading_dimension(vr), mm, m,
                 traits::vector_storage(work.select(real_type())), info );
+        BOOST_ASSERT( mm >= m );
     }
 
     // minimal workspace specialization
@@ -167,7 +167,6 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
         BOOST_ASSERT( traits::leading_dimension(t) >= std::max<
                 std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
-        BOOST_ASSERT( mm >= m );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( traits::matrix_num_columns(t) ));
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
@@ -179,6 +178,7 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::leading_dimension(vr), mm, m,
                 traits::vector_storage(work.select(value_type())),
                 traits::vector_storage(work.select(real_type())), info );
+        BOOST_ASSERT( mm >= m );
     }
 
     // minimal workspace specialization
@@ -217,6 +217,7 @@ struct trevc_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 };
 
 
+/*
 // template function to call trevc
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename Workspace >
@@ -242,6 +243,7 @@ inline integer_t trevc( const char side, const char howmny,
             mm, m, info, optimal_workspace() );
     return info;
 }
+*/
 // template function to call trevc
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename Workspace >

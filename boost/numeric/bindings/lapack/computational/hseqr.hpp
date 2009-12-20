@@ -104,7 +104,7 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::vector_size(wr) >=
                 traits::matrix_num_columns(h) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( traits::matrix_num_columns(h) ));
         detail::hseqr( job, compz, traits::matrix_num_columns(h), ilo, ihi,
                 traits::matrix_storage(h), traits::leading_dimension(h),
                 traits::vector_storage(wr), traits::vector_storage(wi),
@@ -120,7 +120,7 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
             const integer_t ihi, MatrixH& h, VectorWR& wr, VectorWI& wi,
             MatrixZ& z, integer_t& info, minimal_workspace work ) {
         traits::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+                traits::matrix_num_columns(h) ) );
         invoke( job, compz, ilo, ihi, h, wr, wi, z, info,
                 workspace( tmp_work ) );
     }
@@ -135,8 +135,8 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_work( const integer_t n ) {
+        return std::max< std::ptrdiff_t >( 1, n );
     }
 };
 
@@ -162,7 +162,7 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( job == 'E' || job == 'S' );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work( traits::matrix_num_columns(h) ));
         detail::hseqr( job, compz, traits::matrix_num_columns(h), ilo, ihi,
                 traits::matrix_storage(h), traits::leading_dimension(h),
                 traits::vector_storage(w), traits::matrix_storage(z),
@@ -177,7 +177,7 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
             const integer_t ihi, MatrixH& h, VectorW& w, MatrixZ& z,
             integer_t& info, minimal_workspace work ) {
         traits::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+                traits::matrix_num_columns(h) ) );
         invoke( job, compz, ilo, ihi, h, w, z, info, workspace( tmp_work ) );
     }
 
@@ -189,8 +189,8 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         invoke( job, compz, ilo, ihi, h, w, z, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_work( const integer_t n ) {
+        return std::max< std::ptrdiff_t >( 1, n );
     }
 };
 
@@ -198,7 +198,7 @@ struct hseqr_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
 // template function to call hseqr
 template< typename MatrixH, typename VectorWR, typename VectorWI,
         typename MatrixZ, typename Workspace >
-inline integer_t hseqr( const char job, const char compz,
+inline integer_t hseqr_2( const char job, const char compz,
         const integer_t ilo, const integer_t ihi, MatrixH& h, VectorWR& wr,
         VectorWI& wi, MatrixZ& z, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
@@ -211,7 +211,7 @@ inline integer_t hseqr( const char job, const char compz,
 // template function to call hseqr, default workspace type
 template< typename MatrixH, typename VectorWR, typename VectorWI,
         typename MatrixZ >
-inline integer_t hseqr( const char job, const char compz,
+inline integer_t hseqr_2( const char job, const char compz,
         const integer_t ilo, const integer_t ihi, MatrixH& h, VectorWR& wr,
         VectorWI& wi, MatrixZ& z ) {
     typedef typename traits::matrix_traits< MatrixH >::value_type value_type;

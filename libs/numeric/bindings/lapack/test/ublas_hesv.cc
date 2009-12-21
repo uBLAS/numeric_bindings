@@ -6,8 +6,9 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/lapack/hesv.hpp>
+#include <boost/numeric/bindings/lapack/driver/hesv.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>
@@ -35,6 +36,8 @@ int main() {
   chermu_t hcau (cau);   // hermitian adaptor 
   cm_t cx (3, 1);
   cm_t cbl (3, 1), cbu (3, 1);  // RHS
+
+  std::vector<integer_t> ipiv (3);
 
   hcal (0, 0) = cmplx_t (3, 0);
   hcal (1, 0) = cmplx_t (4, -2);
@@ -69,7 +72,9 @@ int main() {
   cm_t cal2 (hcal), cau2 (hcau);  // for part 2
   cm_t cbl2 (cbl), cbu2 (cbu); 
 
-  int ierr = lapack::hesv (hcal, cbl); 
+//  int ierr = lapack::hesv (hcal, cbl);
+//  no ipiv less version is currently provided, so fall back to using ipiv
+  int ierr = lapack::hesv (hcal, ipiv, cbl);
   if (ierr == 0)
     print_m (cbl, "cxl"); 
   else 
@@ -77,11 +82,10 @@ int main() {
          << ierr << endl;
   cout << endl; 
 
-  std::vector<integer_t> ipiv (3); 
   std::vector<cmplx_t> cwork (3*64); 
   // 3*64 -- optimal size
 
-  ierr = lapack::hesv (hcau, ipiv, cbu, cwork); 
+  ierr = lapack::hesv (hcau, ipiv, cbu, lapack::workspace(cwork));
   if (ierr == 0) {
     print_v (ipiv, "ipiv"); 
     cout << endl; 
@@ -112,7 +116,10 @@ int main() {
   print_m (cbu2, "cbu2"); 
   cout << endl; 
 
-  ierr = lapack::hesv ('L', cal2, cbl2); 
+  cherml_t hcal2(cal2);
+//  ierr = lapack::hesv (hcal2, cbl2);
+//  no ipiv less version is currently provided, so fall back to using ipiv
+  ierr = lapack::hesv (hcal2, ipiv, cbl2);
   if (ierr == 0)
     print_m (cbl2, "cxl2"); 
   else 
@@ -120,7 +127,8 @@ int main() {
          << ierr << endl;
   cout << endl; 
 
-  ierr = lapack::hesv ('U', cau2, ipiv, cbu2, cwork); 
+  chermu_t hcau2(cau2);
+  ierr = lapack::hesv (hcau2, ipiv, cbu2, lapack::workspace(cwork));
   if (ierr == 0) {
     print_v (ipiv, "ipiv"); 
     cout << endl; 

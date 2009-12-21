@@ -6,7 +6,8 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/lapack/hpsv.hpp>
+#include <boost/numeric/bindings/lapack/driver/hpsv.hpp>
+#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>
@@ -36,6 +37,8 @@ int main() {
   chermu_t hcau (3, 3);   // hermitian matrix 
   cm_t cx (3, 1);
   cm_t cbl (3, 1), cbu (3, 1);  // RHS
+
+  std::vector<integer_t> ipiv (3);
 
   hcal (0, 0) = cmplx_t (3, 0);
   hcal (1, 0) = cmplx_t (4, -2);
@@ -67,15 +70,15 @@ int main() {
   print_m (cbu, "cbu"); 
   cout << endl; 
 
-  int ierr = lapack::hpsv (hcal, cbl); 
+//  int ierr = lapack::hpsv (hcal, cbl);
+//  no ipiv less version is currently provided, so fall back to using ipiv
+  int ierr = lapack::hpsv (hcal, ipiv, cbl);
   if (ierr == 0)
     print_m (cbl, "cxl"); 
   else 
     cout << "matrix is not regular: ierr = " 
          << ierr << endl;
   cout << endl; 
-
-  std::vector<integer_t> ipiv (3); 
 
   ierr = lapack::hpsv (hcau, ipiv, cbu); 
   if (ierr == 0) {

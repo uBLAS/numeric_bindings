@@ -6,7 +6,8 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/lapack/spsv.hpp>
+#include <boost/numeric/bindings/lapack/driver/spsv.hpp>
+#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>
@@ -66,6 +67,8 @@ int main (int argc, char **argv) {
   m_t x (n, nrhs);
   m_t bl (n, nrhs), bu (n, nrhs);  // RHS matrices
 
+  std::vector<integer_t> ipiv (n);
+
   init_symm2 (sal); 
   print_m (sal, "sal"); 
   cout << endl; 
@@ -90,17 +93,19 @@ int main (int argc, char **argv) {
   symmu_t sau1 (sau);  
   m_t bl1 (bl), bu1 (bu); 
 
-  lapack::spsv (sal, bl);  
+//  lapack::spsv (sal, bl);
+//  no ipiv less version is currently provided, so fall back to using ipiv
+  lapack::spsv (sal, ipiv, bl);
   print_m (bl, "xl"); 
   cout << endl; 
 
-  lapack::spsv (sau, bu);  
+//  lapack::spsv (sau, bu);
+//  no ipiv less version is currently provided, so fall back to using ipiv
+  lapack::spsv (sau, ipiv, bu);
   print_m (bu, "xu"); 
   cout << endl; 
 
   // part 2 
-
-  std::vector<integer_t> ipiv (n); 
 
   int err = lapack::spsv (sal1, ipiv, bl1);  
   print_m (sal1, "sal1 factored"); 
@@ -150,7 +155,9 @@ int main (int argc, char **argv) {
   print_m (cbu, "cbu"); 
   cout << endl; 
 
-  int ierr = lapack::spsv (scal, cbl); 
+//  int ierr = lapack::spsv (scal, cbl);
+//  no ipiv less version is currently provided, so fall back to using ipiv
+  int ierr = lapack::spsv (scal, ipiv, cbl);
   if (ierr == 0)
     print_m (cbl, "cxl"); 
   else 

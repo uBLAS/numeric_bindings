@@ -6,7 +6,8 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/lapack/sysv.hpp>
+#include <boost/numeric/bindings/lapack/driver/sysv.hpp>
+#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>
@@ -64,6 +65,8 @@ int main (int argc, char **argv) {
   m_t x (n, nrhs);
   m_t bl (n, nrhs), bu (n, nrhs);  // RHS matrices
 
+  std::vector<integer_t> ipiv (n);
+
   init_symm2 (al); 
   swap (row (al, 1), row (al, 4)); 
   swap (column (al, 1), column (al, 4)); 
@@ -93,20 +96,24 @@ int main (int argc, char **argv) {
   m_t al1 (al), au1 (au);  // for part 2
   m_t bl1 (bl), bu1 (bu); 
 
-  lapack::sysv (sal, bl);  
+//  lapack::sysv (sal, bl);
+//  no ipiv less version is currently provided, so fall back to using ipiv
+  lapack::sysv (sal, ipiv, bl);
   print_m (bl, "xl"); 
   cout << endl; 
 
-  lapack::sysv (sau, bu);  
+//  lapack::sysv (sau, bu);
+//  no ipiv less version is currently provided, so fall back to using ipiv
+  lapack::sysv (sau, ipiv, bu);
   print_m (bu, "xu"); 
   cout << endl; 
 
   // part 2 
 
-  std::vector<integer_t> ipiv (n); 
   std::vector<real_t> work (1); 
 
-  int err = lapack::sysv ('L', al1, ipiv, bl1, work);  
+  symml_t sal1 (al1);
+  int err = lapack::sysv (sal1, ipiv, bl1, lapack::workspace(work));
   print_m (al1, "al1 factored"); 
   cout << endl; 
   print_v (ipiv, "ipiv"); 
@@ -114,7 +121,8 @@ int main (int argc, char **argv) {
   print_m (bl1, "xl1"); 
   cout << endl; 
 
-  err = lapack::sysv ('U', au1, ipiv, bu1, work);  
+  symmu_t sau1 (au1);
+  err = lapack::sysv (sau1, ipiv, bu1, lapack::workspace(work));
   print_m (au1, "au1 factored"); 
   cout << endl; 
   print_v (ipiv, "ipiv"); 
@@ -154,7 +162,9 @@ int main (int argc, char **argv) {
   print_m (cbu, "cbu"); 
   cout << endl; 
 
-  int ierr = lapack::sysv (scal, cbl); 
+//  int ierr = lapack::sysv (scal, cbl);
+//  no ipiv less version is currently provided, so fall back to using ipiv
+  int ierr = lapack::sysv (scal, ipiv, cbl);
   if (ierr == 0)
     print_m (cbl, "cxl"); 
   else 
@@ -164,7 +174,7 @@ int main (int argc, char **argv) {
 
   std::vector<cmplx_t> cwork (n); 
 
-  ierr = lapack::sysv (scau, ipiv, cbu, cwork); 
+  ierr = lapack::sysv (scau, ipiv, cbu, lapack::workspace(cwork));
   if (ierr == 0) {
     print_v (ipiv, "ipiv"); 
     cout << endl; 

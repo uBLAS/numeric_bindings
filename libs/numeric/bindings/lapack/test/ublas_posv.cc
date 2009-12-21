@@ -6,7 +6,8 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/lapack/posv.hpp>
+#include <boost/numeric/bindings/lapack/driver/posv.hpp>
+#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
 #include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
@@ -100,13 +101,15 @@ int main() {
 
   // part 2 
 
-  lapack::posv ('L', al1, bl1);  
+  symml_t sal1(al1);
+  lapack::posv (sal1, bl1);
   print_m (al1, "al1 factored"); 
   cout << endl; 
   print_m (bl1, "xl1"); 
   cout << endl; 
 
-  lapack::posv ('U', au1, bu1);  
+  symmu_t sau1(au1);
+  lapack::posv (sau1, bu1);
   print_m (au1, "au1 factored"); 
   cout << endl; 
   print_m (bu1, "xu"); 
@@ -248,8 +251,9 @@ int main() {
   cm_t cbu2 (cbl2); 
   print_m (cbl2, "cbl"); 
   cout << endl; 
-  
-  ierr = lapack::posv ('L', cal, cbl2); 
+
+  herml_t hcal (cal);
+  ierr = lapack::posv (hcal, cbl2);
   if (ierr == 0)
     print_m (cbl2, "cxl"); 
   else 
@@ -257,7 +261,8 @@ int main() {
          << ierr << endl << endl; 
   cout << endl; 
 
-  ierr = lapack::posv ('U', cau, cbu2); 
+  hermu_t hcau (cau);
+  ierr = lapack::posv (hcau, cbu2);
   if (ierr == 0)
     print_m (cbu2, "cxu"); 
   else 

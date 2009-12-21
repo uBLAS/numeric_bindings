@@ -60,7 +60,13 @@ $TEMPLATE[lapack_names.h]
 #  define FORTRAN_ID( id ) id##_
 #endif
 
-$CONTENT#endif
+$CONTENT//
+// LAPACK auxiliary routines
+//
+
+#define LAPACK_ILAENV FORTRAN_ID( ilaenv )
+
+#endif
 
 $TEMPLATE[lapack_names.h_function]
 #define LAPACK_$SUBROUTINE FORTRAN_ID( $subroutine )

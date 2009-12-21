@@ -7,7 +7,7 @@
 //
 
 #include "convenience.h"
-#include <boost/numeric/bindings/lapack/gelss.hpp>
+#include <boost/numeric/bindings/lapack/driver/gelss.hpp>
 
 // set to 1 to write test output to file, otherwise outputs to console
 #define OUTPUT_TO_FILE 0
@@ -23,6 +23,7 @@
 #define USE_MINIMAL_WORKSPACE 1
 
 namespace lapack = boost::numeric::bindings::lapack;
+namespace traits = boost::numeric::bindings::traits;
 
 // test function declarations
 template <typename StreamType, typename MatrType, typename VecType>
@@ -219,6 +220,11 @@ int main()
 template <typename StreamType, typename MatType, typename VecType>
 int test_square_gelss(StreamType& oss)
 {
+	typedef typename traits::matrix_traits<MatType>::value_type val_t;
+	typedef typename traits::type_traits<val_t>::real_type real_t;
+	const real_t rcond = -1;    // use machine precision
+	integer_t rank;
+
 	// return value
 	int err = 0;
 
@@ -228,18 +234,19 @@ int test_square_gelss(StreamType& oss)
 
 	//const int m = traits::matrix_size1(mat);
 	const int n = traits::matrix_size2(mat);
+	traits::detail::array<real_t> s(n);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
 	VecType optimalvec(vec);
-	err += lapack::gelss(optimalmat, optimalvec, lapack::optimal_workspace());
+	err += lapack::gelss(optimalmat, optimalvec, s, rcond, rank, lapack::optimal_workspace());
 	VecType optimalanswer(ublas::project(optimalvec, ublas::range(0, n)));
 	VecType optimal_check = ublas::prod(mat, optimalanswer);
 #endif
 #if USE_MINIMAL_WORKSPACE
 	MatType minimalmat(mat);
 	VecType minimalvec(vec);
-	err += lapack::gelss(minimalmat, minimalvec, lapack::minimal_workspace());
+	err += lapack::gelss(minimalmat, minimalvec, s, rcond, rank, lapack::minimal_workspace());
 	VecType minimalanswer(ublas::project(minimalvec, ublas::range(0, n)));
 	VecType minimal_check = ublas::prod(mat, minimalanswer);
 #endif
@@ -274,6 +281,11 @@ int test_square_gelss(StreamType& oss)
 template <typename StreamType, typename MatType, typename VecType>
 int test_under_gelss(StreamType& oss)
 {
+	typedef typename traits::matrix_traits<MatType>::value_type val_t;
+	typedef typename traits::type_traits<val_t>::real_type real_t;
+	const real_t rcond = -1;    // use machine precision
+	integer_t rank;
+
 	// return value
 	int err = 0;
 
@@ -283,18 +295,19 @@ int test_under_gelss(StreamType& oss)
 
 	//const int m = traits::matrix_size1(mat);
 	const int n = traits::matrix_size2(mat);
+	traits::detail::array<real_t> s(n);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
 	VecType optimalvec(vec);
-	err += lapack::gelss(optimalmat, optimalvec, lapack::optimal_workspace());
+	err += lapack::gelss(optimalmat, optimalvec, s, rcond, rank, lapack::optimal_workspace());
 	VecType optimalanswer(ublas::project(optimalvec, ublas::range(0, n)));
 	VecType optimal_check = ublas::prod(mat, optimalanswer);
 #endif
 #if USE_MINIMAL_WORKSPACE
 	MatType minimalmat(mat);
 	VecType minimalvec(vec);
-	err += lapack::gelss(minimalmat, minimalvec, lapack::minimal_workspace());
+	err += lapack::gelss(minimalmat, minimalvec, s, rcond, rank, lapack::minimal_workspace());
 	VecType minimalanswer(ublas::project(minimalvec, ublas::range(0, n)));
 	VecType minimal_check = ublas::prod(mat, minimalanswer);
 #endif
@@ -329,6 +342,11 @@ int test_under_gelss(StreamType& oss)
 template <typename StreamType, typename MatType, typename VecType>
 int test_over_gelss(StreamType& oss)
 {
+	typedef typename traits::matrix_traits<MatType>::value_type val_t;
+	typedef typename traits::type_traits<val_t>::real_type real_t;
+	const real_t rcond = -1;    // use machine precision
+	integer_t rank;
+
 	// return value
 	int err = 0;
 
@@ -338,18 +356,19 @@ int test_over_gelss(StreamType& oss)
 
 	//const int m = traits::matrix_size1(mat);
 	const int n = traits::matrix_size2(mat);
+	traits::detail::array<real_t> s(n);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
 	VecType optimalvec(vec);
-	err += lapack::gelss(optimalmat, optimalvec, lapack::optimal_workspace());
+	err += lapack::gelss(optimalmat, optimalvec, s, rcond, rank, lapack::optimal_workspace());
 	VecType optimalanswer(ublas::project(optimalvec, ublas::range(0, n)));
 	VecType optimal_check = ublas::prod(mat, optimalanswer);
 #endif
 #if USE_MINIMAL_WORKSPACE
 	MatType minimalmat(mat);
 	VecType minimalvec(vec);
-	err += lapack::gelss(minimalmat, minimalvec, lapack::minimal_workspace());
+	err += lapack::gelss(minimalmat, minimalvec, s, rcond, rank, lapack::minimal_workspace());
 	VecType minimalanswer(ublas::project(minimalvec, ublas::range(0, n)));
 	VecType minimal_check = ublas::prod(mat, minimalanswer);
 #endif
@@ -384,6 +403,11 @@ int test_over_gelss(StreamType& oss)
 template <typename StreamType, typename MatType, typename VecType>
 int test_multiple_gelss(StreamType& oss)
 {
+	typedef typename traits::matrix_traits<MatType>::value_type val_t;
+	typedef typename traits::type_traits<val_t>::real_type real_t;
+	const real_t rcond = -1;    // use machine precision
+	integer_t rank;
+
 	// return value
 	int err = 0;
 
@@ -396,18 +420,19 @@ int test_multiple_gelss(StreamType& oss)
 	//const int m = traits::matrix_size1(mat);
 	const int n = traits::matrix_size2(mat);
 	const int nrhs = traits::matrix_size2(vec);
+	traits::detail::array<real_t> s(n);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
 	MatType optimalvec(vec);
-	err += lapack::gelss(optimalmat, optimalvec, lapack::optimal_workspace());
+	err += lapack::gelss(optimalmat, optimalvec, s, rcond, rank, lapack::optimal_workspace());
 	MatType optimalanswer(ublas::project(optimalvec, ublas::range(0, n), ublas::range(0, nrhs)));
 	MatType optimal_check = ublas::prod(mat, optimalanswer);
 #endif
 #if USE_MINIMAL_WORKSPACE
 	MatType minimalmat(mat);
 	MatType minimalvec(vec);
-	err += lapack::gelss(minimalmat, minimalvec, lapack::minimal_workspace());
+	err += lapack::gelss(minimalmat, minimalvec, s, rcond, rank, lapack::minimal_workspace());
 	MatType minimalanswer(ublas::project(minimalvec, ublas::range(0, n), ublas::range(0, nrhs)));
 	MatType minimal_check = ublas::prod(mat, minimalanswer);
 #endif

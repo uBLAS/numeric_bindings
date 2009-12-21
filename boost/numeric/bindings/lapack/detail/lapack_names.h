@@ -1212,5 +1212,11 @@
 #define LAPACK_CLALSD FORTRAN_ID( clalsd )
 #define LAPACK_ZLALSD FORTRAN_ID( zlalsd )
 
+//
+// LAPACK auxiliary routines
+//
+
+#define LAPACK_ILAENV FORTRAN_ID( ilaenv )
+
 #endif
 

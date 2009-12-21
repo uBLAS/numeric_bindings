@@ -114,11 +114,14 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::vector_size(s) >= std::min<
                 std::ptrdiff_t >(traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a)) );
+        /*
+        // The following assertions fails for the size returned by the optimal workspace query of lapack 3.1
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_work( minmn, smlsiz, nlvl,
                 traits::matrix_num_columns(b) ));
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( minmn, nlvl ));
+        */
         detail::gelsd( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),
@@ -216,11 +219,14 @@ struct gelsd_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
                 traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
                 min_size_work( minmn, traits::matrix_num_columns(b) ));
+        /*
+        // The following assertions fails for the size returned by the optimal workspace query of lapack 3.1
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
                 min_size_rwork( minmn, smlsiz, nlvl,
                 traits::matrix_num_columns(b) ));
         BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
                 min_size_iwork( minmn, nlvl ));
+        */
         detail::gelsd( traits::matrix_num_rows(a),
                 traits::matrix_num_columns(a), traits::matrix_num_columns(b),
                 traits::matrix_storage(a), traits::leading_dimension(a),

@@ -7,7 +7,7 @@
 //
 
 #include "convenience.h"
-#include <boost/numeric/bindings/lapack/gels.hpp>
+#include <boost/numeric/bindings/lapack/driver/gels.hpp>
 
 // set to 1 to write test output to file, otherwise outputs to console
 #define OUTPUT_TO_FILE 0

@@ -268,7 +268,7 @@ struct gees_impl< ValueType, typename boost::enable_if< traits::is_complex<Value
 // template function to call gees
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS, typename Workspace >
-inline integer_t gees( const char jobvs, const char sort,
+inline integer_t gees_2( const char jobvs, const char sort,
         logical_t* select, MatrixA& a, integer_t& sdim, VectorWR& wr,
         VectorWI& wi, MatrixVS& vs, Workspace work ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
@@ -281,7 +281,7 @@ inline integer_t gees( const char jobvs, const char sort,
 // template function to call gees, default workspace type
 template< typename MatrixA, typename VectorWR, typename VectorWI,
         typename MatrixVS >
-inline integer_t gees( const char jobvs, const char sort,
+inline integer_t gees_2( const char jobvs, const char sort,
         logical_t* select, MatrixA& a, integer_t& sdim, VectorWR& wr,
         VectorWI& wi, MatrixVS& vs ) {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;

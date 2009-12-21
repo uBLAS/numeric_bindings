@@ -6,7 +6,7 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/lapack/geev.hpp>
+#include <boost/numeric/bindings/lapack/driver/geev.hpp>
 #include "utils.h"
 
 using std::cout;
@@ -30,15 +30,18 @@ int main(){
 }
 void geev(int n){
     cout << "\nCalculating eigenvalues using LAPACK's geev." << endl;
-    ublas::matrix<double, ublas::column_major> A(n,n);
+    //ublas::matrix<double, ublas::column_major> A(n,n);
+    //falling back to fully complex case for the moment,
+    //because the reassembly of the result in the real case is a bit complicated.
+    ublas::matrix<complex<double>, ublas::column_major> A(n,n);
     Hessenberg(A);
     print_m(A);
 
     ublas::vector<complex<double> > values(n);
-    ublas::matrix<complex<double>, ublas::column_major>* Vectors_left = 0;
+    ublas::matrix<complex<double>, ublas::column_major> Vectors_left(1,1);
     ublas::matrix<complex<double>, ublas::column_major> Vectors_right(n,n);
 
-    lapack::geev(A, values, Vectors_left, &Vectors_right, lapack::optimal_workspace());
+    lapack::geev('N','V', A, values, Vectors_left, Vectors_right, lapack::optimal_workspace());
     print_v(values, "values"); cout << endl;
     print_m(Vectors_right, "Vectors_right"); cout << endl;
 

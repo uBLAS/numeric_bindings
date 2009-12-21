@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <iostream>
 #include <algorithm> 
-#include <boost/numeric/bindings/lapack/gesdd.hpp>
+#include <boost/numeric/bindings/lapack/driver/gesdd.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>
@@ -42,7 +42,8 @@ int main() {
   m_t u (m, minmn);
   m_t vt (minmn, n);
 
-  lapack::gesdd (a, s, u, vt);  
+//  lapack::gesdd (a, s, u, vt);
+  lapack::gesdd ('A', a, s, u, vt);
 
   print_v (s, "s"); 
   cout << endl; 
@@ -77,7 +78,8 @@ int main() {
   
   // part 3 
   
-  lapack::gesdd (a2, s);  
+//  lapack::gesdd (a2, s);
+  lapack::gesdd ('N', a2, s, u, vt);
   
   print_v (s, "singular values only"); 
   cout << endl; 

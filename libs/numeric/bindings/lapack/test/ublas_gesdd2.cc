@@ -5,7 +5,7 @@
 #include <iostream>
 #include <algorithm> 
 #include <complex>
-#include <boost/numeric/bindings/lapack/gesdd.hpp>
+#include <boost/numeric/bindings/lapack/driver/gesdd.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>
@@ -46,6 +46,7 @@ int main() {
   m_t u (m, m);
   m_t vt (n, n);
 
+/*
   size_t lw; 
 
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_2
@@ -76,6 +77,8 @@ int main() {
   std::vector<integer_t> iw (liw);
 
   lapack::gesdd ('A', a, s, u, vt, w, rw, iw);
+*/
+  lapack::gesdd ('A', a, s, u, vt);
 
   print_v (s, "s"); 
   cout << endl; 
@@ -98,11 +101,14 @@ int main() {
 
   cout << endl << "part 2" << endl << endl; 
  
+/*
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_2
   lapack::gesdd ('A', a2, s, u, vt);  
 #else
   lapack::gesdd ('M', 'A', a2, s, u, vt);  
 #endif
+*/
+  lapack::gesdd ('A', a2, s, u, vt);
 
   print_v (s, "s"); 
   cout << endl; 
@@ -124,6 +130,7 @@ int main() {
 
   cout << endl << "part 3" << endl << endl;
  
+/*
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_2
   cout << "opt lw: " << lapack::gesdd_work ('O', 'N', a3) << endl << endl; 
   lapack::gesdd (a3, s);
@@ -131,6 +138,8 @@ int main() {
   cout << "min lw: " << lapack::gesdd_work ('M', 'N', a3) << endl << endl; 
   lapack::gesdd ('M', 'N', a3, s, u, vt);
 #endif 
+*/
+  lapack::gesdd ('N', a3, s, u, vt);
 
   print_v (s, "singular value only"); 
   cout << endl; 

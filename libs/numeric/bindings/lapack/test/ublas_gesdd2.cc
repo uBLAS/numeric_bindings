@@ -108,7 +108,7 @@ int main() {
   lapack::gesdd ('M', 'A', a2, s, u, vt);  
 #endif
 */
-  lapack::gesdd ('A', a2, s, u, vt);
+  lapack::gesdd ('A', a2, s, u, vt, lapack::minimal_workspace());
 
   print_v (s, "s"); 
   cout << endl; 
@@ -139,7 +139,7 @@ int main() {
   lapack::gesdd ('M', 'N', a3, s, u, vt);
 #endif 
 */
-  lapack::gesdd ('N', a3, s, u, vt);
+  lapack::gesdd ('N', a3, s, u, vt, lapack::minimal_workspace());
 
   print_v (s, "singular value only"); 
   cout << endl; 

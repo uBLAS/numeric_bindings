@@ -43,7 +43,7 @@ int main() {
   m_t vt (minmn, n);
 
 //  lapack::gesdd (a, s, u, vt);
-  lapack::gesdd ('A', a, s, u, vt);
+  lapack::gesdd ('S', a, s, u, vt);
 
   print_v (s, "s"); 
   cout << endl; 

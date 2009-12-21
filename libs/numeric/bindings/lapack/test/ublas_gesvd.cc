@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <iostream>
 #include <algorithm> 
-#include <boost/numeric/bindings/lapack/gesvd.hpp>
+#include <boost/numeric/bindings/lapack/driver/gesvd.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>
@@ -42,6 +42,7 @@ int main() {
   m_t u (m, m);
   m_t vt (n, n);
 
+/*
   size_t lw; 
 
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_2
@@ -66,6 +67,8 @@ int main() {
   std::vector<real_t> w (lw); 
 
   lapack::gesvd ('A', 'A', a, s, u, vt, w);  
+*/
+  lapack::gesvd ('A', 'A', a, s, u, vt);
 
   print_v (s, "s"); 
   cout << endl; 
@@ -88,11 +91,14 @@ int main() {
 
   cout << endl << "part 2" << endl << endl; 
  
+/*
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_2
   lapack::gesvd ('A', 'A', a2, s, u, vt);  
 #else
   lapack::gesvd ('M', 'A', 'A', a2, s, u, vt);  
 #endif
+*/
+  lapack::gesvd ('A', 'A', a2, s, u, vt, lapack::minimal_workspace());
 
   print_v (s, "s"); 
   cout << endl; 
@@ -114,6 +120,7 @@ int main() {
 
   cout << endl << "part 3" << endl << endl; 
 
+/*
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_2
   cout << "opt lw: " << lapack::gesvd_work ('O', 'N', 'N', a3) 
        << endl << endl; 
@@ -123,6 +130,8 @@ int main() {
        << endl << endl; 
   lapack::gesvd ('M', 'N', 'N', a3, s, u, vt);
 #endif 
+*/
+  lapack::gesvd ('N', 'N', a3, s, u, vt, lapack::minimal_workspace());
 
   print_v (s, "singular values only"); 
   cout << endl; 

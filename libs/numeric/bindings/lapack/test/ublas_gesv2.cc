@@ -5,7 +5,8 @@
 #include <cstddef>
 #include <iostream>
 #include <vector>
-#include <boost/numeric/bindings/lapack/gesv.hpp>
+#include <boost/numeric/bindings/lapack/driver/gesv.hpp>
+#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
@@ -51,7 +52,10 @@ int main() {
   print_m (b, "B"); 
   cout << endl; 
 
-  lapack::gesv (a, b);  // solving the system, b contains x 
+//  lapack::gesv (a, b);  // solving the system, b contains x 
+//  no ipiv less version is currently provided, so fall back to using ipiv
+  std::vector<integer_t> ipiv(n);
+  lapack::gesv (a, ipiv, b);  // solving the system, b contains x 
 
   print_m (b, "X");
   cout << endl; 

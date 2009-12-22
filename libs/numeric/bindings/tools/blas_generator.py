@@ -69,55 +69,75 @@ def write_functions( info_map, group, template_map, base_dir ):
 
     #
     # LEVEL 0 HANDLING
-    #  
-    overloads = ''
-    for subroutine in subroutines:
-      sub_template = template_map[ 'blas_overloads' ]
-      # add the argument list here
-      arg_list = []
-      lapack_arg_list = []
-      cblas_arg_list = []
-      cublas_arg_list = []
+    #
+    overloads = template_map[ 'backend_blas_overloads' ]
+    for select_backend in [ 'blas_overloads', 'cblas_overloads', 'cublas_overloads' ]:
+      sub_overloads = ''
+      for subroutine in subroutines:
+        sub_template = template_map[ select_backend ]
+        # add the argument list here
+        arg_list = []
+        typename_list = []
+        blas_arg_list = []
+        cblas_arg_list = []
+        cublas_arg_list = []
+        level0_static_asserts = []
 
-      if info_map[ subroutine ][ "has_cblas_order_arg" ]:
-        cblas_arg_list += [ "CblasColMajor" ]
-
-      for arg in info_map[ subroutine ][ 'arguments' ]:
-        print "Subroutine ", subroutine, " arg ", arg
-        arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] ]
-        lapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_blas_header' ] ]
-        cblas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_cblas_header' ] ]
-
-      sub_template = sub_template.replace( "$LEVEL0", ", ".join( arg_list ) )
-      sub_template = sub_template.replace( "$CALL_BLAS_HEADER", ", ".join( lapack_arg_list ) )
-      sub_template = sub_template.replace( "$CALL_CBLAS_HEADER", ", ".join( cblas_arg_list ) )
-      sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
-      sub_template = sub_template.replace( "$SPECIALIZATION", documentation.routine_value_type[ subroutine[0] ] )
-
-      # CBLAS stuff
-      if 'cblas_routine' in info_map[ subroutine ]:
-        cblas_routine = info_map[ subroutine ][ 'cblas_routine' ]
-      else:
-        cblas_routine = '// TODO'
-      sub_template = sub_template.replace( "$CBLAS_ROUTINE", cblas_routine )
-
-      # CUBLAS stuff
-      if 'cublas_routine' in info_map[ subroutine ]:
-        cublas_routine = info_map[ subroutine ][ 'cublas_routine' ]
         for arg in info_map[ subroutine ][ 'arguments' ]:
-          cublas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_cublas_header' ] ]
-      else:
-        cublas_routine = '// NOT FOUND'
+            print "Subroutine ", subroutine, " arg ", arg
+            arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] ]
+            blas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_blas_header' ] ]
+            cblas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_cblas_header' ] ]
 
-      sub_template = sub_template.replace( "$CALL_CUBLAS_HEADER", ", ".join( cublas_arg_list ) )
-      sub_template = sub_template.replace( "$CUBLAS_ROUTINE", cublas_routine )
+            if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] != None:
+                typename_list +=  [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] ]
 
-      sub_template = sub_template.replace( '$groupname', group_name.lower() )
-      sub_template = sub_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'return_value_type' ] )
-      sub_template = sub_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
-      
-      overloads += bindings.proper_indent( sub_template )
-  
+        if info_map[ subroutine ][ "has_cblas_order_arg" ]:
+            arg_list.insert( 0, "Order" )
+            cblas_arg_list.insert( 0, "cblas_option< Order >::value" )
+            typename_list.insert( 0, "typename Order" )
+            level0_static_asserts.append( "BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );" )
+            includes += [ "#include <boost/numeric/bindings/is_column_major.hpp>" ]
+
+        sub_template = sub_template.replace( "$TYPES", ", ".join( typename_list ) )
+        sub_template = sub_template.replace( "template<  >\n", "" )
+        sub_template = sub_template.replace( "$LEVEL0", ", ".join( arg_list ) )
+        sub_template = sub_template.replace( "$CALL_BLAS_HEADER", ", ".join( blas_arg_list ) )
+        sub_template = sub_template.replace( "$CALL_CBLAS_HEADER", ", ".join( cblas_arg_list ) )
+        sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
+        sub_template = sub_template.replace( "$SPECIALIZATION", documentation.routine_value_type[ subroutine[0] ] )
+        sub_template = sub_template.replace( '$STATIC_ASSERTS', "\n    ".join( level0_static_asserts ) )
+
+        # CBLAS stuff
+        if 'cblas_routine' in info_map[ subroutine ]:
+            cblas_routine = info_map[ subroutine ][ 'cblas_routine' ]
+        else:
+            cblas_routine = '// NOT FOUND'
+        sub_template = sub_template.replace( "$CBLAS_ROUTINE", cblas_routine )
+
+        # CUBLAS stuff
+        if 'cublas_routine' in info_map[ subroutine ]:
+            cublas_routine = info_map[ subroutine ][ 'cublas_routine' ]
+            for arg in info_map[ subroutine ][ 'arguments' ]:
+                cublas_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_cublas_header' ] ]
+        else:
+            cublas_routine = '// NOT FOUND'
+
+        sub_template = sub_template.replace( "$CALL_CUBLAS_HEADER", ", ".join( cublas_arg_list ) )
+        sub_template = sub_template.replace( "$CUBLAS_ROUTINE", cublas_routine )
+
+        sub_template = sub_template.replace( '$groupname', group_name.lower() )
+        sub_template = sub_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'return_value_type' ] )
+        sub_template = sub_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
+
+        sub_overloads += bindings.proper_indent( sub_template )
+
+      overloads = overloads.replace( '$' + select_backend.upper(),
+            sub_overloads )
+
+    #
+    # Prepare for levels 1 and 2
+    #
     cases = {}
     # first, see what kind of functions we have
     # needed for argument check etc.
@@ -171,6 +191,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       #
       # Create static assertions, first by value type
       #
+      has_comment = False
       for value_type_tmp_key in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_value_type' ].keys():
         # look up whether they are template params
         static_asserts = []
@@ -185,6 +206,17 @@ def write_functions( info_map, group, template_map, base_dir ):
                 'typename remove_const< typename value< ' + info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type, ' + \
                 'typename remove_const< typename value< ' + info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type' \
                 ' >::value) );'
+            if not has_comment:
+                #level1_static_assert_list += [ '// Here, we assert... ' ]
+                has_comment = True
+            level1_static_assert_list += [ assert_line ]
+
+      # Make sure the mutable stuff is mutable
+      if 'output' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ]:
+        for arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ][ 'output' ]:
+          if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_type' ] != None:
+            assert_line = 'BOOST_STATIC_ASSERT( (is_mutable< ' + \
+                info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_static_assert' ] + ' >::value ) );'
             level1_static_assert_list += [ assert_line ]
 
       # import the code by argument
@@ -201,6 +233,10 @@ def write_functions( info_map, group, template_map, base_dir ):
           level1_assert_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_assert' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] != None:
           level2_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] ]
+
+      # Insert the order_type() if appropriate
+      if info_map[ subroutine ][ "has_cblas_order_arg" ]:
+          level0_arg_list.insert( 0, "order_type()" )
 
       # Level 1 replacements
       level1_template = level1_template.replace( "$CALL_LEVEL0", ", ".join( level0_arg_list ) )
@@ -222,16 +258,17 @@ def write_functions( info_map, group, template_map, base_dir ):
       # type-traits deduction, etc..
       # more important: all non-const and const variants of functions are written here
       level2_functions = []
-      level2_arg_lists, level2_static_asserts = bindings.generate_const_variants( level2_arg_list )
+      level2_arg_lists, level2_comments = bindings.generate_const_variants( level2_arg_list )
       for level2_idx in range( 0, len( level2_arg_lists ) ):
         level2_function = level2_template.replace( "$LEVEL2", \
                 ", ".join( level2_arg_lists[ level2_idx ] ) )
-        if len( "".join(level2_static_asserts[ level2_idx ] ) ) > 0:
-          level2_function = level2_function.replace( "$STATIC_ASSERTS", \
-                "\n    ".join( level2_static_asserts[ level2_idx ] ) )
+        if len( "".join(level2_comments[ level2_idx ] ) ) > 0:
+          level2_function = level2_function.replace( "$COMMENTS", \
+                "\n    ".join( level2_comments[ level2_idx ] ) )
         level2_functions.append( level2_function )
 
       level2_template = "\n".join( level2_functions )
+      level2_template = level2_template.replace( "$COMMENTS\n", "" )
 
       #level2_template = level2_template.replace( "$LEVEL2", ", ".join( level2_arg_list ) )
 
@@ -293,6 +330,9 @@ def write_functions( info_map, group, template_map, base_dir ):
     result = result.replace( '$DIRNAME', base_dir.split("/")[-1].upper() )
     result = result.replace( '$dirname', base_dir.split("/")[-1].lower() )
     result = result.replace( '$INTEGER_TYPE', netlib.fortran_integer_type )
+    result = result.replace( '\n\n\n', '\n\n' )
+    result = result.replace( "\n    \n", "\n" )
+    result = result.replace( "\n        \n", "\n" )
 
     # replace the global variables as last (this is convenient)
     #result = result.replace( '$INDENT', '    ' )

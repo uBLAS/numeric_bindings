@@ -244,7 +244,7 @@ def generate_const_variants( argument_list ):
     print "Generating const variants for ", argument_list
     permute_indices = []
     result = []
-    static_asserts = []
+    comments = []
 
     for i in range( 0, len(argument_list) ):
         argument = argument_list[i]
@@ -257,43 +257,32 @@ def generate_const_variants( argument_list ):
         #print "i: ", i
         new_arg_list = []
         new_arg_list += argument_list
-        new_asserts = []
+        new_comments = []
         for j in range( 0, len( permute_indices ) ):
             if ( i & (1<<j) ):
                 #print permute_indices[j], ": const " + argument_list[ permute_indices[ j ] ]
                 new_arg_list[ permute_indices[ j ] ] = "const " + argument_list[ permute_indices[ j ] ]
                 arg = new_arg_list[ permute_indices[ j ] ]
-                new_asserts.append( "BOOST_STATIC_ASSERT( (is_mutable< " + 
-                    arg[ :arg.find("&" ) ] + " >::value) );" )
+                new_comments.append( "// * " + 
+                    arg[ :arg.find("&" ) ] + "&" )
             else:
                 arg = new_arg_list[ permute_indices[ j ] ]
-                new_asserts.append( "BOOST_STATIC_ASSERT( (is_mutable< " + 
-                    arg[ :arg.find("&" ) ] + " >::value) );" )
+                new_comments.append( "// * " + 
+                    arg[ :arg.find("&" ) ] + "&" )
 
            # else:
                 #print permute_indices[j], "don't add const"
         result.append( new_arg_list )
-        static_asserts.append( new_asserts )
+        comments.append( new_comments )
         #new_arg_list = []
 
     #print "result: ", result
-    return result, static_asserts
+    return result, comments
 
 #
 # Generate the call to the value_tye meta-func
 #
 def value_type( arg ):
     return 'typename value< ' + arg + ' >::type'
-
-
-
-
-
-
-
-
-
-
-
 
 

@@ -75,16 +75,16 @@ def parse_file( filename, info_map, template_map ):
                     print "Result:   ", call_cblas_header
                     if arg == 'UPLO':
                         info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_cblas_header" ] = \
-                            "( uplo == 'U' ? CblasUpper : CblasLower )"
+                            "cblas_option< UpLo >::value"
                     elif arg == 'DIAG':
                         info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_cblas_header" ] = \
-                            "( uplo == 'N' ? CblasNonUnit : CblasUnit )"
+                            "cblas_option< Diag >::value"
                     elif arg == 'SIDE':
                         info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_cblas_header" ] = \
-                            "( uplo == 'L' ? CblasLeft : CblasRight )"
+                            "cblas_option< Side >::value"
                     elif  arg == 'TRANS' or arg == 'TRANSA' or arg == 'TRANSB':
                         info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_cblas_header" ] = \
-                          "( " + arg.lower() + " == 'N' ? CblasNoTrans : ( " + arg.lower() + " == 'T' ? CblasTrans : CblasConjTrans ) )"
+                          "cblas_option< " + netlib.level0_types[ arg ] + " >::value"
                     else:
                         info_map[ blas_routine ][ "argument_map" ][ arg ][ "code" ][ "call_cblas_header" ] = call_cblas_header
                 else:

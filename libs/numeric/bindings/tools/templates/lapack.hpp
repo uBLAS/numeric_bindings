@@ -24,7 +24,7 @@ namespace lapack {
 
 //
 // The detail namespace contains value-type-overloaded functions that
-// dispatch to the appropriate back-end LAPACK routine.
+// dispatch to the appropriate back-end LAPACK-routine.
 //
 namespace detail {
 
@@ -39,9 +39,13 @@ $LEVEL2
 
 #endif
 $TEMPLATE[lapack_overloads]
+//
+// Overloaded function for the $SPECIALIZATION value-type.
+//
 inline void $groupname( $LEVEL0 ) {
     LAPACK_$SUBROUTINE( $CALL_BLAS_HEADER );
 }
+
 $TEMPLATE[lapack_include_hierarchy]
 //
 // Copyright (c) 2003--2009
@@ -62,17 +66,25 @@ $TEMPLATE[lapack_include_hierarchy]
 $CONTENT
 #endif
 $TEMPLATE[level1_pre_header]
-// value-type based template
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to $groupname.
+//
 template< typename Value, typename Enable = void >
 struct $groupname_impl{};
 
 $TEMPLATE[level1_header1]
-// value-type based template
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to $groupname.
+//
 template< typename Value >
 struct $groupname_impl {
 
 $TEMPLATE[level1_header2]
-// $SPECIALIZATION specialization
+//
+// This implementation is enabled if Value is a $SPECIALIZATION type.
+//
 template< typename Value >
 struct $groupname_impl< Value, typename boost::enable_if< is_$SPECIALIZATION< Value > >::type > {
 
@@ -116,7 +128,10 @@ $TEMPLATE[level1_opt_workspace]
 $TEMPLATE[level1_opt_workspace_is_min]
         invoke( $CALL_LEVEL1, minimal_workspace() );
 $TEMPLATE[level2_workspace]
-// template function to call $groupname
+//
+// Overloaded function for $groupname
+// * User-defined workspace
+//
 template< $TYPES, typename Workspace >
 inline integer_t $groupname( $LEVEL2, Workspace work ) {
     integer_t info(0);
@@ -124,7 +139,10 @@ inline integer_t $groupname( $LEVEL2, Workspace work ) {
     return info;
 }
 
-// template function to call $groupname, default workspace type
+//
+// Overloaded function for $groupname
+// * Default workspace-type (optimal)
+//
 template< $TYPES >
 inline integer_t $groupname( $LEVEL2 ) {
     integer_t info(0);
@@ -155,7 +173,9 @@ $INCLUDE_TEMPLATES
 };
 
 $TEMPLATE[level2_noworkspace]
-// template function to call $groupname
+//
+// Overloaded function for $groupname
+//
 template< $TYPES >
 inline integer_t $groupname( $LEVEL2 ) {
     integer_t info(0);

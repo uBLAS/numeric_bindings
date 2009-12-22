@@ -15,16 +15,25 @@ $TEMPLATE[blas.hpp]
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_$DIRNAME_$GROUPNAME_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_$DIRNAME_$GROUPNAME_HPP
 
-// Include header of configured BLAS interface
+$INCLUDES
+
+//
+// The BLAS-backend is selected by defining a pre-processor variable,
+//  which can be one of
+// * for CBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+// * for CUBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+// * netlib-compatible BLAS is the default
+//
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 #include <boost/numeric/bindings/blas/detail/cblas.h>
+#include <boost/numeric/bindings/blas/detail/cblas_option.hpp>
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 #include <boost/numeric/bindings/blas/detail/cublas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
 #else
 #include <boost/numeric/bindings/blas/detail/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
 #endif
-
-$INCLUDES
 
 namespace boost {
 namespace numeric {
@@ -33,7 +42,7 @@ namespace blas {
 
 //
 // The detail namespace contains value-type-overloaded functions that
-// dispatch to the appropriate back-end BLAS routine.
+// dispatch to the appropriate back-end BLAS-routine.
 //
 namespace detail {
 
@@ -45,8 +54,7 @@ $LEVEL1
 //
 // Functions for direct use. These functions are overloaded for temporaries,
 // so that wrapped types can still be passed and used for write-access. 
-// In the documentation the const-overloads are collapsed. Consult the
-// static assert lists (if available) to check what kind of overload it is.
+// In the documentation, the const-overloads are collapsed.
 //
 
 $LEVEL2
@@ -56,18 +64,47 @@ $LEVEL2
 } // namespace boost
 
 #endif
+$TEMPLATE[backend_blas_overloads]
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+$CBLAS_OVERLOADS
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+$CUBLAS_OVERLOADS
+#else
+$BLAS_OVERLOADS
+#endif
 $TEMPLATE[blas_overloads]
 //
-// Overloaded function for the $SPECIALIZATION value type.
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * $SPECIALIZATION value-type
 //
+template< $TYPES >
 inline $RETURN_TYPE $groupname( $LEVEL0 ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    $RETURN_STATEMENT$CBLAS_ROUTINE( $CALL_CBLAS_HEADER );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    $RETURN_STATEMENT$CUBLAS_ROUTINE( $CALL_CUBLAS_HEADER );
-#else
+    $STATIC_ASSERTS
     $RETURN_STATEMENTBLAS_$SUBROUTINE( $CALL_BLAS_HEADER );
-#endif
+}
+
+$TEMPLATE[cblas_overloads]
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * $SPECIALIZATION value-type
+//
+template< $TYPES >
+inline $RETURN_TYPE $groupname( $LEVEL0 ) {
+    $RETURN_STATEMENT$CBLAS_ROUTINE( $CALL_CBLAS_HEADER );
+}
+
+$TEMPLATE[cublas_overloads]
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * $SPECIALIZATION value-type
+//
+template< $TYPES >
+inline $RETURN_TYPE $groupname( $LEVEL0 ) {
+    $STATIC_ASSERTS
+    $RETURN_STATEMENT$CUBLAS_ROUTINE( $CALL_CUBLAS_HEADER );
 }
 
 $TEMPLATE[blas_level1]
@@ -85,25 +122,25 @@ struct $groupname_impl {
 $INCLUDE_TEMPLATES
     //
     // Static member function that
-    // 1) Deduces the required arguments for dispatching to BLAS, and
-    // 2) Asserts that most arguments make sense.
+    // * Deduces the required arguments for dispatching to BLAS, and
+    // * Asserts that most arguments make sense.
     //
     template< $TYPES >
     static return_type invoke( $LEVEL1 ) {
         $STATIC_ASSERTS
         $ASSERTS
+        $TYPEDEFS
         $RETURN_STATEMENTdetail::$groupname( $CALL_LEVEL0 );
     }
 };
 $TEMPLATE[blas_level2]
 //
 // Overloaded function for $groupname
-// 
+$COMMENTS
+//
 template< $TYPES >
 inline typename $groupname_impl< typename value< $FIRST_TYPENAME >::type >::return_type
 $groupname( $LEVEL2 ) {
-    typedef typename value< $FIRST_TYPENAME >::type value_type;
-    $STATIC_ASSERTS
-    $RETURN_STATEMENT$groupname_impl< value_type >::invoke( $CALL_LEVEL1 );
+    $RETURN_STATEMENT$groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
 }
 $TEMPLATE[end]

@@ -88,6 +88,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       sub_template = sub_template.replace( "$CALL_BLAS_HEADER", ", ".join( lapack_arg_list ) )
       sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
       sub_template = sub_template.replace( '$groupname', group_name.lower() )
+      sub_template = sub_template.replace( "$SPECIALIZATION", documentation.routine_value_type[ subroutine[0] ] )
       
       overloads += bindings.proper_indent( sub_template )
   
@@ -186,6 +187,14 @@ def write_functions( info_map, group, template_map, base_dir ):
                 'typename remove_const< typename value< ' + info_map[ subroutine ][ 'argument_map' ][ arg_A ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type, ' + \
                 'typename remove_const< typename value< ' + info_map[ subroutine ][ 'argument_map' ][ arg_B ][ 'code' ][ 'level_1_static_assert' ] + ' >::type >::type' \
                 ' >::value) );'
+            level1_static_assert_list += [ assert_line ]
+
+      # Make sure the mutable stuff is mutable
+      if 'output' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ]:
+        for arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ][ 'output' ]:
+          if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_type' ] != None:
+            assert_line = 'BOOST_STATIC_ASSERT( (is_mutable< ' + \
+                info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_static_assert' ] + ' >::value ) );'
             level1_static_assert_list += [ assert_line ]
 
       # import the code, by argument

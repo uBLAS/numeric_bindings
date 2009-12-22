@@ -89,7 +89,38 @@ def cpp_type( name, properties ):
   result += ' ' + name.lower()
     
   return result
-  
+
+
+level0_types = {
+    'TRANS': 'Trans',
+    'TRANSA': 'TransA',
+    'TRANSB': 'TransB',
+    'UPLO'  : 'UpLo'
+}
+
+
+
+def level0_type( name, properties ):
+    result = cpp_type( name, properties )
+    if 'trait_type' in properties:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo' ]:
+            result = level0_types[ name ]
+    return result
+
+def level0_typename( name, properties ):
+    result = None
+    if 'trait_type' in properties:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo' ]:
+            result = 'typename ' + level0_types[ name ]
+    return result
+
+def call_blas_header( name, properties ):
+    result = call_c_type( name, properties )
+    if 'trait_type' in properties:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo' ]:
+            result = '&blas_option< ' + level0_types[ name ] + ' >::value'
+    return result
+
 def call_c_type( name, properties ):
   result = ''
   if properties[ 'type' ] == 'vector' or properties[ 'type' ] == 'matrix':
@@ -123,12 +154,17 @@ def call_level0_type( name, properties, arg_map ):
     result = "begin_value(" + my_name + ")"
   elif properties.has_key( 'trait_type' ):
     if properties[ 'trait_type' ] == 'lda':
+      #
+      # TODO this should be stride_column or stride_row, whatever the orientation
+      # of the library is. In case of LAPACK, stride_column.
+      # Unless this matrix may be transposed, then it is stride_major
+      # 
       result = "stride_major(" + properties[ 'trait_of' ].lower() + ")"
       #result = "traits::leading_dimension(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'num_columns':
-      result = "num_columns(" + properties[ 'trait_of' ].lower() + ")"
+      result = "size_column(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'num_rows':
-      result = "num_rows(" + properties[ 'trait_of' ].lower() + ")"
+      result = "size_row(" + properties[ 'trait_of' ].lower() + ")"
     if properties[ 'trait_type' ] == 'trans_num_columns':
       result = "size_major(" + properties[ 'trait_of' ][1].lower() + ")"
       #result = "(" + properties[ 'trait_of' ][0].lower() + "=='N' ? " + \
@@ -147,7 +183,7 @@ def call_level0_type( name, properties, arg_map ):
       result = "stride(" + properties[ 'trait_of' ].lower() + ")"
 
     if properties[ 'trait_type' ] == 'trans':
-      result = "trans_tag()"
+      result = "trans_tag( " + properties[ 'trait_of' ].lower() + ", order_type() )"
 
   else:
     result = name.lower()
@@ -331,7 +367,7 @@ def expand_nested_list( arg, arg_map, use_arg_map = True ):
 def level1_assert( name, properties, arg_map ):
   result = None
   
-  if properties.has_key( 'assert_char' ):
+  if properties.has_key( 'assert_char' ) and name not in [ 'TRANS', 'TRANSA', 'TRANSB' ]:
     result = "BOOST_ASSERT( "
     result_array = []
     for char in properties[ 'assert_char' ]:
@@ -1274,8 +1310,9 @@ def parse_file( filename, template_map ):
   for argument_name, argument_properties in argument_map.iteritems():
     argument_properties[ 'code' ] = {}
     argument_properties[ 'code' ][ 'lapack_h' ] = c_type( argument_name, argument_properties )
-    argument_properties[ 'code' ][ 'call_blas_header' ] = call_c_type( argument_name, argument_properties )
-    argument_properties[ 'code' ][ 'level_0' ] = cpp_type( argument_name, argument_properties )
+    argument_properties[ 'code' ][ 'call_blas_header' ] = call_blas_header( argument_name, argument_properties )
+    argument_properties[ 'code' ][ 'level_0' ] = level0_type( argument_name, argument_properties )
+    argument_properties[ 'code' ][ 'level_0_typename' ] = level0_typename( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'call_level_0' ] = call_level0_type( argument_name, argument_properties, argument_map )
     argument_properties[ 'code' ][ 'level_1' ] = level1_type( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'level_1_type' ] = level1_typename( argument_name, argument_properties )

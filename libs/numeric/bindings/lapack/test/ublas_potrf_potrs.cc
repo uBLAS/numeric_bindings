@@ -6,7 +6,9 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/lapack/posv.hpp>
+#include <boost/numeric/bindings/lapack/computational/potrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/potrs.hpp>
+#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
 #include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
@@ -79,9 +81,9 @@ int main() {
   }
   cout << endl; 
 
-  ierr = lapack::potrf ('U', au);  
+  ierr = lapack::potrf (sau);  
   if (!ierr) {
-    lapack::potrs ('U', au, bu); 
+    lapack::potrs (sau, bu); 
     print_m (bu, "xu"); 
   }
   cout << endl; 
@@ -127,9 +129,9 @@ int main() {
   print_m (cbl2, "cbl"); 
   cout << endl; 
   
-  ierr = lapack::potrf ('L', cal); 
+  ierr = lapack::potrf (hal); 
   if (ierr == 0) {
-    lapack::potrs ('L', cal, cbl2); 
+    lapack::potrs (hal, cbl2); 
     print_m (cbl2, "cxl"); 
   }
   else 

@@ -5,7 +5,10 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/lapack/gesv.hpp>
+#include <boost/numeric/bindings/lapack/computational/getrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/getri.hpp>
+#include <boost/numeric/bindings/lapack/computational/getrs.hpp>
+#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
@@ -80,7 +83,7 @@ int main (int argc, char **argv) {
 
   lapack::getrf (a, ipiv);      // factor a
   m_t ia (a);
-  lapack::getrs (a, ipiv, b);   // solve from factorization 
+  lapack::getrs ('N', a, ipiv, b);   // solve from factorization 
   print_m (b, "X"); 
   cout << endl; 
   lapack::getri (ia, ipiv);     // invert a

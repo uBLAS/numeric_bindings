@@ -1,11 +1,14 @@
+#include <boost/numeric/bindings/traits/std_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_banded.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector2.hpp>
-#include <boost/numeric/bindings/lapack/gbsv.hpp>
+#include <boost/numeric/bindings/lapack/computational/gbtrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/gbtrs.hpp>
 #include <vector>
 #include <stdexcept>
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
+namespace traits = boost::numeric::bindings::traits;
 
 static const char NORMAL = 'N';
 static const char TRANSPOSE = 'T';
@@ -15,8 +18,12 @@ static const char TRANSPOSE = 'T';
 template <typename MatrA, typename MatrB>
 void InPlaceSolve(MatrA& a, MatrB& b)
 {
+  // if the matrix has kl lower and ku upper diagonals, then we should have
+  // allocated kl lower and kl+ku upper diagonals
+  integer_t const kl = traits::matrix_lower_bandwidth (a);
+  integer_t const ku = traits::matrix_upper_bandwidth (a) - kl;
   std::vector<integer_t> piv(a.size1());
-  int ret = lapack::gbtrf(a, piv);
+  int ret = lapack::gbtrf(traits::matrix_size1(a), traits::matrix_size2(a), kl, ku, a, piv);
   if (ret < 0) {
     //CStdString err;
     //err.Format("banded::Solve: argument %d in DGBTRF had an illegal value", -ret);
@@ -30,7 +37,7 @@ void InPlaceSolve(MatrA& a, MatrB& b)
     throw std::runtime_error("banded::Solve: the (%d,%d) diagonal element is 0 after DGBTRF");
   }
 
-  ret = lapack::gbtrs(NORMAL, a, piv, b);
+  ret = lapack::gbtrs(NORMAL, traits::matrix_size1(a), kl, ku, a, piv, b);
   if (ret < 0) {
     //CStdString err;
     //err.Format("banded::Solve: argument %d in DGBTRS had an illegal value", -ret);

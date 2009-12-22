@@ -109,6 +109,8 @@ GENERATE_FUNCTIONS( size, which, tag::index<which> )
 
 BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_SIZE_INDEX,~)
 
+GENERATE_FUNCTIONS( size, _row, tag::index<1> )
+GENERATE_FUNCTIONS( size, _column, tag::index<2> )
 GENERATE_FUNCTIONS( size, _major, typename index_major<T>::type )
 GENERATE_FUNCTIONS( size, _minor, typename index_minor<T>::type )
 

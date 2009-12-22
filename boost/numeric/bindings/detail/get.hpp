@@ -40,7 +40,7 @@ struct get_dispatch< tag::stride_type<which> > { \
     } \
 };
 
-BOOST_PP_REPEAT_FROM_TO(1,4,GENERATE_GET,~)
+BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_GET,~)
 
 template< typename T, typename Key, typename Enable = void >
 struct get_impl {};

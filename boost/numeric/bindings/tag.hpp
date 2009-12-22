@@ -50,7 +50,6 @@ template<> \
 struct is_tag< tag::tag_name >: \
     mpl::bool_< true > {};
 
-
 ADD_TAG( value_type )
 ADD_TAG( value )
 ADD_TAG( value_transform )
@@ -88,10 +87,24 @@ ADD_TAG( lower )
 ADD_TAG( unit_upper )
 ADD_TAG( unit_lower )
 
-ADD_TAG_ALIAS( scalar, tensor<0> )
-ADD_TAG_ALIAS( vector, tensor<1> )
-ADD_TAG_ALIAS( matrix, tensor<2> )
-ADD_TAG_ALIAS( contiguous, mpl::int_<1> )
+// BLAS Options
+ADD_TAG( no_transpose )
+ADD_TAG( transpose )
+ADD_TAG( conjugate )
+
+ADD_TAG( unit )
+ADD_TAG( non_unit )
+ADD_TAG( left )
+ADD_TAG( right )
+
+namespace tag {
+
+typedef tensor<0> scalar;
+typedef tensor<1> vector;
+typedef tensor<2> matrix;
+typedef mpl::int_<1> contiguous;
+
+}
 
 } // namespace bindings
 } // namespace numeric

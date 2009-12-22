@@ -38,27 +38,15 @@ struct stride_impl {
 
 };
 
+//
+// Strides for ranks outside the scope of the object are fixed at 0
+// E.g., a vector has rank 1, its stride for index<2> will be 0.
+//
 template< typename T, typename Index >
 struct stride_impl< T, Index,
-        typename boost::enable_if< typename mpl::and_<
-            mpl::greater< Index, rank<T> >,
-            is_same_at< T, tag::stride_type<1>, std::ptrdiff_t >
-        >::type >::type > {
-
-    typedef std::ptrdiff_t result_type;
-
-    static result_type invoke( const T& t ) {
-        return 0;
-    }
-
-};
-
-template< typename T, typename Index >
-struct stride_impl< T, Index,
-        typename boost::enable_if< typename mpl::and_<
-            mpl::greater< Index, rank<T> >,
-            mpl::not_< is_same_at< T, tag::stride_type<1>, std::ptrdiff_t > >
-        >::type >::type > {
+        typename boost::enable_if<
+            mpl::greater< Index, rank<T> >
+        >::type > {
 
     typedef typename mpl::int_<0> result_type;
 
@@ -111,6 +99,8 @@ GENERATE_FUNCTIONS( stride, which, tag::index<which> )
 
 BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_STRIDE_INDEX,~)
 
+GENERATE_FUNCTIONS( stride, _row, tag::index<1> )
+GENERATE_FUNCTIONS( stride, _column, tag::index<2> )
 GENERATE_FUNCTIONS( stride, _major, typename index_major<T>::type )
 GENERATE_FUNCTIONS( stride, _minor, typename index_minor<T>::type )
 

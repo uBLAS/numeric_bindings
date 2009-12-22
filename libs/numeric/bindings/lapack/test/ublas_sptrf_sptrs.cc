@@ -6,7 +6,9 @@
 #include <cstddef>
 #include <iostream>
 #include <complex>
-#include <boost/numeric/bindings/lapack/spsv.hpp>
+#include <boost/numeric/bindings/lapack/computational/sptrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/sptri.hpp>
+#include <boost/numeric/bindings/lapack/computational/sptrs.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>

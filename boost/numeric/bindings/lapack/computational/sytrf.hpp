@@ -83,7 +83,7 @@ struct sytrf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
                 std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work());
         detail::sytrf( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(ipiv),
@@ -95,8 +95,7 @@ struct sytrf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
     template< typename MatrixA, typename VectorIPIV >
     static void invoke( MatrixA& a, VectorIPIV& ipiv, integer_t& info,
             minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        traits::detail::array< real_type > tmp_work( min_size_work() );
         invoke( a, ipiv, info, workspace( tmp_work ) );
     }
 
@@ -114,8 +113,8 @@ struct sytrf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueTy
         invoke( a, ipiv, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_work() {
+        return 1;
     }
 };
 
@@ -136,7 +135,7 @@ struct sytrf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
                 std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
         BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
+                min_size_work());
         detail::sytrf( traits::matrix_uplo_tag(a),
                 traits::matrix_num_columns(a), traits::matrix_storage(a),
                 traits::leading_dimension(a), traits::vector_storage(ipiv),
@@ -148,8 +147,7 @@ struct sytrf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
     template< typename MatrixA, typename VectorIPIV >
     static void invoke( MatrixA& a, VectorIPIV& ipiv, integer_t& info,
             minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(
-                $CALL_MIN_SIZE ) );
+        traits::detail::array< value_type > tmp_work( min_size_work() );
         invoke( a, ipiv, info, workspace( tmp_work ) );
     }
 
@@ -167,8 +165,8 @@ struct sytrf_impl< ValueType, typename boost::enable_if< traits::is_complex<Valu
         invoke( a, ipiv, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
-        $MIN_SIZE
+    static integer_t min_size_work() {
+        return 1;
     }
 };
 

@@ -33,11 +33,12 @@ struct apply_real {
     typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
     traits::detail::array<value_type> wr(traits::vector_size(w));
     traits::detail::array<value_type> wi(traits::vector_size(w));
-    return lapack::gees_2( jobvs, sort, select, a, sdim, wr, wi, vs, work );
+    integer_t info = lapack::gees_2( jobvs, sort, select, a, sdim, wr, wi, vs, work );
     traits::detail::interlace(traits::vector_storage(wr),
                               traits::vector_storage(wr)+traits::vector_size(w),
                               traits::vector_storage(wi),
                               traits::vector_storage(w));
+    return info;
   }
 };
 
@@ -168,12 +169,18 @@ int do_value_type() {
 
 int main() {
    // Run tests for different value_types
+   std::cout << "float\n" ;
    if (do_value_type<float>()) return 255;
+
+   std::cout << "double\n" ;
    if (do_value_type<double>()) return 255;
+
+   std::cout << "complex<float>\n" ;
    if (do_value_type< std::complex<float> >()) return 255;
+
+   std::cout << "complex<double>\n" ;
    if (do_value_type< std::complex<double> >()) return 255;
 
    std::cout << "Regression test succeeded\n" ;
    return 0;
 }
-

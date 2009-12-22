@@ -22,6 +22,9 @@
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 
+// high-level solve typedefs and functions
+#include <boost/numeric/bindings/traits/detail/array_impl.hpp>
+
 namespace boost {
 namespace numeric {
 namespace bindings {

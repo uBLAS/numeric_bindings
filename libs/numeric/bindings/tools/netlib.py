@@ -433,22 +433,22 @@ def call_level1_type( name, properties ):
 def typedef_type( name, properties, arg_map ):
     result = None
     if 'trait_type' in properties:
-      if properties[ 'trait_type' ] == 'trans':
-        matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
-            arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )
-        result = 'typedef typename result_of::trans_tag< ' + \
-                matrix_type + ', order >::type ' + name.lower() + ';'
-      if properties[ 'trait_type' ] == 'uplo':
-        matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
-            arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )
-        result = 'typedef typename result_of::data_side< ' + \
-                matrix_type + ' >::type ' + name.lower() + ';'
-      if properties[ 'trait_type' ] == 'diag':
-        matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
-            arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )
-        result = 'typedef typename result_of::diag_tag< ' + \
-                matrix_type + ' >::type ' + name.lower() + ';'
-
+      if properties[ 'trait_of' ][ 0 ] in arg_map:
+        if properties[ 'trait_type' ] == 'trans':
+            matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
+                arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )
+            result = 'typedef typename result_of::trans_tag< ' + \
+                    matrix_type + ', order >::type ' + name.lower() + ';'
+        if properties[ 'trait_type' ] == 'uplo':
+            matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
+                arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )
+            result = 'typedef typename result_of::data_side< ' + \
+                    matrix_type + ' >::type ' + name.lower() + ';'
+        if properties[ 'trait_type' ] == 'diag':
+            matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
+                arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )
+            result = 'typedef typename result_of::diag_tag< ' + \
+                    matrix_type + ' >::type ' + name.lower() + ';'
 
     return result
 
@@ -1260,13 +1260,16 @@ def parse_file( filename, template_map ):
       # Diag character detection
       if argument_name[0:4] == 'DIAG':
         argument_properties[ 'trait_type' ] = 'diag'
-        match_diag = re.compile( ' ([A-Z]+)(\s|is|)+unit\s+triangular', re.M ).findall( comment_block )
+        match_diag = re.compile( ' ([A-Z]+)(\s|is|has)+unit\s+(triangular|diagonal)', re.M ).findall( comment_block )
         if len( match_diag ) > 0:
             ref_arg = match_diag[ 0 ][ 0 ]
             if ref_arg in argument_map:
                 argument_properties[ 'trait_of' ] = [ ref_arg ]
             if ref_arg + 'P' in argument_map:
                 argument_properties[ 'trait_of' ] = [ ref_arg + 'P' ]
+            if ref_arg + 'B' in argument_map:
+                argument_properties[ 'trait_of' ] = [ ref_arg + 'B' ]
+
 
       # check for existance of trait_of definition in template file(s)
       traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'

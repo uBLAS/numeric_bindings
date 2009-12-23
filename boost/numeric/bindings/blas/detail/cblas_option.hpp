@@ -10,6 +10,7 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_CBLAS_OPTION_HPP
 
 #include <boost/mpl/int.hpp>
+#include <boost/numeric/bindings/blas/cblas.h>
 #include <boost/numeric/bindings/tag.hpp>
 
 namespace boost {

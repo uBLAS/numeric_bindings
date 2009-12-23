@@ -92,7 +92,7 @@ def write_functions( info_map, group, template_map, base_dir ):
             if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] != None:
                 typename_list +=  [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] ]
 
-        if info_map[ subroutine ][ "has_cblas_order_arg" ]:
+        if "has_cblas_order_arg" in info_map[ subroutine ]:
             arg_list.insert( 0, "Order" )
             cblas_arg_list.insert( 0, "cblas_option< Order >::value" )
             typename_list.insert( 0, "typename Order" )
@@ -196,23 +196,45 @@ def write_functions( info_map, group, template_map, base_dir ):
       if 'matrix' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ]:
         has_trans = False
         matrix_wo_trans = []
+        matrix_with_trans = []
         for matrix_arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ][ 'matrix' ]:
             if 'ref_trans' in info_map[ subroutine ][ 'argument_map' ][ matrix_arg ]:
                 has_trans = True
+                matrix_type = info_map[ subroutine ][ 'argument_map' ][ matrix_arg ][ 'code' ][ 'level_1_static_assert' ]
+                matrix_with_trans += [ matrix_type ]
             else:
                 matrix_wo_trans.append( info_map[ subroutine ][ 'argument_map' ][ matrix_arg ][ 'code' ][ 'level_1_static_assert' ] )
-
-        if has_trans:
-            includes += [ '#include <boost/numeric/bindings/trans_tag.hpp>' ]
 
         #
         # Matrices have trans options in this case. If there is one without,
         # that one will determine the order of the call
         #
-        if has_trans and len( matrix_wo_trans )>0:
-            typedef_list += [ 'typedef typename data_order< ' + matrix_wo_trans[0] + \
-                ' >::type order_type;' ]
+        if has_trans:
+          includes += [ '#include <boost/numeric/bindings/trans_tag.hpp>' ]
+          if len( matrix_wo_trans )>0:
+            typedef_list.insert( 0, 'typedef typename result_of::data_order< ' + matrix_wo_trans[0] + \
+                ' >::type order;' )
             includes += [ '#include <boost/numeric/bindings/data_order.hpp>' ]
+          else:
+            typedef_list.insert( 0, 'typedef typename detail::default_order< ' + matrix_with_trans[0] + \
+                ' >::type order;' )
+            includes += [ '#include <boost/numeric/bindings/blas/detail/default_order.hpp>' ]
+        else:
+            # so, there's no trans option
+            # but, what if there's an order? (e.g., syr) -- then use `
+            if "has_cblas_order_arg" in info_map[ subroutine ]:
+              typedef_list.insert( 0, 'typedef typename result_of::data_order< ' + matrix_wo_trans[0] + \
+                ' >::type order;' )
+              includes += [ '#include <boost/numeric/bindings/data_order.hpp>' ]
+
+
+      #
+      # Add an include in case of the uplo or diag options
+      #
+      if 'UPLO' in info_map[ subroutine ][ 'arguments' ]:
+        includes += [ '#include <boost/numeric/bindings/data_side.hpp>' ]
+      if 'DIAG' in info_map[ subroutine ][ 'arguments' ]:
+        includes += [ '#include <boost/numeric/bindings/diag_tag.hpp>' ]
 
       #
       # Create static assertions, first by value type
@@ -257,12 +279,14 @@ def write_functions( info_map, group, template_map, base_dir ):
           level1_type_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_type' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_assert' ] != None:
           level1_assert_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_assert' ] ]
+        if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'typedef' ] != None:
+          typedef_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'typedef' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] != None:
           level2_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] ]
 
       # Insert the order_type() if appropriate
       if info_map[ subroutine ][ "has_cblas_order_arg" ]:
-          level0_arg_list.insert( 0, "order_type()" )
+          level0_arg_list.insert( 0, "order()" )
 
       # Level 1 replacements
       level1_template = level1_template.replace( "$TYPEDEFS", "\n        ".join( typedef_list ) )

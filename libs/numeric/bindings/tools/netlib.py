@@ -96,27 +96,28 @@ level0_types = {
     'TRANSA': 'TransA',
     'TRANSB': 'TransB',
     'TRANSR': 'TransR',
-    'UPLO'  : 'UpLo'
+    'UPLO'  : 'UpLo',
+    'DIAG'  : 'Diag'
 }
 
 def level0_type( name, properties ):
     result = cpp_type( name, properties )
     if 'trait_type' in properties:
-        if properties[ 'trait_type' ] in [ 'trans', 'uplo' ]:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
             result = level0_types[ name ]
     return result
 
 def level0_typename( name, properties ):
     result = None
     if 'trait_type' in properties:
-        if properties[ 'trait_type' ] in [ 'trans', 'uplo' ]:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
             result = 'typename ' + level0_types[ name ]
     return result
 
 def call_blas_header( name, properties ):
     result = call_c_type( name, properties )
     if 'trait_type' in properties:
-        if properties[ 'trait_type' ] in [ 'trans', 'uplo' ]:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
             result = '&blas_option< ' + level0_types[ name ] + ' >::value'
     return result
 
@@ -164,22 +165,28 @@ def call_level0_type( name, properties, arg_map ):
     #
     # number of columns is only valid if there's no option to transposing
     # 
-    if properties[ 'trait_type' ] == 'num_columns' and \
-        'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
-      result = "size_column(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+    if properties[ 'trait_type' ] == 'num_columns':
+      if 'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
+        result = "size_column(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+      else:
+        result = "size_column_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
+            ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
 
     #
     # number of rows is only valid if there's no option to transposing
     # 
-    if properties[ 'trait_type' ] == 'num_rows' and \
-        'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
-      result = "size_row(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+    if properties[ 'trait_type' ] == 'num_rows':
+      if 'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
+        result = "size_row(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+      else:
+        result = "size_row_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
+            ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
 
     #
     #
     #
     if properties[ 'trait_type' ] == 'trans_num_columns':
-      result = "size_major(" + properties[ 'trait_of' ][1].lower() + ")"
+      result = "size_column(" + properties[ 'trait_of' ][1].lower() + ")"
       #result = "(" + properties[ 'trait_of' ][ 0 ][0].lower() + "=='N' ? " + \
                #"num_columns(" + properties[ 'trait_of' ][ 0 ][1].lower() + ") : " + \
                #"num_rows(" + properties[ 'trait_of' ][ 0 ][1].lower() + "))"
@@ -190,13 +197,14 @@ def call_level0_type( name, properties, arg_map ):
         my_name = 'work.select(' + workspace_type( properties[ 'trait_of' ][ 0 ].lower(), referring_to_properties ) + \
                   '())'
       result = "size(" + my_name + ")"
-    if properties[ 'trait_type' ] == 'uplo':
-      result = "traits::matrix_uplo_tag(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+      #result = "data_side(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
     if properties[ 'trait_type' ] == 'stride':
       result = "stride(" + properties[ 'trait_of' ][ 0 ][0].lower() + ")"
 
-    if properties[ 'trait_type' ] == 'trans':
-      result = "trans_tag( " + properties[ 'trait_of' ][ 0 ].lower() + ", order_type() )"
+    if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
+      result = name.lower() + "()"
+
+      #result = "trans_tag( " + properties[ 'trait_of' ][ 0 ].lower() + ", order_type() )"
 
   else:
     result = name.lower()
@@ -380,7 +388,8 @@ def expand_nested_list( arg, arg_map, use_arg_map = True ):
 def level1_assert( name, properties, arg_map ):
   result = None
   
-  if properties.has_key( 'assert_char' ) and name not in [ 'TRANS', 'TRANSA', 'TRANSB', 'TRANSR' ]:
+  if properties.has_key( 'assert_char' ) and \
+        name not in [ 'TRANS', 'TRANSA', 'TRANSB', 'TRANSR', 'UPLO', 'DIAG' ]:
     result = "BOOST_ASSERT( "
     result_array = []
     for char in properties[ 'assert_char' ]:
@@ -419,6 +428,29 @@ def call_level1_type( name, properties ):
   if level1_type( name, properties ) != None:
     result = name.lower()
   return result
+
+
+def typedef_type( name, properties, arg_map ):
+    result = None
+    if 'trait_type' in properties:
+      if properties[ 'trait_type' ] == 'trans':
+        matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
+            arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )
+        result = 'typedef typename result_of::trans_tag< ' + \
+                matrix_type + ', order >::type ' + name.lower() + ';'
+      if properties[ 'trait_type' ] == 'uplo':
+        matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
+            arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )
+        result = 'typedef typename result_of::data_side< ' + \
+                matrix_type + ' >::type ' + name.lower() + ';'
+      if properties[ 'trait_type' ] == 'diag':
+        matrix_type = level1_typename( properties[ 'trait_of' ][ 0 ],
+            arg_map[ properties[ 'trait_of' ][ 0 ] ] ).replace( "typename ", "" )
+        result = 'typedef typename result_of::diag_tag< ' + \
+                matrix_type + ' >::type ' + name.lower() + ';'
+
+
+    return result
 
 
 def workspace_type( name, properties ):
@@ -1225,6 +1257,17 @@ def parse_file( filename, template_map ):
         # this doesn't look that correct
         argument_properties[ 'trait_of' ] = [ 'A' ]
 
+      # Diag character detection
+      if argument_name[0:4] == 'DIAG':
+        argument_properties[ 'trait_type' ] = 'diag'
+        match_diag = re.compile( ' ([A-Z]+)(\s|is|)+unit\s+triangular', re.M ).findall( comment_block )
+        if len( match_diag ) > 0:
+            ref_arg = match_diag[ 0 ][ 0 ]
+            if ref_arg in argument_map:
+                argument_properties[ 'trait_of' ] = [ ref_arg ]
+            if ref_arg + 'P' in argument_map:
+                argument_properties[ 'trait_of' ] = [ ref_arg + 'P' ]
+
       # check for existance of trait_of definition in template file(s)
       traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
       if my_has_key( traits_key, template_map ):
@@ -1274,7 +1317,7 @@ def parse_file( filename, template_map ):
           print "Using user-defined assert_size_args: ", tmp_result
 
       #
-      # Try to detect packed strorage stuff. Typically these are vectors in Fortran, but 
+      # Try to detect packed storage stuff. Typically these are vectors in Fortran, but 
       # matrices in our bindings. E.g. as used in spsv. 
       #
       packed_keywords = re.compile( '(/s|packed|matrix)+', re.M ).findall( comment_block )
@@ -1284,6 +1327,12 @@ def parse_file( filename, template_map ):
         #
         argument_properties[ 'type' ] = 'matrix'
         argument_properties[ 'packed' ] = True
+
+        # Update the grouped arguments stuff
+        grouped_arguments[ 'by_type' ][ 'vector' ].remove( argument_name )
+        if 'matrix' not in grouped_arguments[ 'by_type' ]:
+            grouped_arguments[ 'by_type' ][ 'matrix' ] = []
+        grouped_arguments[ 'by_type' ][ 'matrix' ].append( argument_name )
 
     #
     # Matrix related detection code
@@ -1357,6 +1406,7 @@ def parse_file( filename, template_map ):
     argument_properties[ 'code' ][ 'min_workspace_args' ] = min_workspace_arg_type( argument_name, argument_properties, argument_map )
     argument_properties[ 'code' ][ 'min_workspace_call' ] = min_workspace_call_type( argument_name, argument_properties, argument_map )
     argument_properties[ 'code' ][ 'user_defined_init' ] = user_defined_type( argument_name, argument_properties, argument_map )
+    argument_properties[ 'code' ][ 'typedef' ] = typedef_type( argument_name, argument_properties, argument_map )
 
   print "Argument map: "  
   pp.pprint( argument_map )

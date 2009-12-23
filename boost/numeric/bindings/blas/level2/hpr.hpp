@@ -14,95 +14,191 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_HPR_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_HPR_HPP
 
-// Include header of configured BLAS interface
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-#include <boost/numeric/bindings/blas/detail/cblas.h>
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-#include <boost/numeric/bindings/blas/detail/cublas.h>
-#else
-#include <boost/numeric/bindings/blas/detail/blas.h>
-#endif
-
-#include <boost/mpl/bool.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/assert.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
+
+//
+// The BLAS-backend is selected by defining a pre-processor variable,
+//  which can be one of
+// * for CBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+// * for CUBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+// * netlib-compatible BLAS is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#include <boost/numeric/bindings/blas/detail/cblas_option.hpp>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#else
+#include <boost/numeric/bindings/blas/detail/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#endif
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
 
-// The detail namespace is used for overloads on value type,
-// and to dispatch to the right routine
-
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end BLAS-routine.
+//
 namespace detail {
 
-inline void hpr( const char uplo, const integer_t n, const float alpha,
-        const traits::complex_f* x, const integer_t incx,
-        traits::complex_f* ap ) {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_chpr( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ), n,
-            alpha, traits::void_ptr(x), incx, traits::void_ptr(ap) );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasChpr( uplo, n, alpha, traits::void_ptr(x), incx,
-            traits::void_ptr(ap) );
-#else
-    BLAS_CHPR( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
-            traits::complex_ptr(ap) );
-#endif
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo >
+inline void hpr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
+        const std::complex<float>* x, const std::ptrdiff_t incx,
+        std::complex<float>* ap ) {
+    cblas_chpr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
+            alpha, x, incx, ap );
 }
 
-inline void hpr( const char uplo, const integer_t n, const double alpha,
-        const traits::complex_d* x, const integer_t incx,
-        traits::complex_d* ap ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_zhpr( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ), n,
-            alpha, traits::void_ptr(x), incx, traits::void_ptr(ap) );
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo >
+inline void hpr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
+        const std::complex<double>* x, const std::ptrdiff_t incx,
+        std::complex<double>* ap ) {
+    cblas_zhpr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
+            alpha, x, incx, ap );
+}
+
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo >
+inline void hpr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
+        const std::complex<float>* x, const std::ptrdiff_t incx,
+        std::complex<float>* ap ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasChpr( blas_option< UpLo >::value, n, alpha, x, incx, ap );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo >
+inline void hpr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
+        const std::complex<double>* x, const std::ptrdiff_t incx,
+        std::complex<double>* ap ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
-#else
-    BLAS_ZHPR( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
-            traits::complex_ptr(ap) );
-#endif
 }
 
+#else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo >
+inline void hpr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
+        const std::complex<float>* x, const std::ptrdiff_t incx,
+        std::complex<float>* ap ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_CHPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo >
+inline void hpr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
+        const std::complex<double>* x, const std::ptrdiff_t incx,
+        std::complex<double>* ap ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_ZHPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
+}
+
+#endif
 
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to hpr.
+//
+template< typename Value >
 struct hpr_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
     typedef void return_type;
 
-    // static template member function
+    //
+    // Static member function that
+    // * Deduces the required arguments for dispatching to BLAS, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorX, typename MatrixAP >
     static return_type invoke( const real_type alpha, const VectorX& x,
             MatrixAP& ap ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorX >::value_type, typename traits::matrix_traits<
-                MatrixAP >::value_type >::value) );
-        detail::hpr( traits::matrix_uplo_tag(ap),
-                traits::matrix_num_columns(ap), alpha,
-                traits::vector_storage(x), traits::vector_stride(x),
-                traits::matrix_storage(ap) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
+                VectorX >::type >::type, typename remove_const<
+                typename value< MatrixAP >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value ) );
+        typedef typename result_of::data_order< MatrixAP >::type order;
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        detail::hpr( order(), uplo(), size_column(ap), alpha,
+                begin_value(x), stride(x), begin_value(ap) );
     }
 };
 
-// generic template function to call hpr
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. Calls
+// to these functions are passed to the hpr_impl classes. In the 
+// documentation, the const-overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for hpr. Its overload differs for
+// * MatrixAP&
+//
 template< typename VectorX, typename MatrixAP >
-inline typename hpr_impl< typename traits::vector_traits<
-        VectorX >::value_type >::return_type
-hpr( const typename traits::type_traits<
-        typename traits::vector_traits<
-        VectorX >::value_type >::real_type alpha, const VectorX& x,
-        MatrixAP& ap ) {
-    typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    hpr_impl< value_type >::invoke( alpha, x, ap );
+inline typename hpr_impl< typename value< VectorX >::type >::return_type
+hpr( const typename remove_imaginary< typename value<
+        VectorX >::type >::type alpha, const VectorX& x, MatrixAP& ap ) {
+    hpr_impl< typename value< VectorX >::type >::invoke( alpha, x, ap );
+}
+
+//
+// Overloaded function for hpr. Its overload differs for
+// * const MatrixAP&
+//
+template< typename VectorX, typename MatrixAP >
+inline typename hpr_impl< typename value< VectorX >::type >::return_type
+hpr( const typename remove_imaginary< typename value<
+        VectorX >::type >::type alpha, const VectorX& x, const MatrixAP& ap ) {
+    hpr_impl< typename value< VectorX >::type >::invoke( alpha, x, ap );
 }
 
 } // namespace blas

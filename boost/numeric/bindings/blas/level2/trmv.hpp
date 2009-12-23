@@ -14,123 +14,280 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_TRMV_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_TRMV_HPP
 
-// Include header of configured BLAS interface
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-#include <boost/numeric/bindings/blas/detail/cblas.h>
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-#include <boost/numeric/bindings/blas/detail/cublas.h>
-#else
-#include <boost/numeric/bindings/blas/detail/blas.h>
-#endif
-
-#include <boost/mpl/bool.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/assert.hpp>
+#include <boost/numeric/bindings/blas/detail/default_order.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/diag_tag.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
+
+//
+// The BLAS-backend is selected by defining a pre-processor variable,
+//  which can be one of
+// * for CBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+// * for CUBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+// * netlib-compatible BLAS is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#include <boost/numeric/bindings/blas/detail/cblas_option.hpp>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#else
+#include <boost/numeric/bindings/blas/detail/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#endif
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
 
-// The detail namespace is used for overloads on value type,
-// and to dispatch to the right routine
-
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end BLAS-routine.
+//
 namespace detail {
 
-inline void trmv( const char uplo, const char trans, const char diag,
-        const integer_t n, const float* a, const integer_t lda, float* x,
-        const integer_t incx ) {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_strmv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
-            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
-            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n, a, lda, x, incx );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasStrmv( uplo, trans, diag, n, a, lda, x, incx );
-#else
-    BLAS_STRMV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
-#endif
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * float value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const float* a, const std::ptrdiff_t lda, float* x,
+        const std::ptrdiff_t incx ) {
+    cblas_strmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
+            cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
+            lda, x, incx );
 }
 
-inline void trmv( const char uplo, const char trans, const char diag,
-        const integer_t n, const double* a, const integer_t lda, double* x,
-        const integer_t incx ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_dtrmv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
-            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
-            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n, a, lda, x, incx );
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * double value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const double* a, const std::ptrdiff_t lda, double* x,
+        const std::ptrdiff_t incx ) {
+    cblas_dtrmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
+            cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
+            lda, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const std::complex<float>* a, const std::ptrdiff_t lda,
+        std::complex<float>* x, const std::ptrdiff_t incx ) {
+    cblas_ctrmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
+            cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
+            lda, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const std::complex<double>* a, const std::ptrdiff_t lda,
+        std::complex<double>* x, const std::ptrdiff_t incx ) {
+    cblas_ztrmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
+            cblas_option< Trans >::value, cblas_option< Diag >::value, n, a,
+            lda, x, incx );
+}
+
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * float value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const float* a, const std::ptrdiff_t lda, float* x,
+        const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasStrmv( blas_option< UpLo >::value, blas_option< Trans >::value,
+            blas_option< Diag >::value, n, a, lda, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * double value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const double* a, const std::ptrdiff_t lda, double* x,
+        const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
-#else
-    BLAS_DTRMV( &uplo, &trans, &diag, &n, a, &lda, x, &incx );
-#endif
 }
 
-inline void trmv( const char uplo, const char trans, const char diag,
-        const integer_t n, const traits::complex_f* a, const integer_t lda,
-        traits::complex_f* x, const integer_t incx ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_ctrmv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
-            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
-            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n,
-            traits::void_ptr(a), lda, traits::void_ptr(x), incx );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const std::complex<float>* a, const std::ptrdiff_t lda,
+        std::complex<float>* x, const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
-#else
-    BLAS_CTRMV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
-            traits::complex_ptr(x), &incx );
-#endif
 }
 
-inline void trmv( const char uplo, const char trans, const char diag,
-        const integer_t n, const traits::complex_d* a, const integer_t lda,
-        traits::complex_d* x, const integer_t incx ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_ztrmv( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
-            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
-            ( uplo == 'N' ? CblasNonUnit : CblasUnit ), n,
-            traits::void_ptr(a), lda, traits::void_ptr(x), incx );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const std::complex<double>* a, const std::ptrdiff_t lda,
+        std::complex<double>* x, const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
-#else
-    BLAS_ZTRMV( &uplo, &trans, &diag, &n, traits::complex_ptr(a), &lda,
-            traits::complex_ptr(x), &incx );
-#endif
 }
 
+#else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * float value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const float* a, const std::ptrdiff_t lda, float* x,
+        const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_STRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
+            &blas_option< Diag >::value, &n, a, &lda, x, &incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * double value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const double* a, const std::ptrdiff_t lda, double* x,
+        const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_DTRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
+            &blas_option< Diag >::value, &n, a, &lda, x, &incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const std::complex<float>* a, const std::ptrdiff_t lda,
+        std::complex<float>* x, const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_CTRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
+            &blas_option< Diag >::value, &n, a, &lda, x, &incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo, typename Trans, typename Diag >
+inline void trmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+        const std::complex<double>* a, const std::ptrdiff_t lda,
+        std::complex<double>* x, const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_ZTRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
+            &blas_option< Diag >::value, &n, a, &lda, x, &incx );
+}
+
+#endif
 
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to trmv.
+//
+template< typename Value >
 struct trmv_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
     typedef void return_type;
 
-    // static template member function
+    //
+    // Static member function that
+    // * Deduces the required arguments for dispatching to BLAS, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorX >
-    static return_type invoke( const char trans, const char diag,
-            const MatrixA& a, VectorX& x ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorX >::value_type >::value) );
-        detail::trmv( traits::matrix_uplo_tag(a), trans, diag,
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(x),
-                traits::vector_stride(x) );
+    static return_type invoke( const MatrixA& a, VectorX& x ) {
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
+                MatrixA >::type >::type, typename remove_const<
+                typename value< VectorX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
+        typedef typename detail::default_order< MatrixA >::type order;
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
+        typedef typename result_of::diag_tag< MatrixA >::type diag;
+        detail::trmv( order(), uplo(), trans(), diag(),
+                size_column_op(a, trans()), begin_value(a), stride_major(a),
+                begin_value(x), stride(x) );
     }
 };
 
-// generic template function to call trmv
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. Calls
+// to these functions are passed to the trmv_impl classes. In the 
+// documentation, the const-overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for trmv. Its overload differs for
+// * VectorX&
+//
 template< typename MatrixA, typename VectorX >
-inline typename trmv_impl< typename traits::matrix_traits<
-        MatrixA >::value_type >::return_type
-trmv( const char trans, const char diag, const MatrixA& a, VectorX& x ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    trmv_impl< value_type >::invoke( trans, diag, a, x );
+inline typename trmv_impl< typename value< MatrixA >::type >::return_type
+trmv( const MatrixA& a, VectorX& x ) {
+    trmv_impl< typename value< MatrixA >::type >::invoke( a, x );
+}
+
+//
+// Overloaded function for trmv. Its overload differs for
+// * const VectorX&
+//
+template< typename MatrixA, typename VectorX >
+inline typename trmv_impl< typename value< MatrixA >::type >::return_type
+trmv( const MatrixA& a, const VectorX& x ) {
+    trmv_impl< typename value< MatrixA >::type >::invoke( a, x );
 }
 
 } // namespace blas

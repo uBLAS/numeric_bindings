@@ -14,140 +14,302 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_SYRK_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_SYRK_HPP
 
-// Include header of configured BLAS interface
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-#include <boost/numeric/bindings/blas/detail/cblas.h>
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-#include <boost/numeric/bindings/blas/detail/cublas.h>
-#else
-#include <boost/numeric/bindings/blas/detail/blas.h>
-#endif
-
-#include <boost/mpl/bool.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/assert.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
+
+//
+// The BLAS-backend is selected by defining a pre-processor variable,
+//  which can be one of
+// * for CBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+// * for CUBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+// * netlib-compatible BLAS is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#include <boost/numeric/bindings/blas/detail/cblas_option.hpp>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#else
+#include <boost/numeric/bindings/blas/detail/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#endif
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
 
-// The detail namespace is used for overloads on value type,
-// and to dispatch to the right routine
-
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end BLAS-routine.
+//
 namespace detail {
 
-inline void syrk( const char uplo, const char trans, const integer_t n,
-        const integer_t k, const float alpha, const float* a,
-        const integer_t lda, const float beta, float* c,
-        const integer_t ldc ) {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_ssyrk( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
-            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
-            n, k, alpha, a, lda, beta, c, ldc );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasSsyrk( uplo, trans, n, k, alpha, a, lda, beta, c, ldc );
-#else
-    BLAS_SSYRK( &uplo, &trans, &n, &k, &alpha, a, &lda, &beta, c, &ldc );
-#endif
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * float value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const float alpha, const float* a,
+        const std::ptrdiff_t lda, const float beta, float* c,
+        const std::ptrdiff_t ldc ) {
+    cblas_ssyrk( cblas_option< Order >::value, cblas_option< UpLo >::value,
+            cblas_option< Trans >::value, n, k, alpha, a, lda, beta, c, ldc );
 }
 
-inline void syrk( const char uplo, const char trans, const integer_t n,
-        const integer_t k, const double alpha, const double* a,
-        const integer_t lda, const double beta, double* c,
-        const integer_t ldc ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_dsyrk( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
-            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
-            n, k, alpha, a, lda, beta, c, ldc );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasDsyrk( uplo, trans, n, k, alpha, a, lda, beta, c, ldc );
-#else
-    BLAS_DSYRK( &uplo, &trans, &n, &k, &alpha, a, &lda, &beta, c, &ldc );
-#endif
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * double value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const double alpha, const double* a,
+        const std::ptrdiff_t lda, const double beta, double* c,
+        const std::ptrdiff_t ldc ) {
+    cblas_dsyrk( cblas_option< Order >::value, cblas_option< UpLo >::value,
+            cblas_option< Trans >::value, n, k, alpha, a, lda, beta, c, ldc );
 }
 
-inline void syrk( const char uplo, const char trans, const integer_t n,
-        const integer_t k, const traits::complex_f alpha,
-        const traits::complex_f* a, const integer_t lda,
-        const traits::complex_f beta, traits::complex_f* c,
-        const integer_t ldc ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_csyrk( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
-            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
-            n, k, traits::void_ptr(&alpha), traits::void_ptr(a), lda,
-            traits::void_ptr(&beta), traits::void_ptr(c), ldc );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasCsyrk( uplo, trans, n, k, traits::void_ptr(alpha),
-            traits::void_ptr(a), lda, traits::void_ptr(beta),
-            traits::void_ptr(c), ldc );
-#else
-    BLAS_CSYRK( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
-            traits::complex_ptr(a), &lda, traits::complex_ptr(&beta),
-            traits::complex_ptr(c), &ldc );
-#endif
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const std::complex<float> alpha,
+        const std::complex<float>* a, const std::ptrdiff_t lda,
+        const std::complex<float> beta, std::complex<float>* c,
+        const std::ptrdiff_t ldc ) {
+    cblas_csyrk( cblas_option< Order >::value, cblas_option< UpLo >::value,
+            cblas_option< Trans >::value, n, k, &alpha, a, lda, &beta, c,
+            ldc );
 }
 
-inline void syrk( const char uplo, const char trans, const integer_t n,
-        const integer_t k, const traits::complex_d alpha,
-        const traits::complex_d* a, const integer_t lda,
-        const traits::complex_d beta, traits::complex_d* c,
-        const integer_t ldc ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_zsyrk( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ),
-            ( trans == 'N' ? CblasNoTrans : ( trans == 'T' ? CblasTrans : CblasConjTrans ) ),
-            n, k, traits::void_ptr(&alpha), traits::void_ptr(a), lda,
-            traits::void_ptr(&beta), traits::void_ptr(c), ldc );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasZsyrk( uplo, trans, n, k, traits::void_ptr(alpha),
-            traits::void_ptr(a), lda, traits::void_ptr(beta),
-            traits::void_ptr(c), ldc );
-#else
-    BLAS_ZSYRK( &uplo, &trans, &n, &k, traits::complex_ptr(&alpha),
-            traits::complex_ptr(a), &lda, traits::complex_ptr(&beta),
-            traits::complex_ptr(c), &ldc );
-#endif
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const std::complex<double> alpha,
+        const std::complex<double>* a, const std::ptrdiff_t lda,
+        const std::complex<double> beta, std::complex<double>* c,
+        const std::ptrdiff_t ldc ) {
+    cblas_zsyrk( cblas_option< Order >::value, cblas_option< UpLo >::value,
+            cblas_option< Trans >::value, n, k, &alpha, a, lda, &beta, c,
+            ldc );
 }
 
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * float value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const float alpha, const float* a,
+        const std::ptrdiff_t lda, const float beta, float* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasSsyrk( blas_option< UpLo >::value, blas_option< Trans >::value, n,
+            k, alpha, a, lda, beta, c, ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * double value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const double alpha, const double* a,
+        const std::ptrdiff_t lda, const double beta, double* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasDsyrk( blas_option< UpLo >::value, blas_option< Trans >::value, n,
+            k, alpha, a, lda, beta, c, ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const std::complex<float> alpha,
+        const std::complex<float>* a, const std::ptrdiff_t lda,
+        const std::complex<float> beta, std::complex<float>* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasCsyrk( blas_option< UpLo >::value, blas_option< Trans >::value, n,
+            k, alpha, a, lda, beta, c, ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const std::complex<double> alpha,
+        const std::complex<double>* a, const std::ptrdiff_t lda,
+        const std::complex<double> beta, std::complex<double>* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasZsyrk( blas_option< UpLo >::value, blas_option< Trans >::value, n,
+            k, alpha, a, lda, beta, c, ldc );
+}
+
+#else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * float value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const float alpha, const float* a,
+        const std::ptrdiff_t lda, const float beta, float* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_SSYRK( &blas_option< UpLo >::value, &blas_option< Trans >::value, &n,
+            &k, &alpha, a, &lda, &beta, c, &ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * double value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const double alpha, const double* a,
+        const std::ptrdiff_t lda, const double beta, double* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_DSYRK( &blas_option< UpLo >::value, &blas_option< Trans >::value, &n,
+            &k, &alpha, a, &lda, &beta, c, &ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const std::complex<float> alpha,
+        const std::complex<float>* a, const std::ptrdiff_t lda,
+        const std::complex<float> beta, std::complex<float>* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_CSYRK( &blas_option< UpLo >::value, &blas_option< Trans >::value, &n,
+            &k, &alpha, a, &lda, &beta, c, &ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo, typename Trans >
+inline void syrk( Order, UpLo, Trans, const std::ptrdiff_t n,
+        const std::ptrdiff_t k, const std::complex<double> alpha,
+        const std::complex<double>* a, const std::ptrdiff_t lda,
+        const std::complex<double> beta, std::complex<double>* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_ZSYRK( &blas_option< UpLo >::value, &blas_option< Trans >::value, &n,
+            &k, &alpha, a, &lda, &beta, c, &ldc );
+}
+
+#endif
 
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to syrk.
+//
+template< typename Value >
 struct syrk_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
     typedef void return_type;
 
-    // static template member function
+    //
+    // Static member function that
+    // * Deduces the required arguments for dispatching to BLAS, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename MatrixC >
-    static return_type invoke( const char trans, const value_type alpha,
-            const MatrixA& a, const value_type beta, MatrixC& c ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixC >::value_type >::value) );
-        detail::syrk( traits::matrix_uplo_tag(c), trans,
-                traits::matrix_num_columns(c),
-                (trans=='N' ? traits::matrix_num_columns(a) : traits::matrix_num_rows(a)),
-                alpha, traits::matrix_storage(a),
-                traits::leading_dimension(a), beta, traits::matrix_storage(c),
-                traits::leading_dimension(c) );
+    static return_type invoke( const value_type alpha, const MatrixA& a,
+            const value_type beta, MatrixC& c ) {
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
+                MatrixA >::type >::type, typename remove_const<
+                typename value< MatrixC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value ) );
+        typedef typename result_of::data_order< MatrixC >::type order;
+        typedef typename result_of::data_side< MatrixC >::type uplo;
+        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
+        detail::syrk( order(), uplo(), trans(), size_column(c),
+                size_column(a), alpha, begin_value(a), stride_major(a), beta,
+                begin_value(c), stride_major(c) );
     }
 };
 
-// generic template function to call syrk
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. Calls
+// to these functions are passed to the syrk_impl classes. In the 
+// documentation, the const-overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for syrk. Its overload differs for
+// * MatrixC&
+//
 template< typename MatrixA, typename MatrixC >
-inline typename syrk_impl< typename traits::matrix_traits<
-        MatrixA >::value_type >::return_type
-syrk( const char trans, const typename traits::matrix_traits<
-        MatrixA >::value_type alpha, const MatrixA& a,
-        const typename traits::matrix_traits< MatrixA >::value_type beta,
-        MatrixC& c ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    syrk_impl< value_type >::invoke( trans, alpha, a, beta, c );
+inline typename syrk_impl< typename value< MatrixA >::type >::return_type
+syrk( const typename value< MatrixA >::type alpha, const MatrixA& a,
+        const typename value< MatrixA >::type beta, MatrixC& c ) {
+    syrk_impl< typename value< MatrixA >::type >::invoke( alpha, a,
+            beta, c );
+}
+
+//
+// Overloaded function for syrk. Its overload differs for
+// * const MatrixC&
+//
+template< typename MatrixA, typename MatrixC >
+inline typename syrk_impl< typename value< MatrixA >::type >::return_type
+syrk( const typename value< MatrixA >::type alpha, const MatrixA& a,
+        const typename value< MatrixA >::type beta, const MatrixC& c ) {
+    syrk_impl< typename value< MatrixA >::type >::invoke( alpha, a,
+            beta, c );
 }
 
 } // namespace blas

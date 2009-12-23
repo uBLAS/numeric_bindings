@@ -14,161 +14,321 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_GEMM_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL3_GEMM_HPP
 
-// Include header of configured BLAS interface
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-#include <boost/numeric/bindings/blas/detail/cblas.h>
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-#include <boost/numeric/bindings/blas/detail/cublas.h>
-#else
-#include <boost/numeric/bindings/blas/detail/blas.h>
-#endif
-
-#include <boost/mpl/bool.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/assert.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
+
+//
+// The BLAS-backend is selected by defining a pre-processor variable,
+//  which can be one of
+// * for CBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+// * for CUBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+// * netlib-compatible BLAS is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#include <boost/numeric/bindings/blas/detail/cblas_option.hpp>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#else
+#include <boost/numeric/bindings/blas/detail/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#endif
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
 
-// The detail namespace is used for overloads on value type,
-// and to dispatch to the right routine
-
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end BLAS-routine.
+//
 namespace detail {
 
-inline void gemm( const char transa, const char transb, const integer_t m,
-        const integer_t n, const integer_t k, const float alpha,
-        const float* a, const integer_t lda, const float* b,
-        const integer_t ldb, const float beta, float* c,
-        const integer_t ldc ) {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_sgemm( CblasColMajor,
-            ( transa == 'N' ? CblasNoTrans : ( transa == 'T' ? CblasTrans : CblasConjTrans ) ),
-            ( transb == 'N' ? CblasNoTrans : ( transb == 'T' ? CblasTrans : CblasConjTrans ) ),
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * float value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k, const float alpha,
+        const float* a, const std::ptrdiff_t lda, const float* b,
+        const std::ptrdiff_t ldb, const float beta, float* c,
+        const std::ptrdiff_t ldc ) {
+    cblas_sgemm( cblas_option< Order >::value, cblas_option< TransA >::value,
+            cblas_option< TransB >::value, m, n, k, alpha, a, lda, b, ldb,
+            beta, c, ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * double value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k, const double alpha,
+        const double* a, const std::ptrdiff_t lda, const double* b,
+        const std::ptrdiff_t ldb, const double beta, double* c,
+        const std::ptrdiff_t ldc ) {
+    cblas_dgemm( cblas_option< Order >::value, cblas_option< TransA >::value,
+            cblas_option< TransB >::value, m, n, k, alpha, a, lda, b, ldb,
+            beta, c, ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<float> value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const std::ptrdiff_t lda, const std::complex<float>* b,
+        const std::ptrdiff_t ldb, const std::complex<float> beta,
+        std::complex<float>* c, const std::ptrdiff_t ldc ) {
+    cblas_cgemm( cblas_option< Order >::value, cblas_option< TransA >::value,
+            cblas_option< TransB >::value, m, n, k, &alpha, a, lda, b, ldb,
+            &beta, c, ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<double> value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const std::ptrdiff_t lda, const std::complex<double>* b,
+        const std::ptrdiff_t ldb, const std::complex<double> beta,
+        std::complex<double>* c, const std::ptrdiff_t ldc ) {
+    cblas_zgemm( cblas_option< Order >::value, cblas_option< TransA >::value,
+            cblas_option< TransB >::value, m, n, k, &alpha, a, lda, b, ldb,
+            &beta, c, ldc );
+}
+
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * float value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k, const float alpha,
+        const float* a, const std::ptrdiff_t lda, const float* b,
+        const std::ptrdiff_t ldb, const float beta, float* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasSgemm( blas_option< TransA >::value, blas_option< TransB >::value,
             m, n, k, alpha, a, lda, b, ldb, beta, c, ldc );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasSgemm( transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-            ldc );
-#else
-    BLAS_SGEMM( &transa, &transb, &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta,
-            c, &ldc );
-#endif
 }
 
-inline void gemm( const char transa, const char transb, const integer_t m,
-        const integer_t n, const integer_t k, const double alpha,
-        const double* a, const integer_t lda, const double* b,
-        const integer_t ldb, const double beta, double* c,
-        const integer_t ldc ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_dgemm( CblasColMajor,
-            ( transa == 'N' ? CblasNoTrans : ( transa == 'T' ? CblasTrans : CblasConjTrans ) ),
-            ( transb == 'N' ? CblasNoTrans : ( transb == 'T' ? CblasTrans : CblasConjTrans ) ),
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * double value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k, const double alpha,
+        const double* a, const std::ptrdiff_t lda, const double* b,
+        const std::ptrdiff_t ldb, const double beta, double* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasDgemm( blas_option< TransA >::value, blas_option< TransB >::value,
             m, n, k, alpha, a, lda, b, ldb, beta, c, ldc );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasDgemm( transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, c,
-            ldc );
-#else
-    BLAS_DGEMM( &transa, &transb, &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta,
-            c, &ldc );
-#endif
 }
 
-inline void gemm( const char transa, const char transb, const integer_t m,
-        const integer_t n, const integer_t k, const traits::complex_f alpha,
-        const traits::complex_f* a, const integer_t lda,
-        const traits::complex_f* b, const integer_t ldb,
-        const traits::complex_f beta, traits::complex_f* c,
-        const integer_t ldc ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_cgemm( CblasColMajor,
-            ( transa == 'N' ? CblasNoTrans : ( transa == 'T' ? CblasTrans : CblasConjTrans ) ),
-            ( transb == 'N' ? CblasNoTrans : ( transb == 'T' ? CblasTrans : CblasConjTrans ) ),
-            m, n, k, traits::void_ptr(&alpha), traits::void_ptr(a), lda,
-            traits::void_ptr(b), ldb, traits::void_ptr(&beta),
-            traits::void_ptr(c), ldc );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasCgemm( transa, transb, m, n, k, traits::void_ptr(alpha),
-            traits::void_ptr(a), lda, traits::void_ptr(b), ldb,
-            traits::void_ptr(beta), traits::void_ptr(c), ldc );
-#else
-    BLAS_CGEMM( &transa, &transb, &m, &n, &k, traits::complex_ptr(&alpha),
-            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-            traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
-#endif
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<float> value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const std::ptrdiff_t lda, const std::complex<float>* b,
+        const std::ptrdiff_t ldb, const std::complex<float> beta,
+        std::complex<float>* c, const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasCgemm( blas_option< TransA >::value, blas_option< TransB >::value,
+            m, n, k, alpha, a, lda, b, ldb, beta, c, ldc );
 }
 
-inline void gemm( const char transa, const char transb, const integer_t m,
-        const integer_t n, const integer_t k, const traits::complex_d alpha,
-        const traits::complex_d* a, const integer_t lda,
-        const traits::complex_d* b, const integer_t ldb,
-        const traits::complex_d beta, traits::complex_d* c,
-        const integer_t ldc ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_zgemm( CblasColMajor,
-            ( transa == 'N' ? CblasNoTrans : ( transa == 'T' ? CblasTrans : CblasConjTrans ) ),
-            ( transb == 'N' ? CblasNoTrans : ( transb == 'T' ? CblasTrans : CblasConjTrans ) ),
-            m, n, k, traits::void_ptr(&alpha), traits::void_ptr(a), lda,
-            traits::void_ptr(b), ldb, traits::void_ptr(&beta),
-            traits::void_ptr(c), ldc );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasZgemm( transa, transb, m, n, k, traits::void_ptr(alpha),
-            traits::void_ptr(a), lda, traits::void_ptr(b), ldb,
-            traits::void_ptr(beta), traits::void_ptr(c), ldc );
-#else
-    BLAS_ZGEMM( &transa, &transb, &m, &n, &k, traits::complex_ptr(&alpha),
-            traits::complex_ptr(a), &lda, traits::complex_ptr(b), &ldb,
-            traits::complex_ptr(&beta), traits::complex_ptr(c), &ldc );
-#endif
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<double> value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const std::ptrdiff_t lda, const std::complex<double>* b,
+        const std::ptrdiff_t ldb, const std::complex<double> beta,
+        std::complex<double>* c, const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasZgemm( blas_option< TransA >::value, blas_option< TransB >::value,
+            m, n, k, alpha, a, lda, b, ldb, beta, c, ldc );
 }
 
+#else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * float value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k, const float alpha,
+        const float* a, const std::ptrdiff_t lda, const float* b,
+        const std::ptrdiff_t ldb, const float beta, float* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_SGEMM( &blas_option< TransA >::value, &blas_option< TransB >::value,
+            &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * double value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k, const double alpha,
+        const double* a, const std::ptrdiff_t lda, const double* b,
+        const std::ptrdiff_t ldb, const double beta, double* c,
+        const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_DGEMM( &blas_option< TransA >::value, &blas_option< TransB >::value,
+            &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<float> value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k,
+        const std::complex<float> alpha, const std::complex<float>* a,
+        const std::ptrdiff_t lda, const std::complex<float>* b,
+        const std::ptrdiff_t ldb, const std::complex<float> beta,
+        std::complex<float>* c, const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_CGEMM( &blas_option< TransA >::value, &blas_option< TransB >::value,
+            &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<double> value-type
+//
+template< typename Order, typename TransA, typename TransB >
+inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
+        const std::ptrdiff_t n, const std::ptrdiff_t k,
+        const std::complex<double> alpha, const std::complex<double>* a,
+        const std::ptrdiff_t lda, const std::complex<double>* b,
+        const std::ptrdiff_t ldb, const std::complex<double> beta,
+        std::complex<double>* c, const std::ptrdiff_t ldc ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_ZGEMM( &blas_option< TransA >::value, &blas_option< TransB >::value,
+            &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
+}
+
+#endif
 
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to gemm.
+//
+template< typename Value >
 struct gemm_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
     typedef void return_type;
 
-    // static template member function
+    //
+    // Static member function that
+    // * Deduces the required arguments for dispatching to BLAS, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename MatrixB, typename MatrixC >
-    static return_type invoke( const char transa, const char transb,
-            const value_type alpha, const MatrixA& a, const MatrixB& b,
-            const value_type beta, MatrixC& c ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixC >::value_type >::value) );
-        detail::gemm( transa, transb, traits::matrix_num_rows(c),
-                traits::matrix_num_columns(c),
-                (transa=='N' ? traits::matrix_num_columns(a) : traits::matrix_num_rows(a)),
-                alpha, traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::matrix_storage(b),
-                traits::leading_dimension(b), beta, traits::matrix_storage(c),
-                traits::leading_dimension(c) );
+    static return_type invoke( const value_type alpha, const MatrixA& a,
+            const MatrixB& b, const value_type beta, MatrixC& c ) {
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
+                MatrixA >::type >::type, typename remove_const<
+                typename value< MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
+                MatrixA >::type >::type, typename remove_const<
+                typename value< MatrixC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value ) );
+        typedef typename result_of::data_order< MatrixC >::type order;
+        typedef typename result_of::trans_tag< MatrixA, order >::type transa;
+        typedef typename result_of::trans_tag< MatrixB, order >::type transb;
+        detail::gemm( order(), transa(), transb(), size_row(c),
+                size_column(c), size_column(a), alpha, begin_value(a),
+                stride_major(a), begin_value(b), stride_major(b), beta,
+                begin_value(c), stride_major(c) );
     }
 };
 
-// generic template function to call gemm
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. Calls
+// to these functions are passed to the gemm_impl classes. In the 
+// documentation, the const-overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for gemm. Its overload differs for
+// * MatrixC&
+//
 template< typename MatrixA, typename MatrixB, typename MatrixC >
-inline typename gemm_impl< typename traits::matrix_traits<
-        MatrixA >::value_type >::return_type
-gemm( const char transa, const char transb,
-        const typename traits::matrix_traits< MatrixA >::value_type alpha,
-        const MatrixA& a, const MatrixB& b,
-        const typename traits::matrix_traits< MatrixA >::value_type beta,
+inline typename gemm_impl< typename value< MatrixA >::type >::return_type
+gemm( const typename value< MatrixA >::type alpha, const MatrixA& a,
+        const MatrixB& b, const typename value< MatrixA >::type beta,
         MatrixC& c ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    gemm_impl< value_type >::invoke( transa, transb, alpha, a, b, beta,
-            c );
+    gemm_impl< typename value< MatrixA >::type >::invoke( alpha, a, b,
+            beta, c );
+}
+
+//
+// Overloaded function for gemm. Its overload differs for
+// * const MatrixC&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixC >
+inline typename gemm_impl< typename value< MatrixA >::type >::return_type
+gemm( const typename value< MatrixA >::type alpha, const MatrixA& a,
+        const MatrixB& b, const typename value< MatrixA >::type beta,
+        const MatrixC& c ) {
+    gemm_impl< typename value< MatrixA >::type >::invoke( alpha, a, b,
+            beta, c );
 }
 
 } // namespace blas

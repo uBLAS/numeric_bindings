@@ -15,9 +15,9 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_DROT_HPP
 
 // Include header of configured BLAS interface
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_HAVE_CBLAS
 #include <boost/numeric/bindings/blas/detail/cblas.h>
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_HAVE_CUBLAS
 #include <boost/numeric/bindings/blas/detail/cublas.h>
 #else
 #include <boost/numeric/bindings/blas/detail/blas.h>
@@ -53,10 +53,25 @@ inline void drot( const integer_t n, const traits::complex_d* cx,
 }
 
 
+struct blas_backend {
+
+    static void drot( ... ) {
+    }
+
+};
+
+
+
+
+
+
+
+
+
 } // namespace detail
 
 // value-type based template
-template< typename ValueType >
+template< typename ValueType, typename Backend = use_default >
 struct drot_impl {
 
     typedef ValueType value_type;

@@ -14,102 +14,243 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SCAL_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SCAL_HPP
 
-// Include header of configured BLAS interface
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-#include <boost/numeric/bindings/blas/detail/cblas.h>
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-#include <boost/numeric/bindings/blas/detail/cublas.h>
-#else
-#include <boost/numeric/bindings/blas/detail/blas.h>
-#endif
-
-#include <boost/mpl/bool.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/assert.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
+
+//
+// The BLAS-backend is selected by defining a pre-processor variable,
+//  which can be one of
+// * for CBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+// * for CUBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+// * netlib-compatible BLAS is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#include <boost/numeric/bindings/blas/detail/cblas_option.hpp>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#else
+#include <boost/numeric/bindings/blas/detail/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#endif
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
 
-// The detail namespace is used for overloads on value type,
-// and to dispatch to the right routine
-
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end BLAS-routine.
+//
 namespace detail {
 
-inline void scal( const integer_t n, const float a, const float* x,
-        const integer_t incx ) {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_sscal( n, a, x, incx );
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * float value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const float a, float* x,
+        const std::ptrdiff_t incx ) {
+    cblas_sscal( cblas_option< Order >::value, n, a, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * double value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const double a, double* x,
+        const std::ptrdiff_t incx ) {
+    cblas_dscal( cblas_option< Order >::value, n, a, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<float> value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const std::complex<float> a,
+        std::complex<float>* x, const std::ptrdiff_t incx ) {
+    cblas_cscal( cblas_option< Order >::value, n, &a, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<double> value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const std::complex<double> a,
+        std::complex<double>* x, const std::ptrdiff_t incx ) {
+    cblas_zscal( cblas_option< Order >::value, n, &a, x, incx );
+}
+
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * float value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const float a, float* x,
+        const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSscal( n, a, x, incx );
-#else
-    BLAS_SSCAL( &n, &a, x, &incx );
-#endif
 }
 
-inline void scal( const integer_t n, const double a, const double* x,
-        const integer_t incx ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_dscal( n, a, x, incx );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * double value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const double a, double* x,
+        const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasDscal( n, a, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<float> value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const std::complex<float> a,
+        std::complex<float>* x, const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasCscal( n, a, x, incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<double> value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const std::complex<double> a,
+        std::complex<double>* x, const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasZscal( n, a, x, incx );
+}
+
 #else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * float value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const float a, float* x,
+        const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_SSCAL( &n, &a, x, &incx );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * double value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const double a, double* x,
+        const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DSCAL( &n, &a, x, &incx );
-#endif
 }
 
-inline void scal( const integer_t n, const traits::complex_f a,
-        const traits::complex_f* x, const integer_t incx ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_cscal( n, traits::void_ptr(&a), traits::void_ptr(x), incx );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasCscal( n, traits::void_ptr(a), traits::void_ptr(x), incx );
-#else
-    BLAS_CSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x), &incx );
-#endif
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<float> value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const std::complex<float> a,
+        std::complex<float>* x, const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_CSCAL( &n, &a, x, &incx );
 }
 
-inline void scal( const integer_t n, const traits::complex_d a,
-        const traits::complex_d* x, const integer_t incx ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_zscal( n, traits::void_ptr(&a), traits::void_ptr(x), incx );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasZscal( n, traits::void_ptr(a), traits::void_ptr(x), incx );
-#else
-    BLAS_ZSCAL( &n, traits::complex_ptr(&a), traits::complex_ptr(x), &incx );
-#endif
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<double> value-type
+//
+template< typename Order >
+inline void scal( Order, const std::ptrdiff_t n, const std::complex<double> a,
+        std::complex<double>* x, const std::ptrdiff_t incx ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_ZSCAL( &n, &a, x, &incx );
 }
 
+#endif
 
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to scal.
+//
+template< typename Value >
 struct scal_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
     typedef void return_type;
 
-    // static template member function
+    //
+    // Static member function that
+    // * Deduces the required arguments for dispatching to BLAS, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorX >
-    static return_type invoke( const value_type a, const VectorX& x ) {
-        detail::scal( traits::vector_size(x), a,
-                traits::vector_storage(x), traits::vector_stride(x) );
+    static return_type invoke( const value_type a, VectorX& x ) {
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
+        
+        detail::scal( size(x), a, begin_value(x), stride(x) );
     }
 };
 
-// generic template function to call scal
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. Calls
+// to these functions are passed to the scal_impl classes. In the 
+// documentation, the const-overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for scal. Its overload differs for
+// * VectorX&
+//
 template< typename VectorX >
-inline typename scal_impl< typename traits::vector_traits<
-        VectorX >::value_type >::return_type
-scal( const typename traits::vector_traits< VectorX >::value_type a,
-        const VectorX& x ) {
-    typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    scal_impl< value_type >::invoke( a, x );
+inline typename scal_impl< typename value< VectorX >::type >::return_type
+scal( const typename value< VectorX >::type a, VectorX& x ) {
+    scal_impl< typename value< VectorX >::type >::invoke( a, x );
+}
+
+//
+// Overloaded function for scal. Its overload differs for
+// * const VectorX&
+//
+template< typename VectorX >
+inline typename scal_impl< typename value< VectorX >::type >::return_type
+scal( const typename value< VectorX >::type a, const VectorX& x ) {
+    scal_impl< typename value< VectorX >::type >::invoke( a, x );
 }
 
 } // namespace blas

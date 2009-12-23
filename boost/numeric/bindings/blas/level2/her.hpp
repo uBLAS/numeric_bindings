@@ -14,95 +14,191 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_HER_HPP
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_HER_HPP
 
-// Include header of configured BLAS interface
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-#include <boost/numeric/bindings/blas/detail/cblas.h>
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-#include <boost/numeric/bindings/blas/detail/cublas.h>
-#else
-#include <boost/numeric/bindings/blas/detail/blas.h>
-#endif
-
-#include <boost/mpl/bool.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/assert.hpp>
+#include <boost/numeric/bindings/data_order.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
+
+//
+// The BLAS-backend is selected by defining a pre-processor variable,
+//  which can be one of
+// * for CBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+// * for CUBLAS, define BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+// * netlib-compatible BLAS is the default
+//
+#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
+#include <boost/numeric/bindings/blas/detail/cblas.h>
+#include <boost/numeric/bindings/blas/detail/cblas_option.hpp>
+#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+#include <boost/numeric/bindings/blas/detail/cublas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#else
+#include <boost/numeric/bindings/blas/detail/blas.h>
+#include <boost/numeric/bindings/blas/detail/blas_option.hpp>
+#endif
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace blas {
 
-// The detail namespace is used for overloads on value type,
-// and to dispatch to the right routine
-
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end BLAS-routine.
+//
 namespace detail {
 
-inline void her( const char uplo, const integer_t n, const float alpha,
-        const traits::complex_f* x, const integer_t incx,
-        traits::complex_f* a, const integer_t lda ) {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_cher( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ), n,
-            alpha, traits::void_ptr(x), incx, traits::void_ptr(a), lda );
-#elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
-    cublasCher( uplo, n, alpha, traits::void_ptr(x), incx,
-            traits::void_ptr(a), lda );
-#else
-    BLAS_CHER( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
-            traits::complex_ptr(a), &lda );
-#endif
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo >
+inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
+        const std::complex<float>* x, const std::ptrdiff_t incx,
+        std::complex<float>* a, const std::ptrdiff_t lda ) {
+    cblas_cher( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
+            alpha, x, incx, a, lda );
 }
 
-inline void her( const char uplo, const integer_t n, const double alpha,
-        const traits::complex_d* x, const integer_t incx,
-        traits::complex_d* a, const integer_t lda ) {
-#if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
-    cblas_zher( CblasColMajor, ( uplo == 'U' ? CblasUpper : CblasLower ), n,
-            alpha, traits::void_ptr(x), incx, traits::void_ptr(a), lda );
+//
+// Overloaded function for dispatching to
+// * CBLAS backend
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo >
+inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
+        const std::complex<double>* x, const std::ptrdiff_t incx,
+        std::complex<double>* a, const std::ptrdiff_t lda ) {
+    cblas_zher( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
+            alpha, x, incx, a, lda );
+}
+
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo >
+inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
+        const std::complex<float>* x, const std::ptrdiff_t incx,
+        std::complex<float>* a, const std::ptrdiff_t lda ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    cublasCher( blas_option< UpLo >::value, n, alpha, x, incx, a, lda );
+}
+
+//
+// Overloaded function for dispatching to
+// * CUBLAS backend
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo >
+inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
+        const std::complex<double>* x, const std::ptrdiff_t incx,
+        std::complex<double>* a, const std::ptrdiff_t lda ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
-#else
-    BLAS_ZHER( &uplo, &n, &alpha, traits::complex_ptr(x), &incx,
-            traits::complex_ptr(a), &lda );
-#endif
 }
 
+#else
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<float> value-type
+//
+template< typename Order, typename UpLo >
+inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
+        const std::complex<float>* x, const std::ptrdiff_t incx,
+        std::complex<float>* a, const std::ptrdiff_t lda ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_CHER( &blas_option< UpLo >::value, &n, &alpha, x, &incx, a, &lda );
+}
+
+//
+// Overloaded function for dispatching to
+// * netlib-compatible BLAS backend (the default)
+// * complex<double> value-type
+//
+template< typename Order, typename UpLo >
+inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
+        const std::complex<double>* x, const std::ptrdiff_t incx,
+        std::complex<double>* a, const std::ptrdiff_t lda ) {
+    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BLAS_ZHER( &blas_option< UpLo >::value, &n, &alpha, x, &incx, a, &lda );
+}
+
+#endif
 
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to her.
+//
+template< typename Value >
 struct her_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
     typedef void return_type;
 
-    // static template member function
+    //
+    // Static member function that
+    // * Deduces the required arguments for dispatching to BLAS, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorX, typename MatrixA >
     static return_type invoke( const real_type alpha, const VectorX& x,
             MatrixA& a ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorX >::value_type, typename traits::matrix_traits<
-                MatrixA >::value_type >::value) );
-        detail::her( traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), alpha,
-                traits::vector_storage(x), traits::vector_stride(x),
-                traits::matrix_storage(a), traits::leading_dimension(a) );
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
+                VectorX >::type >::type, typename remove_const<
+                typename value< MatrixA >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value ) );
+        typedef typename result_of::data_order< MatrixA >::type order;
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        detail::her( order(), uplo(), size_column(a), alpha,
+                begin_value(x), stride(x), begin_value(a), stride_major(a) );
     }
 };
 
-// generic template function to call her
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. Calls
+// to these functions are passed to the her_impl classes. In the 
+// documentation, the const-overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for her. Its overload differs for
+// * MatrixA&
+//
 template< typename VectorX, typename MatrixA >
-inline typename her_impl< typename traits::vector_traits<
-        VectorX >::value_type >::return_type
-her( const typename traits::type_traits<
-        typename traits::vector_traits<
-        VectorX >::value_type >::real_type alpha, const VectorX& x,
-        MatrixA& a ) {
-    typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    her_impl< value_type >::invoke( alpha, x, a );
+inline typename her_impl< typename value< VectorX >::type >::return_type
+her( const typename remove_imaginary< typename value<
+        VectorX >::type >::type alpha, const VectorX& x, MatrixA& a ) {
+    her_impl< typename value< VectorX >::type >::invoke( alpha, x, a );
+}
+
+//
+// Overloaded function for her. Its overload differs for
+// * const MatrixA&
+//
+template< typename VectorX, typename MatrixA >
+inline typename her_impl< typename value< VectorX >::type >::return_type
+her( const typename remove_imaginary< typename value<
+        VectorX >::type >::type alpha, const VectorX& x, const MatrixA& a ) {
+    her_impl< typename value< VectorX >::type >::invoke( alpha, x, a );
 }
 
 } // namespace blas

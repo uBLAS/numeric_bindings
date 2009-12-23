@@ -6,8 +6,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_UNBOUNDED_ARRAY_HPP
-#define BOOST_NUMERIC_BINDINGS_UNBOUNDED_ARRAY_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_UBLAS_UNBOUNDED_ARRAY_HPP
+#define BOOST_NUMERIC_BINDINGS_UBLAS_UNBOUNDED_ARRAY_HPP
 
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/ublas/storage.hpp>

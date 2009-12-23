@@ -95,10 +95,9 @@ level0_types = {
     'TRANS': 'Trans',
     'TRANSA': 'TransA',
     'TRANSB': 'TransB',
+    'TRANSR': 'TransR',
     'UPLO'  : 'UpLo'
 }
-
-
 
 def level0_type( name, properties ):
     result = cpp_type( name, properties )
@@ -159,31 +158,45 @@ def call_level0_type( name, properties, arg_map ):
       # of the library is. In case of LAPACK, stride_column.
       # Unless this matrix may be transposed, then it is stride_major
       # 
-      result = "stride_major(" + properties[ 'trait_of' ].lower() + ")"
-      #result = "traits::leading_dimension(" + properties[ 'trait_of' ].lower() + ")"
-    if properties[ 'trait_type' ] == 'num_columns':
-      result = "size_column(" + properties[ 'trait_of' ].lower() + ")"
-    if properties[ 'trait_type' ] == 'num_rows':
-      result = "size_row(" + properties[ 'trait_of' ].lower() + ")"
+      result = "stride_major(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+      #result = "traits::leading_dimension(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+
+    #
+    # number of columns is only valid if there's no option to transposing
+    # 
+    if properties[ 'trait_type' ] == 'num_columns' and \
+        'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
+      result = "size_column(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+
+    #
+    # number of rows is only valid if there's no option to transposing
+    # 
+    if properties[ 'trait_type' ] == 'num_rows' and \
+        'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
+      result = "size_row(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
+
+    #
+    #
+    #
     if properties[ 'trait_type' ] == 'trans_num_columns':
       result = "size_major(" + properties[ 'trait_of' ][1].lower() + ")"
-      #result = "(" + properties[ 'trait_of' ][0].lower() + "=='N' ? " + \
-               #"num_columns(" + properties[ 'trait_of' ][1].lower() + ") : " + \
-               #"num_rows(" + properties[ 'trait_of' ][1].lower() + "))"
+      #result = "(" + properties[ 'trait_of' ][ 0 ][0].lower() + "=='N' ? " + \
+               #"num_columns(" + properties[ 'trait_of' ][ 0 ][1].lower() + ") : " + \
+               #"num_rows(" + properties[ 'trait_of' ][ 0 ][1].lower() + "))"
     if properties[ 'trait_type' ] == 'size':
-      my_name = properties[ 'trait_of' ].lower()
-      referring_to_properties = arg_map[ properties[ 'trait_of' ] ]
+      my_name = properties[ 'trait_of' ][ 0 ].lower()
+      referring_to_properties = arg_map[ properties[ 'trait_of' ][ 0 ] ]
       if 'workspace' in referring_to_properties[ 'io' ]:
-        my_name = 'work.select(' + workspace_type( properties[ 'trait_of' ].lower(), referring_to_properties ) + \
+        my_name = 'work.select(' + workspace_type( properties[ 'trait_of' ][ 0 ].lower(), referring_to_properties ) + \
                   '())'
       result = "size(" + my_name + ")"
     if properties[ 'trait_type' ] == 'uplo':
-      result = "traits::matrix_uplo_tag(" + properties[ 'trait_of' ].lower() + ")"
+      result = "traits::matrix_uplo_tag(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
     if properties[ 'trait_type' ] == 'stride':
-      result = "stride(" + properties[ 'trait_of' ].lower() + ")"
+      result = "stride(" + properties[ 'trait_of' ][ 0 ][0].lower() + ")"
 
     if properties[ 'trait_type' ] == 'trans':
-      result = "trans_tag( " + properties[ 'trait_of' ].lower() + ", order_type() )"
+      result = "trans_tag( " + properties[ 'trait_of' ][ 0 ].lower() + ", order_type() )"
 
   else:
     result = name.lower()
@@ -367,7 +380,7 @@ def expand_nested_list( arg, arg_map, use_arg_map = True ):
 def level1_assert( name, properties, arg_map ):
   result = None
   
-  if properties.has_key( 'assert_char' ) and name not in [ 'TRANS', 'TRANSA', 'TRANSB' ]:
+  if properties.has_key( 'assert_char' ) and name not in [ 'TRANS', 'TRANSA', 'TRANSB', 'TRANSR' ]:
     result = "BOOST_ASSERT( "
     result_array = []
     for char in properties[ 'assert_char' ]:
@@ -1005,7 +1018,8 @@ def parse_file( filename, template_map ):
     return subroutine_name, None
 
   #
-  # Make a back-reference to those arguments that are defined as leading dimension in the code
+  # Make a back-reference to those arguments that are defined 
+  # as leading dimension in the code.
   #
   for argument_name, argument_properties in argument_map.iteritems():
     if argument_properties.has_key( 'leading_dimension' ):
@@ -1053,7 +1067,7 @@ def parse_file( filename, template_map ):
         data = template_map[ my_has_key( traits_key, template_map ) ].split(",")
         argument_properties[ 'trait_type' ] = data[0].strip()
         if len(data)==2:
-          argument_properties[ 'trait_of' ] = data[1].strip()
+          argument_properties[ 'trait_of' ] = [ data[1].strip() ]
         else:
           argument_properties[ 'trait_of' ] = [ data[1].strip(), data[2].strip() ]
 
@@ -1074,7 +1088,7 @@ def parse_file( filename, template_map ):
             traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
             if my_has_key( traits_key, template_map ):
                 argument_properties[ 'trait_type' ] = 'num_columns'
-                argument_properties[ 'trait_of' ] = template_map[ my_has_key( traits_key, template_map ) ].strip()
+                argument_properties[ 'trait_of' ] = [ template_map[ my_has_key( traits_key, template_map ) ].strip() ]
             # PANIC: return none
             # e.g., in tridiagonal case, there is no matrix, but a number of 
             # vectors (the diagonals)
@@ -1088,7 +1102,7 @@ def parse_file( filename, template_map ):
             elif match_matrix_traits[0][3] in grouped_arguments[ 'by_type' ][ 'matrix' ]:
               # because it is both #rows and #columns, we have to choose one
               argument_properties[ 'trait_type' ] = 'num_columns'
-              argument_properties[ 'trait_of' ] = match_matrix_traits[0][3].strip()
+              argument_properties[ 'trait_of' ] = [ match_matrix_traits[0][3].strip() ]
 
           # if we're not dealing with order
           else:
@@ -1096,7 +1110,7 @@ def parse_file( filename, template_map ):
             for matrix_name in references:
               if matrix_name.strip() in grouped_arguments[ 'by_type' ][ 'matrix' ]:
                 argument_properties[ 'trait_type' ] = 'num_' + match_matrix_traits[0][0]
-                argument_properties[ 'trait_of' ] = matrix_name.strip()
+                argument_properties[ 'trait_of' ] = [ matrix_name.strip() ]
 
         #
         # Matrix traits detection, continued
@@ -1123,13 +1137,13 @@ def parse_file( filename, template_map ):
       match_array_traits = re.compile( '(The length|The dimension)(of|the|\s)+(array|\s)+([A-Z]+)', re.M | re.S ).findall( comment_block )
       if len( match_array_traits ) > 0 and match_array_traits[ 0 ][ 3 ] in grouped_arguments[ 'by_type' ][ 'vector' ]:
         argument_properties[ 'trait_type' ] = 'size'
-        argument_properties[ 'trait_of' ] = match_array_traits[ 0 ][ 3 ]
+        argument_properties[ 'trait_of' ] = [ match_array_traits[ 0 ][ 3 ] ]
 
       match_stride_traits = re.compile( '([Tt]he increment)(\s|for|the|elements|of)+([A-Z]+)', re.M | re.S ).findall( comment_block )
       print match_stride_traits
       if len( match_stride_traits ) > 0 and match_stride_traits[ 0 ][ 2 ] in grouped_arguments[ 'by_type' ][ 'vector' ]:
         argument_properties[ 'trait_type' ] = 'stride'
-        argument_properties[ 'trait_of' ] = match_stride_traits[ 0 ][ 2 ]
+        argument_properties[ 'trait_of' ] = [ match_stride_traits[ 0 ][ 2 ] ]
 
       # Fetch greater-than-or-equal-to integer asserts, such as 
       # M >= 0.
@@ -1203,18 +1217,19 @@ def parse_file( filename, template_map ):
           if uplo_trait_of != None:
             print "adding uplo trait"
             argument_properties[ 'trait_type' ] = 'uplo'
-            argument_properties[ 'trait_of' ] = uplo_trait_of
+            argument_properties[ 'trait_of' ] = [ uplo_trait_of ]
 
       # Transpose character detection
       if argument_name[0:5] == 'TRANS':
         argument_properties[ 'trait_type' ] = 'trans'
-        argument_properties[ 'trait_of' ] = 'A'
+        # this doesn't look that correct
+        argument_properties[ 'trait_of' ] = [ 'A' ]
 
       # check for existance of trait_of definition in template file(s)
       traits_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + argument_name + '.trait_of'
       if my_has_key( traits_key, template_map ):
-        argument_properties[ 'trait_of' ] = template_map[ my_has_key( traits_key, template_map ) ].strip()
-
+        trait_of = template_map[ my_has_key( traits_key, template_map ) ].strip()
+        argument_properties[ 'trait_of' ] = [ trait_of ]
 
     #
     # Minimal workspace dimension recognition
@@ -1292,16 +1307,24 @@ def parse_file( filename, template_map ):
 
 
   #
-  # Make a back-reference for workspace queries
+  # Make a back-reference for 
+  # * workspace queries
+  # * trait_of stuff
   #
   for argument_name, argument_properties in argument_map.iteritems():
-    if argument_properties.has_key( 'workspace_query_for' ):
+    if 'workspace_query_for' in argument_properties:
       for referring_argument_name in argument_properties[ 'workspace_query_for' ]:
         if argument_map.has_key( referring_argument_name ):
           if not argument_map[ referring_argument_name ].has_key( 'workspace_query_by' ):
             argument_map[ referring_argument_name ][ 'workspace_query_by' ] = []
           argument_map[ referring_argument_name ][ 'workspace_query_by' ] += [ argument_name ]
 
+    if 'trait_of' in argument_properties:
+      rererring_argument_type = argument_properties[ 'trait_type' ]
+      for referring_argument_name in argument_properties[ 'trait_of' ]:
+        if referring_argument_name in argument_map:
+          argument_map[ referring_argument_name ][ 'ref_' + rererring_argument_type ] = \
+              argument_name
 
   #
   # Generate the actual C++ code statements, based on information acquired so far.

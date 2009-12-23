@@ -187,6 +187,32 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_assert_list = []
       level1_static_assert_list = []
       keyword_type_list = []
+      typedef_list = []
+
+      #
+      # Are we dealing with a transpose option here?
+      # If so, we need to inject an order_type typedef.
+      #
+      if 'matrix' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ]:
+        has_trans = False
+        matrix_wo_trans = []
+        for matrix_arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ][ 'matrix' ]:
+            if 'ref_trans' in info_map[ subroutine ][ 'argument_map' ][ matrix_arg ]:
+                has_trans = True
+            else:
+                matrix_wo_trans.append( info_map[ subroutine ][ 'argument_map' ][ matrix_arg ][ 'code' ][ 'level_1_static_assert' ] )
+
+        if has_trans:
+            includes += [ '#include <boost/numeric/bindings/trans_tag.hpp>' ]
+
+        #
+        # Matrices have trans options in this case. If there is one without,
+        # that one will determine the order of the call
+        #
+        if has_trans and len( matrix_wo_trans )>0:
+            typedef_list += [ 'typedef typename data_order< ' + matrix_wo_trans[0] + \
+                ' >::type order_type;' ]
+            includes += [ '#include <boost/numeric/bindings/data_order.hpp>' ]
 
       #
       # Create static assertions, first by value type
@@ -239,6 +265,7 @@ def write_functions( info_map, group, template_map, base_dir ):
           level0_arg_list.insert( 0, "order_type()" )
 
       # Level 1 replacements
+      level1_template = level1_template.replace( "$TYPEDEFS", "\n        ".join( typedef_list ) )
       level1_template = level1_template.replace( "$CALL_LEVEL0", ", ".join( level0_arg_list ) )
       level1_template = level1_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
       level1_template = level1_template.replace( "$LEVEL1", ", ".join( level1_arg_list ) )

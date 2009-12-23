@@ -53,8 +53,10 @@ $LEVEL1
 
 //
 // Functions for direct use. These functions are overloaded for temporaries,
-// so that wrapped types can still be passed and used for write-access. 
-// In the documentation, the const-overloads are collapsed.
+// so that wrapped types can still be passed and used for write-access. Calls
+// to these functions are passed to the $groupname_impl classes. In the 
+// documentation, the const-overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
 //
 
 $LEVEL2
@@ -135,7 +137,7 @@ $INCLUDE_TEMPLATES
 };
 $TEMPLATE[blas_level2]
 //
-// Overloaded function for $groupname
+// Overloaded function for $groupname. Its overload differs for
 $COMMENTS
 //
 template< $TYPES >

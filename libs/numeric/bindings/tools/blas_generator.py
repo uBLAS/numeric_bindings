@@ -191,7 +191,8 @@ def write_functions( info_map, group, template_map, base_dir ):
 
       #
       # Are we dealing with a transpose option here?
-      # If so, we need to inject an order_type typedef.
+      # Because CBLAS allows to pass the order of the matrices, here we
+      # inject code that determines the default data order.
       #
       if 'matrix' in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_type' ]:
         has_trans = False
@@ -226,7 +227,6 @@ def write_functions( info_map, group, template_map, base_dir ):
               typedef_list.insert( 0, 'typedef typename result_of::data_order< ' + matrix_wo_trans[0] + \
                 ' >::type order;' )
               includes += [ '#include <boost/numeric/bindings/data_order.hpp>' ]
-
 
       #
       # Add an include in case of the uplo or diag options

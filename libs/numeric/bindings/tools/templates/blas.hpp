@@ -77,8 +77,8 @@ $BLAS_OVERLOADS
 $TEMPLATE[blas_overloads]
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * $SPECIALIZATION value-type
+// * netlib-compatible BLAS backend (the default), and
+// * $SPECIALIZATION value-type.
 //
 template< $TYPES >
 inline $RETURN_TYPE $groupname( $LEVEL0 ) {
@@ -89,8 +89,8 @@ inline $RETURN_TYPE $groupname( $LEVEL0 ) {
 $TEMPLATE[cblas_overloads]
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * $SPECIALIZATION value-type
+// * CBLAS backend, and
+// * $SPECIALIZATION value-type.
 //
 template< $TYPES >
 inline $RETURN_TYPE $groupname( $LEVEL0 ) {
@@ -100,8 +100,8 @@ inline $RETURN_TYPE $groupname( $LEVEL0 ) {
 $TEMPLATE[cublas_overloads]
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * $SPECIALIZATION value-type
+// * CUBLAS backend, and
+// * $SPECIALIZATION value-type.
 //
 template< $TYPES >
 inline $RETURN_TYPE $groupname( $LEVEL0 ) {
@@ -129,9 +129,9 @@ $INCLUDE_TEMPLATES
     //
     template< $TYPES >
     static return_type invoke( $LEVEL1 ) {
+        $TYPEDEFS
         $STATIC_ASSERTS
         $ASSERTS
-        $TYPEDEFS
         $RETURN_STATEMENTdetail::$groupname( $CALL_LEVEL0 );
     }
 };

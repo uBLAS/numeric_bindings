@@ -121,6 +121,13 @@ def call_blas_header( name, properties ):
             result = '&blas_option< ' + level0_types[ name ] + ' >::value'
     return result
 
+def call_lapack_header( name, properties ):
+    result = call_c_type( name, properties )
+    if 'trait_type' in properties:
+        if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
+            result = '&lapack_option< ' + level0_types[ name ] + ' >::value'
+    return result
+
 def call_c_type( name, properties ):
   result = ''
   if properties[ 'type' ] == 'vector' or properties[ 'type' ] == 'matrix':
@@ -478,7 +485,7 @@ def opt_workspace_pre_type( name, properties, arg_map ):
       min_workspace_call = min_workspace_call_type( name, properties, arg_map )
       if min_workspace_call == None:
         min_workspace_call = '$CALL_MIN_SIZE'
-      result = 'traits::detail::array< ' + workspace_type( name, properties ) + ' >' + \
+      result = 'bindings::detail::array< ' + workspace_type( name, properties ) + ' >' + \
                ' tmp_' + name.lower() + '( min_size_' + name.lower() + '( ' + min_workspace_call + ' ) );'
   return result
 
@@ -488,10 +495,10 @@ def opt_workspace_post_type( name, properties ):
   if 'workspace' in properties[ 'io' ]:
     if properties.has_key( 'workspace_query_by' ):
       if properties['value_type'] == 'INTEGER':
-        result = 'traits::detail::array< ' + workspace_type( name, properties ) + ' >' + \
+        result = 'bindings::detail::array< ' + workspace_type( name, properties ) + ' >' + \
                ' tmp_' + name.lower() + '( opt_size_' + name.lower() + ' );'
       else:
-        result = 'traits::detail::array< ' + workspace_type( name, properties ) + ' >' + \
+        result = 'bindings::detail::array< ' + workspace_type( name, properties ) + ' >' + \
                ' tmp_' + name.lower() + '( traits::detail::to_int( opt_size_' + name.lower() + ' ) );'
   return result
 
@@ -1058,7 +1065,7 @@ def parse_file( filename, template_map ):
       referring_argument_name = argument_properties[ 'leading_dimension' ]
       if argument_map.has_key( referring_argument_name ):
         argument_map[ referring_argument_name ][ 'trait_type' ] = 'lda'
-        argument_map[ referring_argument_name ][ 'trait_of' ] = argument_name
+        argument_map[ referring_argument_name ][ 'trait_of' ] = [ argument_name ]
 
   # Extend convenience lookups by io, recently acquired when processing the comment
   # fields. We have to be sure arguments are processed in the right order.
@@ -1386,6 +1393,7 @@ def parse_file( filename, template_map ):
     argument_properties[ 'code' ] = {}
     argument_properties[ 'code' ][ 'lapack_h' ] = c_type( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'call_blas_header' ] = call_blas_header( argument_name, argument_properties )
+    argument_properties[ 'code' ][ 'call_lapack_header' ] = call_lapack_header( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'level_0' ] = level0_type( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'level_0_typename' ] = level0_typename( argument_name, argument_properties )
     argument_properties[ 'code' ][ 'call_level_0' ] = call_level0_type( argument_name, argument_properties, argument_map )

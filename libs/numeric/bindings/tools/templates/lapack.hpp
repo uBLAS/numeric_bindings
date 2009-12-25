@@ -31,6 +31,16 @@ namespace detail {
 $OVERLOADS} // namespace detail
 
 $LEVEL1
+
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the $groupname_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
 $LEVEL2
 } // namespace lapack
 } // namespace bindings
@@ -40,10 +50,11 @@ $LEVEL2
 #endif
 $TEMPLATE[lapack_overloads]
 //
-// Overloaded function for the $SPECIALIZATION value-type.
+// Overloaded function for dispatching to $SPECIALIZATION value-type.
 //
+template< $TYPES >
 inline void $groupname( $LEVEL0 ) {
-    LAPACK_$SUBROUTINE( $CALL_BLAS_HEADER );
+    LAPACK_$SUBROUTINE( $CALL_LAPACK_HEADER );
 }
 
 $TEMPLATE[lapack_include_hierarchy]
@@ -91,28 +102,46 @@ struct $groupname_impl< Value, typename boost::enable_if< is_$SPECIALIZATION< Va
 $TEMPLATE[level1_workspace]
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
 $INCLUDE_TEMPLATES
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< $TYPES, $WORKSPACE_TYPENAMES >
     static void invoke( $LEVEL1, detail::workspace$WORKSPACE_SIZE< $WORKSPACE_TYPES > work ) {
+        $TYPEDEFS
         $STATIC_ASSERTS
         $INIT_USER_DEFINED_VARIABLES
         $ASSERTS
         detail::$groupname( $CALL_LEVEL0 );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    //
     template< $TYPES >
     static void invoke( $LEVEL1, minimal_workspace work ) {
+        $TYPEDEFS
         $INIT_USER_DEFINED_VARIABLES
 $SETUP_MIN_WORKARRAYS_POST
         invoke( $CALL_LEVEL1, workspace( $TMP_WORKARRAYS ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    //
     template< $TYPES >
     static void invoke( $LEVEL1, optimal_workspace work ) {
+        $TYPEDEFS
 $OPT_WORKSPACE_FUNC
     }
 
@@ -161,11 +190,13 @@ $TEMPLATE[min_size_func]
 $TEMPLATE[level1_noworkspace]
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::colum_major order;
 
 $INCLUDE_TEMPLATES
     // templated specialization
     template< $TYPES >
     static void invoke( $LEVEL1 ) {
+        $TYPEDEFS
         $STATIC_ASSERTS
         $ASSERTS
         detail::$groupname( $CALL_LEVEL0 );

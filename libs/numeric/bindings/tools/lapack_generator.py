@@ -61,9 +61,11 @@ def write_functions( info_map, group, template_map, base_dir ):
       '#include <boost/numeric/bindings/begin.hpp>',
       '#include <boost/numeric/bindings/size.hpp>',
       '#include <boost/numeric/bindings/stride.hpp>',
+      '#include <boost/numeric/bindings/is_mutable.hpp>',
       #'#include <boost/numeric/bindings/traits/traits.hpp>',
       #'#include <boost/numeric/bindings/traits/type_traits.hpp>', 
       '#include <boost/numeric/bindings/lapack/detail/lapack.h>',
+      '#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>',
       #'#include <boost/mpl/bool.hpp>',
       '#include <boost/type_traits/is_same.hpp>',
       '#include <boost/type_traits/remove_const.hpp>',
@@ -81,11 +83,18 @@ def write_functions( info_map, group, template_map, base_dir ):
       # add the argument list here
       arg_list = []
       lapack_arg_list = []
+      typename_list = []
+
       for arg in info_map[ subroutine ][ 'arguments' ]:
         arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0' ] ]
-        lapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_blas_header' ] ]
+        lapack_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_lapack_header' ] ]
+        if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] != None:
+            typename_list +=  [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] ]
+
+      sub_template = sub_template.replace( "$TYPES", ", ".join( typename_list ) )
+      sub_template = sub_template.replace( "template<  >\n", "" )
       sub_template = sub_template.replace( "$LEVEL0", ", ".join( arg_list ) )
-      sub_template = sub_template.replace( "$CALL_BLAS_HEADER", ", ".join( lapack_arg_list ) )
+      sub_template = sub_template.replace( "$CALL_LAPACK_HEADER", ", ".join( lapack_arg_list ) )
       sub_template = sub_template.replace( "$SUBROUTINE", subroutine )
       sub_template = sub_template.replace( '$groupname', group_name.lower() )
       sub_template = sub_template.replace( "$SPECIALIZATION", documentation.routine_value_type[ subroutine[0] ] )
@@ -169,6 +178,17 @@ def write_functions( info_map, group, template_map, base_dir ):
       user_defined_arg_list = []
       user_defined_opt_arg_list = []
       keyword_type_list = []
+      typedef_list = []
+
+      #
+      # Add an include in case of the uplo or diag options
+      #
+      if 'UPLO' in info_map[ subroutine ][ 'arguments' ]:
+        includes += [ '#include <boost/numeric/bindings/data_side.hpp>' ]
+      if 'DIAG' in info_map[ subroutine ][ 'arguments' ]:
+        includes += [ '#include <boost/numeric/bindings/diag_tag.hpp>' ]
+      if 'TRANS' in info_map[ subroutine ][ 'arguments' ]:
+        includes += [ '#include <boost/numeric/bindings/trans_tag.hpp>' ]
 
       #
       # Create static assertions, first by value type
@@ -213,6 +233,8 @@ def write_functions( info_map, group, template_map, base_dir ):
           call_level1_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'call_level_1' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'opt_workspace_query' ] != None:
           workspace_query_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'opt_workspace_query' ] ]
+        if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'typedef' ] != None:
+          typedef_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'typedef' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'keyword_type' ] != None:
           keyword_type_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'keyword_type' ] ]
 
@@ -229,6 +251,7 @@ def write_functions( info_map, group, template_map, base_dir ):
             user_defined_opt_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'user_defined_init' ] ]
 
       # Level 1 replacements
+      level1_template = level1_template.replace( "$TYPEDEFS", "\n        ".join( typedef_list ) )
       level1_template = level1_template.replace( "$CALL_LEVEL0", ", ".join( level0_arg_list ) )
       level1_template = level1_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
       level1_template = level1_template.replace( "$LEVEL1", ", ".join( level1_arg_list ) )
@@ -274,7 +297,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       if info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ].has_key( 'workspace' ):
         # Add an include for the workspace stuff
         includes += [ '#include <boost/numeric/bindings/lapack/workspace.hpp>' ]
-        includes += [ '#include <boost/numeric/bindings/traits/detail/array.hpp>' ]
+        includes += [ '#include <boost/numeric/bindings/detail/array.hpp>' ]
 
         # Continue
         workspace_size = len( info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ][ 'workspace' ] )
@@ -422,6 +445,9 @@ def write_functions( info_map, group, template_map, base_dir ):
     result = result.replace( '$DIRNAME', base_dir.split("/")[-1].upper() )
     result = result.replace( '$dirname', base_dir.split("/")[-1].lower() )
     result = result.replace( '$INTEGER_TYPE', netlib.fortran_integer_type )
+    result = result.replace( '\n\n\n', '\n\n' )
+    result = result.replace( "\n    \n", "\n" )
+    result = result.replace( "\n        \n", "\n" )
 
     # replace the global variables as last (this is convenient)
     #result = result.replace( '$INDENT', '    ' )

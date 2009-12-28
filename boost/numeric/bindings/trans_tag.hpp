@@ -60,7 +60,7 @@ struct trans_tag_impl< tag::row_major, tag::column_major, tag::conjugate > {
 
 namespace result_of {
 
-template< typename Order, typename T >
+template< typename T, typename Order >
 struct trans_tag {
     typedef typename detail::trans_tag_impl< Order,
         typename detail::property_at< T, tag::data_order >::type,
@@ -77,8 +77,8 @@ struct trans_tag {
 // tag is being generated in what kind of situation.
 // 
 template< typename T, typename Order >
-typename result_of::trans_tag< Order, T >::type trans_tag( const T& t, Order ) {
-    return result_of::trans_tag< Order, T >::type();
+typename result_of::trans_tag< T, Order >::type trans_tag( const T& t, Order ) {
+    return result_of::trans_tag< T, Order >::type();
 }
 
 } // namespace bindings

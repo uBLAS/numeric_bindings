@@ -14,6 +14,7 @@
 #include <boost/numeric/bindings/rank.hpp>
 #include <boost/numeric/bindings/index_major.hpp>
 #include <boost/numeric/bindings/index_minor.hpp>
+#include <boost/numeric/bindings/index_trans.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/min.hpp>
 #include <boost/mpl/greater.hpp>
@@ -113,6 +114,41 @@ GENERATE_FUNCTIONS( size, _row, tag::index<1> )
 GENERATE_FUNCTIONS( size, _column, tag::index<2> )
 GENERATE_FUNCTIONS( size, _major, typename index_major<T>::type )
 GENERATE_FUNCTIONS( size, _minor, typename index_minor<T>::type )
+
+//
+// Overloads for free template functions size_row( x, tag ), 
+// Here, tag is assumed to be either one of
+// tag::transpose, tag::no_transpose, or tag::conjugate
+//
+namespace result_of {
+
+template< typename T, typename TransTag >
+struct size_row_op {
+    typedef typename size<
+        T,
+        typename index_trans< tag::index<1>, TransTag >::type
+    >::type type;
+};
+
+template< typename T, typename TransTag >
+struct size_column_op {
+    typedef typename size< T, 
+        typename index_trans< tag::index<2>, TransTag >::type >::type type;
+};
+
+} // namespace result_of
+
+template< typename T, typename Tag >
+inline typename result_of::size_row_op< const T, Tag >::type
+size_row_op( const T& t, Tag ) {
+    return result_of::size_row_op< const T, Tag >::type( t );
+}
+
+template< typename T, typename Tag >
+inline typename result_of::size_row_op< const T, Tag >::type
+size_column_op( const T& t, Tag ) {
+    return result_of::size_column_op< const T, Tag >::type( t );
+}
 
 } // namespace bindings
 } // namespace numeric

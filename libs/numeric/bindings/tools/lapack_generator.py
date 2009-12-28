@@ -273,7 +273,19 @@ def write_functions( info_map, group, template_map, base_dir ):
       # Level 2 replacements
       # some special stuff is done here, such as replacing real_type with a 
       # type-traits deduction, etc..
-      level2_template = level2_template.replace( "$LEVEL2", ", ".join( level2_arg_list ) )
+      # more important: all non-const and const variants of functions are written here
+      level2_functions = []
+      level2_arg_lists, level2_comments = bindings.generate_const_variants( level2_arg_list )
+      for level2_idx in range( 0, len( level2_arg_lists ) ):
+        level2_function = level2_template.replace( "$LEVEL2", \
+                ", ".join( level2_arg_lists[ level2_idx ] ) )
+        if len( "".join(level2_comments[ level2_idx ] ) ) > 0:
+          level2_function = level2_function.replace( "$COMMENTS", \
+                "\n".join( level2_comments[ level2_idx ] ) )
+        level2_functions.append( level2_function )
+
+      level2_template = "\n".join( level2_functions )
+      level2_template = level2_template.replace( "$COMMENTS\n", "" )
 
       # Determine a right type to select for real or complex variants
       first_typename = ''

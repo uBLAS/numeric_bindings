@@ -315,7 +315,7 @@ def write_functions( info_map, group, template_map, base_dir ):
                 ", ".join( level2_arg_lists[ level2_idx ] ) )
         if len( "".join(level2_comments[ level2_idx ] ) ) > 0:
           level2_function = level2_function.replace( "$COMMENTS", \
-                "\n    ".join( level2_comments[ level2_idx ] ) )
+                "\n".join( level2_comments[ level2_idx ] ) )
         level2_functions.append( level2_function )
 
       level2_template = "\n".join( level2_functions )

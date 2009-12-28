@@ -158,7 +158,8 @@ $TEMPLATE[level1_opt_workspace_is_min]
         invoke( $CALL_LEVEL1, minimal_workspace() );
 $TEMPLATE[level2_workspace]
 //
-// Overloaded function for $groupname
+// Overloaded function for $groupname. Its overload differs for
+$COMMENTS
 // * User-defined workspace
 //
 template< $TYPES, typename Workspace >
@@ -169,7 +170,8 @@ inline integer_t $groupname( $LEVEL2, Workspace work ) {
 }
 
 //
-// Overloaded function for $groupname
+// Overloaded function for $groupname. Its overload differs for
+$COMMENTS
 // * Default workspace-type (optimal)
 //
 template< $TYPES >
@@ -213,7 +215,8 @@ $INCLUDE_TEMPLATES
 
 $TEMPLATE[level2_noworkspace]
 //
-// Overloaded function for $groupname
+// Overloaded function for $groupname. Its overload differs for
+$COMMENTS
 //
 template< $TYPES >
 inline integer_t $groupname( $LEVEL2 ) {

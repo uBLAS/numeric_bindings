@@ -248,7 +248,11 @@ def generate_const_variants( argument_list ):
 
     for i in range( 0, len(argument_list) ):
         argument = argument_list[i]
-        if 'const' not in argument[0:5] and '&' in argument:
+        if 'const' not in argument and \
+           'char' not in argument and \
+           'ptrdiff_t' not in argument and \
+           'typename' not in argument and \
+           '&' in argument:
             permute_indices.append( i )
 
     print " To be permuted: ", permute_indices

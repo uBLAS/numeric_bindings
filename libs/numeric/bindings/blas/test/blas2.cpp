@@ -13,7 +13,8 @@
 #include <iomanip>
 
 #include "blas.hpp"
-#include <boost/numeric/bindings/blas/blas2.hpp>
+#include <boost/numeric/bindings/blas/level2/gemv.hpp>
+#include <boost/numeric/bindings/traits/transpose.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 

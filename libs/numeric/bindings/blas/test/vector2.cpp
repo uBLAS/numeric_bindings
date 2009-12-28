@@ -11,7 +11,8 @@
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
-#include <boost/numeric/bindings/blas/blas.hpp>
+#include <boost/numeric/bindings/blas/level3/gemm.hpp>
+#include <boost/numeric/bindings/traits/transpose.hpp>
 #include <boost/numeric/bindings/traits/c_array.hpp>
 #include <boost/numeric/bindings/traits/c_array2.hpp>
 #include <boost/numeric/bindings/traits/dense_traits.hpp>

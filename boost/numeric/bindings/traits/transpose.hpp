@@ -10,7 +10,7 @@
 #define BOOST_BINDINGS_TRANSPOSE_HPP
 
 #include <boost/numeric/bindings/traits/matrix_traits.hpp>
-#include <boost/numeric/bindings/traits/is_decorated.hpp>
+//#include <boost/numeric/bindings/traits/is_decorated.hpp>
 
 namespace boost { namespace numeric { namespace bindings { namespace traits {
 

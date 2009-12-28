@@ -11,7 +11,9 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/bindings/blas/blas.hpp>
+#include <boost/numeric/bindings/blas/level3/gemm.hpp>
+#include <boost/numeric/bindings/blas/level1/axpy.hpp>
+#include <boost/numeric/bindings/traits/transpose.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector2.hpp>
@@ -88,7 +90,11 @@ main(int argc, char** argv)
 		std::cout << "B=" << b << std::endl;
 		
 		boost::numeric::ublas::bounded_matrix<double, 4, 4, boost::numeric::ublas::column_major> c;
-		boost::numeric::bindings::blas::gemm(a, b, c);
+		//boost::numeric::bindings::blas::gemm(a, b, c);
+		boost::numeric::bindings::blas::gemm(
+			boost::numeric::bindings::traits::NO_TRANSPOSE,
+			boost::numeric::bindings::traits::NO_TRANSPOSE,
+			1.0, a, b, 0.0, c);
 		std::cout << "C=" << c << std::endl;
 	}
 	
@@ -119,7 +125,11 @@ main(int argc, char** argv)
 		boost::numeric::ublas::matrix_range<
 			boost::numeric::ublas::bounded_matrix<double, 4, 4, boost::numeric::ublas::column_major>
 		> c2 = boost::numeric::ublas::subrange(c, 0, 3, 0, 3);
-		boost::numeric::bindings::blas::gemm(a2, b2, c2);
+		//boost::numeric::bindings::blas::gemm(a2, b2, c2);
+		boost::numeric::bindings::blas::gemm(
+			boost::numeric::bindings::traits::NO_TRANSPOSE,
+			boost::numeric::bindings::traits::NO_TRANSPOSE,
+			1.0, a2, b2, 0.0, c2);
 		std::cout << "C2=" << c2 << std::endl;
 		std::cout << "C=" << c << std::endl;
 	}

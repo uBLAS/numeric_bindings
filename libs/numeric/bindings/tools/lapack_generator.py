@@ -60,6 +60,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       '#include <boost/numeric/bindings/value.hpp>',
       '#include <boost/numeric/bindings/begin.hpp>',
       '#include <boost/numeric/bindings/size.hpp>',
+      #'#include <boost/numeric/bindings/tag.hpp>',
       '#include <boost/numeric/bindings/stride.hpp>',
       '#include <boost/numeric/bindings/is_mutable.hpp>',
       #'#include <boost/numeric/bindings/traits/traits.hpp>',

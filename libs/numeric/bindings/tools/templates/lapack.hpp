@@ -123,7 +123,7 @@ $INCLUDE_TEMPLATES
     // Static member function that
     // * Figures out the minimal workspace requirements, and passes
     //   the results to the user-defined workspace overload of the 
-    //   invoke static member
+    //   invoke static member function
     //
     template< $TYPES >
     static void invoke( $LEVEL1, minimal_workspace work ) {
@@ -183,6 +183,10 @@ $TEMPLATE[setup_min_workspace]
 $TEMPLATE[setup_opt_workspace]
         traits::detail::array< $WORKSPACE_TYPE > tmp_$NAME( $TMP_SIZE );
 $TEMPLATE[min_size_func]
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array $NAME.
+    //
     static integer_t min_size_$NAME( $ARGUMENTS ) {
         $MIN_SIZE
     }
@@ -190,10 +194,14 @@ $TEMPLATE[min_size_func]
 $TEMPLATE[level1_noworkspace]
     typedef Value value_type;
     typedef typename remove_imaginary< Value >::type real_type;
-    typedef tag::colum_major order;
+    typedef tag::column_major order;
 
 $INCLUDE_TEMPLATES
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< $TYPES >
     static void invoke( $LEVEL1 ) {
         $TYPEDEFS

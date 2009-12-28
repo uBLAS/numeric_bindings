@@ -17,7 +17,7 @@ $TEMPLATE[template_lapack_solve_pivot1]
 
     template< typename MatrixA, typename MatrixB, typename VectorP >
     static void solve( MatrixA& A, MatrixB& B, VectorP const&, integer_t& info ) {
-        traits::detail::array< integer_t > pivot( traits::matrix_num_columns(A) );
+        traits::detail::array< integer_t > pivot( size_column(A) );
         invoke( $KEYWORDS );
     }
 $TEMPLATE[end]

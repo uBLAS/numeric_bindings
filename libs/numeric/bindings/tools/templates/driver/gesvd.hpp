@@ -8,7 +8,7 @@ MINMN
 $TEMPLATE[gesvd.complex.extra_opt_variables]
 MINMN
 $TEMPLATE[gesvd.complex.MINMN.init]
-integer_t minmn = std::min< $INTEGER_TYPE >( traits::matrix_num_rows(a), traits::matrix_num_columns(a) );
+integer_t minmn = std::min< $INTEGER_TYPE >( size_row(a), size_column(a) );
 $TEMPLATE[gesvd.complex.min_size_work.args]
 M,N,MINMN
 $TEMPLATE[gesvd.complex.min_size_work]

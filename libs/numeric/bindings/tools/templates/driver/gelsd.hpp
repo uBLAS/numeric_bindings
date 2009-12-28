@@ -5,7 +5,7 @@ MINMN,SMLSIZ,NLVL,NRHS
 $TEMPLATE[gelsd.all.extra_variables]
 MINMN,SMLSIZ,NLVL
 $TEMPLATE[gelsd.all.MINMN.init]
-integer_t minmn = std::min< $INTEGER_TYPE >( traits::matrix_num_rows(a), traits::matrix_num_columns(a) );
+integer_t minmn = std::min< $INTEGER_TYPE >( size_row(a), size_column(a) );
 $TEMPLATE[gelsd.all.SMLSIZ.init]
 integer_t smlsiz = ilaenv(9, "GELSD", "");
 $TEMPLATE[gelsd.all.NLVL.init]

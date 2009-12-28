@@ -93,11 +93,12 @@ def write_functions( info_map, group, template_map, base_dir ):
                 typename_list +=  [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_0_typename' ] ]
 
         if "has_cblas_order_arg" in info_map[ subroutine ]:
-            arg_list.insert( 0, "Order" )
-            cblas_arg_list.insert( 0, "cblas_option< Order >::value" )
-            typename_list.insert( 0, "typename Order" )
-            level0_static_asserts.append( "BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );" )
-            includes += [ "#include <boost/numeric/bindings/is_column_major.hpp>" ]
+            if info_map[ subroutine ][ "has_cblas_order_arg" ] == True:
+                arg_list.insert( 0, "Order" )
+                cblas_arg_list.insert( 0, "cblas_option< Order >::value" )
+                typename_list.insert( 0, "typename Order" )
+                level0_static_asserts.append( "BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );" )
+                includes += [ "#include <boost/numeric/bindings/is_column_major.hpp>" ]
 
         sub_template = sub_template.replace( "$TYPES", ", ".join( typename_list ) )
         sub_template = sub_template.replace( "template<  >\n", "" )

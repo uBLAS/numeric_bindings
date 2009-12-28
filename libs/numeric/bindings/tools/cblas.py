@@ -91,8 +91,10 @@ def parse_file( filename, info_map, template_map ):
                     exit(0)
 
             if "ORDER" in arguments:
+                print "Adding order argument."
                 info_map[ blas_routine ][ "has_cblas_order_arg" ] = True
             else:
+                print "Not adding order argument."
                 info_map[ blas_routine ][ "has_cblas_order_arg" ] = False
 
 

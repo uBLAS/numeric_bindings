@@ -19,6 +19,7 @@
 #  include <boost/numeric/ublas/matrix_sparse.hpp> 
 #endif 
 #include <boost/numeric/bindings/traits/sparse_traits.hpp>
+#include <boost/numeric/bindings/traits/ublas_storage.hpp>
 #include <boost/numeric/bindings/traits/detail/ublas_ordering.hpp>
 #include <algorithm>
 

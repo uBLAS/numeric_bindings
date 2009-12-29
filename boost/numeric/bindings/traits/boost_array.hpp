@@ -21,6 +21,15 @@
 #include <boost/numeric/bindings/traits/vector_traits.hpp>
 #include <boost/array.hpp>
 
+namespace boost { namespace numeric { namespace bindings { namespace traits {
+
+   // boost::array
+  template <typename T, std::size_t N, typename V>
+  struct vector_detail_traits< boost::array< T, N>, V >:
+  public default_vector_traits< V, T > {};
+
+}}}}
+
 #else
 
 #error with your compiler boost::array<> cannot be used in bindings

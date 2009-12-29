@@ -15,6 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_TRAITS_UBLAS_MATRIX_H
 
 #include <boost/numeric/bindings/traits/traits.hpp>
+#include <boost/numeric/bindings/traits/ublas_storage.hpp>
 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS 
 

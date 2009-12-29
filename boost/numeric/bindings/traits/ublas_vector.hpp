@@ -15,6 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_TRAITS_UBLAS_VECTOR_H
 
 #include <boost/numeric/bindings/traits/vector_traits.hpp>
+#include <boost/numeric/bindings/traits/ublas_storage.hpp>
 
 #ifndef BOOST_NUMERIC_BINDINGS_POOR_MANS_TRAITS
 
@@ -24,16 +25,6 @@
 
 
 namespace boost { namespace numeric { namespace bindings { namespace traits {
-
-   // ublas::bounded array
-  template <typename T, std::size_t N, typename V>
-  struct vector_detail_traits< ublas::bounded_array< T, N>, V >:
-  public default_vector_traits< V, T > {};
-
-   // ublas::unbounded array
-  template< typename T, typename Allocator, typename V >
-  struct vector_detail_traits< ublas::unbounded_array< T, Allocator >, V >:
-  public default_vector_traits< V, T > {};
 
   // ublas::vector<>
   template <typename T, typename ArrT, typename V>

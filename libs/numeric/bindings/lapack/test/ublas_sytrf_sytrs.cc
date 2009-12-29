@@ -9,7 +9,6 @@
 #include <boost/numeric/bindings/lapack/computational/sytrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/sytri.hpp>
 #include <boost/numeric/bindings/lapack/computational/sytrs.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>

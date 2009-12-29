@@ -8,7 +8,6 @@
 #include <complex>
 #include <boost/numeric/bindings/lapack/driver/hesv.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>

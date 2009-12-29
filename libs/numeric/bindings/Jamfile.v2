@@ -7,7 +7,6 @@ project libs/numeric/bindings ;
 
 import numeric-bindings ;
 
-build-project amos/test ;
 build-project atlas ;
 build-project blas/test ;
 build-project lapack/test ;

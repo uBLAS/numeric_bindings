@@ -7,7 +7,6 @@
 #include <iostream>
 #include <complex>
 #include <boost/numeric/bindings/lapack/driver/hpsv.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>

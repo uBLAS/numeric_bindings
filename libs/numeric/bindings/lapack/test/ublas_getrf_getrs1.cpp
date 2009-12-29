@@ -3,7 +3,6 @@
 #include <boost/numeric/bindings/lapack/computational/getri.hpp>
 #include <boost/numeric/bindings/lapack/computational/getrs.hpp>
 #include <boost/numeric/bindings/traits/std_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 
 template < typename matrix_type >

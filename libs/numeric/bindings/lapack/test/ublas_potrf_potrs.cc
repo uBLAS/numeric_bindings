@@ -8,7 +8,6 @@
 #include <complex>
 #include <boost/numeric/bindings/lapack/computational/potrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/potrs.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
 #include <boost/numeric/bindings/traits/ublas_hermitian.hpp>

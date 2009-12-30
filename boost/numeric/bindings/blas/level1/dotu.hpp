@@ -59,10 +59,12 @@ namespace detail {
 // * CBLAS backend, and
 // * complex<float> value-type.
 //
-inline void dotu( const std::ptrdiff_t n, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float>* y,
-        const std::ptrdiff_t incy ) {
-    return cblas_cdotu_sub( n, x, incx, y, incy );
+inline std::complex<float> dotu( const std::ptrdiff_t n,
+        const std::complex<float>* x, const std::ptrdiff_t incx,
+        const std::complex<float>* y, const std::ptrdiff_t incy ) {
+    std::complex<float> result;
+    cblas_cdotu_sub( n, x, incx, y, incy, &result );
+    return result;
 }
 
 //
@@ -70,10 +72,12 @@ inline void dotu( const std::ptrdiff_t n, const std::complex<float>* x,
 // * CBLAS backend, and
 // * complex<double> value-type.
 //
-inline void dotu( const std::ptrdiff_t n, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double>* y,
-        const std::ptrdiff_t incy ) {
-    return cblas_zdotu_sub( n, x, incx, y, incy );
+inline std::complex<double> dotu( const std::ptrdiff_t n,
+        const std::complex<double>* x, const std::ptrdiff_t incx,
+        const std::complex<double>* y, const std::ptrdiff_t incy ) {
+    std::complex<double> result;
+    cblas_zdotu_sub( n, x, incx, y, incy, &result );
+    return result;
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
@@ -82,9 +86,9 @@ inline void dotu( const std::ptrdiff_t n, const std::complex<double>* x,
 // * CUBLAS backend, and
 // * complex<float> value-type.
 //
-inline void dotu( const std::ptrdiff_t n, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float>* y,
-        const std::ptrdiff_t incy ) {
+inline std::complex<float> dotu( const std::ptrdiff_t n,
+        const std::complex<float>* x, const std::ptrdiff_t incx,
+        const std::complex<float>* y, const std::ptrdiff_t incy ) {
     return cublasCdotu( n, x, incx, y, incy );
 }
 
@@ -93,9 +97,9 @@ inline void dotu( const std::ptrdiff_t n, const std::complex<float>* x,
 // * CUBLAS backend, and
 // * complex<double> value-type.
 //
-inline void dotu( const std::ptrdiff_t n, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double>* y,
-        const std::ptrdiff_t incy ) {
+inline std::complex<double> dotu( const std::ptrdiff_t n,
+        const std::complex<double>* x, const std::ptrdiff_t incx,
+        const std::complex<double>* y, const std::ptrdiff_t incy ) {
     return cublasZdotu( n, x, incx, y, incy );
 }
 
@@ -105,9 +109,9 @@ inline void dotu( const std::ptrdiff_t n, const std::complex<double>* x,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<float> value-type.
 //
-inline void dotu( const std::ptrdiff_t n, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float>* y,
-        const std::ptrdiff_t incy ) {
+inline std::complex<float> dotu( const std::ptrdiff_t n,
+        const std::complex<float>* x, const std::ptrdiff_t incx,
+        const std::complex<float>* y, const std::ptrdiff_t incy ) {
     return BLAS_CDOTU( &n, x, &incx, y, &incy );
 }
 
@@ -116,9 +120,9 @@ inline void dotu( const std::ptrdiff_t n, const std::complex<float>* x,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<double> value-type.
 //
-inline void dotu( const std::ptrdiff_t n, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double>* y,
-        const std::ptrdiff_t incy ) {
+inline std::complex<double> dotu( const std::ptrdiff_t n,
+        const std::complex<double>* x, const std::ptrdiff_t incx,
+        const std::complex<double>* y, const std::ptrdiff_t incy ) {
     return BLAS_ZDOTU( &n, x, &incx, y, &incy );
 }
 

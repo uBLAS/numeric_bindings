@@ -57,18 +57,18 @@ double BLAS_DDOT( const std::ptrdiff_t* n, const double* x,
         const std::ptrdiff_t* incy );
 
 // Value-type variants of dotc
-void BLAS_CDOTC( const std::ptrdiff_t* n, const void* x,
+std::complex<float> BLAS_CDOTC( const std::ptrdiff_t* n, const void* x,
         const std::ptrdiff_t* incx, const void* y,
         const std::ptrdiff_t* incy );
-void BLAS_ZDOTC( const std::ptrdiff_t* n, const void* x,
+std::complex<double> BLAS_ZDOTC( const std::ptrdiff_t* n, const void* x,
         const std::ptrdiff_t* incx, const void* y,
         const std::ptrdiff_t* incy );
 
 // Value-type variants of dotu
-void BLAS_CDOTU( const std::ptrdiff_t* n, const void* x,
+std::complex<float> BLAS_CDOTU( const std::ptrdiff_t* n, const void* x,
         const std::ptrdiff_t* incx, const void* y,
         const std::ptrdiff_t* incy );
-void BLAS_ZDOTU( const std::ptrdiff_t* n, const void* x,
+std::complex<double> BLAS_ZDOTU( const std::ptrdiff_t* n, const void* x,
         const std::ptrdiff_t* incx, const void* y,
         const std::ptrdiff_t* incy );
 

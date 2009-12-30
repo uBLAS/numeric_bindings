@@ -328,14 +328,21 @@ def write_functions( info_map, group, template_map, base_dir ):
         first_typename = level1_type_arg_list[0].split(" ")[-1]
         first_typename_datatype = first_typename[0:6].lower() # 'matrix' or 'vector'
       else:
-        first_typename = 'TODO'
-        first_typename_datatype = 'TODO'
+        level1_type_arg_list.insert( 0, 'typename Value' )
+        first_typename = 'Value'
+        first_typename_datatype = 'typename Value'
+
+
       level2_template = level2_template.replace( "$FIRST_TYPENAME", first_typename )
       level2_template = level2_template.replace( "$TYPEOF_FIRST_TYPENAME", first_typename_datatype )
       level2_template = level2_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
       level2_template = level2_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
       level2_template = level2_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
       level2_template = level2_template.replace( '    $STATIC_ASSERTS\n', '' )
+
+      if first_typename == 'Value':
+          level2_template = level2_template.replace( 'typename value< Value >::type', 'Value' )
+          level2_template = level2_template.replace( 'typename remove_imaginary< Value >::type', 'Value' )
 
       level1_map[ value_type ] = bindings.proper_indent( level1_template )
       level2_map[ value_type ] = bindings.proper_indent( level2_template )
@@ -382,9 +389,11 @@ def write_functions( info_map, group, template_map, base_dir ):
     result = result.replace( '$DIRNAME', base_dir.split("/")[-1].upper() )
     result = result.replace( '$dirname', base_dir.split("/")[-1].lower() )
     result = result.replace( '$INTEGER_TYPE', netlib.fortran_integer_type )
+    result = result.replace( 'template<  >', '' )
     result = result.replace( '\n\n\n', '\n\n' )
     result = result.replace( "\n    \n", "\n" )
-    result = result.replace( "\n        \n", "\n" )
+    result = result.replace( '\n        \n', '\n' )
+    result = result.replace( '\n        \n', '\n' )
 
     # replace the global variables as last (this is convenient)
     #result = result.replace( '$INDENT', '    ' )

@@ -163,8 +163,8 @@ $COMMENTS
 // * User-defined workspace
 //
 template< $TYPES, typename Workspace >
-inline integer_t $groupname( $LEVEL2, Workspace work ) {
-    integer_t info(0);
+inline std::ptrdiff_t $groupname( $LEVEL2, Workspace work ) {
+    std::ptrdiff_t info(0);
     $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, work );
     return info;
 }
@@ -175,8 +175,8 @@ $COMMENTS
 // * Default workspace-type (optimal)
 //
 template< $TYPES >
-inline integer_t $groupname( $LEVEL2 ) {
-    integer_t info(0);
+inline std::ptrdiff_t $groupname( $LEVEL2 ) {
+    std::ptrdiff_t info(0);
     $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, optimal_workspace() );
     return info;
 }
@@ -189,7 +189,7 @@ $TEMPLATE[min_size_func]
     // Static member function that returns the minimum size of
     // workspace-array $NAME.
     //
-    static integer_t min_size_$NAME( $ARGUMENTS ) {
+    static std::ptrdiff_t min_size_$NAME( $ARGUMENTS ) {
         $MIN_SIZE
     }
 
@@ -219,8 +219,8 @@ $TEMPLATE[level2_noworkspace]
 $COMMENTS
 //
 template< $TYPES >
-inline integer_t $groupname( $LEVEL2 ) {
-    integer_t info(0);
+inline std::ptrdiff_t $groupname( $LEVEL2 ) {
+    std::ptrdiff_t info(0);
     $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
     return info;
 }

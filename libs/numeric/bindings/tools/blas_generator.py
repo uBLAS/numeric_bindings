@@ -57,6 +57,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       '#include <boost/numeric/bindings/value.hpp>', 
       '#include <boost/numeric/bindings/stride.hpp>',
       '#include <boost/numeric/bindings/size.hpp>',
+      '#include <boost/numeric/bindings/begin.hpp>',
       #'#include <boost/mpl/bool.hpp>',
       '#include <boost/type_traits/is_same.hpp>',
       '#include <boost/type_traits/remove_const.hpp>',

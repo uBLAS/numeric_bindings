@@ -21,6 +21,9 @@ NUMERIC_LIB_PATH ?= /usr/lib ;
 NUMERIC_INCLUDE ?= /usr/local/lib ;
 SUITESPARSE_INCLUDE ?= $(NUMERIC_INCLUDE)/SuiteSparse ;
 
+ACML_DLL_PATH ?= /AMD/acml4.2.0/ifort32/lib ;
+ACML_FORTRAN_DLL ?= libifcoremd ;
+ACML_DLL ?= libacml_dll ;
 ACML_PATH ?= $(NUMERIC_LIB_PATH) ;
 ACML_LIB ?= acml ;
 
@@ -53,16 +56,25 @@ AMD_LIB ?= amd ;
 
 lib acml_lib : : <name>$(ACML_LIB) <search>$(ACML_PATH)
              : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;
+#lib msvc_acml_fortran_lib : : <name>$(ACML_FORTRAN_DLL) <search>$(ACML_DLL_PATH) <toolset>msvc:<link>shared
+#             : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;
+alias msvc_acml_fortran_lib ;
+lib msvc_acml_lib : : <name>$(ACML_DLL) <search>$(ACML_DLL_PATH) <toolset>msvc:<link>shared <use>msvc_acml_fortran_lib
+             : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS <library>msvc_acml_fortran_lib ;
 
 
 lib gfortran_fortran_lib : : <name>gfortran
                          : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;
 lib g77_fortran_lib : : <name>g2c ;
+lib msvc_fortran_lib : : <name>libf2c <search>$(BLAS_PATH)
+                : : <define>BIND_FORTRAN_LOWERCASE_UNDERSCORE
+                    <toolset>msvc:<linkflags>/NODEFAULTLIB:LIBCMT ;
 
 alias fortran_lib : gfortran_fortran_lib ;
 alias fortran_lib : gfortran_fortran_lib : <numbind>gfortran ;
 alias fortran_lib : g77_fortran_lib : <numbind>g77 ;
 alias fortran_lib : g77_fortran_lib : <numbind>clapack-gcc ;
+alias fortran_lib : msvc_fortran_lib : <numbind>clapack-msvc ;
 
 lib amos_lib : fortran_lib : <name>$(AMOS_LIB) <search>$(AMOS_PATH) ;
 
@@ -82,11 +94,14 @@ alias blas_lib   : f_blas_lib : <numbind>gfortran ;
 alias blas_lib   : f_blas_lib : <numbind>g77 ;
 alias blas_lib   : f_blas_lib : <numbind>clapack-gcc ;
 alias blas_lib   : acml_lib : <numbind>acml-gcc ;
+alias blas_lib   : msvc_acml_lib : <numbind>acml-msvc ;
 alias lapack_lib : f_lapack_lib ;
 alias lapack_lib : f_lapack_lib : <numbind>gfortran ;
 alias lapack_lib : f_lapack_lib : <numbind>g77 ;
 alias lapack_lib : f_lapack_lib : <numbind>clapack-gcc ;
 alias lapack_lib : acml_lib : <use>blas_lib <numbind>acml-gcc
+                 : : <library>blas_lib ;
+alias lapack_lib : msvc_acml_lib : <use>blas_lib <numbind>acml-msvc
                  : : <library>blas_lib ;
 
 lib pthread ;
@@ -106,5 +121,6 @@ lib amd_lib : : <name>$(AMD_LIB) <search>$(AMD_PATH)
                 <include>$(UFCONFIG_INCLUDE) ;
 lib umfpack_lib : amd_lib blas_lib
                 : <name>$(UMFPACK_LIB) <search>$(UMFPACK_PATH)
-              : :  <include>$(UMFPACK_INCLUDE)
+              : :  <toolset>msvc:<define>NO_NAN
+                   <include>$(UMFPACK_INCLUDE)
                    <include>$(UFCONFIG_INCLUDE) ;

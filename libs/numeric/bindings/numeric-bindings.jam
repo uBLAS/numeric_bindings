@@ -3,6 +3,15 @@
 # Boost Software License, Version 1.0. (See accompanying file
 # LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+import feature : feature ;
+feature numbind
+        : user
+          gfortran     g77
+          clapack-gcc  clapack-msvc
+          acml-gcc     acml-msvc
+          mkl-gcc      mkl-msvc
+        : optional propagated ;
+
 # Make this module a project
 import project ;
 project.initialize $(__name__) ;
@@ -11,6 +20,9 @@ project numeric-bindings ;
 NUMERIC_LIB_PATH ?= /usr/lib ;
 NUMERIC_INCLUDE ?= /usr/local/lib ;
 SUITESPARSE_INCLUDE ?= $(NUMERIC_INCLUDE)/SuiteSparse ;
+
+ACML_PATH ?= $(NUMERIC_LIB_PATH) ;
+ACML_LIB ?= acml ;
 
 AMOS_PATH ?= $(NUMERIC_LIB_PATH) ;
 AMOS_LIB ?= amos ;
@@ -39,7 +51,18 @@ UMFPACK_LIB ?= umfpack ;
 AMD_PATH ?= $(NUMERIC_LIB_PATH) ;
 AMD_LIB ?= amd ;
 
-lib fortran_lib : : <name>g2c ;
+lib acml_lib : : <name>$(ACML_LIB) <search>$(ACML_PATH)
+             : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;
+
+
+lib gfortran_fortran_lib : : <name>gfortran
+                         : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;
+lib g77_fortran_lib : : <name>g2c ;
+
+alias fortran_lib : gfortran_fortran_lib ;
+alias fortran_lib : gfortran_fortran_lib : <numbind>gfortran ;
+alias fortran_lib : g77_fortran_lib : <numbind>g77 ;
+alias fortran_lib : g77_fortran_lib : <numbind>clapack-gcc ;
 
 lib amos_lib : fortran_lib : <name>$(AMOS_LIB) <search>$(AMOS_PATH) ;
 
@@ -50,8 +73,21 @@ lib cblas_lib : : <name>$(CBLAS_LIB) <search>$(ATLAS_PATH)
 lib lapack_atlas_lib : fortran_lib : <name>$(LAPACK_ATLAS_LIB) <search>$(ATLAS_PATH)
               : : <include>$(ATLAS_INCLUDE) ;
 
-lib blas_lib   : fortran_lib : <name>$(BLAS_LIB)   <search>$(BLAS_PATH) ;
-lib lapack_lib : fortran_lib : <name>$(LAPACK_LIB) <search>$(LAPACK_PATH) <use>blas_lib : : <library>blas_lib ;
+lib f_blas_lib   : fortran_lib : <name>$(BLAS_LIB)   <search>$(BLAS_PATH) ;
+lib f_lapack_lib : fortran_lib : <name>$(LAPACK_LIB) <search>$(LAPACK_PATH) <use>blas_lib
+                 : : <library>blas_lib ;
+
+alias blas_lib   : f_blas_lib ;
+alias blas_lib   : f_blas_lib : <numbind>gfortran ;
+alias blas_lib   : f_blas_lib : <numbind>g77 ;
+alias blas_lib   : f_blas_lib : <numbind>clapack-gcc ;
+alias blas_lib   : acml_lib : <numbind>acml-gcc ;
+alias lapack_lib : f_lapack_lib ;
+alias lapack_lib : f_lapack_lib : <numbind>gfortran ;
+alias lapack_lib : f_lapack_lib : <numbind>g77 ;
+alias lapack_lib : f_lapack_lib : <numbind>clapack-gcc ;
+alias lapack_lib : acml_lib : <use>blas_lib <numbind>acml-gcc
+                 : : <library>blas_lib ;
 
 lib pthread ;
 lib mpiseq : : <search>$(MUMPS_PATH)/../libseq ;

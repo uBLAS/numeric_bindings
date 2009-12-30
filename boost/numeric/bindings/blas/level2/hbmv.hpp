@@ -59,8 +59,8 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -74,8 +74,8 @@ inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -90,8 +90,8 @@ inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -106,8 +106,8 @@ inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -122,8 +122,8 @@ inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -138,8 +138,8 @@ inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -176,6 +176,8 @@ struct hbmv_impl {
     static return_type invoke( const std::ptrdiff_t k, const value_type alpha,
             const MatrixA& a, const VectorX& x, const value_type beta,
             VectorY& y ) {
+        typedef typename result_of::data_order< MatrixA >::type order;
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorX >::type >::type >::value) );
@@ -183,8 +185,6 @@ struct hbmv_impl {
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
-        typedef typename result_of::data_order< MatrixA >::type order;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
         detail::hbmv( order(), uplo(), size_column(a), k, alpha,
                 begin_value(a), stride_major(a), begin_value(x), stride(x),
                 beta, begin_value(y), stride(y) );

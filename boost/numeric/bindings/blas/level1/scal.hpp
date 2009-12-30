@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SCAL_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,143 +56,123 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const float a, float* x,
+inline void scal( const std::ptrdiff_t n, const float a, float* x,
         const std::ptrdiff_t incx ) {
-    cblas_sscal( cblas_option< Order >::value, n, a, x, incx );
+    cblas_sscal( n, a, x, incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const double a, double* x,
+inline void scal( const std::ptrdiff_t n, const double a, double* x,
         const std::ptrdiff_t incx ) {
-    cblas_dscal( cblas_option< Order >::value, n, a, x, incx );
+    cblas_dscal( n, a, x, incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const std::complex<float> a,
+inline void scal( const std::ptrdiff_t n, const std::complex<float> a,
         std::complex<float>* x, const std::ptrdiff_t incx ) {
-    cblas_cscal( cblas_option< Order >::value, n, &a, x, incx );
+    cblas_cscal( n, &a, x, incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const std::complex<double> a,
+inline void scal( const std::ptrdiff_t n, const std::complex<double> a,
         std::complex<double>* x, const std::ptrdiff_t incx ) {
-    cblas_zscal( cblas_option< Order >::value, n, &a, x, incx );
+    cblas_zscal( n, &a, x, incx );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const float a, float* x,
+inline void scal( const std::ptrdiff_t n, const float a, float* x,
         const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSscal( n, a, x, incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const double a, double* x,
+inline void scal( const std::ptrdiff_t n, const double a, double* x,
         const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasDscal( n, a, x, incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const std::complex<float> a,
+inline void scal( const std::ptrdiff_t n, const std::complex<float> a,
         std::complex<float>* x, const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasCscal( n, a, x, incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const std::complex<double> a,
+inline void scal( const std::ptrdiff_t n, const std::complex<double> a,
         std::complex<double>* x, const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasZscal( n, a, x, incx );
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const float a, float* x,
+inline void scal( const std::ptrdiff_t n, const float a, float* x,
         const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SSCAL( &n, &a, x, &incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const double a, double* x,
+inline void scal( const std::ptrdiff_t n, const double a, double* x,
         const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DSCAL( &n, &a, x, &incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const std::complex<float> a,
+inline void scal( const std::ptrdiff_t n, const std::complex<float> a,
         std::complex<float>* x, const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CSCAL( &n, &a, x, &incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void scal( Order, const std::ptrdiff_t n, const std::complex<double> a,
+inline void scal( const std::ptrdiff_t n, const std::complex<double> a,
         std::complex<double>* x, const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZSCAL( &n, &a, x, &incx );
 }
 
@@ -220,7 +199,6 @@ struct scal_impl {
     template< typename VectorX >
     static return_type invoke( const value_type a, VectorX& x ) {
         BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
-        
         detail::scal( size(x), a, begin_value(x), stride(x) );
     }
 };

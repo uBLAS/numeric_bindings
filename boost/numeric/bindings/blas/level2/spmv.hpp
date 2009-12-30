@@ -59,8 +59,8 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
 template< typename Order, typename UpLo >
 inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
@@ -72,8 +72,8 @@ inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
 template< typename Order, typename UpLo >
 inline void spmv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
@@ -86,8 +86,8 @@ inline void spmv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
 template< typename Order, typename UpLo >
 inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
@@ -100,8 +100,8 @@ inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
 template< typename Order, typename UpLo >
 inline void spmv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
@@ -114,8 +114,8 @@ inline void spmv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
 template< typename Order, typename UpLo >
 inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
@@ -128,8 +128,8 @@ inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
 template< typename Order, typename UpLo >
 inline void spmv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
@@ -163,6 +163,8 @@ struct spmv_impl {
     template< typename MatrixAP, typename VectorX, typename VectorY >
     static return_type invoke( const real_type alpha, const MatrixAP& ap,
             const VectorX& x, const real_type beta, VectorY& y ) {
+        typedef typename result_of::data_order< MatrixAP >::type order;
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixAP >::type >::type, typename remove_const<
                 typename value< VectorX >::type >::type >::value) );
@@ -170,8 +172,6 @@ struct spmv_impl {
                 MatrixAP >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
-        typedef typename result_of::data_order< MatrixAP >::type order;
-        typedef typename result_of::data_side< MatrixAP >::type uplo;
         detail::spmv( order(), uplo(), size_column(ap), alpha,
                 begin_value(ap), begin_value(x), stride(x), beta,
                 begin_value(y), stride(y) );

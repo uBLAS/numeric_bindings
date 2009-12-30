@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_COPY_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,149 +56,129 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n, const float* x,
+inline void copy( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
-    cblas_scopy( cblas_option< Order >::value, n, x, incx, y, incy );
+    cblas_scopy( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n, const double* x,
+inline void copy( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
-    cblas_dcopy( cblas_option< Order >::value, n, x, incx, y, incy );
+    cblas_dcopy( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n, const std::complex<float>* x,
+inline void copy( const std::ptrdiff_t n, const std::complex<float>* x,
         const std::ptrdiff_t incx, std::complex<float>* y,
         const std::ptrdiff_t incy ) {
-    cblas_ccopy( cblas_option< Order >::value, n, x, incx, y, incy );
+    cblas_ccopy( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
-    cblas_zcopy( cblas_option< Order >::value, n, x, incx, y, incy );
+inline void copy( const std::ptrdiff_t n, const std::complex<double>* x,
+        const std::ptrdiff_t incx, std::complex<double>* y,
+        const std::ptrdiff_t incy ) {
+    cblas_zcopy( n, x, incx, y, incy );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n, const float* x,
+inline void copy( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasScopy( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n, const double* x,
+inline void copy( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasDcopy( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n, const std::complex<float>* x,
+inline void copy( const std::ptrdiff_t n, const std::complex<float>* x,
         const std::ptrdiff_t incx, std::complex<float>* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasCcopy( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void copy( const std::ptrdiff_t n, const std::complex<double>* x,
+        const std::ptrdiff_t incx, std::complex<double>* y,
+        const std::ptrdiff_t incy ) {
     // NOT FOUND();
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n, const float* x,
+inline void copy( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SCOPY( &n, x, &incx, y, &incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n, const double* x,
+inline void copy( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DCOPY( &n, x, &incx, y, &incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n, const std::complex<float>* x,
+inline void copy( const std::ptrdiff_t n, const std::complex<float>* x,
         const std::ptrdiff_t incx, std::complex<float>* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CCOPY( &n, x, &incx, y, &incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void copy( Order, const std::ptrdiff_t n,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void copy( const std::ptrdiff_t n, const std::complex<double>* x,
+        const std::ptrdiff_t incx, std::complex<double>* y,
+        const std::ptrdiff_t incy ) {
     BLAS_ZCOPY( &n, x, &incx, y, &incy );
 }
 
@@ -229,7 +208,6 @@ struct copy_impl {
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
-        
         detail::copy( size(x), begin_value(x), stride(x),
                 begin_value(y), stride(y) );
     }

@@ -61,8 +61,8 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -75,8 +75,8 @@ inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -89,8 +89,8 @@ inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -103,8 +103,8 @@ inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -118,8 +118,8 @@ inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -132,8 +132,8 @@ inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -146,8 +146,8 @@ inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -160,8 +160,8 @@ inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -174,8 +174,8 @@ inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -188,8 +188,8 @@ inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -202,8 +202,8 @@ inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -216,8 +216,8 @@ inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trsv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
@@ -250,14 +250,14 @@ struct trsv_impl {
     //
     template< typename MatrixA, typename VectorX >
     static return_type invoke( const MatrixA& a, VectorX& x ) {
-        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
-                MatrixA >::type >::type, typename remove_const<
-                typename value< VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
         typedef typename detail::default_order< MatrixA >::type order;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         typedef typename result_of::diag_tag< MatrixA >::type diag;
+        BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
+                MatrixA >::type >::type, typename remove_const<
+                typename value< VectorX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
         detail::trsv( order(), uplo(), trans(), diag(),
                 size_column_op(a, trans()), begin_value(a), stride_major(a),
                 begin_value(x), stride(x) );

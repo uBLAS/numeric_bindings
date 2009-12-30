@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_DOT_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,79 +56,69 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline float dot( Order, const std::ptrdiff_t n, const float* x,
+inline float dot( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx, const float* y,
         const std::ptrdiff_t incy ) {
-    return cblas_sdot( cblas_option< Order >::value, n, x, incx, y, incy );
+    return cblas_sdot( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline double dot( Order, const std::ptrdiff_t n, const double* x,
+inline double dot( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx, const double* y,
         const std::ptrdiff_t incy ) {
-    return cblas_ddot( cblas_option< Order >::value, n, x, incx, y, incy );
+    return cblas_ddot( n, x, incx, y, incy );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline float dot( Order, const std::ptrdiff_t n, const float* x,
+inline float dot( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx, const float* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return cublasSdot( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline double dot( Order, const std::ptrdiff_t n, const double* x,
+inline double dot( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx, const double* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return cublasDdot( n, x, incx, y, incy );
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
-template< typename Order >
-inline float dot( Order, const std::ptrdiff_t n, const float* x,
+inline float dot( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx, const float* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return BLAS_SDOT( &n, x, &incx, y, &incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
-template< typename Order >
-inline double dot( Order, const std::ptrdiff_t n, const double* x,
+inline double dot( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx, const double* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return BLAS_DDOT( &n, x, &incx, y, &incy );
 }
 
@@ -158,7 +147,6 @@ struct dot_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        
         return detail::dot( size(x), begin_value(x), stride(x),
                 begin_value(y), stride(y) );
     }

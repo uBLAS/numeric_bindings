@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_ROT_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,79 +56,69 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void rot( Order, const std::ptrdiff_t n, const float* x,
+inline void rot( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy,
         const float c, const float s ) {
-    cblas_srot( cblas_option< Order >::value, n, x, incx, y, incy, c, s );
+    cblas_srot( n, x, incx, y, incy, c, s );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void rot( Order, const std::ptrdiff_t n, const double* x,
+inline void rot( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy,
         const double c, const double s ) {
-    cblas_drot( cblas_option< Order >::value, n, x, incx, y, incy, c, s );
+    cblas_drot( n, x, incx, y, incy, c, s );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void rot( Order, const std::ptrdiff_t n, const float* x,
+inline void rot( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy,
         const float c, const float s ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSrot( n, x, incx, y, incy, c, s );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void rot( Order, const std::ptrdiff_t n, const double* x,
+inline void rot( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy,
         const double c, const double s ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasDrot( n, x, incx, y, incy, c, s );
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
-template< typename Order >
-inline void rot( Order, const std::ptrdiff_t n, const float* x,
+inline void rot( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy,
         const float c, const float s ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SROT( &n, x, &incx, y, &incy, &c, &s );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
-template< typename Order >
-inline void rot( Order, const std::ptrdiff_t n, const double* x,
+inline void rot( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy,
         const double c, const double s ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DROT( &n, x, &incx, y, &incy, &c, &s );
 }
 
@@ -160,7 +149,6 @@ struct rot_impl {
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
-        
         detail::rot( size(x), begin_value(x), stride(x),
                 begin_value(y), stride(y), c, s );
     }

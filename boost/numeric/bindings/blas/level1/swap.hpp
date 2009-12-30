@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SWAP_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,149 +56,129 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
-    cblas_sswap( cblas_option< Order >::value, n, x, incx, y, incy );
+inline void swap( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
+        float* y, const std::ptrdiff_t incy ) {
+    cblas_sswap( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, double* x,
+inline void swap( const std::ptrdiff_t n, double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
-    cblas_dswap( cblas_option< Order >::value, n, x, incx, y, incy );
+    cblas_dswap( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, std::complex<float>* x,
+inline void swap( const std::ptrdiff_t n, std::complex<float>* x,
         const std::ptrdiff_t incx, std::complex<float>* y,
         const std::ptrdiff_t incy ) {
-    cblas_cswap( cblas_option< Order >::value, n, x, incx, y, incy );
+    cblas_cswap( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, std::complex<double>* x,
+inline void swap( const std::ptrdiff_t n, std::complex<double>* x,
         const std::ptrdiff_t incx, std::complex<double>* y,
         const std::ptrdiff_t incy ) {
-    cblas_zswap( cblas_option< Order >::value, n, x, incx, y, incy );
+    cblas_zswap( n, x, incx, y, incy );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void swap( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
+        float* y, const std::ptrdiff_t incy ) {
     cublasSswap( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, double* x,
+inline void swap( const std::ptrdiff_t n, double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasDswap( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, std::complex<float>* x,
+inline void swap( const std::ptrdiff_t n, std::complex<float>* x,
         const std::ptrdiff_t incx, std::complex<float>* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasCswap( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, std::complex<double>* x,
+inline void swap( const std::ptrdiff_t n, std::complex<double>* x,
         const std::ptrdiff_t incx, std::complex<double>* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void swap( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
+        float* y, const std::ptrdiff_t incy ) {
     BLAS_SSWAP( &n, x, &incx, y, &incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, double* x,
+inline void swap( const std::ptrdiff_t n, double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DSWAP( &n, x, &incx, y, &incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, std::complex<float>* x,
+inline void swap( const std::ptrdiff_t n, std::complex<float>* x,
         const std::ptrdiff_t incx, std::complex<float>* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CSWAP( &n, x, &incx, y, &incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void swap( Order, const std::ptrdiff_t n, std::complex<double>* x,
+inline void swap( const std::ptrdiff_t n, std::complex<double>* x,
         const std::ptrdiff_t incx, std::complex<double>* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZSWAP( &n, x, &incx, y, &incy );
 }
 
@@ -230,7 +209,6 @@ struct swap_impl {
                 typename value< VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
-        
         detail::swap( size(x), begin_value(x), stride(x),
                 begin_value(y), stride(y) );
     }
@@ -247,7 +225,7 @@ struct swap_impl {
 //
 // Overloaded function for swap. Its overload differs for
 // * VectorX&
-    // * VectorY&
+// * VectorY&
 //
 template< typename VectorX, typename VectorY >
 inline typename swap_impl< typename value< VectorX >::type >::return_type
@@ -258,7 +236,7 @@ swap( VectorX& x, VectorY& y ) {
 //
 // Overloaded function for swap. Its overload differs for
 // * const VectorX&
-    // * VectorY&
+// * VectorY&
 //
 template< typename VectorX, typename VectorY >
 inline typename swap_impl< typename value< VectorX >::type >::return_type
@@ -269,7 +247,7 @@ swap( const VectorX& x, VectorY& y ) {
 //
 // Overloaded function for swap. Its overload differs for
 // * VectorX&
-    // * const VectorY&
+// * const VectorY&
 //
 template< typename VectorX, typename VectorY >
 inline typename swap_impl< typename value< VectorX >::type >::return_type
@@ -280,7 +258,7 @@ swap( VectorX& x, const VectorY& y ) {
 //
 // Overloaded function for swap. Its overload differs for
 // * const VectorX&
-    // * const VectorY&
+// * const VectorY&
 //
 template< typename VectorX, typename VectorY >
 inline typename swap_impl< typename value< VectorX >::type >::return_type

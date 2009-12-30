@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_AXPY_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,155 +56,129 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const float a,
-        const float* x, const std::ptrdiff_t incx, float* y,
-        const std::ptrdiff_t incy ) {
-    cblas_saxpy( cblas_option< Order >::value, n, a, x, incx, y, incy );
+inline void axpy( const std::ptrdiff_t n, const float a, const float* x,
+        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
+    cblas_saxpy( n, a, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const double a,
-        const double* x, const std::ptrdiff_t incx, double* y,
-        const std::ptrdiff_t incy ) {
-    cblas_daxpy( cblas_option< Order >::value, n, a, x, incx, y, incy );
+inline void axpy( const std::ptrdiff_t n, const double a, const double* x,
+        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
+    cblas_daxpy( n, a, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const std::complex<float> a,
+inline void axpy( const std::ptrdiff_t n, const std::complex<float> a,
         const std::complex<float>* x, const std::ptrdiff_t incx,
         std::complex<float>* y, const std::ptrdiff_t incy ) {
-    cblas_caxpy( cblas_option< Order >::value, n, &a, x, incx, y, incy );
+    cblas_caxpy( n, &a, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const std::complex<double> a,
+inline void axpy( const std::ptrdiff_t n, const std::complex<double> a,
         const std::complex<double>* x, const std::ptrdiff_t incx,
         std::complex<double>* y, const std::ptrdiff_t incy ) {
-    cblas_zaxpy( cblas_option< Order >::value, n, &a, x, incx, y, incy );
+    cblas_zaxpy( n, &a, x, incx, y, incy );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const float a,
-        const float* x, const std::ptrdiff_t incx, float* y,
-        const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void axpy( const std::ptrdiff_t n, const float a, const float* x,
+        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
     cublasSaxpy( n, a, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const double a,
-        const double* x, const std::ptrdiff_t incx, double* y,
-        const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void axpy( const std::ptrdiff_t n, const double a, const double* x,
+        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
     cublasDaxpy( n, a, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const std::complex<float> a,
+inline void axpy( const std::ptrdiff_t n, const std::complex<float> a,
         const std::complex<float>* x, const std::ptrdiff_t incx,
         std::complex<float>* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasCaxpy( n, a, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const std::complex<double> a,
+inline void axpy( const std::ptrdiff_t n, const std::complex<double> a,
         const std::complex<double>* x, const std::ptrdiff_t incx,
         std::complex<double>* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const float a,
-        const float* x, const std::ptrdiff_t incx, float* y,
-        const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void axpy( const std::ptrdiff_t n, const float a, const float* x,
+        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
     BLAS_SAXPY( &n, &a, x, &incx, y, &incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const double a,
-        const double* x, const std::ptrdiff_t incx, double* y,
-        const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void axpy( const std::ptrdiff_t n, const double a, const double* x,
+        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
     BLAS_DAXPY( &n, &a, x, &incx, y, &incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const std::complex<float> a,
+inline void axpy( const std::ptrdiff_t n, const std::complex<float> a,
         const std::complex<float>* x, const std::ptrdiff_t incx,
         std::complex<float>* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CAXPY( &n, &a, x, &incx, y, &incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void axpy( Order, const std::ptrdiff_t n, const std::complex<double> a,
+inline void axpy( const std::ptrdiff_t n, const std::complex<double> a,
         const std::complex<double>* x, const std::ptrdiff_t incx,
         std::complex<double>* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZAXPY( &n, &a, x, &incx, y, &incy );
 }
 
@@ -236,7 +209,6 @@ struct axpy_impl {
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
-        
         detail::axpy( size(x), a, begin_value(x), stride(x),
                 begin_value(y), stride(y) );
     }

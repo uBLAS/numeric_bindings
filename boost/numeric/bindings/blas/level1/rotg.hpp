@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_ROTG_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,67 +56,57 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void rotg( Order, float& a, float& b, float& c, float& s ) {
-    cblas_srotg( cblas_option< Order >::value, &a, &b, &c, &s );
+inline void rotg( float& a, float& b, float& c, float& s ) {
+    cblas_srotg( &a, &b, &c, &s );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void rotg( Order, double& a, double& b, double& c, double& s ) {
-    cblas_drotg( cblas_option< Order >::value, &a, &b, &c, &s );
+inline void rotg( double& a, double& b, double& c, double& s ) {
+    cblas_drotg( &a, &b, &c, &s );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void rotg( Order, float& a, float& b, float& c, float& s ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void rotg( float& a, float& b, float& c, float& s ) {
     cublasSrotg( &a, &b, &c, &s );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void rotg( Order, double& a, double& b, double& c, double& s ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void rotg( double& a, double& b, double& c, double& s ) {
     cublasDrotg( &a, &b, &c, &s );
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
-template< typename Order >
-inline void rotg( Order, float& a, float& b, float& c, float& s ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void rotg( float& a, float& b, float& c, float& s ) {
     BLAS_SROTG( &a, &b, &c, &s );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
-template< typename Order >
-inline void rotg( Order, double& a, double& b, double& c, double& s ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void rotg( double& a, double& b, double& c, double& s ) {
     BLAS_DROTG( &a, &b, &c, &s );
 }
 
@@ -141,10 +130,8 @@ struct rotg_impl {
     // * Deduces the required arguments for dispatching to BLAS, and
     // * Asserts that most arguments make sense.
     //
-    template<  >
     static return_type invoke( real_type& a, real_type& b, real_type& c,
             real_type& s ) {
-        
         detail::rotg( a, b, c, s );
     }
 };
@@ -159,282 +146,11 @@ struct rotg_impl {
 
 //
 // Overloaded function for rotg. Its overload differs for
-// * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
 //
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( typename remove_imaginary< typename value<
-        TODO >::type >::type& a, typename remove_imaginary< typename value<
-        TODO >::type >::type& b, typename remove_imaginary< typename value<
-        TODO >::type >::type& c, typename remove_imaginary< typename value<
-        TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( const typename remove_imaginary< typename value<
-        TODO >::type >::type& a, typename remove_imaginary< typename value<
-        TODO >::type >::type& b, typename remove_imaginary< typename value<
-        TODO >::type >::type& c, typename remove_imaginary< typename value<
-        TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( typename remove_imaginary< typename value<
-        TODO >::type >::type& a, const typename remove_imaginary<
-        typename value< TODO >::type >::type& b, typename remove_imaginary<
-        typename value< TODO >::type >::type& c, typename remove_imaginary<
-        typename value< TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( const typename remove_imaginary< typename value<
-        TODO >::type >::type& a, const typename remove_imaginary<
-        typename value< TODO >::type >::type& b, typename remove_imaginary<
-        typename value< TODO >::type >::type& c, typename remove_imaginary<
-        typename value< TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( typename remove_imaginary< typename value<
-        TODO >::type >::type& a, typename remove_imaginary< typename value<
-        TODO >::type >::type& b, const typename remove_imaginary<
-        typename value< TODO >::type >::type& c, typename remove_imaginary<
-        typename value< TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( const typename remove_imaginary< typename value<
-        TODO >::type >::type& a, typename remove_imaginary< typename value<
-        TODO >::type >::type& b, const typename remove_imaginary<
-        typename value< TODO >::type >::type& c, typename remove_imaginary<
-        typename value< TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( typename remove_imaginary< typename value<
-        TODO >::type >::type& a, const typename remove_imaginary<
-        typename value< TODO >::type >::type& b,
-        const typename remove_imaginary< typename value<
-        TODO >::type >::type& c, typename remove_imaginary< typename value<
-        TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( const typename remove_imaginary< typename value<
-        TODO >::type >::type& a, const typename remove_imaginary<
-        typename value< TODO >::type >::type& b,
-        const typename remove_imaginary< typename value<
-        TODO >::type >::type& c, typename remove_imaginary< typename value<
-        TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( typename remove_imaginary< typename value<
-        TODO >::type >::type& a, typename remove_imaginary< typename value<
-        TODO >::type >::type& b, typename remove_imaginary< typename value<
-        TODO >::type >::type& c, const typename remove_imaginary<
-        typename value< TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( const typename remove_imaginary< typename value<
-        TODO >::type >::type& a, typename remove_imaginary< typename value<
-        TODO >::type >::type& b, typename remove_imaginary< typename value<
-        TODO >::type >::type& c, const typename remove_imaginary<
-        typename value< TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( typename remove_imaginary< typename value<
-        TODO >::type >::type& a, const typename remove_imaginary<
-        typename value< TODO >::type >::type& b, typename remove_imaginary<
-        typename value< TODO >::type >::type& c,
-        const typename remove_imaginary< typename value<
-        TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( const typename remove_imaginary< typename value<
-        TODO >::type >::type& a, const typename remove_imaginary<
-        typename value< TODO >::type >::type& b, typename remove_imaginary<
-        typename value< TODO >::type >::type& c,
-        const typename remove_imaginary< typename value<
-        TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( typename remove_imaginary< typename value<
-        TODO >::type >::type& a, typename remove_imaginary< typename value<
-        TODO >::type >::type& b, const typename remove_imaginary<
-        typename value< TODO >::type >::type& c,
-        const typename remove_imaginary< typename value<
-        TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( const typename remove_imaginary< typename value<
-        TODO >::type >::type& a, typename remove_imaginary< typename value<
-        TODO >::type >::type& b, const typename remove_imaginary<
-        typename value< TODO >::type >::type& c,
-        const typename remove_imaginary< typename value<
-        TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( typename remove_imaginary< typename value<
-        TODO >::type >::type& a, const typename remove_imaginary<
-        typename value< TODO >::type >::type& b,
-        const typename remove_imaginary< typename value<
-        TODO >::type >::type& c, const typename remove_imaginary<
-        typename value< TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
-}
-
-//
-// Overloaded function for rotg. Its overload differs for
-// * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-    // * const typename remove_imaginary< typename value< TODO >::type >::type&
-//
-template<  >
-inline typename rotg_impl< typename value< TODO >::type >::return_type
-rotg( const typename remove_imaginary< typename value<
-        TODO >::type >::type& a, const typename remove_imaginary<
-        typename value< TODO >::type >::type& b,
-        const typename remove_imaginary< typename value<
-        TODO >::type >::type& c, const typename remove_imaginary<
-        typename value< TODO >::type >::type& s ) {
-    rotg_impl< typename value< TODO >::type >::invoke( a, b, c, s );
+template< typename Value >
+inline typename rotg_impl< Value >::return_type
+rotg( Value& a, Value& b, Value& c, Value& s ) {
+    rotg_impl< Value >::invoke( a, b, c, s );
 }
 
 } // namespace blas

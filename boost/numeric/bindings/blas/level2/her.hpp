@@ -59,8 +59,8 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
 inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
@@ -72,8 +72,8 @@ inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
 inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
@@ -86,8 +86,8 @@ inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
 inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
@@ -99,8 +99,8 @@ inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
 inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
@@ -113,8 +113,8 @@ inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
 inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
@@ -126,8 +126,8 @@ inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
 inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
@@ -160,12 +160,12 @@ struct her_impl {
     template< typename VectorX, typename MatrixA >
     static return_type invoke( const real_type alpha, const VectorX& x,
             MatrixA& a ) {
+        typedef typename result_of::data_order< MatrixA >::type order;
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value ) );
-        typedef typename result_of::data_order< MatrixA >::type order;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
         detail::her( order(), uplo(), size_column(a), alpha,
                 begin_value(x), stride(x), begin_value(a), stride_major(a) );
     }

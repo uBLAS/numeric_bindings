@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_ASUM_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,73 +56,63 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline float asum( Order, const std::ptrdiff_t n, const float* x,
+inline float asum( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx ) {
-    return cblas_sasum( cblas_option< Order >::value, n, x, incx );
+    return cblas_sasum( n, x, incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline double asum( Order, const std::ptrdiff_t n, const double* x,
+inline double asum( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx ) {
-    return cblas_dasum( cblas_option< Order >::value, n, x, incx );
+    return cblas_dasum( n, x, incx );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline float asum( Order, const std::ptrdiff_t n, const float* x,
+inline float asum( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return cublasSasum( n, x, incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline double asum( Order, const std::ptrdiff_t n, const double* x,
+inline double asum( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return cublasDasum( n, x, incx );
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
-template< typename Order >
-inline float asum( Order, const std::ptrdiff_t n, const float* x,
+inline float asum( const std::ptrdiff_t n, const float* x,
         const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return BLAS_SASUM( &n, x, &incx );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
-template< typename Order >
-inline double asum( Order, const std::ptrdiff_t n, const double* x,
+inline double asum( const std::ptrdiff_t n, const double* x,
         const std::ptrdiff_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return BLAS_DASUM( &n, x, &incx );
 }
 
@@ -149,7 +138,6 @@ struct asum_impl {
     //
     template< typename VectorX >
     static return_type invoke( const VectorX& x ) {
-        
         return detail::asum( size(x), begin_value(x), stride(x) );
     }
 };

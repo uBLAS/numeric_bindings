@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_ROTMG_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,73 +56,63 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void rotmg( Order, float& d1, float& d2, float& x1, const float y1,
+inline void rotmg( float& d1, float& d2, float& x1, const float y1,
         float* sparam ) {
-    cblas_srotmg( cblas_option< Order >::value, &d1, &d2, &x1, &y1, sparam );
+    cblas_srotmg( &d1, &d2, &x1, &y1, sparam );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void rotmg( Order, double& d1, double& d2, double& x1, const double y1,
+inline void rotmg( double& d1, double& d2, double& x1, const double y1,
         double* dparam ) {
-    cblas_drotmg( cblas_option< Order >::value, &d1, &d2, &x1, &y1, dparam );
+    cblas_drotmg( &d1, &d2, &x1, &y1, dparam );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void rotmg( Order, float& d1, float& d2, float& x1, const float y1,
+inline void rotmg( float& d1, float& d2, float& x1, const float y1,
         float* sparam ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSrotmg( &d1, &d2, &x1, &y1, sparam );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void rotmg( Order, double& d1, double& d2, double& x1, const double y1,
+inline void rotmg( double& d1, double& d2, double& x1, const double y1,
         double* dparam ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasDrotmg( &d1, &d2, &x1, &y1, dparam );
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
-template< typename Order >
-inline void rotmg( Order, float& d1, float& d2, float& x1, const float y1,
+inline void rotmg( float& d1, float& d2, float& x1, const float y1,
         float* sparam ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SROTMG( &d1, &d2, &x1, &y1, sparam );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
-template< typename Order >
-inline void rotmg( Order, double& d1, double& d2, double& x1, const double y1,
+inline void rotmg( double& d1, double& d2, double& x1, const double y1,
         double* dparam ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DROTMG( &d1, &d2, &x1, &y1, dparam );
 }
 
@@ -151,7 +140,6 @@ struct rotmg_impl {
     static return_type invoke( real_type& d1, real_type& d2, real_type& x1,
             const real_type y1, VectorDPARAM& dparam ) {
         BOOST_STATIC_ASSERT( (is_mutable< VectorDPARAM >::value ) );
-        
         detail::rotmg( d1, d2, x1, y1, begin_value(dparam) );
     }
 };
@@ -166,12 +154,7 @@ struct rotmg_impl {
 
 //
 // Overloaded function for rotmg. Its overload differs for
-// * typename remove_imaginary< typename value< VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * VectorDPARAM&
+// * VectorDPARAM&
 //
 template< typename VectorDPARAM >
 inline typename rotmg_impl< typename value<
@@ -189,177 +172,7 @@ rotmg( typename remove_imaginary< typename value<
 
 //
 // Overloaded function for rotmg. Its overload differs for
-// * const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * typename remove_imaginary< typename value< VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * typename remove_imaginary< typename value< VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * typename remove_imaginary< typename value< VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * typename remove_imaginary< typename value< VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const VectorDPARAM&
+// * const VectorDPARAM&
 //
 template< typename VectorDPARAM >
 inline typename rotmg_impl< typename value<
@@ -368,171 +181,6 @@ rotmg( typename remove_imaginary< typename value<
         VectorDPARAM >::type >::type& d1, typename remove_imaginary<
         typename value< VectorDPARAM >::type >::type& d2,
         typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        const VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        const VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * typename remove_imaginary< typename value< VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        const VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        const VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * typename remove_imaginary< typename value< VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        const VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type&
-    // * typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        const VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * typename remove_imaginary< typename value< VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type y1,
-        const VectorDPARAM& dparam ) {
-    rotmg_impl< typename value< VectorDPARAM >::type >::invoke( d1, d2,
-            x1, y1, dparam );
-}
-
-//
-// Overloaded function for rotmg. Its overload differs for
-// * const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const typename remove_imaginary< typename value<
-            VectorDPARAM >::type >::type&
-    // * const VectorDPARAM&
-//
-template< typename VectorDPARAM >
-inline typename rotmg_impl< typename value<
-        VectorDPARAM >::type >::return_type
-rotmg( const typename remove_imaginary< typename value<
-        VectorDPARAM >::type >::type& d1, const typename remove_imaginary<
-        typename value< VectorDPARAM >::type >::type& d2,
-        const typename remove_imaginary< typename value<
         VectorDPARAM >::type >::type& x1, const typename remove_imaginary<
         typename value< VectorDPARAM >::type >::type y1,
         const VectorDPARAM& dparam ) {

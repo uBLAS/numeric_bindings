@@ -59,8 +59,8 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -73,8 +73,8 @@ inline void gemv( Order, Trans, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -87,8 +87,8 @@ inline void gemv( Order, Trans, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -103,8 +103,8 @@ inline void gemv( Order, Trans, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -120,8 +120,8 @@ inline void gemv( Order, Trans, const std::ptrdiff_t m,
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -135,8 +135,8 @@ inline void gemv( Order, Trans, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -150,8 +150,8 @@ inline void gemv( Order, Trans, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -167,8 +167,8 @@ inline void gemv( Order, Trans, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -185,8 +185,8 @@ inline void gemv( Order, Trans, const std::ptrdiff_t m,
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -200,8 +200,8 @@ inline void gemv( Order, Trans, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -215,8 +215,8 @@ inline void gemv( Order, Trans, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -232,8 +232,8 @@ inline void gemv( Order, Trans, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, const std::ptrdiff_t m,
@@ -277,6 +277,8 @@ struct gemv_impl {
     template< typename MatrixA, typename VectorX, typename VectorY >
     static return_type invoke( const value_type alpha, const MatrixA& a,
             const VectorX& x, const value_type beta, VectorY& y ) {
+        typedef typename detail::default_order< MatrixA >::type order;
+        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorX >::type >::type >::value) );
@@ -284,8 +286,6 @@ struct gemv_impl {
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
-        typedef typename detail::default_order< MatrixA >::type order;
-        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         detail::gemv( order(), trans(), size_row_op(a, trans()),
                 size_column_op(a, trans()), alpha, begin_value(a),
                 stride_major(a), begin_value(x), stride(x), beta,

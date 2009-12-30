@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_ROTM_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,79 +56,66 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void rotm( Order, const std::ptrdiff_t n, float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy,
-        float* param ) {
-    cblas_srotm( cblas_option< Order >::value, n, x, incx, y, incy, param );
+inline void rotm( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
+        float* y, const std::ptrdiff_t incy, float* param ) {
+    cblas_srotm( n, x, incx, y, incy, param );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void rotm( Order, const std::ptrdiff_t n, double* x,
+inline void rotm( const std::ptrdiff_t n, double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy,
         double* param ) {
-    cblas_drotm( cblas_option< Order >::value, n, x, incx, y, incy, param );
+    cblas_drotm( n, x, incx, y, incy, param );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
-template< typename Order >
-inline void rotm( Order, const std::ptrdiff_t n, float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy,
-        float* param ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void rotm( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
+        float* y, const std::ptrdiff_t incy, float* param ) {
     cublasSrotm( n, x, incx, y, incy, param );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline void rotm( Order, const std::ptrdiff_t n, double* x,
+inline void rotm( const std::ptrdiff_t n, double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy,
         double* param ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasDrotm( n, x, incx, y, incy, param );
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
-template< typename Order >
-inline void rotm( Order, const std::ptrdiff_t n, float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy,
-        float* param ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void rotm( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
+        float* y, const std::ptrdiff_t incy, float* param ) {
     BLAS_SROTM( &n, x, &incx, y, &incy, param );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
-template< typename Order >
-inline void rotm( Order, const std::ptrdiff_t n, double* x,
+inline void rotm( const std::ptrdiff_t n, double* x,
         const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy,
         double* param ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DROTM( &n, x, &incx, y, &incy, param );
 }
 
@@ -166,7 +152,6 @@ struct rotm_impl {
         BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorPARAM >::value ) );
-        
         detail::rotm( n, begin_value(x), incx, begin_value(y), incy,
                 begin_value(param) );
     }
@@ -183,8 +168,8 @@ struct rotm_impl {
 //
 // Overloaded function for rotm. Its overload differs for
 // * VectorX&
-    // * VectorY&
-    // * VectorPARAM&
+// * VectorY&
+// * VectorPARAM&
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
@@ -197,8 +182,8 @@ rotm( const std::ptrdiff_t n, VectorX& x, const std::ptrdiff_t incx,
 //
 // Overloaded function for rotm. Its overload differs for
 // * const VectorX&
-    // * VectorY&
-    // * VectorPARAM&
+// * VectorY&
+// * VectorPARAM&
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
@@ -212,8 +197,8 @@ rotm( const std::ptrdiff_t n, const VectorX& x,
 //
 // Overloaded function for rotm. Its overload differs for
 // * VectorX&
-    // * const VectorY&
-    // * VectorPARAM&
+// * const VectorY&
+// * VectorPARAM&
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
@@ -226,8 +211,8 @@ rotm( const std::ptrdiff_t n, VectorX& x, const std::ptrdiff_t incx,
 //
 // Overloaded function for rotm. Its overload differs for
 // * const VectorX&
-    // * const VectorY&
-    // * VectorPARAM&
+// * const VectorY&
+// * VectorPARAM&
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
@@ -241,8 +226,8 @@ rotm( const std::ptrdiff_t n, const VectorX& x,
 //
 // Overloaded function for rotm. Its overload differs for
 // * VectorX&
-    // * VectorY&
-    // * const VectorPARAM&
+// * VectorY&
+// * const VectorPARAM&
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
@@ -255,8 +240,8 @@ rotm( const std::ptrdiff_t n, VectorX& x, const std::ptrdiff_t incx,
 //
 // Overloaded function for rotm. Its overload differs for
 // * const VectorX&
-    // * VectorY&
-    // * const VectorPARAM&
+// * VectorY&
+// * const VectorPARAM&
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
@@ -270,8 +255,8 @@ rotm( const std::ptrdiff_t n, const VectorX& x,
 //
 // Overloaded function for rotm. Its overload differs for
 // * VectorX&
-    // * const VectorY&
-    // * const VectorPARAM&
+// * const VectorY&
+// * const VectorPARAM&
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
@@ -285,8 +270,8 @@ rotm( const std::ptrdiff_t n, VectorX& x, const std::ptrdiff_t incx,
 //
 // Overloaded function for rotm. Its overload differs for
 // * const VectorX&
-    // * const VectorY&
-    // * const VectorPARAM&
+// * const VectorY&
+// * const VectorPARAM&
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type

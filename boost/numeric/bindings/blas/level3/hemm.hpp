@@ -59,8 +59,8 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hemm( Order, const char side, UpLo, const std::ptrdiff_t m,
@@ -76,8 +76,8 @@ inline void hemm( Order, const char side, UpLo, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hemm( Order, const char side, UpLo, const std::ptrdiff_t m,
@@ -94,8 +94,8 @@ inline void hemm( Order, const char side, UpLo, const std::ptrdiff_t m,
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hemm( Order, const char side, UpLo, const std::ptrdiff_t m,
@@ -111,8 +111,8 @@ inline void hemm( Order, const char side, UpLo, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hemm( Order, const char side, UpLo, const std::ptrdiff_t m,
@@ -128,8 +128,8 @@ inline void hemm( Order, const char side, UpLo, const std::ptrdiff_t m,
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hemm( Order, const char side, UpLo, const std::ptrdiff_t m,
@@ -145,8 +145,8 @@ inline void hemm( Order, const char side, UpLo, const std::ptrdiff_t m,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
 inline void hemm( Order, const char side, UpLo, const std::ptrdiff_t m,
@@ -184,6 +184,8 @@ struct hemm_impl {
     static return_type invoke( const char side, const value_type alpha,
             const MatrixA& a, const MatrixB& b, const value_type beta,
             MatrixC& c ) {
+        typedef typename result_of::data_order< MatrixA >::type order;
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< MatrixB >::type >::type >::value) );
@@ -192,8 +194,6 @@ struct hemm_impl {
                 typename value< MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value ) );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        typedef typename result_of::data_order< MatrixA >::type order;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
         detail::hemm( order(), side, uplo(), size_row(c),
                 size_column(c), alpha, begin_value(a), stride_major(a),
                 begin_value(b), stride_major(b), beta, begin_value(c),

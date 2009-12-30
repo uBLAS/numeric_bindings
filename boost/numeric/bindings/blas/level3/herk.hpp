@@ -60,8 +60,8 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void herk( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -74,8 +74,8 @@ inline void herk( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void herk( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -90,8 +90,8 @@ inline void herk( Order, UpLo, Trans, const std::ptrdiff_t n,
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void herk( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -105,8 +105,8 @@ inline void herk( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void herk( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -121,8 +121,8 @@ inline void herk( Order, UpLo, Trans, const std::ptrdiff_t n,
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void herk( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -136,8 +136,8 @@ inline void herk( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void herk( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -173,13 +173,13 @@ struct herk_impl {
     template< typename MatrixA, typename MatrixC >
     static return_type invoke( const real_type alpha, const MatrixA& a,
             const real_type beta, MatrixC& c ) {
+        typedef typename result_of::data_order< MatrixC >::type order;
+        typedef typename result_of::data_side< MatrixC >::type uplo;
+        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value ) );
-        typedef typename result_of::data_order< MatrixC >::type order;
-        typedef typename result_of::data_side< MatrixC >::type uplo;
-        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         detail::herk( order(), uplo(), trans(), size_column(c),
                 size_column(a), alpha, begin_value(a), stride_major(a), beta,
                 begin_value(c), stride_major(c) );

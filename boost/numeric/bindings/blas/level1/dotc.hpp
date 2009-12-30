@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_DOTC_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,81 +56,69 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void dotc( Order, const std::ptrdiff_t n, const std::complex<float>* x,
+inline void dotc( const std::ptrdiff_t n, const std::complex<float>* x,
         const std::ptrdiff_t incx, const std::complex<float>* y,
         const std::ptrdiff_t incy ) {
-    return cblas_cdotc_sub( cblas_option< Order >::value, n, x, incx, y,
-            incy );
+    return cblas_cdotc_sub( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void dotc( Order, const std::ptrdiff_t n,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        const std::complex<double>* y, const std::ptrdiff_t incy ) {
-    return cblas_zdotc_sub( cblas_option< Order >::value, n, x, incx, y,
-            incy );
+inline void dotc( const std::ptrdiff_t n, const std::complex<double>* x,
+        const std::ptrdiff_t incx, const std::complex<double>* y,
+        const std::ptrdiff_t incy ) {
+    return cblas_zdotc_sub( n, x, incx, y, incy );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void dotc( Order, const std::ptrdiff_t n, const std::complex<float>* x,
+inline void dotc( const std::ptrdiff_t n, const std::complex<float>* x,
         const std::ptrdiff_t incx, const std::complex<float>* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return cublasCdotc( n, x, incx, y, incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void dotc( Order, const std::ptrdiff_t n,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        const std::complex<double>* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void dotc( const std::ptrdiff_t n, const std::complex<double>* x,
+        const std::ptrdiff_t incx, const std::complex<double>* y,
+        const std::ptrdiff_t incy ) {
     return // NOT FOUND();
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
-template< typename Order >
-inline void dotc( Order, const std::ptrdiff_t n, const std::complex<float>* x,
+inline void dotc( const std::ptrdiff_t n, const std::complex<float>* x,
         const std::ptrdiff_t incx, const std::complex<float>* y,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return BLAS_CDOTC( &n, x, &incx, y, &incy );
 }
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
-template< typename Order >
-inline void dotc( Order, const std::ptrdiff_t n,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        const std::complex<double>* y, const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+inline void dotc( const std::ptrdiff_t n, const std::complex<double>* x,
+        const std::ptrdiff_t incx, const std::complex<double>* y,
+        const std::ptrdiff_t incy ) {
     return BLAS_ZDOTC( &n, x, &incx, y, &incy );
 }
 
@@ -160,7 +147,6 @@ struct dotc_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        
         return detail::dotc( size(x), begin_value(x), stride(x),
                 begin_value(y), stride(y) );
     }

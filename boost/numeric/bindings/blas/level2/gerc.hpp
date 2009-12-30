@@ -58,8 +58,8 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order >
 inline void gerc( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
@@ -73,8 +73,8 @@ inline void gerc( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order >
 inline void gerc( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
@@ -89,8 +89,8 @@ inline void gerc( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order >
 inline void gerc( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
@@ -104,8 +104,8 @@ inline void gerc( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order >
 inline void gerc( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
@@ -120,8 +120,8 @@ inline void gerc( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Order >
 inline void gerc( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
@@ -135,8 +135,8 @@ inline void gerc( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Order >
 inline void gerc( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
@@ -171,6 +171,7 @@ struct gerc_impl {
     template< typename VectorX, typename VectorY, typename MatrixA >
     static return_type invoke( const value_type alpha, const VectorX& x,
             const VectorY& y, MatrixA& a ) {
+        typedef typename result_of::data_order< MatrixA >::type order;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
@@ -178,7 +179,6 @@ struct gerc_impl {
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixA >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value ) );
-        typedef typename result_of::data_order< MatrixA >::type order;
         detail::gerc( order(), size_row(a), size_column(a), alpha,
                 begin_value(x), stride(x), begin_value(y), stride(y),
                 begin_value(a), stride_major(a) );

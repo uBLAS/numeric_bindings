@@ -60,8 +60,8 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -75,8 +75,8 @@ inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -90,8 +90,8 @@ inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<float> value-type
+// * CBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -107,8 +107,8 @@ inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * complex<double> value-type
+// * CBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -125,8 +125,8 @@ inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -140,8 +140,8 @@ inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -155,8 +155,8 @@ inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<float> value-type
+// * CUBLAS backend, and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -172,8 +172,8 @@ inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * complex<double> value-type
+// * CUBLAS backend, and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -189,8 +189,8 @@ inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -204,8 +204,8 @@ inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -219,8 +219,8 @@ inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<float> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -236,8 +236,8 @@ inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * complex<double> value-type
+// * netlib-compatible BLAS backend (the default), and
+// * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
 inline void syr2k( Order, UpLo, Trans, const std::ptrdiff_t n,
@@ -274,6 +274,9 @@ struct syr2k_impl {
     template< typename MatrixA, typename MatrixB, typename MatrixC >
     static return_type invoke( const value_type alpha, const MatrixA& a,
             const MatrixB& b, const value_type beta, MatrixC& c ) {
+        typedef typename result_of::data_order< MatrixB >::type order;
+        typedef typename result_of::data_side< MatrixC >::type uplo;
+        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< MatrixB >::type >::type >::value) );
@@ -281,9 +284,6 @@ struct syr2k_impl {
                 MatrixA >::type >::type, typename remove_const<
                 typename value< MatrixC >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value ) );
-        typedef typename result_of::data_order< MatrixB >::type order;
-        typedef typename result_of::data_side< MatrixC >::type uplo;
-        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
         detail::syr2k( order(), uplo(), trans(), size_column(c),
                 size_column(a), alpha, begin_value(a), stride_major(a),
                 begin_value(b), stride_major(b), beta, begin_value(c),

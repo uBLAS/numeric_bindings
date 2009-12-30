@@ -59,8 +59,8 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * float value-type
+// * CBLAS backend, and
+// * float value-type.
 //
 template< typename Order, typename UpLo >
 inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -73,8 +73,8 @@ inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
 template< typename Order, typename UpLo >
 inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -88,8 +88,8 @@ inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * float value-type
+// * CUBLAS backend, and
+// * float value-type.
 //
 template< typename Order, typename UpLo >
 inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -103,8 +103,8 @@ inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
 template< typename Order, typename UpLo >
 inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -118,8 +118,8 @@ inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * float value-type
+// * netlib-compatible BLAS backend (the default), and
+// * float value-type.
 //
 template< typename Order, typename UpLo >
 inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -133,8 +133,8 @@ inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
 template< typename Order, typename UpLo >
 inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
@@ -170,6 +170,8 @@ struct sbmv_impl {
     static return_type invoke( const std::ptrdiff_t k, const real_type alpha,
             const MatrixA& a, const VectorX& x, const real_type beta,
             VectorY& y ) {
+        typedef typename result_of::data_order< MatrixA >::type order;
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorX >::type >::type >::value) );
@@ -177,8 +179,6 @@ struct sbmv_impl {
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
-        typedef typename result_of::data_order< MatrixA >::type order;
-        typedef typename result_of::data_side< MatrixA >::type uplo;
         detail::sbmv( order(), uplo(), size_column(a), k, alpha,
                 begin_value(a), stride_major(a), begin_value(x), stride(x),
                 beta, begin_value(y), stride(y) );

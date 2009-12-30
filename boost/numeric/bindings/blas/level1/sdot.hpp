@@ -15,7 +15,6 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL1_SDOT_HPP
 
 #include <boost/assert.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -57,41 +56,36 @@ namespace detail {
 #if defined BOOST_NUMERIC_BINDINGS_BLAS_CBLAS
 //
 // Overloaded function for dispatching to
-// * CBLAS backend
-// * double value-type
+// * CBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline double sdot( Order, const std::ptrdiff_t n, const float* sx,
+inline double sdot( const std::ptrdiff_t n, const float* sx,
         const std::ptrdiff_t incx, const float* sy,
         const std::ptrdiff_t incy ) {
-    return cblas_dsdot( cblas_option< Order >::value, n, sx, incx, sy, incy );
+    return cblas_dsdot( n, sx, incx, sy, incy );
 }
 
 #elif defined BOOST_NUMERIC_BINDINGS_BLAS_CUBLAS
 //
 // Overloaded function for dispatching to
-// * CUBLAS backend
-// * double value-type
+// * CUBLAS backend, and
+// * double value-type.
 //
-template< typename Order >
-inline double sdot( Order, const std::ptrdiff_t n, const float* sx,
+inline double sdot( const std::ptrdiff_t n, const float* sx,
         const std::ptrdiff_t incx, const float* sy,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return // NOT FOUND();
 }
 
 #else
 //
 // Overloaded function for dispatching to
-// * netlib-compatible BLAS backend (the default)
-// * double value-type
+// * netlib-compatible BLAS backend (the default), and
+// * double value-type.
 //
-template< typename Order >
-inline double sdot( Order, const std::ptrdiff_t n, const float* sx,
+inline double sdot( const std::ptrdiff_t n, const float* sx,
         const std::ptrdiff_t incx, const float* sy,
         const std::ptrdiff_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     return BLAS_DSDOT( &n, sx, &incx, sy, &incy );
 }
 
@@ -122,7 +116,6 @@ struct sdot_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorSX >::type >::type, typename remove_const<
                 typename value< VectorSY >::type >::type >::value) );
-        
         return detail::sdot( n, begin_value(sx), incx, begin_value(sy),
                 incy );
     }

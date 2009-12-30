@@ -289,4 +289,20 @@ def generate_const_variants( argument_list ):
 def value_type( arg ):
     return 'typename value< ' + arg + ' >::type'
 
+#
+# Search replace stuff for handling exceptional cases through the
+# templating system
+#
+
+def search_replace( source, key_name, template_map ):
+    print "Trying key ", key_name
+    if key_name not in template_map:
+        return source
+    result = source
+    for search_replace in template_map[ key_name ].split( "--" ):
+        if "->" in search_replace:
+            splitted = search_replace.split("->")
+            print "Replacing '" + splitted[0] + "' with '" + splitted[1] + "'"
+            result = result.replace( splitted[0], splitted[1] )
+    return result
 

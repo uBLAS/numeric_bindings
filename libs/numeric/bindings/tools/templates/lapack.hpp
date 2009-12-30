@@ -82,7 +82,7 @@ $TEMPLATE[level1_pre_header]
 // for dispatching to $groupname.
 //
 template< typename Value, typename Enable = void >
-struct $groupname_impl{};
+struct $groupname_impl {};
 
 $TEMPLATE[level1_header1]
 //

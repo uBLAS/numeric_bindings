@@ -41,6 +41,12 @@ global_type_variant_map = {
 
 templates = {}
 
+def return_type( fortran_type ):
+  m_type_map = global_type_map
+  m_type_map[ 'COMPLEX' ] = complex_float_type
+  m_type_map[ 'COMPLEX*16' ] = complex_double_type
+  m_type_map[ 'DOUBLE COMPLEX' ] = complex_double_type
+  return m_type_map[ fortran_type ]
 
 def value_type( fortran_type ):
   m_type_map = global_type_map
@@ -704,9 +710,9 @@ def match_assert_ge( argument_map, text_field ):
 
 
 
-
+#
 # try different keys, return the one that exists, if any
-
+#
 def my_has_key( key_name, template_map ):
   # try, e.g., gelsd.all.
   m_all_key = key_name.replace( ".complex", ".all" ).replace( ".real", ".all" )
@@ -1435,7 +1441,7 @@ def parse_file( filename, template_map ):
   info_map[ 'argument_map' ] = argument_map
   info_map[ 'grouped_arguments' ] = grouped_arguments
   if subroutine_return_type != None:
-    info_map[ 'return_value_type' ] = value_type( subroutine_return_type )
+    info_map[ 'return_value_type' ] = return_type( subroutine_return_type )
     info_map[ 'level1_return_type' ] = 'value_type'
     info_map[ 'return_statement' ] = 'return '
   else:

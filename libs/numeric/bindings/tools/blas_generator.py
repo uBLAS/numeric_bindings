@@ -130,6 +130,7 @@ def write_functions( info_map, group, template_map, base_dir ):
         sub_template = sub_template.replace( '$groupname', group_name.lower() )
         sub_template = sub_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'return_value_type' ] )
         sub_template = sub_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
+        sub_template = bindings.search_replace( sub_template, group_name.lower() + '.level0.gsub', template_map )
 
         sub_overloads += bindings.proper_indent( sub_template )
 

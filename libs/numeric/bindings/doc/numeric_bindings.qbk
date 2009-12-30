@@ -161,11 +161,12 @@ will be the most granular level.
 [include traits.qbk]
 
 
-[section Algorithms]
+[section Reference]
 [include blas.qbk]
 
+[/
 [include lapack.qbk]
-
+]
 
 [endsect]
 

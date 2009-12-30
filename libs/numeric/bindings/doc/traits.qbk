@@ -85,7 +85,7 @@ Returns the result type of begin
 
 [heading Synopsis]
 ``
-template< typename T >
+template< typename T, typename Tag >
 struct begin {
     typedef __unspecified__ type;
 };
@@ -93,7 +93,7 @@ struct begin {
 
 [heading Expression Semantics]
 ``
-result_of::begin<T>::type
+result_of::begin< T, tag::index<1> >::type
 ``
 
 [endsect]

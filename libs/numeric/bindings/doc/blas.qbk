@@ -3,7 +3,7 @@
 
 BLAS consists of three levels of routines: 
 
-* *level 1* routines involve scalar-vector and vector-vector operations, like computing an inne product,
+* *level 1* routines involve scalar-vector and vector-vector operations, like computing an inner product,
 * *level 2* routines cover vector-matrix operations, and
 * *level 3* routines perform matrix-matrix operations.
 

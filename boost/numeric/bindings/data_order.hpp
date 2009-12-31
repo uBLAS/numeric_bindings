@@ -14,11 +14,19 @@
 namespace boost {
 namespace numeric {
 namespace bindings {
+namespace result_of {
 
 template< typename T >
 struct data_order {
     typedef typename detail::property_at< T, tag::data_order >::type type;
 };
+
+} // namespace result_of
+
+template< typename T >
+typename result_of::data_order<T>::type data_order( const T& ) {
+    return result_of::data_order<T>::type();
+}
 
 } // namespace bindings
 } // namespace numeric

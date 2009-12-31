@@ -21,11 +21,15 @@ NUMERIC_LIB_PATH ?= /usr/lib ;
 NUMERIC_INCLUDE ?= /usr/local/lib ;
 SUITESPARSE_INCLUDE ?= $(NUMERIC_INCLUDE)/SuiteSparse ;
 
+FORTRAN_PATH ?= $(NUMERIC_LIB_PATH) ;
+
 ACML_DLL_PATH ?= /AMD/acml4.2.0/ifort32/lib ;
 ACML_FORTRAN_DLL ?= libifcoremd ;
 ACML_DLL ?= libacml_dll ;
 ACML_PATH ?= $(NUMERIC_LIB_PATH) ;
 ACML_LIB ?= acml ;
+
+MKL_PATH ?= $(NUMERIC_LIB_PATH) ;
 
 AMOS_PATH ?= $(NUMERIC_LIB_PATH) ;
 AMOS_LIB ?= amos ;
@@ -62,11 +66,16 @@ alias msvc_acml_fortran_lib ;
 lib msvc_acml_lib : : <name>$(ACML_DLL) <search>$(ACML_DLL_PATH) <toolset>msvc:<link>shared <use>msvc_acml_fortran_lib
              : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS <library>msvc_acml_fortran_lib ;
 
+lib mkl_core_lib : : <name>mkl_core <search>$(MKL_PATH)
+                 : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;
+lib mkl_c_lib : : <name>mkl_intel_lp64 <search>$(MKL_PATH) ;
+lib mkl_seq_lib : : <name>mkl_sequential <search>$(MKL_PATH) ;
 
-lib gfortran_fortran_lib : : <name>gfortran
+
+lib gfortran_fortran_lib : : <name>gfortran <search>$(FORTRAN_PATH)
                          : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;
-lib g77_fortran_lib : : <name>g2c ;
-lib msvc_fortran_lib : : <name>libf2c <search>$(BLAS_PATH)
+lib g77_fortran_lib : : <name>g2c <search>$(FORTRAN_PATH) ;
+lib msvc_fortran_lib : : <name>libf2c <search>$(FORTRAN_PATH)
                 : : <define>BIND_FORTRAN_LOWERCASE_UNDERSCORE
                     <toolset>msvc:<linkflags>/NODEFAULTLIB:LIBCMT ;
 
@@ -82,8 +91,8 @@ lib atlas_lib : : <name>$(ATLAS_LIB) <search>$(ATLAS_PATH)
               : : <include>$(ATLAS_INCLUDE) ;
 lib cblas_lib : : <name>$(CBLAS_LIB) <search>$(ATLAS_PATH)
               : : <include>$(ATLAS_INCLUDE) ;
-lib lapack_atlas_lib : fortran_lib : <name>$(LAPACK_ATLAS_LIB) <search>$(ATLAS_PATH)
-              : : <include>$(ATLAS_INCLUDE) ;
+lib lapack_atlas_lib : : <name>$(LAPACK_ATLAS_LIB) <search>$(ATLAS_PATH)
+                     : : <include>$(ATLAS_INCLUDE) ;
 
 lib f_blas_lib   : fortran_lib : <name>$(BLAS_LIB)   <search>$(BLAS_PATH) ;
 lib f_lapack_lib : fortran_lib : <name>$(LAPACK_LIB) <search>$(LAPACK_PATH) <use>blas_lib
@@ -95,6 +104,7 @@ alias blas_lib   : f_blas_lib : <numbind>g77 ;
 alias blas_lib   : f_blas_lib : <numbind>clapack-gcc ;
 alias blas_lib   : acml_lib : <numbind>acml-gcc ;
 alias blas_lib   : msvc_acml_lib : <numbind>acml-msvc ;
+alias blas_lib   : mkl_core_lib mkl_c_lib mkl_seq_lib : <numbind>mkl-gcc ;
 alias lapack_lib : f_lapack_lib ;
 alias lapack_lib : f_lapack_lib : <numbind>gfortran ;
 alias lapack_lib : f_lapack_lib : <numbind>g77 ;
@@ -103,6 +113,7 @@ alias lapack_lib : acml_lib : <use>blas_lib <numbind>acml-gcc
                  : : <library>blas_lib ;
 alias lapack_lib : msvc_acml_lib : <use>blas_lib <numbind>acml-msvc
                  : : <library>blas_lib ;
+alias lapack_lib : mkl_core_lib mkl_c_lib mkl_seq_lib : <numbind>mkl-gcc ;
 
 lib pthread ;
 lib mpiseq : : <search>$(MUMPS_PATH)/../libseq ;

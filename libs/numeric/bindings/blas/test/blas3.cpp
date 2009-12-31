@@ -246,8 +246,9 @@ struct Gemm3 {
       value_type beta = -3.0 ;
 
       boost::numeric::bindings::blas::gemm( 'N', 'N', alpha, a_, b_, beta, c ) ;
+      double safety_factor (1.5);
       if ( norm_frobenius( c - (beta*c_ref_ + alpha * prod( a_ref_, b_ref_ ) ) )
-          > std::numeric_limits< real_type >::epsilon() * norm_frobenius( c ) ) return 255;
+          > safety_factor*std::numeric_limits< real_type >::epsilon() * norm_frobenius( c ) ) return 255;
 
       return 0;
    }
@@ -423,12 +424,15 @@ struct Trsm1 {
 template <typename T>
 int do_value_type() {
    // Gemm test
+   std::cout << "  gemm\n";
    if (do_matrix_types( Gemm1<T>() )) return 255 ;
 
    // Syrk and herk test
+   std::cout << "  herk\n";
    if (do_matrix_types( Syrk1<T>() )) return 255 ;
 
    // Trsm test
+   std::cout << "  trsm\n";
    if (do_matrix_types( Trsm1<T>() )) return 255 ;
 
    return 0 ;
@@ -437,9 +441,13 @@ int do_value_type() {
 
 int main() {
    // Test for various value_types
+   std::cout << "float\n";
    if (do_value_type<float>()) return 255 ;
+   std::cout << "double\n";
    if (do_value_type<double>()) return 255 ;
+   std::cout << "complex<float>\n";
    if (do_value_type<std::complex<float> >()) return 255 ;
+   std::cout << "complex<double>\n";
    if (do_value_type<std::complex<double> >()) return 255 ;
 
    std::cout << "Regression test succeeded\n" ;

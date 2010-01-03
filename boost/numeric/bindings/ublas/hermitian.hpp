@@ -6,15 +6,15 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_UBLAS_TRIANGULAR_HPP
-#define BOOST_NUMERIC_BINDINGS_UBLAS_TRIANGULAR_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_UBLAS_HERMITIAN_HPP
+#define BOOST_NUMERIC_BINDINGS_UBLAS_HERMITIAN_HPP
 
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
 #include <boost/numeric/bindings/value.hpp>
-#include <boost/numeric/ublas/triangular.hpp>
+#include <boost/numeric/ublas/hermitian.hpp>
 
 namespace boost {
 namespace numeric {
@@ -22,16 +22,15 @@ namespace bindings {
 namespace detail {
 
 template< typename T, typename F1, typename F2, typename A, typename Id, typename Enable >
-struct adaptor< ublas::triangular_matrix< T, F1, F2, A >, Id, Enable > {
+struct adaptor< ublas::hermitian_matrix< T, F1, F2, A >, Id, Enable > {
 
     typedef typename copy_const< Id, T >::type value_type;
     typedef mpl::map<
-        mpl::pair< tag::value_type, T >,
+        mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::matrix >,
         mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
-        mpl::pair< tag::matrix_type, tag::triangular >,
-        mpl::pair< tag::matrix_side, typename convert_to< tag::matrix_side, F1 >::type >,
+        mpl::pair< tag::matrix_type, tag::hermitian >,
         mpl::pair< tag::data_structure, tag::triangular_array >,
         mpl::pair< tag::data_side, typename convert_to< tag::data_side, F1 >::type >,
         mpl::pair< tag::data_order, typename convert_to< tag::data_order, F2 >::type >
@@ -55,13 +54,12 @@ struct adaptor< ublas::triangular_matrix< T, F1, F2, A >, Id, Enable > {
 
 };
 
-
 template< typename T, typename F, typename Id, typename Enable >
-struct adaptor< ublas::triangular_adaptor< T, F >, Id, Enable > {
+struct adaptor< ublas::hermitian_adaptor< T, F >, Id, Enable > {
 
     typedef typename value< T >::type value_type;
     typedef typename property_insert< T, 
-        mpl::pair< tag::matrix_type, tag::triangular >,
+        mpl::pair< tag::matrix_type, tag::hermitian >,
         mpl::pair< tag::data_side, typename convert_to< tag::data_side, F >::type >
     >::type property_map;
 
@@ -83,9 +81,9 @@ struct adaptor< ublas::triangular_adaptor< T, F >, Id, Enable > {
 
 };
 
-} // detail
-} // bindings
-} // numeric
-} // boost
+} // namespace detail
+} // namespace bindings
+} // namespace numeric
+} // namespace boost
 
 #endif

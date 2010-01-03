@@ -13,7 +13,7 @@
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/detail/if_row_major.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
-#include <boost/numeric/bindings/ublas/unbounded_array.hpp>
+#include <boost/numeric/bindings/ublas/storage.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 
 namespace boost {

@@ -9,8 +9,11 @@
 #ifndef BOOST_NUMERIC_BINDINGS_UBLAS_SYMMETRIC_HPP
 #define BOOST_NUMERIC_BINDINGS_UBLAS_SYMMETRIC_HPP
 
+#include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
+#include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/numeric/ublas/symmetric.hpp>
 
 namespace boost {
@@ -32,6 +35,33 @@ struct adaptor< ublas::symmetric_matrix< T, F1, F2, A >, Id, Enable > {
         mpl::pair< tag::data_side, typename convert_to< tag::data_side, F1 >::type >,
         mpl::pair< tag::data_order, typename convert_to< tag::data_order, F2 >::type >
     > property_map;
+
+    static std::ptrdiff_t size1( const Id& t ) {
+        return t.size1();
+    }
+
+    static std::ptrdiff_t size2( const Id& t ) {
+        return t.size2();
+    }
+
+    static value_type* begin_value( Id& t ) {
+        return bindings::begin_value( t.data() );
+    }
+
+    static value_type* end_value( Id& t ) {
+        return bindings::end_value( t.data() );
+    }
+
+};
+
+template< typename T, typename F, typename Id, typename Enable >
+struct adaptor< ublas::symmetric_adaptor< T, F >, Id, Enable > {
+
+    typedef typename value< T >::type value_type;
+    typedef typename property_insert< T, 
+        mpl::pair< tag::matrix_type, tag::symmetric >,
+        mpl::pair< tag::data_side, typename convert_to< tag::data_side, F >::type >
+    >::type property_map;
 
     static std::ptrdiff_t size1( const Id& t ) {
         return t.size1();

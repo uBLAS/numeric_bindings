@@ -15,6 +15,7 @@
 #include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/end.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/rank.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/tag.hpp>
@@ -54,9 +55,9 @@ struct adaptor< trans_wrapper<T>, Id, Enable > {
         mpl::pair<
             tag::data_order,
             typename mpl::if_<
-                is_row_major< T >, 
-                tag::column_major,
-                tag::row_major >::type
+                is_column_major< T >, 
+                tag::row_major,
+                tag::column_major >::type
         >,
 
         // If T has a linear array:

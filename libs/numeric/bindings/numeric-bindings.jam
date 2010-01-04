@@ -69,11 +69,15 @@ lib msvc_acml_lib : : <name>$(ACML_DLL) <search>$(ACML_DLL_PATH) <toolset>msvc:<
 lib mkl_core_lib : : <name>mkl_core <search>$(MKL_PATH)
                  : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;
 lib mkl_c_lib : : <name>mkl_intel_lp64 <search>$(MKL_PATH) ;
+#lib mkl_c_lib : : <name>mkl_intel_ilp64 <search>$(MKL_PATH)
+#              : : <define>BIND_FORTRAN_INTEGER_8 ;
 lib mkl_seq_lib : : <name>mkl_sequential <search>$(MKL_PATH) ;
 
 
 lib gfortran_fortran_lib : : <name>gfortran <search>$(FORTRAN_PATH)
-                         : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS ;
+                         : : <define>BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS
+#                             <define>BIND_FORTRAN_INTEGER_8
+;
 lib g77_fortran_lib : : <name>g2c <search>$(FORTRAN_PATH) ;
 lib msvc_fortran_lib : : <name>libf2c <search>$(FORTRAN_PATH)
                 : : <define>BIND_FORTRAN_LOWERCASE_UNDERSCORE

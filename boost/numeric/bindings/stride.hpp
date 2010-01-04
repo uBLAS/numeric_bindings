@@ -42,7 +42,7 @@ struct stride_impl {
 // Strides for ranks outside the scope of the object are fixed at
 // the dot product of its existing sizes and strides.
 // 
-// Object    rank    result
+// Object    rank    result of strideN(), with N > rank
 // scalar    0       1
 // vector    1       size1 * stride1
 // matrix    2       size1 * stride1 + size2 * stride2

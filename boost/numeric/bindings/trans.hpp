@@ -9,10 +9,15 @@
 #ifndef BOOST_NUMERIC_BINDINGS_TRANS_HPP
 #define BOOST_NUMERIC_BINDINGS_TRANS_HPP
 
-#include <boost/numeric/bindings/value.hpp>
-#include <boost/numeric/bindings/size.hpp>
-#include <boost/numeric/bindings/begin.hpp>
+#include <boost/mpl/fold.hpp>
+#include <boost/mpl/insert.hpp>
 #include <boost/mpl/max.hpp>
+#include <boost/mpl/vector.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/rank.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/tag.hpp>
+#include <boost/numeric/bindings/value.hpp>
 
 namespace boost {
 namespace numeric {
@@ -24,46 +29,88 @@ struct trans_wrapper: reference_wrapper<T> {
     trans_wrapper( T& t ): reference_wrapper<T>( t ) {}
 };
 
+//
+// In case of linear storage
+//
 template< typename T, typename Id, typename Enable >
 struct adaptor< trans_wrapper<T>, Id, Enable > {
 
+    typedef typename property_map_of< T >::type prop_of_T;
     typedef typename property_insert< T,
-        mpl::pair< tag::entity, 
-                   typename mpl::max< tag::matrix, rank< T > >::type >,
-        mpl::pair< tag::data_order,
-                   typename mpl::if_< is_row_major< T >, 
-                                      tag::column_major,
-                                      tag::row_major >::type >,
+
+        // upgrade to at least a matrix
+        mpl::pair<
+            tag::entity, 
+            tag::tensor< mpl::max< tag::matrix, rank< T > >::type::value >
+        >,
+
+        // size1 <-> size2
         mpl::pair< tag::size_type<1>, typename result_of::size2< T >::type >,
         mpl::pair< tag::size_type<2>, typename result_of::size1< T >::type >,
-        mpl::pair< tag::stride_type<1>, typename result_of::stride2< T >::type >,
-        mpl::pair< tag::stride_type<2>, typename result_of::stride1< T >::type >
+
+        // row_major <-> column_major
+        mpl::pair<
+            tag::data_order,
+            typename mpl::if_<
+                is_row_major< T >, 
+                tag::column_major,
+                tag::row_major >::type
+        >,
+
+        // If T has a linear array:
+        // stride1 <-> stride2
+        typename mpl::if_< has_linear_array< T >,
+            mpl::pair< tag::stride_type<1>, typename result_of::stride2< T >::type >,
+            mpl::void_
+        >::type,
+        typename mpl::if_< has_linear_array< T >,
+            mpl::pair< tag::stride_type<2>, typename result_of::stride1< T >::type >,
+            mpl::void_
+        >::type,
+
+        // If a data_side tag is present:
+        // upper <-> lower
+        typename mpl::if_<
+            mpl::has_key< prop_of_T, tag::data_side >,
+            typename mpl::if_<
+                is_same<
+                    typename mpl::at< prop_of_T, tag::data_side >::type,
+                    tag::upper
+                >,
+                mpl::pair< tag::data_side, tag::lower >,
+                mpl::pair< tag::data_side, tag::upper >
+            >::type,
+            mpl::void_
+        >::type
+
     >::type property_map;
 
     // Flip size1/size2
-    static typename result_of::size2< T >::type size1( const Id& t ) {
-        return bindings::size2( t.get() );
+    static typename result_of::size2< T >::type size1( const Id& id ) {
+        return bindings::size2( id.get() );
     }
 
-    static typename result_of::size1< T >::type size2( const Id& t ) {
-        return bindings::size1( t.get() );
+    static typename result_of::size1< T >::type size2( const Id& id ) {
+        return bindings::size1( id.get() );
     }
 
-    // Flip stride1/stride2
-    static typename result_of::stride2< T >::type stride1( const Id& t ) {
-        return bindings::stride2( t.get() );
-    }
-
-    static typename result_of::stride1< T >::type stride2( const Id& t ) {
-        return bindings::stride1( t.get() );
-    }
-
+    // Value array access
     static typename result_of::begin_value< T >::type begin_value( Id& id ) {
         return bindings::begin_value( id.get() );
     }
 
     static typename result_of::end_value< T >::type end_value( Id& id ) {
         return bindings::end_value( id.get() );
+    }
+
+    // Linear array storage transpose
+    // Flip stride1/stride2
+    static typename result_of::stride2< T >::type stride1( const Id& id ) {
+        return bindings::stride2( id.get() );
+    }
+
+    static typename result_of::stride1< T >::type stride2( const Id& id ) {
+        return bindings::stride1( id.get() );
     }
 
 };

@@ -56,7 +56,11 @@ struct property_insert {
     typedef typename mpl::fold<
         pair_vector,
         properties,
-        mpl::insert< mpl::_1, mpl::_2 >
+        mpl::if_<
+            is_same< mpl::_2, mpl::void_ >,
+            mpl::_1,
+            mpl::insert< mpl::_1, mpl::_2 >
+        >
     >::type type;
 
 };

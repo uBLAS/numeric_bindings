@@ -75,7 +75,9 @@ ADD_TAG( yale_sparse )
 ADD_TAG( structure )
 ADD_TAG( general )
 ADD_TAG( triangular )
+ADD_TAG( unit_triangular )
 ADD_TAG( symmetric )
+ADD_TAG( hermitian )
 
 ADD_TAG( num_strides )
 

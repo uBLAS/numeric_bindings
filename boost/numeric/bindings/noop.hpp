@@ -10,10 +10,7 @@
 #define BOOST_NUMERIC_BINDINGS_NOOP_HPP
 
 #include <boost/numeric/bindings/detail/adaptable_type.hpp>
-#include <boost/numeric/bindings/begin.hpp>
-#include <boost/numeric/bindings/end.hpp>
-#include <boost/numeric/bindings/size.hpp>
-#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/detail/basic_unwrapper.hpp>
 #include <boost/ref.hpp>
 
 namespace boost {
@@ -29,22 +26,10 @@ struct noop_wrapper:
 };
 
 template< typename T, typename Id, typename Enable >
-struct adaptor< noop_wrapper<T>, Id, Enable > {
+struct adaptor< noop_wrapper<T>, Id, Enable >:
+        basic_unwrapper< T, Id > {
 
-    typedef adaptor< typename boost::remove_const<T>::type, T > underlying_adaptor;
-    typedef typename underlying_adaptor::property_map property_map;
-
-    static typename result_of::size1<T>::type size1( const Id& id ) {
-        return bindings::size1( id.get() );
-    }
-
-    static typename result_of::begin_value< T >::type begin_value( Id& id ) {
-        return bindings::begin_value( id.get() );
-    }
-
-    static typename result_of::end_value< T >::type end_value( Id& id ) {
-        return bindings::end_value( id.get() );
-    }
+    typedef typename property_map_of< T >::type property_map;
 
 };
 

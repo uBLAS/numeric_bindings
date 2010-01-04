@@ -8,6 +8,8 @@
 
 #include "../../blas/test/random.hpp"
 
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/lapack/driver/gees.hpp>
 #include <boost/numeric/bindings/traits/ublas_matrix.hpp>
 #include <boost/numeric/bindings/traits/ublas_vector.hpp>

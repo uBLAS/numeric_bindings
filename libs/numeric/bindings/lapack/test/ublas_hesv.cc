@@ -3,6 +3,8 @@
 // A hermitian
 // driver function hesv()
 
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
 #include <cstddef>
 #include <iostream>
 #include <complex>

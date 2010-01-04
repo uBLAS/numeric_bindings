@@ -8,6 +8,8 @@
 
 #include "../../blas/test/random.hpp"
 
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/lapack/computational/geqrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/ormqr.hpp>
 #include <boost/numeric/bindings/lapack/computational/orgqr.hpp>

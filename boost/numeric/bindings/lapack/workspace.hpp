@@ -72,7 +72,7 @@ namespace boost { namespace numeric { namespace bindings {
             typedef typename value<W>::type w_value_type ;
             W& select( w_value_type const& ) { return w_ ; }
 
-            typedef typename traits::vector_traits<WRI>::value_type wri_value_type ;
+            typedef typename value<WRI>::type wri_value_type ;
             WRI& select( wri_value_type const& ) { return wri_ ; }
 
           private:
@@ -93,10 +93,10 @@ namespace boost { namespace numeric { namespace bindings {
             typedef typename value<W>::type w_value_type ;
             W& select( w_value_type const& ) { return w_ ; }
 
-            typedef typename traits::vector_traits<WR>::value_type wr_value_type ;
+            typedef typename value<WR>::type wr_value_type ;
             WR& select( wr_value_type const& ) { return wr_ ; }
 
-            typedef typename traits::vector_traits<WI>::value_type wi_value_type ;
+            typedef typename value<WI>::type wi_value_type ;
             WI& select( wi_value_type const& ) { return wi_ ; }
 
           private:
@@ -119,13 +119,13 @@ namespace boost { namespace numeric { namespace bindings {
             typedef typename value<W>::type w_value_type ;
             W& select( w_value_type const& ) { return w_ ; }
 
-            typedef typename traits::vector_traits<WR>::value_type wr_value_type ;
+            typedef typename value<WR>::type wr_value_type ;
             WR& select( wr_value_type const& ) { return wr_ ; }
 
-            typedef typename traits::vector_traits<WI>::value_type wi_value_type ;
+            typedef typename value<WI>::type wi_value_type ;
             WI& select( wi_value_type const& ) { return wi_ ; }
 
-            typedef typename traits::vector_traits<WB>::value_type wb_value_type ;
+            typedef typename value<WB>::type wb_value_type ;
             WB& select( wb_value_type const& ) { return wb_ ; }
 
           private:

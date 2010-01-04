@@ -56,7 +56,6 @@ ADD_TAG( value_transform )
 
 ADD_TAG( entity )
 ADD_TAG( matrix_type )
-ADD_TAG( matrix_side )
 
 ADD_TAG( data_structure )
 ADD_TAG( data_order )

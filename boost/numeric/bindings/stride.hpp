@@ -9,16 +9,16 @@
 #ifndef BOOST_NUMERIC_BINDINGS_STRIDE_HPP
 #define BOOST_NUMERIC_BINDINGS_STRIDE_HPP
 
-#include <boost/numeric/bindings/detail/generate_functions.hpp>
-#include <boost/numeric/bindings/detail/adaptor.hpp>
-#include <boost/numeric/bindings/detail/get.hpp>
-#include <boost/numeric/bindings/index_major.hpp>
-#include <boost/numeric/bindings/index_minor.hpp>
-#include <boost/numeric/bindings/rank.hpp>
+#include <boost/numeric/bindings/size.hpp>
 #include <boost/mpl/min.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/less_equal.hpp>
+#include <boost/mpl/equal_to.hpp>
+#include <boost/mpl/range_c.hpp>
+#include <boost/mpl/times.hpp>
 #include <boost/mpl/greater.hpp>
+#include <boost/mpl/plus.hpp>
+#include <boost/type_traits/is_same.hpp>
 #include <boost/static_assert.hpp>
 
 namespace boost {
@@ -39,20 +39,119 @@ struct stride_impl {
 };
 
 //
-// Strides for ranks outside the scope of the object are fixed at 0
-// E.g., a vector has rank 1, its stride for index<2> will be 0.
+// Strides for ranks outside the scope of the object are fixed at
+// the dot product of its existing sizes and strides.
+// 
+// Object    rank    result
+// scalar    0       1
+// vector    1       size1 * stride1
+// matrix    2       size1 * stride1 + size2 * stride2
+// tensor    N       sum_i( size_i, stride_i )  (dot( size, stride))
+//
+// Iff size_i and stride_i are integral constants, results will be known at
+// compile time. Otherwise, the result_type will be std::ptrdiff_t.
 //
 template< typename T, typename Index >
 struct stride_impl< T, Index,
         typename boost::enable_if<
-            mpl::greater< Index, rank<T> >
+            mpl::equal_to< rank<T>, tag::scalar >
         >::type > {
 
-    typedef typename mpl::int_<0> result_type;
+    typedef typename mpl::int_<1> result_type;
 
     static result_type invoke( const T& t ) {
         return result_type();
     }
+
+};
+
+
+template< typename T, typename State, typename Index >
+struct fold_stride_size {
+
+    typedef tag::index< Index::value > index_type;
+    typedef typename result_of::size< T, index_type >::type size_type;
+    typedef typename stride_impl< T, index_type >::result_type stride_type;
+
+    typedef typename mpl::if_<
+        mpl::or_<
+            is_same< State, std::ptrdiff_t >,
+            is_same< size_type, std::ptrdiff_t >,
+            is_same< stride_type, std::ptrdiff_t >
+        >,
+        std::ptrdiff_t,
+        mpl::plus<
+            State, 
+            mpl::times< 
+                size_type,
+                stride_type
+            >
+        >
+    >::type type;
+
+};
+
+//
+// If Result isn't a ptrdiff_t, just invoke the integral constant
+// and return that. Otherwise, runtime stuff is involved, so we'll
+// have to evaluate sum_i( size_i, stride_i ).
+//
+template< typename T, typename Result, int Index >
+struct apply_fold {
+    static Result invoke( const T& t ) {
+        return Result();
+    }
+};
+
+template< typename T, int Index >
+struct apply_fold< T, std::ptrdiff_t, Index > {
+
+    static std::ptrdiff_t invoke( const T& t ) {
+        return size( t, tag::index< Index >() ) * 
+            stride_impl< T, tag::index< Index > >::invoke( t ) +
+            apply_fold< T, std::ptrdiff_t, Index-1 >::invoke( t );
+    }
+
+};
+
+template< typename T >
+struct apply_fold< T, std::ptrdiff_t, 0 > {
+
+    static std::ptrdiff_t invoke( const T& t ) {
+        return 0;
+    }
+
+};
+
+
+// Could be made generic for dimensions > 2,
+//  but not enough time right now
+
+
+template< typename T, typename Index >
+struct stride_impl< T, Index,
+        typename boost::enable_if<
+            mpl::and_<
+                 mpl::greater< rank<T>, tag::scalar >,
+                 mpl::greater< Index, rank<T> >
+           >
+        >::type > {
+
+    typedef mpl::range_c< int, 1, rank<T>::value+1 > index_range;
+    typedef typename mpl::fold<
+        index_range,
+        mpl::int_< 0 >,
+        fold_stride_size<
+            T,
+            mpl::_1,
+            mpl::_2
+        >
+    >::type result_type;
+
+    static result_type invoke( const T& t ) {
+        return apply_fold< T, result_type, rank<T>::value >::invoke( t );
+    }
+
 
 };
 

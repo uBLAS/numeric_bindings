@@ -10,8 +10,9 @@
 #define BOOST_NUMERIC_BINDINGS_INDEX_MAJOR_HPP
 
 #include <boost/mpl/if.hpp>
+#include <boost/mpl/max.hpp>
 #include <boost/numeric/bindings/rank.hpp>
-#include <boost/numeric/bindings/is_row_major.hpp>
+#include <boost/numeric/bindings/is_column_major.hpp>
 
 namespace boost {
 namespace numeric {
@@ -20,11 +21,11 @@ namespace bindings {
 template< typename T >
 struct index_major:
     mpl::if_<
-        is_row_major< T >,
-        tag::index<1>,
+        is_column_major< T >,
         tag::index<
-            rank< T >::value
-        >
+            mpl::max< tag::matrix, rank< T > >::type::value
+        >,
+        tag::index<1>
     >::type {};
 
 } // namespace bindings

@@ -25,7 +25,7 @@ struct adaptor< T, Id, typename boost::enable_if< is_numeric<T> >::type > {
         mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::scalar >,
         mpl::pair< tag::size_type<1>, mpl::int_<1> >,
-        mpl::pair< tag::stride_type<1>, mpl::int_<0> >
+        mpl::pair< tag::data_structure, tag::linear_array >
     > property_map;
 
     static value_type* begin_value( Id& t ) {

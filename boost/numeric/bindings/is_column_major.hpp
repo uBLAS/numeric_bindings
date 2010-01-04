@@ -9,6 +9,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_IS_COLUMN_MAJOR_HPP
 #define BOOST_NUMERIC_BINDINGS_IS_COLUMN_MAJOR_HPP
 
+#include <boost/mpl/if.hpp>
 #include <boost/numeric/bindings/detail/property_map.hpp>
 #include <boost/numeric/bindings/tag.hpp>
 
@@ -18,7 +19,11 @@ namespace bindings {
 
 template< typename T >
 struct is_column_major:
-        detail::is_same_at< T, tag::data_order, tag::column_major > {};
+        mpl::if_<
+            detail::property_has_key< T, tag::data_order >,
+            detail::is_same_at< T, tag::data_order, tag::column_major >,
+            mpl::true_
+        >::type {};
 
 } // namespace bindings
 } // namespace numeric

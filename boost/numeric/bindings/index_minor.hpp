@@ -10,6 +10,7 @@
 #define BOOST_NUMERIC_BINDINGS_INDEX_MINOR_HPP
 
 #include <boost/mpl/if.hpp>
+#include <boost/mpl/max.hpp>
 #include <boost/numeric/bindings/rank.hpp>
 #include <boost/numeric/bindings/is_column_major.hpp>
 
@@ -23,7 +24,7 @@ struct index_minor:
         is_column_major< T >,
         tag::index<1>,
         tag::index<
-            rank< T >::value
+            mpl::max< tag::matrix, rank< T > >::type::value
         >
     >::type {};
 

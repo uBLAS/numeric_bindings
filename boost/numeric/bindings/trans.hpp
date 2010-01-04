@@ -20,6 +20,7 @@
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/has_linear_array.hpp>
 #include <boost/ref.hpp>
 
 namespace boost {
@@ -27,7 +28,7 @@ namespace numeric {
 namespace bindings {
 namespace detail {
 
-template< typename T >
+template< typename T, typename Conj >
 struct trans_wrapper: reference_wrapper<T> {
     trans_wrapper( T& t ): reference_wrapper<T>( t ) {}
 };
@@ -35,8 +36,8 @@ struct trans_wrapper: reference_wrapper<T> {
 //
 // In case of linear storage
 //
-template< typename T, typename Id, typename Enable >
-struct adaptor< trans_wrapper<T>, Id, Enable > {
+template< typename T, typename Conj, typename Id, typename Enable >
+struct adaptor< trans_wrapper<T, Conj>, Id, Enable > {
 
     typedef typename property_map_of< T >::type prop_of_T;
     typedef typename property_insert< T,
@@ -59,6 +60,9 @@ struct adaptor< trans_wrapper<T>, Id, Enable > {
                 tag::row_major,
                 tag::column_major >::type
         >,
+
+        // Conjugate transform (if passed by template argument)
+        Conj,
 
         // If T has a linear array:
         // stride1 <-> stride2
@@ -124,19 +128,19 @@ namespace result_of {
 
 template< typename T >
 struct trans {
-    typedef detail::trans_wrapper<T> type;
+    typedef detail::trans_wrapper<T, mpl::void_> type;
 };
 
 }
 
 template< typename T >
 typename result_of::trans<T>::type trans( T& underlying ) {
-    return detail::trans_wrapper<T>( underlying );
+    return detail::trans_wrapper<T, mpl::void_>( underlying );
 }
 
 template< typename T >
 typename result_of::trans<const T>::type trans( const T& underlying ) {
-    return detail::trans_wrapper<const T>( underlying );
+    return detail::trans_wrapper<const T, mpl::void_>( underlying );
 }
 
 } // namespace bindings

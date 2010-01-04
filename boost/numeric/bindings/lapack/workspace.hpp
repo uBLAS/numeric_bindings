@@ -14,10 +14,10 @@
 #ifndef BOOST_NUMERIC_BINDINGS_LAPACK_WORKSPACE_HPP
 #define BOOST_NUMERIC_BINDINGS_LAPACK_WORKSPACE_HPP
 
-#include <boost/numeric/bindings/traits/detail/array_impl.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/bindings/traits/type.hpp>
 #include <boost/numeric/bindings/traits/type_traits.hpp>
-#include <boost/numeric/bindings/traits/vector_traits.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <memory>
 
 namespace boost { namespace numeric { namespace bindings {
@@ -53,7 +53,7 @@ namespace boost { namespace numeric { namespace bindings {
             {}
 
           public:
-            typedef typename traits::vector_traits<W>::value_type value_type ;
+            typedef typename value<W>::type value_type ;
             W& select( value_type const& ) { return w_ ; }
 
           private:
@@ -69,7 +69,7 @@ namespace boost { namespace numeric { namespace bindings {
             {}
 
           public:
-            typedef typename traits::vector_traits<W>::value_type w_value_type ;
+            typedef typename value<W>::type w_value_type ;
             W& select( w_value_type const& ) { return w_ ; }
 
             typedef typename traits::vector_traits<WRI>::value_type wri_value_type ;
@@ -90,7 +90,7 @@ namespace boost { namespace numeric { namespace bindings {
             {}
 
           public:
-            typedef typename traits::vector_traits<W>::value_type w_value_type ;
+            typedef typename value<W>::type w_value_type ;
             W& select( w_value_type const& ) { return w_ ; }
 
             typedef typename traits::vector_traits<WR>::value_type wr_value_type ;
@@ -116,7 +116,7 @@ namespace boost { namespace numeric { namespace bindings {
             {}
 
           public:
-            typedef typename traits::vector_traits<W>::value_type w_value_type ;
+            typedef typename value<W>::type w_value_type ;
             W& select( w_value_type const& ) { return w_ ; }
 
             typedef typename traits::vector_traits<WR>::value_type wr_value_type ;

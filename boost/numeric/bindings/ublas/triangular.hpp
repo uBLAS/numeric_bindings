@@ -30,8 +30,7 @@ struct adaptor< ublas::triangular_matrix< T, F1, F2, A >, Id, Enable > {
         mpl::pair< tag::entity, tag::matrix >,
         mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
-        mpl::pair< tag::matrix_type, tag::triangular >,
-        mpl::pair< tag::matrix_side, typename convert_to< tag::matrix_side, F1 >::type >,
+        mpl::pair< tag::matrix_type, typename convert_to< tag::matrix_type, F1 >::type >,
         mpl::pair< tag::data_structure, tag::triangular_array >,
         mpl::pair< tag::data_side, typename convert_to< tag::data_side, F1 >::type >,
         mpl::pair< tag::data_order, typename convert_to< tag::data_order, F2 >::type >

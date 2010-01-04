@@ -20,25 +20,11 @@ namespace detail {
 
 template< typename T >
 struct diag_tag_impl {
-};
-
-template<>
-struct diag_tag_impl< tag::upper > {
     typedef tag::non_unit type;
 };
 
 template<>
-struct diag_tag_impl< tag::lower > {
-    typedef tag::non_unit type;
-};
-
-template<>
-struct diag_tag_impl< tag::unit_upper > {
-    typedef tag::unit type;
-};
-
-template<>
-struct diag_tag_impl< tag::unit_lower > {
+struct diag_tag_impl< tag::unit_triangular > {
     typedef tag::unit type;
 };
 
@@ -49,7 +35,7 @@ namespace result_of {
 template< typename T >
 struct diag_tag {
     typedef typename detail::diag_tag_impl<
-        typename detail::property_at< T, tag::matrix_side >::type
+        typename detail::property_at< T, tag::matrix_type >::type
     >::type type;
 };
 

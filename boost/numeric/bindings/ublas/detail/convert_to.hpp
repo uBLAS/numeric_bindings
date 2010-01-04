@@ -29,23 +29,23 @@ struct convert_to< tag::data_order, ublas::column_major > {
 };
 
 template<>
-struct convert_to< tag::matrix_side, ublas::lower > {
-    typedef tag::lower type;
+struct convert_to< tag::matrix_type, ublas::lower > {
+    typedef tag::triangular type;
 };
 
 template<>
-struct convert_to< tag::matrix_side, ublas::upper > {
-    typedef tag::upper type;
+struct convert_to< tag::matrix_type, ublas::upper > {
+    typedef tag::triangular type;
 };
 
 template<>
-struct convert_to< tag::matrix_side, ublas::unit_lower > {
-    typedef tag::unit_lower type;
+struct convert_to< tag::matrix_type, ublas::unit_lower > {
+    typedef tag::unit_triangular type;
 };
 
 template<>
-struct convert_to< tag::matrix_side, ublas::unit_upper > {
-    typedef tag::unit_upper type;
+struct convert_to< tag::matrix_type, ublas::unit_upper > {
+    typedef tag::unit_triangular type;
 };
 
 template<>

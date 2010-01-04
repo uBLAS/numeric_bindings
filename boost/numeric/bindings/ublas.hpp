@@ -9,11 +9,12 @@
 #ifndef BOOST_NUMERIC_BINDINGS_UBLAS_HPP
 #define BOOST_NUMERIC_BINDINGS_UBLAS_HPP
 
-#include <boost/numeric/bindings/ublas/compressed_vector.hpp>
-#include <boost/numeric/bindings/ublas/compressed_matrix.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_sparse.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 #include <boost/numeric/bindings/ublas/triangular.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/vector_sparse.hpp>
 
 #endif

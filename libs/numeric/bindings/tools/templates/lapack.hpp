@@ -181,9 +181,9 @@ inline std::ptrdiff_t $groupname( $LEVEL2 ) {
     return info;
 }
 $TEMPLATE[setup_min_workspace]
-        traits::detail::array< $WORKSPACE_TYPE > tmp_$NAME( min_size_$NAME( $CALL_MIN_SIZE ) );
+        bindings::detail::array< $WORKSPACE_TYPE > tmp_$NAME( min_size_$NAME( $CALL_MIN_SIZE ) );
 $TEMPLATE[setup_opt_workspace]
-        traits::detail::array< $WORKSPACE_TYPE > tmp_$NAME( $TMP_SIZE );
+        bindings::detail::array< $WORKSPACE_TYPE > tmp_$NAME( $TMP_SIZE );
 $TEMPLATE[min_size_func]
     //
     // Static member function that returns the minimum size of

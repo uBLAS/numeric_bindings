@@ -420,8 +420,8 @@ def write_functions( info_map, group, template_map, base_dir ):
     if len( level1_map ) > 1:
       level1 = template_map[ 'level1_pre_header' ]
       includes += [ '#include <boost/utility/enable_if.hpp>' ]
-      includes += [ '#include <boost/numeric/bindings/traits/is_real.hpp>' ]
-      includes += [ '#include <boost/numeric/bindings/traits/is_complex.hpp>' ]
+      includes += [ '#include <boost/numeric/bindings/is_real.hpp>' ]
+      includes += [ '#include <boost/numeric/bindings/is_complex.hpp>' ]
 
     for value_type in level1_map.keys():
       if len( level1_map ) == 1:

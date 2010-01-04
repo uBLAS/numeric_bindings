@@ -14,10 +14,12 @@
 #include <boost/mpl/max.hpp>
 #include <boost/mpl/vector.hpp>
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/rank.hpp>
 #include <boost/numeric/bindings/size.hpp>
 #include <boost/numeric/bindings/tag.hpp>
 #include <boost/numeric/bindings/value.hpp>
+#include <boost/ref.hpp>
 
 namespace boost {
 namespace numeric {

@@ -55,7 +55,7 @@ $TEMPLATE[lapack_names.h]
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DETAIL_LAPACK_NAMES_H
 
 #ifndef BOOST_NUMERIC_BINDINGS_USE_CLAPACK
-#  include <boost/numeric/bindings/detail/fortran.h>
+#  include <boost/numeric/bindings/detail/config/fortran.hpp>
 #else
 #  define FORTRAN_ID( id ) id##_
 #endif

@@ -14,7 +14,8 @@ from types import StringType
 # for debugging purposes
 import pprint
 
-fortran_integer_type = 'std::ptrdiff_t'
+library_integer_type = '$LIBRARY_INT_TYPE'
+generic_integer_type = 'std::ptrdiff_t'
 
 complex_float_type = 'std::complex<float>'  
 complex_double_type = 'std::complex<double>'
@@ -25,7 +26,7 @@ fortran_complex_double_ptr = 'void'   # was dcomplex_t
 global_type_map = { 
   'CHARACTER': 'char',
   'LOGICAL': 'logical_t', 
-  'INTEGER': fortran_integer_type,
+  'INTEGER': library_integer_type,
   'REAL': 'float', 
   'DOUBLE PRECISION': 'double' }
 
@@ -111,6 +112,8 @@ def level0_type( name, properties ):
     if 'trait_type' in properties:
         if properties[ 'trait_type' ] in [ 'trans', 'uplo', 'diag' ]:
             result = level0_types[ name ]
+    if '*' not in result and '&' not in result and 'const ' in result:
+        result = result.replace( 'const ', '' )
     return result
 
 def level0_typename( name, properties ):
@@ -184,7 +187,6 @@ def call_level0_type( name, properties, arg_map ):
       else:
         result = "size_column_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
             ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
-
     #
     # number of rows is only valid if there's no option to transposing
     # 
@@ -195,8 +197,26 @@ def call_level0_type( name, properties, arg_map ):
         result = "size_row_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
             ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
 
+
+    if properties[ 'trait_type' ] == 'num_sub':
+      if 'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
+        result = "bandwidth_lower(" +  properties[ 'trait_of' ][ 0 ].lower() + \
+            ")"
+      else:
+        result = "bandwidth_lower_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
+            ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
+
+
+    if properties[ 'trait_type' ] == 'num_super':
+      if 'ref_trans' not in arg_map[ properties[ 'trait_of' ][ 0 ] ]:
+        result = "bandwidth_upper(" +  properties[ 'trait_of' ][ 0 ].lower() + \
+            ")"
+      else:
+        result = "bandwidth_upper_op(" + properties[ 'trait_of' ][ 0 ].lower() + \
+            ", " + arg_map[ properties[ 'trait_of' ][ 0 ] ][ 'ref_trans' ].lower() + "())"
+
     #
-    #
+    # The number of columns of op( A )
     #
     if properties[ 'trait_type' ] == 'trans_num_columns':
       result = "size_column(" + properties[ 'trait_of' ][1].lower() + ")"
@@ -436,8 +456,8 @@ def level1_assert( name, properties, arg_map ):
 
   if properties[ 'type' ] == 'matrix' and call_level1_type( name, properties ) != None:
     result += [ "BOOST_ASSERT( " + \
-        "size_minor( " + call_level1_type( name, properties ) +" ) == 1 || " + \
-        "stride_minor( " + call_level1_type( name, properties ) +" ) == 1 );"
+        "size_minor(" + call_level1_type( name, properties ) +") == 1 || " + \
+        "stride_minor(" + call_level1_type( name, properties ) +") == 1 );"
     ]
 
   return result
@@ -477,7 +497,7 @@ def workspace_type( name, properties ):
   result = None
   if 'workspace' in properties[ 'io' ]:
     if properties[ 'value_type' ] == 'INTEGER':
-      result = fortran_integer_type
+      result = library_integer_type
     elif properties[ 'value_type' ] == 'LOGICAL':
       result = 'bool'
     elif properties[ 'value_type' ] == 'REAL' or properties[ 'value_type' ] == 'DOUBLE PRECISION':
@@ -544,7 +564,9 @@ def min_workspace_arg_type( name, properties, arg_map ):
     code_result = []
     for arg in properties[ 'assert_size_args' ]:
       if arg_map.has_key( arg ):
-        code_result += [ cpp_type( arg, arg_map[ arg ] ) ]
+        cpp_type_code = cpp_type( arg, arg_map[ arg ] ).replace( library_integer_type,
+            "$INTEGER_TYPE" )
+        code_result += [ cpp_type_code ]
       else:
         if type( properties[ 'assert_size' ] ) == StringType:
           code_result += [ '?' + properties[ 'assert_size' ] ]
@@ -1130,9 +1152,10 @@ def parse_file( filename, template_map ):
         #
         # Try to detect fastest cases first (cheapest traits)
         #
-        match_matrix_traits = re.compile( '(rows|columns|order)(in|of|the|input|\s)+(matrix|matrices|\s)+' + \
+        match_matrix_traits = re.compile( '(sub|super|rows|columns|order)([\-]?diagonals|with|in|of|the|band|input|\s)+(matrix|matrices|\s)+' + \
             '([A-Z]+\s+and\s+[A-Z]+|[A-Z]+)', re.M | re.S ).findall( comment_block )
         if len( match_matrix_traits ) == 1:
+          print "Matched trait:", match_matrix_traits[0][0]
           if match_matrix_traits[0][0] == 'order':
             #
             # see if the traits are overruled through the template system
@@ -1160,9 +1183,11 @@ def parse_file( filename, template_map ):
           else:
             references = match_matrix_traits[0][3].split( 'and' )
             for matrix_name in references:
-              if matrix_name.strip() in grouped_arguments[ 'by_type' ][ 'matrix' ]:
-                argument_properties[ 'trait_type' ] = 'num_' + match_matrix_traits[0][0]
-                argument_properties[ 'trait_of' ] = [ matrix_name.strip() ]
+              try_names = [ matrix_name.strip(), matrix_name.strip() + 'B' ]
+              for try_name in try_names:
+                if try_name in grouped_arguments[ 'by_type' ][ 'matrix' ]:
+                  argument_properties[ 'trait_type' ] = 'num_' + match_matrix_traits[0][0]
+                  argument_properties[ 'trait_of' ] = [ try_name.strip() ]
 
         #
         # Matrix traits detection, continued

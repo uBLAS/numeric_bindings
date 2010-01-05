@@ -110,6 +110,12 @@ def write_functions( info_map, group, template_map, base_dir ):
         sub_template = sub_template.replace( "$SPECIALIZATION", documentation.routine_value_type[ subroutine[0] ] )
         sub_template = sub_template.replace( '$STATIC_ASSERTS', "\n    ".join( level0_static_asserts ) )
 
+        if select_backend == 'blas_overloads':
+            sub_template = sub_template.replace( '$LIBRARY_INT_TYPE', "fortran_int_t" )
+        else:
+            # the C integer-type defaults to 'int'
+            sub_template = sub_template.replace( '$LIBRARY_INT_TYPE', "int" )
+
         # CBLAS stuff
         if 'cblas_routine' in info_map[ subroutine ]:
             cblas_routine = info_map[ subroutine ][ 'cblas_routine' ]
@@ -267,7 +273,7 @@ def write_functions( info_map, group, template_map, base_dir ):
         for arg in info_map[ subroutine ][ 'grouped_arguments' ][ 'by_io' ][ 'output' ]:
           if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_type' ] != None:
             assert_line = 'BOOST_STATIC_ASSERT( (is_mutable< ' + \
-                info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_static_assert' ] + ' >::value ) );'
+                info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_1_static_assert' ] + ' >::value) );'
             level1_static_assert_list += [ assert_line ]
 
       # import the code by argument
@@ -286,6 +292,8 @@ def write_functions( info_map, group, template_map, base_dir ):
           typedef_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'typedef' ] ]
         if info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] != None:
           level2_arg_list += [ info_map[ subroutine ][ 'argument_map' ][ arg ][ 'code' ][ 'level_2' ] ]
+        if 'banded' in info_map[ subroutine ][ 'argument_map' ][ arg ]:
+            includes += [ '#include <boost/numeric/bindings/bandwidth.hpp' ]
 
       # Insert the order_type() if appropriate
       if info_map[ subroutine ][ "has_cblas_order_arg" ]:
@@ -297,7 +305,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       level1_template = level1_template.replace( "$CALL_LEVEL1", ", ".join( call_level1_arg_list ) )
       level1_template = level1_template.replace( "$LEVEL1", ", ".join( level1_arg_list ) )
       level1_template = level1_template.replace( "$TYPES", ", ".join( level1_type_arg_list ) )
-      level1_template = level1_template.replace( "$ASSERTS", "\n        ".join( level1_assert_list ) )
+      level1_template = level1_template.replace( "$ASSERTS", "\n        ".join( sorted( level1_assert_list ) ) )
       level1_template = level1_template.replace( '$RETURN_TYPE', info_map[ subroutine ][ 'level1_return_type' ] )
       level1_template = level1_template.replace( '$RETURN_STATEMENT', info_map[ subroutine ][ 'return_statement' ] )
       level1_template = level1_template.replace( "$KEYWORDS", ", ".join( keyword_type_list ) )
@@ -312,7 +320,9 @@ def write_functions( info_map, group, template_map, base_dir ):
       # type-traits deduction, etc..
       # more important: all non-const and const variants of functions are written here
       level2_functions = []
-      level2_arg_lists, level2_comments = bindings.generate_const_variants( level2_arg_list )
+      level2_arg_lists, level2_comments = \
+            bindings.generate_const_variants( group_name.lower() + '.' + value_type, \
+                level2_arg_list, template_map )
       for level2_idx in range( 0, len( level2_arg_lists ) ):
         level2_function = level2_template.replace( "$LEVEL2", \
                 ", ".join( level2_arg_lists[ level2_idx ] ) )
@@ -390,7 +400,8 @@ def write_functions( info_map, group, template_map, base_dir ):
     result = result.replace( '$groupname', group_name.lower() )
     result = result.replace( '$DIRNAME', base_dir.split("/")[-1].upper() )
     result = result.replace( '$dirname', base_dir.split("/")[-1].lower() )
-    result = result.replace( '$INTEGER_TYPE', netlib.fortran_integer_type )
+    result = result.replace( '$INTEGER_TYPE', netlib.generic_integer_type )
+    result = result.replace( '$LIBRARY_INT_TYPE', netlib.generic_integer_type )
     result = result.replace( 'template<  >', '' )
     result = result.replace( '\n\n\n', '\n\n' )
     result = result.replace( "\n    \n", "\n" )

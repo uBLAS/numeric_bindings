@@ -9,6 +9,7 @@
 #
 
 import re
+import netlib
 
 #
 # Desired order of routines in C++ code: float, double, single complex, double complex
@@ -128,6 +129,7 @@ def write_names_header( global_info_map, routines, template_map, dest_file ):
 
   result = template_map[ parsermode + '_names.h' ]
   result = result.replace( "$CONTENT", content )
+  result = result.replace( "$LIBRARY_INT_TYPE", "fortran_int_t" )
   #//result = result.replace( "$PARSERMODE", template_map[ "PARSERMODE" ] )
 
   open( dest_file, 'wb' ).write( result )
@@ -155,6 +157,7 @@ def write_header_part( global_info_map, properties, template_map ):
       template = template.replace( "$ARGUMENTS", ", ".join( arg_list ) )
       template = template.replace( '$RETURN_TYPE', global_info_map[ k ][ 'return_value_type' ] )
       template = template.replace( '$RETURN_STATEMENT', global_info_map[ k ][ 'return_statement' ] )
+      template = template.replace( "$LIBRARY_INT_TYPE", "fortran_int_t" )
       content += proper_indent( template )
 
     content += '\n'
@@ -240,11 +243,17 @@ def write_include_hierarchy( global_info_map, routines, template_map, dest_path 
 # Generate const-overloads
 #
 
-def generate_const_variants( argument_list ):
+def generate_const_variants( prefix, argument_list, template_map ):
+    print "Const variant generation prefix: ", prefix
     print "Generating const variants for ", argument_list
     permute_indices = []
     result = []
     comments = []
+
+    # use this arg list may contain a modified version of the
+    # argument list, where in some overruled cases the 'const '
+    # will be removed from the argument (force permutation)
+    use_this_arg_list = []
 
     for i in range( 0, len(argument_list) ):
         argument = argument_list[i]
@@ -254,18 +263,25 @@ def generate_const_variants( argument_list ):
            'typename' not in argument and \
            '&' in argument:
             permute_indices.append( i )
+        else:
+            arg_name = argument.split( ' ' )[ -1 ].upper()
+            my_key = prefix + '.' + arg_name + '.level2_permute'
+            if netlib.my_has_key( my_key, template_map ):
+                permute_indices.append( i )
+                argument = argument.replace( 'const ', '' )
+        use_this_arg_list.append( argument )
 
     print " To be permuted: ", permute_indices
 
     for i in range( 0, pow( 2, len( permute_indices ) ) ):
         #print "i: ", i
         new_arg_list = []
-        new_arg_list += argument_list
+        new_arg_list += use_this_arg_list
         new_comments = []
         for j in range( 0, len( permute_indices ) ):
             if ( i & (1<<j) ):
-                #print permute_indices[j], ": const " + argument_list[ permute_indices[ j ] ]
-                new_arg_list[ permute_indices[ j ] ] = "const " + argument_list[ permute_indices[ j ] ]
+                #print permute_indices[j], ": const " + use_this_arg_list[ permute_indices[ j ] ]
+                new_arg_list[ permute_indices[ j ] ] = "const " + use_this_arg_list[ permute_indices[ j ] ]
                 arg = new_arg_list[ permute_indices[ j ] ]
                 new_comments.append( "// * " + 
                     arg[ :arg.find("&" ) ] + "&" )
@@ -276,8 +292,9 @@ def generate_const_variants( argument_list ):
 
            # else:
                 #print permute_indices[j], "don't add const"
-        result.append( new_arg_list )
-        comments.append( new_comments )
+        if new_arg_list not in result:
+            result.append( new_arg_list )
+            comments.append( new_comments )
         #new_arg_list = []
 
     #print "result: ", result

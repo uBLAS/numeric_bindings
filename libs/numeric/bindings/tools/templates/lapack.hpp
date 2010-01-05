@@ -1,6 +1,6 @@
 $TEMPLATE[lapack.hpp]
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -59,7 +59,7 @@ inline void $groupname( $LEVEL0 ) {
 
 $TEMPLATE[lapack_include_hierarchy]
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -164,7 +164,7 @@ $COMMENTS
 //
 template< $TYPES, typename Workspace >
 inline std::ptrdiff_t $groupname( $LEVEL2, Workspace work ) {
-    std::ptrdiff_t info(0);
+    fortran_int_t info(0);
     $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, work );
     return info;
 }
@@ -176,7 +176,7 @@ $COMMENTS
 //
 template< $TYPES >
 inline std::ptrdiff_t $groupname( $LEVEL2 ) {
-    std::ptrdiff_t info(0);
+    fortran_int_t info(0);
     $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1, optimal_workspace() );
     return info;
 }
@@ -211,6 +211,7 @@ $INCLUDE_TEMPLATES
         $ASSERTS
         detail::$groupname( $CALL_LEVEL0 );
     }
+
 };
 
 $TEMPLATE[level2_noworkspace]
@@ -220,7 +221,7 @@ $COMMENTS
 //
 template< $TYPES >
 inline std::ptrdiff_t $groupname( $LEVEL2 ) {
-    std::ptrdiff_t info(0);
+    fortran_int_t info(0);
     $groupname_impl< typename value< $FIRST_TYPENAME >::type >::invoke( $CALL_LEVEL1 );
     return info;
 }

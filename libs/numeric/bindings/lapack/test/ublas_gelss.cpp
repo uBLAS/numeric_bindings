@@ -23,7 +23,7 @@
 #define USE_MINIMAL_WORKSPACE 1
 
 namespace lapack = boost::numeric::bindings::lapack;
-namespace traits = boost::numeric::bindings::traits;
+namespace bindings = boost::numeric::bindings;
 
 // test function declarations
 template <typename StreamType, typename MatrType, typename VecType>
@@ -220,8 +220,8 @@ int main()
 template <typename StreamType, typename MatType, typename VecType>
 int test_square_gelss(StreamType& oss)
 {
-	typedef typename traits::matrix_traits<MatType>::value_type val_t;
-	typedef typename traits::type_traits<val_t>::real_type real_t;
+	typedef typename bindings::value<MatType>::type val_t;
+	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
 	integer_t rank;
 
@@ -232,9 +232,9 @@ int test_square_gelss(StreamType& oss)
 	MatType mat(MatrixGenerator<MatType>()(row_size, col_size));
 	VecType vec(VectorGenerator<VecType>()(row_size));
 
-	//const int m = traits::matrix_size1(mat);
-	const int n = traits::matrix_size2(mat);
-	traits::detail::array<real_t> s(n);
+	//const int m = bindings::size_row(mat);
+	const int n = bindings::size_column(mat);
+	bindings::detail::array<real_t> s(n);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
@@ -281,8 +281,8 @@ int test_square_gelss(StreamType& oss)
 template <typename StreamType, typename MatType, typename VecType>
 int test_under_gelss(StreamType& oss)
 {
-	typedef typename traits::matrix_traits<MatType>::value_type val_t;
-	typedef typename traits::type_traits<val_t>::real_type real_t;
+	typedef typename bindings::value<MatType>::type val_t;
+	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
 	integer_t rank;
 
@@ -293,9 +293,9 @@ int test_under_gelss(StreamType& oss)
 	MatType mat(MatrixGenerator<MatType>()(row_range, col_size));
 	VecType vec(VectorGenerator<VecType>()(row_size));
 
-	//const int m = traits::matrix_size1(mat);
-	const int n = traits::matrix_size2(mat);
-	traits::detail::array<real_t> s(n);
+	//const int m = bindings::size_row(mat);
+	const int n = bindings::size_column(mat);
+	bindings::detail::array<real_t> s(n);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
@@ -342,8 +342,8 @@ int test_under_gelss(StreamType& oss)
 template <typename StreamType, typename MatType, typename VecType>
 int test_over_gelss(StreamType& oss)
 {
-	typedef typename traits::matrix_traits<MatType>::value_type val_t;
-	typedef typename traits::type_traits<val_t>::real_type real_t;
+	typedef typename bindings::value<MatType>::type val_t;
+	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
 	integer_t rank;
 
@@ -354,9 +354,9 @@ int test_over_gelss(StreamType& oss)
 	MatType mat(MatrixGenerator<MatType>()(row_size, col_range));
 	VecType vec(VectorGenerator<VecType>()(row_size));
 
-	//const int m = traits::matrix_size1(mat);
-	const int n = traits::matrix_size2(mat);
-	traits::detail::array<real_t> s(n);
+	//const int m = bindings::size_row(mat);
+	const int n = bindings::size_column(mat);
+	bindings::detail::array<real_t> s(n);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
@@ -403,8 +403,8 @@ int test_over_gelss(StreamType& oss)
 template <typename StreamType, typename MatType, typename VecType>
 int test_multiple_gelss(StreamType& oss)
 {
-	typedef typename traits::matrix_traits<MatType>::value_type val_t;
-	typedef typename traits::type_traits<val_t>::real_type real_t;
+	typedef typename bindings::value<MatType>::type val_t;
+	typedef typename bindings::remove_imaginary<val_t>::type real_t;
 	const real_t rcond = -1;    // use machine precision
 	integer_t rank;
 
@@ -417,10 +417,10 @@ int test_multiple_gelss(StreamType& oss)
 	ublas::column(vec, 0) = VectorGenerator<VecType>()(mat.size1());
 	ublas::column(vec, 1) = VectorGenerator<VecType>()(mat.size1());
 
-	//const int m = traits::matrix_size1(mat);
-	const int n = traits::matrix_size2(mat);
-	const int nrhs = traits::matrix_size2(vec);
-	traits::detail::array<real_t> s(n);
+	//const int m = bindings::size_row(mat);
+	const int n = bindings::size_column(mat);
+	const int nrhs = bindings::size_column(vec);
+	bindings::detail::array<real_t> s(n);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);

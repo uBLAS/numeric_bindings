@@ -6,8 +6,8 @@
 #include <iostream>
 #include <vector>
 #include <boost/numeric/bindings/lapack/driver/gesv.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/std_vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include "utils.h"
 

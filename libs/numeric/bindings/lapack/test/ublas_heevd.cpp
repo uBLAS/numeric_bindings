@@ -11,9 +11,9 @@
 
 #include <boost/numeric/bindings/lapack/driver/heevd.hpp>
 #include <boost/numeric/bindings/lapack/driver/syevd.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -46,7 +46,7 @@ struct apply_complex {
 template <typename T, typename W, typename UPLO>
 int do_memory_uplo(int n, W& workspace ) {
    typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
-   typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
+   typedef typename bindings::remove_imaginary<T>::type real_type ;
 
    typedef ublas::matrix<T, ublas::column_major>     matrix_type ;
    typedef ublas::hermitian_adaptor<matrix_type, UPLO> hermitian_type ;

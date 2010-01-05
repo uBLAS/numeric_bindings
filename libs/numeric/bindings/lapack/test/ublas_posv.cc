@@ -7,9 +7,10 @@
 #include <iostream>
 #include <complex>
 #include <boost/numeric/bindings/lapack/driver/posv.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
-#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
+#include <boost/numeric/bindings/ublas/matrix_expression.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include "utils.h"
 

@@ -6,8 +6,8 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
 #include <boost/numeric/bindings/lapack/computational/hseqr.hpp>
 #include <boost/numeric/bindings/lapack/computational/trevc.hpp>
@@ -99,8 +99,8 @@ void hseqr(int n){
 
     ublas::matrix<complex<double>, ublas::column_major> cVL(cZ);
     ublas::matrix<complex<double>, ublas::column_major> cVR(cZ);
-    boost::numeric::bindings::traits::detail::array<complex<double> > work_c(2*n);
-    boost::numeric::bindings::traits::detail::array<double> work_r(n);
+    boost::numeric::bindings::detail::array<complex<double> > work_c(2*n);
+    boost::numeric::bindings::detail::array<double> work_r(n);
     ublas::vector<bool> select_dummy(n);
     integer_t m_info(0);
     lapack::trevc('B','B',select_dummy,G,cVL,cVR,n,m_info,lapack::workspace(work_c,work_r));

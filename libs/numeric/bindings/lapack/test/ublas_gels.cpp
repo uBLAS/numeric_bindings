@@ -8,6 +8,10 @@
 
 #include "convenience.h"
 #include <boost/numeric/bindings/lapack/driver/gels.hpp>
+#include <boost/numeric/bindings/trans.hpp>
+#include <boost/numeric/bindings/conj.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
 
 // set to 1 to write test output to file, otherwise outputs to console
 #define OUTPUT_TO_FILE 0
@@ -23,6 +27,7 @@
 #define USE_OPTIMAL_WORKSPACE 1
 #define USE_MINIMAL_WORKSPACE 1
 
+namespace bindings = boost::numeric::bindings;
 namespace lapack = boost::numeric::bindings::lapack;
 
 // test function declarations
@@ -255,20 +260,20 @@ int test_square_gels(StreamType& oss)
 	MatType mat(MatrixGenerator<MatType>()(row_size, col_size));
 	VecType vec(VectorGenerator<VecType>()(row_size));
 
-	//const int m = traits::matrix_size1(mat);
-	const int n = traits::matrix_size2(mat);
+	//const int m = bindings::size_row(mat);
+	const int n = bindings::size_column(mat);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
 	VecType optimalvec(vec);
-	err += lapack::gels('N', optimalmat, optimalvec, lapack::optimal_workspace());
+	err += lapack::gels( optimalmat, optimalvec, lapack::optimal_workspace());
 	VecType optimalanswer(ublas::project(optimalvec, ublas::range(0, n)));
 	VecType optimal_check = ublas::prod(mat, optimalanswer);
 #endif
 #if USE_MINIMAL_WORKSPACE
 	MatType minimalmat(mat);
 	VecType minimalvec(vec);
-	err += lapack::gels('N', minimalmat, minimalvec, lapack::minimal_workspace());
+	err += lapack::gels( minimalmat, minimalvec, lapack::minimal_workspace());
 	VecType minimalanswer(ublas::project(minimalvec, ublas::range(0, n)));
 	VecType minimal_check = ublas::prod(mat, minimalanswer);
 #endif
@@ -311,20 +316,20 @@ int test_under_gels(StreamType& oss)
 	MatType mat(MatrixGenerator<MatType>()(row_range, col_size));
 	VecType vec(VectorGenerator<VecType>()(row_size));
 
-	//const int m = traits::matrix_size1(mat);
-	const int n = traits::matrix_size2(mat);
+	//const int m = bindings::size_row(mat);
+	const int n = bindings::size_column(mat);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
 	VecType optimalvec(vec);
-	err += lapack::gels('N', optimalmat, optimalvec, lapack::optimal_workspace());
+	err += lapack::gels( optimalmat, optimalvec, lapack::optimal_workspace());
 	VecType optimalanswer(ublas::project(optimalvec, ublas::range(0, n)));
 	VecType optimal_check = ublas::prod(mat, optimalanswer);
 #endif
 #if USE_MINIMAL_WORKSPACE
 	MatType minimalmat(mat);
 	VecType minimalvec(vec);
-	err += lapack::gels('N', minimalmat, minimalvec, lapack::minimal_workspace());
+	err += lapack::gels( minimalmat, minimalvec, lapack::minimal_workspace());
 	VecType minimalanswer(ublas::project(minimalvec, ublas::range(0, n)));
 	VecType minimal_check = ublas::prod(mat, minimalanswer);
 #endif
@@ -367,20 +372,20 @@ int test_over_gels(StreamType& oss)
 	MatType mat(MatrixGenerator<MatType>()(row_size, col_range));
 	VecType vec(VectorGenerator<VecType>()(row_size));
 
-	//const int m = traits::matrix_size1(mat);
-	const int n = traits::matrix_size2(mat);
+	//const int m = bindings::size_row(mat);
+	const int n = bindings::size_column(mat);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
 	VecType optimalvec(vec);
-	err += lapack::gels('N', optimalmat, optimalvec, lapack::optimal_workspace());
+	err += lapack::gels( optimalmat, optimalvec, lapack::optimal_workspace());
 	VecType optimalanswer(ublas::project(optimalvec, ublas::range(0, n)));
 	VecType optimal_check = ublas::prod(mat, optimalanswer);
 #endif
 #if USE_MINIMAL_WORKSPACE
 	MatType minimalmat(mat);
 	VecType minimalvec(vec);
-	err += lapack::gels('N', minimalmat, minimalvec, lapack::minimal_workspace());
+	err += lapack::gels( minimalmat, minimalvec, lapack::minimal_workspace());
 	VecType minimalanswer(ublas::project(minimalvec, ublas::range(0, n)));
 	VecType minimal_check = ublas::prod(mat, minimalanswer);
 #endif
@@ -425,21 +430,21 @@ int test_multiple_gels(StreamType& oss)
 	ublas::column(vec, 0) = VectorGenerator<VecType>()(mat.size1());
 	ublas::column(vec, 1) = VectorGenerator<VecType>()(mat.size1());
 
-	//const int m = traits::matrix_size1(mat);
-	const int n = traits::matrix_size2(mat);
-	const int nrhs = traits::matrix_size2(vec);
+	//const int m = bindings::size_row(mat);
+	const int n = bindings::size_column(mat);
+	const int nrhs = bindings::size_column(vec);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
 	MatType optimalvec(vec);
-	err += lapack::gels('N', optimalmat, optimalvec, lapack::optimal_workspace());
+	err += lapack::gels( optimalmat, optimalvec, lapack::optimal_workspace());
 	MatType optimalanswer(ublas::project(optimalvec, ublas::range(0, n), ublas::range(0, nrhs)));
 	MatType optimal_check = ublas::prod(mat, optimalanswer);
 #endif
 #if USE_MINIMAL_WORKSPACE
 	MatType minimalmat(mat);
 	MatType minimalvec(vec);
-	err += lapack::gels('N', minimalmat, minimalvec, lapack::minimal_workspace());
+	err += lapack::gels( minimalmat, minimalvec, lapack::minimal_workspace());
 	MatType minimalanswer(ublas::project(minimalvec, ublas::range(0, n), ublas::range(0, nrhs)));
 	MatType minimal_check = ublas::prod(mat, minimalanswer);
 #endif
@@ -481,20 +486,31 @@ int test_transpose_gels(StreamType& oss, const char& trans)
 	MatType mat(MatrixGenerator<MatType>()(row_size, col_size));
 	VecType vec(VectorGenerator<VecType>()(row_size));
 
-	//const int m = traits::matrix_size1(mat);
-	const int n = traits::matrix_size2(mat);
+	//const int m = bindings::size_row(mat);
+	const int n = bindings::size_column(mat);
 
 #if USE_OPTIMAL_WORKSPACE
 	MatType optimalmat(mat);
 	VecType optimalvec(vec);
-	err += lapack::gels(trans, optimalmat, optimalvec, lapack::optimal_workspace());
+
+    if( trans == 'T' ) {
+        err += lapack::gels( bindings::trans( optimalmat ), optimalvec, lapack::optimal_workspace());
+    }
+    if( trans == 'C' ) {
+        err += lapack::gels( bindings::conj( optimalmat ), optimalvec, lapack::optimal_workspace());
+    }
 	VecType optimalanswer(ublas::project(optimalvec, ublas::range(0, n)));
 	VecType optimal_check = ublas::prod(mat, optimalanswer);
 #endif
 #if USE_MINIMAL_WORKSPACE
 	MatType minimalmat(mat);
 	VecType minimalvec(vec);
-	err += lapack::gels(trans, minimalmat, minimalvec, lapack::minimal_workspace());
+    if( trans == 'T' ) {
+        err += lapack::gels( bindings::trans( minimalmat ), minimalvec, lapack::minimal_workspace());
+    }
+    if( trans == 'C' ) {
+        err += lapack::gels( bindings::conj( minimalmat ), minimalvec, lapack::minimal_workspace());
+    }
 	VecType minimalanswer(ublas::project(minimalvec, ublas::range(0, n)));
 	VecType minimal_check = ublas::prod(mat, minimalanswer);
 #endif

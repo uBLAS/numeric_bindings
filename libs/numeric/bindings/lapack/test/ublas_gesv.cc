@@ -6,8 +6,8 @@
 #include <iostream>
 #include <complex>
 #include <boost/numeric/bindings/lapack/driver/gesv.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/std_vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;
@@ -33,7 +33,7 @@ int main() {
   size_t nrhs = 2; 
   m_t x (n, nrhs), b (n, nrhs);  // b -- right-hand side matrix
 
-  std::vector<integer_t> ipiv (n);  // pivot vector
+  std::vector< fortran_int_t > ipiv (n);  // pivot vector
 
   init_symm (a); 
   //     [n   n-1 n-2  ... 1]
@@ -68,7 +68,7 @@ int main() {
   cout << endl; 
   cout << "complex system:" << endl << endl; 
   cm_t ca (3, 3), cb (3, 1), cx (3, 1);
-  std::vector<integer_t> ipiv2 (3); 
+  std::vector< fortran_int_t > ipiv2 (3); 
 
   ca (0, 0) = cmpx_t (3, 0);
   ca (0, 1) = cmpx_t (4, 2);

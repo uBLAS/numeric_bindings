@@ -8,12 +8,13 @@
 
 #include "../../blas/test/random.hpp"
 
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/lapack/driver/gees.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/detail/utils.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/type_traits/is_complex.hpp>
 #include <boost/mpl/if.hpp>
@@ -25,6 +26,7 @@
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
 namespace traits = boost::numeric::bindings::traits;
+namespace bindings = boost::numeric::bindings;
 
 struct apply_real {
   template< typename MatrixA, typename VectorW, typename MatrixVS,
@@ -32,14 +34,14 @@ struct apply_real {
   static inline integer_t gees( const char jobvs, const char sort,
         logical_t* select, MatrixA& a, integer_t& sdim, VectorW& w,
         MatrixVS& vs, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    traits::detail::array<value_type> wr(traits::vector_size(w));
-    traits::detail::array<value_type> wi(traits::vector_size(w));
+    typedef typename bindings::value< MatrixA >::type value_type;
+    bindings::detail::array<value_type> wr(bindings::size(w));
+    bindings::detail::array<value_type> wi(bindings::size(w));
     integer_t info = lapack::gees_2( jobvs, sort, select, a, sdim, wr, wi, vs, work );
-    traits::detail::interlace(traits::vector_storage(wr),
-                              traits::vector_storage(wr)+traits::vector_size(w),
-                              traits::vector_storage(wi),
-                              traits::vector_storage(w));
+    traits::detail::interlace(bindings::begin_value(wr),
+                              bindings::begin_value(wr)+bindings::size(w),
+                              bindings::begin_value(wi),
+                              bindings::begin_value(w));
     return info;
   }
 };
@@ -77,7 +79,7 @@ void randomize(M& m) {
 template <typename T, typename W>
 int do_memory_type(int n, W workspace) {
    typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
-   typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
+   typedef typename bindings::remove_imaginary< T>::type real_type ;
    typedef std::complex< real_type >                                            complex_type ;
 
    typedef ublas::matrix<T, ublas::column_major> matrix_type ;

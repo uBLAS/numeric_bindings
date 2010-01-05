@@ -6,9 +6,9 @@
 #include <algorithm> 
 #include <complex>
 #include <boost/numeric/bindings/lapack/driver/gesdd.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/std_vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;

@@ -15,8 +15,8 @@
 #include <boost/numeric/bindings/lapack/computational/orgqr.hpp>
 #include <boost/numeric/bindings/lapack/computational/unmqr.hpp>
 #include <boost/numeric/bindings/lapack/computational/ungqr.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/ublas/triangular.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/type_traits/is_complex.hpp>
@@ -28,7 +28,7 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
-namespace traits = boost::numeric::bindings::traits;
+namespace bindings = boost::numeric::bindings;
 
 struct apply_real {
   template< typename MatrixA, typename VectorTAU, typename Workspace >
@@ -104,7 +104,7 @@ ublas::triangular_adaptor<const M, ublas::upper> upper_part(const M& m) {
 template <typename T, typename W>
 int do_memory_type(int n, W workspace) {
    typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
-   typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
+   typedef typename bindings::remove_imaginary<T>::type real_type ;
    typedef std::complex< real_type >                                            complex_type ;
 
    typedef ublas::matrix<T, ublas::column_major> matrix_type ;
@@ -122,14 +122,14 @@ int do_memory_type(int n, W workspace) {
    lapack::geqrf( a, tau, workspace ) ;
 
    // Apply the orthogonal transformations to a2
-   apply_t::ormqr( 'L', transpose<T>::value, traits::vector_size (tau), a, tau, a2, workspace );
+   apply_t::ormqr( 'L', transpose<T>::value, bindings::size (tau), a, tau, a2, workspace );
 
    // The upper triangular parts of a and a2 must be equal.
    if (norm_frobenius( upper_part( a - a2 ) )
             > std::numeric_limits<real_type>::epsilon() * 10.0 * norm_frobenius( upper_part( a ) ) ) return 255 ;
 
    // Generate orthogonal matrix
-   apply_t::orgqr( traits::matrix_size1 (a), traits::matrix_size2 (a), traits::vector_size (tau), a, tau, workspace );
+   apply_t::orgqr( bindings::size_row (a), bindings::size_column (a), bindings::size (tau), a, tau, workspace );
 
    // The result of lapack::ormqr and the equivalent matrix product must be equal.
    if (norm_frobenius( a2 - prod(herm(a), a3) )

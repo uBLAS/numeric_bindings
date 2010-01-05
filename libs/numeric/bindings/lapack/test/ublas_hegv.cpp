@@ -10,9 +10,9 @@
 
 #include <boost/numeric/bindings/lapack/driver/hegv.hpp>
 #include <boost/numeric/bindings/lapack/driver/sygv.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -50,7 +50,7 @@ struct apply_complex {
 template <typename T, typename W, typename UPLO>
 int do_memory_uplo(int n, W& workspace ) {
    typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
-   typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
+   typedef typename bindings::remove_imaginary<T>::type real_type ;
 
    typedef ublas::matrix<T, ublas::column_major>     matrix_type ;
    typedef ublas::hermitian_adaptor<matrix_type, UPLO> hermitian_type ;
@@ -69,12 +69,12 @@ int do_memory_uplo(int n, W& workspace ) {
 
    // Compute eigen decomposition.
    hermitian_type h_a( a );
-   apply_t::hegv( 1, 'V', traits::matrix_size2( h_a ), h_a, b, e1, workspace ) ;
+   apply_t::hegv( 1, 'V', bindings::size_column( h_a ), h_a, b, e1, workspace ) ;
 
    if (check_residual( a2, e1, a )) return 255 ;
 
    hermitian_type h_a2( a2 );
-   apply_t::hegv( 1, 'N', traits::matrix_size2( h_a2 ), h_a2 , b, e2, workspace ) ;
+   apply_t::hegv( 1, 'N', bindings::size_column( h_a2 ), h_a2 , b, e2, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
    // Test for a matrix range
@@ -89,7 +89,7 @@ int do_memory_uplo(int n, W& workspace ) {
    matrix_range b_r( b, r, r );
 
    hermitian_range_type h_a_r( a_r );
-   apply_t::hegv(1, 'V', traits::matrix_size2( h_a_r ), h_a_r, b_r, e_r, workspace );
+   apply_t::hegv(1, 'V', bindings::size_column( h_a_r ), h_a_r, b_r, e_r, workspace );
 
    matrix_range a2_r( a2, r, r );
    if (check_residual( a2_r, e_r, a_r )) return 255 ;

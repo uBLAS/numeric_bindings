@@ -9,9 +9,9 @@
 #include "ublas_heev.hpp"
 
 #include <boost/numeric/bindings/lapack/driver/heev.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -25,7 +25,7 @@ namespace lapack = boost::numeric::bindings::lapack;
 
 template <typename T, typename W, typename UPLO>
 int do_memory_uplo(int n, W& workspace ) {
-   typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
+   typedef typename bindings::remove_imaginary<T>::type real_type ;
 
    typedef ublas::matrix<T, ublas::column_major>     matrix_type ;
    typedef ublas::hermitian_adaptor<matrix_type, UPLO> hermitian_type ;

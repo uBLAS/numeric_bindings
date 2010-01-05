@@ -13,10 +13,10 @@
 #include <boost/numeric/bindings/lapack/driver/sbevx.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_banded.hpp>
-#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/ublas/banded.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
 #include <boost/numeric/ublas/hermitian.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/type_traits/is_complex.hpp>
@@ -87,7 +87,7 @@ int upper<ublas::upper>() { return 2; }
 template <typename T, typename W, typename UPLO, typename Orientation>
 int do_memory_uplo(int n, W& workspace ) {
    typedef typename boost::mpl::if_<boost::is_complex<T>, apply_complex, apply_real>::type apply_t;
-   typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
+   typedef typename bindings::remove_imaginary<T>::type real_type ;
 
    typedef ublas::banded_matrix<T, Orientation>      banded_type ;
    typedef ublas::matrix<T, ublas::column_major>     matrix_type ;
@@ -110,12 +110,12 @@ int do_memory_uplo(int n, W& workspace ) {
 
 
    // Compute Schur decomposition.
-   apply_t::hbevx( 'V', 'A', traits::matrix_size2( h ), traits::matrix_upper_bandwidth( h ),
+   apply_t::hbevx( 'V', 'A', bindings::size_column( h ), traits::matrix_upper_bandwidth( h ),
      h, q, vl, vu, il, iu, abstol, m, e1, z, ifail, workspace ) ;
 
    if (check_residual( h2, e1, z )) return 255 ;
 
-   apply_t::hbevx( 'N', 'A', traits::matrix_size2( h2 ), traits::matrix_upper_bandwidth( h2 ),
+   apply_t::hbevx( 'N', 'A', bindings::size_column( h2 ), traits::matrix_upper_bandwidth( h2 ),
      h2, q, vl, vu, il, iu, abstol, m, e2, z, ifail, workspace ) ;
    if (norm_2( e1 - e2 ) > n * norm_2( e1 ) * std::numeric_limits< real_type >::epsilon()) return 255 ;
 
@@ -131,7 +131,7 @@ int do_memory_uplo(int n, W& workspace ) {
    ublas::matrix_range< matrix_type> z_r( z, r, r );
    ublas::vector<integer_t> ifail_r(n-2);
 
-   apply_t::hbevx( 'V', 'A', traits::matrix_size2( h_r ), traits::matrix_upper_bandwidth( h_r ),
+   apply_t::hbevx( 'V', 'A', bindings::size_column( h_r ), traits::matrix_upper_bandwidth( h_r ),
      h_r, q, vl, vu, il, iu, abstol, m, e_r, z_r, ifail_r, workspace ) ;
 
    banded_range a2_r( a2, r, r );

@@ -4,7 +4,9 @@
 
 #include <stddef.h>
 #include <iostream>
-#include <boost/numeric/bindings/traits/traits.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/value.hpp>
 
 
 ///////////////////////////////
@@ -14,7 +16,7 @@
 template <typename V>
 struct vct_access_traits {
   typedef typename 
-  boost::numeric::bindings::traits::vector_traits<V>::value_type val_t;
+  boost::numeric::bindings::value<V>::type val_t;
   typedef val_t& ref_t; 
   static ref_t elem (V& v, size_t i) { return v[i]; }
 };
@@ -22,7 +24,7 @@ struct vct_access_traits {
 template <typename V>
 struct vct_access_traits<V const> {
   typedef typename 
-  boost::numeric::bindings::traits::vector_traits<V>::value_type val_t;
+  boost::numeric::bindings::value<V>::type val_t;
   typedef val_t ref_t; 
   static ref_t elem (V const& v, size_t i) { return v[i]; }
 };
@@ -76,7 +78,7 @@ struct times_plus {
 template <typename F, typename V>
 void init_v (V& v, F f = F()) {
   size_t sz 
-    = boost::numeric::bindings::traits::vector_traits<V>::size (v);
+    = boost::numeric::bindings::size( v );
   for (std::size_t i = 0; i < sz; ++i) 
     elem_v (v, i) = f (i); 
 }
@@ -87,7 +89,7 @@ void print_v (V const& v, char const* ch = 0) {
   if (ch)
     std::cout << ch << ": "; 
   size_t sz 
-    = boost::numeric::bindings::traits::vector_traits<V const>::size (v);
+    = boost::numeric::bindings::size( v );
   for (std::size_t i = 0; i < sz; ++i)
     std::cout << elem_v (v, i) << " ";
   std::cout << std::endl; 
@@ -110,7 +112,7 @@ struct matr_access_traits {
 template <typename M>
 struct matr_access_traits<M const> {
   typedef typename 
-  boost::numeric::bindings::traits::matrix_traits<M>::value_type val_t;
+  boost::numeric::bindings::value<M>::type val_t;
   typedef val_t ref_t; 
   static ref_t elem (M const& m, size_t i, size_t j) { return m (i, j); }
 };
@@ -138,9 +140,9 @@ struct cls1 {
 template <typename F, typename M>
 void init_m (M& m, F f = F()) {
   size_t sz1 
-    = boost::numeric::bindings::traits::matrix_traits<M>::num_rows (m);
+    = boost::numeric::bindings::size_row( m );
   size_t sz2
-    = boost::numeric::bindings::traits::matrix_traits<M>::num_columns (m);
+    = boost::numeric::bindings::size_column( m );
   for (std::size_t i = 0; i < sz1; ++i) 
     for (std::size_t j = 0; j < sz2; ++j) 
       elem_m (m, i, j) = f (i, j); 
@@ -149,7 +151,7 @@ void init_m (M& m, F f = F()) {
 template <typename M>
 void init_symm (M& m, char uplo = 'f') {
   size_t n 
-    = boost::numeric::bindings::traits::matrix_traits<M>::num_rows (m);
+    = boost::numeric::bindings::size_row( m );
   for (size_t i = 0; i < n; ++i) {
     elem_m (m, i, i) = n;
     for (size_t j = i + 1; j < n; ++j) {
@@ -169,9 +171,9 @@ void print_m (M const& m, char const* ch = 0) {
   if (ch)
     std::cout << ch << ":\n"; 
   size_t sz1 
-    = boost::numeric::bindings::traits::matrix_traits<M const>::num_rows (m);
+    = boost::numeric::bindings::size_row( m );
   size_t sz2
-    = boost::numeric::bindings::traits::matrix_traits<M const>::num_columns (m);
+    = boost::numeric::bindings::size_column( m );
   for (std::size_t i = 0 ; i < sz1 ; ++i) {
     for (std::size_t j = 0 ; j < sz2 ; ++j) 
       std::cout << elem_m (m, i, j) << " ";
@@ -184,14 +186,11 @@ template <typename M>
 void print_m_data (M const& m, char const* ch = 0) {
   if (ch)
     std::cout << ch << " data:\n"; 
-  size_t sz = 
-    boost::numeric::bindings::traits::matrix_traits<M const>::num_rows(m)*
-    boost::numeric::bindings::traits::matrix_traits<M const>::num_columns(m); 
-  typename 
-    boost::numeric::bindings::traits::matrix_traits<M const>::pointer st = 
-    boost::numeric::bindings::traits::matrix_traits<M const>::storage (m); 
-  for (std::size_t i = 0 ; i < sz ; ++i, ++st) 
+  using namespace boost::numeric::bindings;
+  for( typename result_of::begin_value< const M >::type st = begin_value( m ); 
+        st != end_value( m ); ++st ) {
       std::cout << *st << " ";
+  }
   std::cout << std::endl; 
 }
 

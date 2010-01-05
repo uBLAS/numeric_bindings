@@ -18,19 +18,15 @@
 
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
-#include <boost/numeric/bindings/traits/matrix_traits.hpp>
-#include <boost/numeric/bindings/traits/vector_traits.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 
 // included to implicitly convert a vector to an nx1 matrix
 // so that it is compatible with lapack binding
-#include <boost/numeric/bindings/traits/ublas_vector2.hpp>
+#include <boost/numeric/bindings/ublas/vector2.hpp>
 
 namespace ublas = boost::numeric::ublas;
-namespace traits = boost::numeric::bindings::traits;
+namespace bindings = boost::numeric::bindings;
 
 // single precision typedefs
 typedef float freal_t;
@@ -66,8 +62,8 @@ const int col_range = 2;
 template <typename StreamType, typename MatType>
 void matrix_print(StreamType& oss, const std::string& name, const MatType& mat)
 {
-	const int m = traits::matrix_size1(mat);
-	const int n = traits::matrix_size2(mat);
+	const int m = bindings::size_row(mat);
+	const int n = bindings::size_column(mat);
 
 	oss << name << std::endl;
 	for (int i=0; i < m; ++i)
@@ -83,7 +79,7 @@ void matrix_print(StreamType& oss, const std::string& name, const MatType& mat)
 template <typename StreamType, typename VecType>
 void vector_print(StreamType& oss, const std::string& name, const VecType& vec)
 {
-	const int m = traits::vector_size(vec);
+	const int m = bindings::size(vec);
 
 	oss << name << std::endl;
 	for (int i=0; i < m; ++i)

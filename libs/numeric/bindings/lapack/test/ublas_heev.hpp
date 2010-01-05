@@ -14,7 +14,7 @@
 
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
 #include <limits>

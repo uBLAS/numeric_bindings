@@ -9,9 +9,9 @@
 #include <boost/numeric/bindings/lapack/computational/pptrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/pptri.hpp>
 #include <boost/numeric/bindings/lapack/computational/pptrs.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_symmetric.hpp>
-#include <boost/numeric/bindings/traits/ublas_hermitian.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/symmetric.hpp>
+#include <boost/numeric/bindings/ublas/hermitian.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;

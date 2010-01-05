@@ -1,6 +1,6 @@
-#include <boost/numeric/bindings/traits/std_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_banded.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector2.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
+#include <boost/numeric/bindings/ublas/banded.hpp>
+#include <boost/numeric/bindings/ublas/vector2.hpp>
 #include <boost/numeric/bindings/lapack/computational/gbtrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/gbtrs.hpp>
 #include <vector>
@@ -23,7 +23,7 @@ void InPlaceSolve(MatrA& a, MatrB& b)
   integer_t const kl = traits::matrix_lower_bandwidth (a);
   integer_t const ku = traits::matrix_upper_bandwidth (a) - kl;
   std::vector<integer_t> piv(a.size1());
-  int ret = lapack::gbtrf(traits::matrix_size1(a), traits::matrix_size2(a), kl, ku, a, piv);
+  int ret = lapack::gbtrf(bindings::size_row(a), bindings::size_column(a), kl, ku, a, piv);
   if (ret < 0) {
     //CStdString err;
     //err.Format("banded::Solve: argument %d in DGBTRF had an illegal value", -ret);
@@ -37,7 +37,7 @@ void InPlaceSolve(MatrA& a, MatrB& b)
     throw std::runtime_error("banded::Solve: the (%d,%d) diagonal element is 0 after DGBTRF");
   }
 
-  ret = lapack::gbtrs(NORMAL, traits::matrix_size1(a), kl, ku, a, piv, b);
+  ret = lapack::gbtrs(NORMAL, bindings::size_row(a), kl, ku, a, piv, b);
   if (ret < 0) {
     //CStdString err;
     //err.Format("banded::Solve: argument %d in DGBTRS had an illegal value", -ret);

@@ -9,8 +9,8 @@
 #include "../../blas/test/random.hpp"
 
 #include <boost/numeric/bindings/lapack/steqr.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
-#include <boost/numeric/bindings/traits/ublas_vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <algorithm>
 #include <limits>
@@ -25,7 +25,7 @@ template <typename T>
 int do_value_type() {
    const int n = 10 ;
 
-   typedef typename boost::numeric::bindings::traits::type_traits<T>::real_type real_type ;
+   typedef typename bindings::remove_imaginary<T>::type real_type ;
    typedef std::complex< real_type >                                            complex_type ;
 
    typedef ublas::matrix<T, ublas::column_major> matrix_type ;

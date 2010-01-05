@@ -2,8 +2,8 @@
 #include <boost/numeric/bindings/lapack/computational/getrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/getri.hpp>
 #include <boost/numeric/bindings/lapack/computational/getrs.hpp>
-#include <boost/numeric/bindings/traits/std_vector.hpp>
-#include <boost/numeric/bindings/traits/ublas_matrix.hpp>
+#include <boost/numeric/bindings/std/vector.hpp>
+#include <boost/numeric/bindings/ublas/matrix.hpp>
 
 template < typename matrix_type >
 void test_getrf_getrs(matrix_type& lu, matrix_type& x)

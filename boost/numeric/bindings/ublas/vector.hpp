@@ -10,6 +10,8 @@
 #define BOOST_NUMERIC_BINDINGS_UBLAS_VECTOR_HPP
 
 #include <boost/numeric/bindings/detail/adaptor.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 
 namespace boost {

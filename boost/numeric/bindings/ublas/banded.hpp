@@ -6,23 +6,23 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_UBLAS_SYMMETRIC_HPP
-#define BOOST_NUMERIC_BINDINGS_UBLAS_SYMMETRIC_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_UBLAS_BANDED_HPP
+#define BOOST_NUMERIC_BINDINGS_UBLAS_BANDED_HPP
 
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
 #include <boost/numeric/bindings/value.hpp>
-#include <boost/numeric/ublas/symmetric.hpp>
+#include <boost/numeric/ublas/banded.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace detail {
 
-template< typename T, typename F1, typename F2, typename A, typename Id, typename Enable >
-struct adaptor< ublas::symmetric_matrix< T, F1, F2, A >, Id, Enable > {
+template< typename T, typename F, typename A, typename Id, typename Enable >
+struct adaptor< ublas::banded_matrix< T, F, A >, Id, Enable > {
 
     typedef typename copy_const< Id, T >::type value_type;
     typedef mpl::map<
@@ -30,38 +30,49 @@ struct adaptor< ublas::symmetric_matrix< T, F1, F2, A >, Id, Enable > {
         mpl::pair< tag::entity, tag::matrix >,
         mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
-        mpl::pair< tag::matrix_type, tag::symmetric >,
-        mpl::pair< tag::data_structure, tag::triangular_array >,
-        mpl::pair< tag::data_side, typename convert_to< tag::data_side, F1 >::type >,
-        mpl::pair< tag::data_order, typename convert_to< tag::data_order, F2 >::type >
+        mpl::pair< tag::matrix_type, tag::banded >,
+        mpl::pair< tag::data_structure, tag::banded_array >,
+        mpl::pair< tag::data_order, typename convert_to< tag::data_order, F >::type >,
+        mpl::pair< tag::bandwidth_type<1>, std::ptrdiff_t >,
+        mpl::pair< tag::bandwidth_type<2>, std::ptrdiff_t >
     > property_map;
 
-    static std::ptrdiff_t size1( const Id& t ) {
-        return t.size1();
+    static std::ptrdiff_t size1( const Id& id ) {
+        return id.size1();
     }
 
-    static std::ptrdiff_t size2( const Id& t ) {
-        return t.size2();
+    static std::ptrdiff_t size2( const Id& id ) {
+        return id.size2();
     }
 
-    static value_type* begin_value( Id& t ) {
-        return bindings::begin_value( t.data() );
+    static value_type* begin_value( Id& id ) {
+        return bindings::begin_value( id.data() );
     }
 
-    static value_type* end_value( Id& t ) {
-        return bindings::end_value( t.data() );
+    static value_type* end_value( Id& id ) {
+        return bindings::end_value( id.data() );
+    }
+
+    static std::ptrdiff_t bandwidth1( const Id& id ) {
+        return id.upper();
+    }
+
+    static std::ptrdiff_t bandwidth2( const Id& id ) {
+        return id.lower();
     }
 
 };
 
-template< typename T, typename F, typename Id, typename Enable >
-struct adaptor< ublas::symmetric_adaptor< T, F >, Id, Enable > {
+
+template< typename T, typename Id, typename Enable >
+struct adaptor< ublas::banded_adaptor< T >, Id, Enable > {
 
     typedef typename copy_const< Id, typename value< T >::type >::type value_type;
     typedef typename property_insert< T,
         mpl::pair< tag::value_type, value_type >,
-        mpl::pair< tag::matrix_type, tag::symmetric >,
-        mpl::pair< tag::data_side, typename convert_to< tag::data_side, F >::type >
+        mpl::pair< tag::matrix_type, tag::banded >,
+        mpl::pair< tag::bandwidth_type<1>, std::ptrdiff_t >,
+        mpl::pair< tag::bandwidth_type<2>, std::ptrdiff_t >
     >::type property_map;
 
     static std::ptrdiff_t size1( const Id& id ) {
@@ -88,11 +99,19 @@ struct adaptor< ublas::symmetric_adaptor< T, F >, Id, Enable > {
         return bindings::stride2( id.data() );
     }
 
+    static std::ptrdiff_t bandwidth1( const Id& id ) {
+        return id.upper();
+    }
+
+    static std::ptrdiff_t bandwidth2( const Id& id ) {
+        return id.lower();
+    }
+
 };
 
-} // namespace detail
-} // namespace bindings
-} // namespace numeric
-} // namespace boost
+} // detail
+} // bindings
+} // numeric
+} // boost
 
 #endif

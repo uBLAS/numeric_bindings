@@ -26,7 +26,7 @@ struct adaptor< ublas::triangular_matrix< T, F1, F2, A >, Id, Enable > {
 
     typedef typename copy_const< Id, T >::type value_type;
     typedef mpl::map<
-        mpl::pair< tag::value_type, T >,
+        mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::entity, tag::matrix >,
         mpl::pair< tag::size_type<1>, std::ptrdiff_t >,
         mpl::pair< tag::size_type<2>, std::ptrdiff_t >,
@@ -58,9 +58,10 @@ struct adaptor< ublas::triangular_matrix< T, F1, F2, A >, Id, Enable > {
 template< typename T, typename F, typename Id, typename Enable >
 struct adaptor< ublas::triangular_adaptor< T, F >, Id, Enable > {
 
-    typedef typename value< T >::type value_type;
-    typedef typename property_insert< T, 
-        mpl::pair< tag::matrix_type, tag::triangular >,
+    typedef typename copy_const< Id, typename value< T >::type >::type value_type;
+    typedef typename property_insert< T,
+        mpl::pair< tag::value_type, value_type >,
+        mpl::pair< tag::matrix_type, typename convert_to< tag::matrix_type, F >::type >,
         mpl::pair< tag::data_side, typename convert_to< tag::data_side, F >::type >
     >::type property_map;
 

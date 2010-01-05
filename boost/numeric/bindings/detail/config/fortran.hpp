@@ -6,8 +6,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_TRAITS_FORTRAN_H
-#define BOOST_NUMERIC_BINDINGS_TRAITS_FORTRAN_H
+#ifndef BOOST_NUMERIC_BINDINGS_DETAIL_CONFIG_FORTRAN_HPP
+#define BOOST_NUMERIC_BINDINGS_DETAIL_CONFIG_FORTRAN_HPP
 
 #if defined(BIND_FORTRAN_LOWERCASE_UNDERSCORE) || defined(BIND_FORTRAN_LOWERCASE)
 // Allow manual override of the defaults, e.g. if you want to use a fortran
@@ -46,6 +46,12 @@
 // we turn them on unless requested otherwise
 #ifndef BIND_FORTRAN_NO_F2C_RETURN_CONVENTIONS
 #define BIND_FORTRAN_F2C_RETURN_CONVENTIONS
+#endif
+
+#ifndef BIND_FORTRAN_INTEGER_8
+    typedef int fortran_int_t;
+#else
+    typedef std::ptrdiff_t fortran_int_t;
 #endif
 
 #endif // BOOST_NUMERIC_BINDINGS_TRAITS_FORTRAN_H

@@ -141,13 +141,13 @@ struct size_column_op {
 template< typename T, typename Tag >
 inline typename result_of::size_row_op< const T, Tag >::type
 size_row_op( const T& t, Tag ) {
-    return size( t, typename index_trans< tag::index<1>, Tag >::type() );
+    return bindings::size( t, typename index_trans< tag::index<1>, Tag >::type() );
 }
 
 template< typename T, typename Tag >
 inline typename result_of::size_row_op< const T, Tag >::type
 size_column_op( const T& t, Tag ) {
-    return size( t, typename index_trans< tag::index<2>, Tag >::type() );
+    return bindings::size( t, typename index_trans< tag::index<2>, Tag >::type() );
 }
 
 } // namespace bindings

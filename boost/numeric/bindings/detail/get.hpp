@@ -38,6 +38,15 @@ struct get_dispatch< tag::stride_type<which> > { \
         return detail::adaptor_access<T>:: \
         BOOST_PP_CAT( stride, which )( t ); \
     } \
+};\
+\
+template<> \
+struct get_dispatch< tag::bandwidth_type<which> > { \
+    template< typename T > \
+    static std::ptrdiff_t invoke( const T& t ) { \
+        return detail::adaptor_access<T>:: \
+        BOOST_PP_CAT( bandwidth, which )( t ); \
+    } \
 };
 
 BOOST_PP_REPEAT_FROM_TO(1,3,GENERATE_GET,~)

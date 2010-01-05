@@ -10,6 +10,7 @@
 #define BOOST_NUMERIC_BINDINGS_UBLAS_MATRIX_HPP
 
 #include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/detail/if_row_major.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>

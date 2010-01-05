@@ -64,11 +64,13 @@ ADD_TAG( data_side )
 ADD_INT_TEMPLATE_TAG( tensor )
 ADD_INT_TEMPLATE_TAG( size_type )
 ADD_INT_TEMPLATE_TAG( stride_type )
+ADD_INT_TEMPLATE_TAG( bandwidth_type )
 ADD_INT_TEMPLATE_TAG( index )
 
 // Supported data structures
 ADD_TAG( linear_array )
 ADD_TAG( triangular_array )
+ADD_TAG( banded_array )
 ADD_TAG( yale_sparse )
 
 ADD_TAG( structure )
@@ -77,6 +79,7 @@ ADD_TAG( triangular )
 ADD_TAG( unit_triangular )
 ADD_TAG( symmetric )
 ADD_TAG( hermitian )
+ADD_TAG( banded )
 
 ADD_TAG( num_strides )
 

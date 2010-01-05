@@ -63,20 +63,28 @@ struct adaptor< ublas::hermitian_adaptor< T, F >, Id, Enable > {
         mpl::pair< tag::data_side, typename convert_to< tag::data_side, F >::type >
     >::type property_map;
 
-    static std::ptrdiff_t size1( const Id& t ) {
-        return t.size1();
+    static std::ptrdiff_t size1( const Id& id ) {
+        return id.size1();
     }
 
-    static std::ptrdiff_t size2( const Id& t ) {
-        return t.size2();
+    static std::ptrdiff_t size2( const Id& id ) {
+        return id.size2();
     }
 
-    static value_type* begin_value( Id& t ) {
-        return bindings::begin_value( t.data() );
+    static value_type* begin_value( Id& id ) {
+        return bindings::begin_value( id.data() );
     }
 
-    static value_type* end_value( Id& t ) {
-        return bindings::end_value( t.data() );
+    static value_type* end_value( Id& id ) {
+        return bindings::end_value( id.data() );
+    }
+
+    static std::ptrdiff_t stride1( const Id& id ) {
+        return bindings::stride1( id.data() );
+    }
+
+    static std::ptrdiff_t stride2( const Id& id ) {
+        return bindings::stride2( id.data() );
     }
 
 };

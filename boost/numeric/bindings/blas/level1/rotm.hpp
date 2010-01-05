@@ -60,8 +60,8 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void rotm( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
-        float* y, const std::ptrdiff_t incy, float* param ) {
+inline void rotm( int n, float* x, int incx, float* y, int incy,
+        float* param ) {
     cblas_srotm( n, x, incx, y, incy, param );
 }
 
@@ -70,8 +70,7 @@ inline void rotm( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void rotm( const std::ptrdiff_t n, double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy,
+inline void rotm( int n, double* x, int incx, double* y, int incy,
         double* param ) {
     cblas_drotm( n, x, incx, y, incy, param );
 }
@@ -82,8 +81,8 @@ inline void rotm( const std::ptrdiff_t n, double* x,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void rotm( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
-        float* y, const std::ptrdiff_t incy, float* param ) {
+inline void rotm( int n, float* x, int incx, float* y, int incy,
+        float* param ) {
     cublasSrotm( n, x, incx, y, incy, param );
 }
 
@@ -92,8 +91,7 @@ inline void rotm( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void rotm( const std::ptrdiff_t n, double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy,
+inline void rotm( int n, double* x, int incx, double* y, int incy,
         double* param ) {
     cublasDrotm( n, x, incx, y, incy, param );
 }
@@ -104,8 +102,8 @@ inline void rotm( const std::ptrdiff_t n, double* x,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void rotm( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
-        float* y, const std::ptrdiff_t incy, float* param ) {
+inline void rotm( fortran_int_t n, float* x, fortran_int_t incx, float* y,
+        fortran_int_t incy, float* param ) {
     BLAS_SROTM( &n, x, &incx, y, &incy, param );
 }
 
@@ -114,9 +112,8 @@ inline void rotm( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void rotm( const std::ptrdiff_t n, double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy,
-        double* param ) {
+inline void rotm( fortran_int_t n, double* x, fortran_int_t incx, double* y,
+        fortran_int_t incy, double* param ) {
     BLAS_DROTM( &n, x, &incx, y, &incy, param );
 }
 
@@ -142,17 +139,17 @@ struct rotm_impl {
     //
     template< typename VectorX, typename VectorY, typename VectorPARAM >
     static return_type invoke( const std::ptrdiff_t n, VectorX& x,
-            const std::ptrdiff_t incx, VectorY& y, const std::ptrdiff_t incy,
-            VectorPARAM& param ) {
+            const std::ptrdiff_t incx, VectorY& y,
+            const std::ptrdiff_t incy, VectorPARAM& param ) {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorPARAM >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorPARAM >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorPARAM >::value) );
         detail::rotm( n, begin_value(x), incx, begin_value(y), incy,
                 begin_value(param) );
     }
@@ -174,8 +171,9 @@ struct rotm_impl {
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, VectorX& x, const std::ptrdiff_t incx,
-        VectorY& y, const std::ptrdiff_t incy, VectorPARAM& param ) {
+rotm( const std::ptrdiff_t n, VectorX& x,
+        const std::ptrdiff_t incx, VectorY& y,
+        const std::ptrdiff_t incy, VectorPARAM& param ) {
     rotm_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
             incy, param );
 }
@@ -189,8 +187,8 @@ rotm( const std::ptrdiff_t n, VectorX& x, const std::ptrdiff_t incx,
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
 rotm( const std::ptrdiff_t n, const VectorX& x,
-        const std::ptrdiff_t incx, VectorY& y, const std::ptrdiff_t incy,
-        VectorPARAM& param ) {
+        const std::ptrdiff_t incx, VectorY& y,
+        const std::ptrdiff_t incy, VectorPARAM& param ) {
     rotm_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
             incy, param );
 }
@@ -203,8 +201,9 @@ rotm( const std::ptrdiff_t n, const VectorX& x,
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, VectorX& x, const std::ptrdiff_t incx,
-        const VectorY& y, const std::ptrdiff_t incy, VectorPARAM& param ) {
+rotm( const std::ptrdiff_t n, VectorX& x,
+        const std::ptrdiff_t incx, const VectorY& y,
+        const std::ptrdiff_t incy, VectorPARAM& param ) {
     rotm_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
             incy, param );
 }
@@ -232,8 +231,9 @@ rotm( const std::ptrdiff_t n, const VectorX& x,
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, VectorX& x, const std::ptrdiff_t incx,
-        VectorY& y, const std::ptrdiff_t incy, const VectorPARAM& param ) {
+rotm( const std::ptrdiff_t n, VectorX& x,
+        const std::ptrdiff_t incx, VectorY& y,
+        const std::ptrdiff_t incy, const VectorPARAM& param ) {
     rotm_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
             incy, param );
 }
@@ -247,8 +247,8 @@ rotm( const std::ptrdiff_t n, VectorX& x, const std::ptrdiff_t incx,
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
 rotm( const std::ptrdiff_t n, const VectorX& x,
-        const std::ptrdiff_t incx, VectorY& y, const std::ptrdiff_t incy,
-        const VectorPARAM& param ) {
+        const std::ptrdiff_t incx, VectorY& y,
+        const std::ptrdiff_t incy, const VectorPARAM& param ) {
     rotm_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
             incy, param );
 }
@@ -261,9 +261,9 @@ rotm( const std::ptrdiff_t n, const VectorX& x,
 //
 template< typename VectorX, typename VectorY, typename VectorPARAM >
 inline typename rotm_impl< typename value< VectorX >::type >::return_type
-rotm( const std::ptrdiff_t n, VectorX& x, const std::ptrdiff_t incx,
-        const VectorY& y, const std::ptrdiff_t incy,
-        const VectorPARAM& param ) {
+rotm( const std::ptrdiff_t n, VectorX& x,
+        const std::ptrdiff_t incx, const VectorY& y,
+        const std::ptrdiff_t incy, const VectorPARAM& param ) {
     rotm_impl< typename value< VectorX >::type >::invoke( n, x, incx, y,
             incy, param );
 }

@@ -14,7 +14,7 @@
 #ifndef BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_BLAS_NAMES_H
 #define BOOST_NUMERIC_BINDINGS_BLAS_DETAIL_BLAS_NAMES_H
 
-#include <boost/numeric/bindings/detail/fortran.h>
+#include <boost/numeric/bindings/detail/config/fortran.hpp>
 
 //
 // BLAS level1 routines

@@ -63,10 +63,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order >
-inline void ger( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const float alpha, const float* x, const std::ptrdiff_t incx,
-        const float* y, const std::ptrdiff_t incy, float* a,
-        const std::ptrdiff_t lda ) {
+inline void ger( Order, int m, int n, float alpha, const float* x, int incx,
+        const float* y, int incy, float* a, int lda ) {
     cblas_sger( cblas_option< Order >::value, m, n, alpha, x, incx, y, incy,
             a, lda );
 }
@@ -77,10 +75,8 @@ inline void ger( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 // * double value-type.
 //
 template< typename Order >
-inline void ger( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const double alpha, const double* x, const std::ptrdiff_t incx,
-        const double* y, const std::ptrdiff_t incy, double* a,
-        const std::ptrdiff_t lda ) {
+inline void ger( Order, int m, int n, double alpha, const double* x, int incx,
+        const double* y, int incy, double* a, int lda ) {
     cblas_dger( cblas_option< Order >::value, m, n, alpha, x, incx, y, incy,
             a, lda );
 }
@@ -92,10 +88,8 @@ inline void ger( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 // * float value-type.
 //
 template< typename Order >
-inline void ger( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const float alpha, const float* x, const std::ptrdiff_t incx,
-        const float* y, const std::ptrdiff_t incy, float* a,
-        const std::ptrdiff_t lda ) {
+inline void ger( Order, int m, int n, float alpha, const float* x, int incx,
+        const float* y, int incy, float* a, int lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSger( m, n, alpha, x, incx, y, incy, a, lda );
 }
@@ -106,10 +100,8 @@ inline void ger( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 // * double value-type.
 //
 template< typename Order >
-inline void ger( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const double alpha, const double* x, const std::ptrdiff_t incx,
-        const double* y, const std::ptrdiff_t incy, double* a,
-        const std::ptrdiff_t lda ) {
+inline void ger( Order, int m, int n, double alpha, const double* x, int incx,
+        const double* y, int incy, double* a, int lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasDger( m, n, alpha, x, incx, y, incy, a, lda );
 }
@@ -121,10 +113,9 @@ inline void ger( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 // * float value-type.
 //
 template< typename Order >
-inline void ger( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const float alpha, const float* x, const std::ptrdiff_t incx,
-        const float* y, const std::ptrdiff_t incy, float* a,
-        const std::ptrdiff_t lda ) {
+inline void ger( Order, fortran_int_t m, fortran_int_t n, float alpha,
+        const float* x, fortran_int_t incx, const float* y,
+        fortran_int_t incy, float* a, fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SGER( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
 }
@@ -135,10 +126,9 @@ inline void ger( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 // * double value-type.
 //
 template< typename Order >
-inline void ger( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const double alpha, const double* x, const std::ptrdiff_t incx,
-        const double* y, const std::ptrdiff_t incy, double* a,
-        const std::ptrdiff_t lda ) {
+inline void ger( Order, fortran_int_t m, fortran_int_t n, double alpha,
+        const double* x, fortran_int_t incx, const double* y,
+        fortran_int_t incy, double* a, fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DGER( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
 }
@@ -173,7 +163,8 @@ struct ger_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixA >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         detail::ger( order(), size_row(a), size_column(a), alpha,
                 begin_value(x), stride(x), begin_value(y), stride(y),
                 begin_value(a), stride_major(a) );

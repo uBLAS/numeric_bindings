@@ -60,8 +60,7 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void copy( const std::ptrdiff_t n, const float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
+inline void copy( int n, const float* x, int incx, float* y, int incy ) {
     cblas_scopy( n, x, incx, y, incy );
 }
 
@@ -70,8 +69,7 @@ inline void copy( const std::ptrdiff_t n, const float* x,
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void copy( const std::ptrdiff_t n, const double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
+inline void copy( int n, const double* x, int incx, double* y, int incy ) {
     cblas_dcopy( n, x, incx, y, incy );
 }
 
@@ -80,9 +78,8 @@ inline void copy( const std::ptrdiff_t n, const double* x,
 // * CBLAS backend, and
 // * complex<float> value-type.
 //
-inline void copy( const std::ptrdiff_t n, const std::complex<float>* x,
-        const std::ptrdiff_t incx, std::complex<float>* y,
-        const std::ptrdiff_t incy ) {
+inline void copy( int n, const std::complex<float>* x, int incx,
+        std::complex<float>* y, int incy ) {
     cblas_ccopy( n, x, incx, y, incy );
 }
 
@@ -91,9 +88,8 @@ inline void copy( const std::ptrdiff_t n, const std::complex<float>* x,
 // * CBLAS backend, and
 // * complex<double> value-type.
 //
-inline void copy( const std::ptrdiff_t n, const std::complex<double>* x,
-        const std::ptrdiff_t incx, std::complex<double>* y,
-        const std::ptrdiff_t incy ) {
+inline void copy( int n, const std::complex<double>* x, int incx,
+        std::complex<double>* y, int incy ) {
     cblas_zcopy( n, x, incx, y, incy );
 }
 
@@ -103,8 +99,7 @@ inline void copy( const std::ptrdiff_t n, const std::complex<double>* x,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void copy( const std::ptrdiff_t n, const float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
+inline void copy( int n, const float* x, int incx, float* y, int incy ) {
     cublasScopy( n, x, incx, y, incy );
 }
 
@@ -113,8 +108,7 @@ inline void copy( const std::ptrdiff_t n, const float* x,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void copy( const std::ptrdiff_t n, const double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
+inline void copy( int n, const double* x, int incx, double* y, int incy ) {
     cublasDcopy( n, x, incx, y, incy );
 }
 
@@ -123,9 +117,8 @@ inline void copy( const std::ptrdiff_t n, const double* x,
 // * CUBLAS backend, and
 // * complex<float> value-type.
 //
-inline void copy( const std::ptrdiff_t n, const std::complex<float>* x,
-        const std::ptrdiff_t incx, std::complex<float>* y,
-        const std::ptrdiff_t incy ) {
+inline void copy( int n, const std::complex<float>* x, int incx,
+        std::complex<float>* y, int incy ) {
     cublasCcopy( n, x, incx, y, incy );
 }
 
@@ -134,9 +127,8 @@ inline void copy( const std::ptrdiff_t n, const std::complex<float>* x,
 // * CUBLAS backend, and
 // * complex<double> value-type.
 //
-inline void copy( const std::ptrdiff_t n, const std::complex<double>* x,
-        const std::ptrdiff_t incx, std::complex<double>* y,
-        const std::ptrdiff_t incy ) {
+inline void copy( int n, const std::complex<double>* x, int incx,
+        std::complex<double>* y, int incy ) {
     // NOT FOUND();
 }
 
@@ -146,8 +138,8 @@ inline void copy( const std::ptrdiff_t n, const std::complex<double>* x,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void copy( const std::ptrdiff_t n, const float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
+inline void copy( fortran_int_t n, const float* x, fortran_int_t incx,
+        float* y, fortran_int_t incy ) {
     BLAS_SCOPY( &n, x, &incx, y, &incy );
 }
 
@@ -156,8 +148,8 @@ inline void copy( const std::ptrdiff_t n, const float* x,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void copy( const std::ptrdiff_t n, const double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
+inline void copy( fortran_int_t n, const double* x, fortran_int_t incx,
+        double* y, fortran_int_t incy ) {
     BLAS_DCOPY( &n, x, &incx, y, &incy );
 }
 
@@ -166,9 +158,8 @@ inline void copy( const std::ptrdiff_t n, const double* x,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<float> value-type.
 //
-inline void copy( const std::ptrdiff_t n, const std::complex<float>* x,
-        const std::ptrdiff_t incx, std::complex<float>* y,
-        const std::ptrdiff_t incy ) {
+inline void copy( fortran_int_t n, const std::complex<float>* x,
+        fortran_int_t incx, std::complex<float>* y, fortran_int_t incy ) {
     BLAS_CCOPY( &n, x, &incx, y, &incy );
 }
 
@@ -177,9 +168,8 @@ inline void copy( const std::ptrdiff_t n, const std::complex<float>* x,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<double> value-type.
 //
-inline void copy( const std::ptrdiff_t n, const std::complex<double>* x,
-        const std::ptrdiff_t incx, std::complex<double>* y,
-        const std::ptrdiff_t incy ) {
+inline void copy( fortran_int_t n, const std::complex<double>* x,
+        fortran_int_t incx, std::complex<double>* y, fortran_int_t incy ) {
     BLAS_ZCOPY( &n, x, &incx, y, &incy );
 }
 
@@ -208,7 +198,7 @@ struct copy_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
         detail::copy( size(x), begin_value(x), stride(x),
                 begin_value(y), stride(y) );
     }

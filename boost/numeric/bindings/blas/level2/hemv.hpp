@@ -64,11 +64,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemv( Order, UpLo, const std::ptrdiff_t n,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const std::ptrdiff_t lda, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float> beta,
-        std::complex<float>* y, const std::ptrdiff_t incy ) {
+inline void hemv( Order, UpLo, int n, std::complex<float> alpha,
+        const std::complex<float>* a, int lda, const std::complex<float>* x,
+        int incx, std::complex<float> beta, std::complex<float>* y,
+        int incy ) {
     cblas_chemv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             &alpha, a, lda, x, incx, &beta, y, incy );
 }
@@ -79,11 +78,10 @@ inline void hemv( Order, UpLo, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemv( Order, UpLo, const std::ptrdiff_t n,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const std::ptrdiff_t lda, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double> beta,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
+inline void hemv( Order, UpLo, int n, std::complex<double> alpha,
+        const std::complex<double>* a, int lda, const std::complex<double>* x,
+        int incx, std::complex<double> beta, std::complex<double>* y,
+        int incy ) {
     cblas_zhemv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             &alpha, a, lda, x, incx, &beta, y, incy );
 }
@@ -95,11 +93,10 @@ inline void hemv( Order, UpLo, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemv( Order, UpLo, const std::ptrdiff_t n,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const std::ptrdiff_t lda, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float> beta,
-        std::complex<float>* y, const std::ptrdiff_t incy ) {
+inline void hemv( Order, UpLo, int n, std::complex<float> alpha,
+        const std::complex<float>* a, int lda, const std::complex<float>* x,
+        int incx, std::complex<float> beta, std::complex<float>* y,
+        int incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasChemv( blas_option< UpLo >::value, n, alpha, a, lda, x, incx, beta,
             y, incy );
@@ -111,11 +108,10 @@ inline void hemv( Order, UpLo, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemv( Order, UpLo, const std::ptrdiff_t n,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const std::ptrdiff_t lda, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double> beta,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
+inline void hemv( Order, UpLo, int n, std::complex<double> alpha,
+        const std::complex<double>* a, int lda, const std::complex<double>* x,
+        int incx, std::complex<double> beta, std::complex<double>* y,
+        int incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -127,11 +123,11 @@ inline void hemv( Order, UpLo, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemv( Order, UpLo, const std::ptrdiff_t n,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const std::ptrdiff_t lda, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float> beta,
-        std::complex<float>* y, const std::ptrdiff_t incy ) {
+inline void hemv( Order, UpLo, fortran_int_t n, std::complex<float> alpha,
+        const std::complex<float>* a, fortran_int_t lda,
+        const std::complex<float>* x, fortran_int_t incx,
+        std::complex<float> beta, std::complex<float>* y,
+        fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CHEMV( &blas_option< UpLo >::value, &n, &alpha, a, &lda, x, &incx,
             &beta, y, &incy );
@@ -143,11 +139,11 @@ inline void hemv( Order, UpLo, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hemv( Order, UpLo, const std::ptrdiff_t n,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const std::ptrdiff_t lda, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double> beta,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
+inline void hemv( Order, UpLo, fortran_int_t n, std::complex<double> alpha,
+        const std::complex<double>* a, fortran_int_t lda,
+        const std::complex<double>* x, fortran_int_t incx,
+        std::complex<double> beta, std::complex<double>* y,
+        fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZHEMV( &blas_option< UpLo >::value, &n, &alpha, a, &lda, x, &incx,
             &beta, y, &incy );
@@ -184,7 +180,8 @@ struct hemv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         detail::hemv( order(), uplo(), size_column(a), alpha,
                 begin_value(a), stride_major(a), begin_value(x), stride(x),
                 beta, begin_value(y), stride(y) );

@@ -64,9 +64,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* ap, const float* x, const std::ptrdiff_t incx,
-        const float beta, float* y, const std::ptrdiff_t incy ) {
+inline void spmv( Order, UpLo, int n, float alpha, const float* ap,
+        const float* x, int incx, float beta, float* y, int incy ) {
     cblas_sspmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, ap, x, incx, beta, y, incy );
 }
@@ -77,9 +76,8 @@ inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* ap, const double* x, const std::ptrdiff_t incx,
-        const double beta, double* y, const std::ptrdiff_t incy ) {
+inline void spmv( Order, UpLo, int n, double alpha, const double* ap,
+        const double* x, int incx, double beta, double* y, int incy ) {
     cblas_dspmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, ap, x, incx, beta, y, incy );
 }
@@ -91,9 +89,8 @@ inline void spmv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* ap, const float* x, const std::ptrdiff_t incx,
-        const float beta, float* y, const std::ptrdiff_t incy ) {
+inline void spmv( Order, UpLo, int n, float alpha, const float* ap,
+        const float* x, int incx, float beta, float* y, int incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSspmv( blas_option< UpLo >::value, n, alpha, ap, x, incx, beta, y,
             incy );
@@ -105,9 +102,8 @@ inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* ap, const double* x, const std::ptrdiff_t incx,
-        const double beta, double* y, const std::ptrdiff_t incy ) {
+inline void spmv( Order, UpLo, int n, double alpha, const double* ap,
+        const double* x, int incx, double beta, double* y, int incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -119,9 +115,9 @@ inline void spmv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* ap, const float* x, const std::ptrdiff_t incx,
-        const float beta, float* y, const std::ptrdiff_t incy ) {
+inline void spmv( Order, UpLo, fortran_int_t n, float alpha, const float* ap,
+        const float* x, fortran_int_t incx, float beta, float* y,
+        fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SSPMV( &blas_option< UpLo >::value, &n, &alpha, ap, x, &incx, &beta,
             y, &incy );
@@ -133,9 +129,9 @@ inline void spmv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spmv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* ap, const double* x, const std::ptrdiff_t incx,
-        const double beta, double* y, const std::ptrdiff_t incy ) {
+inline void spmv( Order, UpLo, fortran_int_t n, double alpha,
+        const double* ap, const double* x, fortran_int_t incx, double beta,
+        double* y, fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DSPMV( &blas_option< UpLo >::value, &n, &alpha, ap, x, &incx, &beta,
             y, &incy );
@@ -172,7 +168,8 @@ struct spmv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixAP >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
+        BOOST_ASSERT( size_minor(ap) == 1 || stride_minor(ap) == 1 );
         detail::spmv( order(), uplo(), size_column(ap), alpha,
                 begin_value(ap), begin_value(x), stride(x), beta,
                 begin_value(y), stride(y) );

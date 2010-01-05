@@ -64,9 +64,8 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const std::complex<float>* x, const std::ptrdiff_t incx,
-        std::complex<float>* ap ) {
+inline void hpr( Order, UpLo, int n, float alpha,
+        const std::complex<float>* x, int incx, std::complex<float>* ap ) {
     cblas_chpr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, ap );
 }
@@ -77,9 +76,8 @@ inline void hpr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        std::complex<double>* ap ) {
+inline void hpr( Order, UpLo, int n, double alpha,
+        const std::complex<double>* x, int incx, std::complex<double>* ap ) {
     cblas_zhpr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, ap );
 }
@@ -91,9 +89,8 @@ inline void hpr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const std::complex<float>* x, const std::ptrdiff_t incx,
-        std::complex<float>* ap ) {
+inline void hpr( Order, UpLo, int n, float alpha,
+        const std::complex<float>* x, int incx, std::complex<float>* ap ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasChpr( blas_option< UpLo >::value, n, alpha, x, incx, ap );
 }
@@ -104,9 +101,8 @@ inline void hpr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        std::complex<double>* ap ) {
+inline void hpr( Order, UpLo, int n, double alpha,
+        const std::complex<double>* x, int incx, std::complex<double>* ap ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -118,8 +114,8 @@ inline void hpr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const std::complex<float>* x, const std::ptrdiff_t incx,
+inline void hpr( Order, UpLo, fortran_int_t n, float alpha,
+        const std::complex<float>* x, fortran_int_t incx,
         std::complex<float>* ap ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CHPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
@@ -131,8 +127,8 @@ inline void hpr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hpr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
+inline void hpr( Order, UpLo, fortran_int_t n, double alpha,
+        const std::complex<double>* x, fortran_int_t incx,
         std::complex<double>* ap ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZHPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
@@ -166,7 +162,8 @@ struct hpr_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixAP >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
+        BOOST_ASSERT( size_minor(ap) == 1 || stride_minor(ap) == 1 );
         detail::hpr( order(), uplo(), size_column(ap), alpha,
                 begin_value(x), stride(x), begin_value(ap) );
     }

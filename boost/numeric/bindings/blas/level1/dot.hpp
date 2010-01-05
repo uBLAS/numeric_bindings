@@ -60,9 +60,7 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline float dot( const std::ptrdiff_t n, const float* x,
-        const std::ptrdiff_t incx, const float* y,
-        const std::ptrdiff_t incy ) {
+inline float dot( int n, const float* x, int incx, const float* y, int incy ) {
     return cblas_sdot( n, x, incx, y, incy );
 }
 
@@ -71,9 +69,8 @@ inline float dot( const std::ptrdiff_t n, const float* x,
 // * CBLAS backend, and
 // * double value-type.
 //
-inline double dot( const std::ptrdiff_t n, const double* x,
-        const std::ptrdiff_t incx, const double* y,
-        const std::ptrdiff_t incy ) {
+inline double dot( int n, const double* x, int incx, const double* y,
+        int incy ) {
     return cblas_ddot( n, x, incx, y, incy );
 }
 
@@ -83,9 +80,7 @@ inline double dot( const std::ptrdiff_t n, const double* x,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline float dot( const std::ptrdiff_t n, const float* x,
-        const std::ptrdiff_t incx, const float* y,
-        const std::ptrdiff_t incy ) {
+inline float dot( int n, const float* x, int incx, const float* y, int incy ) {
     return cublasSdot( n, x, incx, y, incy );
 }
 
@@ -94,9 +89,8 @@ inline float dot( const std::ptrdiff_t n, const float* x,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline double dot( const std::ptrdiff_t n, const double* x,
-        const std::ptrdiff_t incx, const double* y,
-        const std::ptrdiff_t incy ) {
+inline double dot( int n, const double* x, int incx, const double* y,
+        int incy ) {
     return cublasDdot( n, x, incx, y, incy );
 }
 
@@ -106,9 +100,8 @@ inline double dot( const std::ptrdiff_t n, const double* x,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline float dot( const std::ptrdiff_t n, const float* x,
-        const std::ptrdiff_t incx, const float* y,
-        const std::ptrdiff_t incy ) {
+inline float dot( fortran_int_t n, const float* x, fortran_int_t incx,
+        const float* y, fortran_int_t incy ) {
     return BLAS_SDOT( &n, x, &incx, y, &incy );
 }
 
@@ -117,9 +110,8 @@ inline float dot( const std::ptrdiff_t n, const float* x,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline double dot( const std::ptrdiff_t n, const double* x,
-        const std::ptrdiff_t incx, const double* y,
-        const std::ptrdiff_t incy ) {
+inline double dot( fortran_int_t n, const double* x, fortran_int_t incx,
+        const double* y, fortran_int_t incy ) {
     return BLAS_DDOT( &n, x, &incx, y, &incy );
 }
 

@@ -66,8 +66,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const float* ap, float* x, const std::ptrdiff_t incx ) {
+inline void tpmv( Order, UpLo, Trans, Diag, int n, const float* ap, float* x,
+        int incx ) {
     cblas_stpmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, ap,
             x, incx );
@@ -79,8 +79,8 @@ inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const double* ap, double* x, const std::ptrdiff_t incx ) {
+inline void tpmv( Order, UpLo, Trans, Diag, int n, const double* ap,
+        double* x, int incx ) {
     cblas_dtpmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, ap,
             x, incx );
@@ -92,9 +92,8 @@ inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::complex<float>* ap, std::complex<float>* x,
-        const std::ptrdiff_t incx ) {
+inline void tpmv( Order, UpLo, Trans, Diag, int n,
+        const std::complex<float>* ap, std::complex<float>* x, int incx ) {
     cblas_ctpmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, ap,
             x, incx );
@@ -106,9 +105,8 @@ inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::complex<double>* ap, std::complex<double>* x,
-        const std::ptrdiff_t incx ) {
+inline void tpmv( Order, UpLo, Trans, Diag, int n,
+        const std::complex<double>* ap, std::complex<double>* x, int incx ) {
     cblas_ztpmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, ap,
             x, incx );
@@ -121,8 +119,8 @@ inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const float* ap, float* x, const std::ptrdiff_t incx ) {
+inline void tpmv( Order, UpLo, Trans, Diag, int n, const float* ap, float* x,
+        int incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasStpmv( blas_option< UpLo >::value, blas_option< Trans >::value,
             blas_option< Diag >::value, n, ap, x, incx );
@@ -134,8 +132,8 @@ inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const double* ap, double* x, const std::ptrdiff_t incx ) {
+inline void tpmv( Order, UpLo, Trans, Diag, int n, const double* ap,
+        double* x, int incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -146,9 +144,8 @@ inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::complex<float>* ap, std::complex<float>* x,
-        const std::ptrdiff_t incx ) {
+inline void tpmv( Order, UpLo, Trans, Diag, int n,
+        const std::complex<float>* ap, std::complex<float>* x, int incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasCtpmv( blas_option< UpLo >::value, blas_option< Trans >::value,
             blas_option< Diag >::value, n, ap, x, incx );
@@ -160,9 +157,8 @@ inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::complex<double>* ap, std::complex<double>* x,
-        const std::ptrdiff_t incx ) {
+inline void tpmv( Order, UpLo, Trans, Diag, int n,
+        const std::complex<double>* ap, std::complex<double>* x, int incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -174,8 +170,8 @@ inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const float* ap, float* x, const std::ptrdiff_t incx ) {
+inline void tpmv( Order, UpLo, Trans, Diag, fortran_int_t n, const float* ap,
+        float* x, fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_STPMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, ap, x, &incx );
@@ -187,8 +183,8 @@ inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const double* ap, double* x, const std::ptrdiff_t incx ) {
+inline void tpmv( Order, UpLo, Trans, Diag, fortran_int_t n, const double* ap,
+        double* x, fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DTPMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, ap, x, &incx );
@@ -200,9 +196,9 @@ inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+inline void tpmv( Order, UpLo, Trans, Diag, fortran_int_t n,
         const std::complex<float>* ap, std::complex<float>* x,
-        const std::ptrdiff_t incx ) {
+        fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CTPMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, ap, x, &incx );
@@ -214,9 +210,9 @@ inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tpmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
+inline void tpmv( Order, UpLo, Trans, Diag, fortran_int_t n,
         const std::complex<double>* ap, std::complex<double>* x,
-        const std::ptrdiff_t incx ) {
+        fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZTPMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, ap, x, &incx );
@@ -251,7 +247,8 @@ struct tpmv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixAP >::type >::type, typename remove_const<
                 typename value< VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
+        BOOST_ASSERT( size_minor(ap) == 1 || stride_minor(ap) == 1 );
         detail::tpmv( order(), uplo(), trans(), diag(),
                 size_column_op(ap, trans()), begin_value(ap), begin_value(x),
                 stride(x) );

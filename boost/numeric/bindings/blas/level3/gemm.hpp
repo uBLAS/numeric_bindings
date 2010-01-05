@@ -64,11 +64,9 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k, const float alpha,
-        const float* a, const std::ptrdiff_t lda, const float* b,
-        const std::ptrdiff_t ldb, const float beta, float* c,
-        const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, int m, int n, int k, float alpha,
+        const float* a, int lda, const float* b, int ldb, float beta,
+        float* c, int ldc ) {
     cblas_sgemm( cblas_option< Order >::value, cblas_option< TransA >::value,
             cblas_option< TransB >::value, m, n, k, alpha, a, lda, b, ldb,
             beta, c, ldc );
@@ -80,11 +78,9 @@ inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
 // * double value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k, const double alpha,
-        const double* a, const std::ptrdiff_t lda, const double* b,
-        const std::ptrdiff_t ldb, const double beta, double* c,
-        const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, int m, int n, int k, double alpha,
+        const double* a, int lda, const double* b, int ldb, double beta,
+        double* c, int ldc ) {
     cblas_dgemm( cblas_option< Order >::value, cblas_option< TransA >::value,
             cblas_option< TransB >::value, m, n, k, alpha, a, lda, b, ldb,
             beta, c, ldc );
@@ -96,12 +92,10 @@ inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
 // * complex<float> value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const std::ptrdiff_t lda, const std::complex<float>* b,
-        const std::ptrdiff_t ldb, const std::complex<float> beta,
-        std::complex<float>* c, const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, int m, int n, int k,
+        std::complex<float> alpha, const std::complex<float>* a, int lda,
+        const std::complex<float>* b, int ldb, std::complex<float> beta,
+        std::complex<float>* c, int ldc ) {
     cblas_cgemm( cblas_option< Order >::value, cblas_option< TransA >::value,
             cblas_option< TransB >::value, m, n, k, &alpha, a, lda, b, ldb,
             &beta, c, ldc );
@@ -113,12 +107,10 @@ inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
 // * complex<double> value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const std::ptrdiff_t lda, const std::complex<double>* b,
-        const std::ptrdiff_t ldb, const std::complex<double> beta,
-        std::complex<double>* c, const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, int m, int n, int k,
+        std::complex<double> alpha, const std::complex<double>* a, int lda,
+        const std::complex<double>* b, int ldb, std::complex<double> beta,
+        std::complex<double>* c, int ldc ) {
     cblas_zgemm( cblas_option< Order >::value, cblas_option< TransA >::value,
             cblas_option< TransB >::value, m, n, k, &alpha, a, lda, b, ldb,
             &beta, c, ldc );
@@ -131,11 +123,9 @@ inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
 // * float value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k, const float alpha,
-        const float* a, const std::ptrdiff_t lda, const float* b,
-        const std::ptrdiff_t ldb, const float beta, float* c,
-        const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, int m, int n, int k, float alpha,
+        const float* a, int lda, const float* b, int ldb, float beta,
+        float* c, int ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSgemm( blas_option< TransA >::value, blas_option< TransB >::value,
             m, n, k, alpha, a, lda, b, ldb, beta, c, ldc );
@@ -147,11 +137,9 @@ inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
 // * double value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k, const double alpha,
-        const double* a, const std::ptrdiff_t lda, const double* b,
-        const std::ptrdiff_t ldb, const double beta, double* c,
-        const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, int m, int n, int k, double alpha,
+        const double* a, int lda, const double* b, int ldb, double beta,
+        double* c, int ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasDgemm( blas_option< TransA >::value, blas_option< TransB >::value,
             m, n, k, alpha, a, lda, b, ldb, beta, c, ldc );
@@ -163,12 +151,10 @@ inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
 // * complex<float> value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const std::ptrdiff_t lda, const std::complex<float>* b,
-        const std::ptrdiff_t ldb, const std::complex<float> beta,
-        std::complex<float>* c, const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, int m, int n, int k,
+        std::complex<float> alpha, const std::complex<float>* a, int lda,
+        const std::complex<float>* b, int ldb, std::complex<float> beta,
+        std::complex<float>* c, int ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasCgemm( blas_option< TransA >::value, blas_option< TransB >::value,
             m, n, k, alpha, a, lda, b, ldb, beta, c, ldc );
@@ -180,12 +166,10 @@ inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
 // * complex<double> value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const std::ptrdiff_t lda, const std::complex<double>* b,
-        const std::ptrdiff_t ldb, const std::complex<double> beta,
-        std::complex<double>* c, const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, int m, int n, int k,
+        std::complex<double> alpha, const std::complex<double>* a, int lda,
+        const std::complex<double>* b, int ldb, std::complex<double> beta,
+        std::complex<double>* c, int ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasZgemm( blas_option< TransA >::value, blas_option< TransB >::value,
             m, n, k, alpha, a, lda, b, ldb, beta, c, ldc );
@@ -198,11 +182,10 @@ inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
 // * float value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k, const float alpha,
-        const float* a, const std::ptrdiff_t lda, const float* b,
-        const std::ptrdiff_t ldb, const float beta, float* c,
-        const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, fortran_int_t m, fortran_int_t n,
+        fortran_int_t k, float alpha, const float* a, fortran_int_t lda,
+        const float* b, fortran_int_t ldb, float beta, float* c,
+        fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SGEMM( &blas_option< TransA >::value, &blas_option< TransB >::value,
             &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -214,11 +197,10 @@ inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
 // * double value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k, const double alpha,
-        const double* a, const std::ptrdiff_t lda, const double* b,
-        const std::ptrdiff_t ldb, const double beta, double* c,
-        const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, fortran_int_t m, fortran_int_t n,
+        fortran_int_t k, double alpha, const double* a, fortran_int_t lda,
+        const double* b, fortran_int_t ldb, double beta, double* c,
+        fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DGEMM( &blas_option< TransA >::value, &blas_option< TransB >::value,
             &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -230,12 +212,11 @@ inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
 // * complex<float> value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const std::ptrdiff_t lda, const std::complex<float>* b,
-        const std::ptrdiff_t ldb, const std::complex<float> beta,
-        std::complex<float>* c, const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, fortran_int_t m, fortran_int_t n,
+        fortran_int_t k, std::complex<float> alpha,
+        const std::complex<float>* a, fortran_int_t lda,
+        const std::complex<float>* b, fortran_int_t ldb,
+        std::complex<float> beta, std::complex<float>* c, fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CGEMM( &blas_option< TransA >::value, &blas_option< TransB >::value,
             &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -247,12 +228,12 @@ inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
 // * complex<double> value-type.
 //
 template< typename Order, typename TransA, typename TransB >
-inline void gemm( Order, TransA, TransB, const std::ptrdiff_t m,
-        const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const std::ptrdiff_t lda, const std::complex<double>* b,
-        const std::ptrdiff_t ldb, const std::complex<double> beta,
-        std::complex<double>* c, const std::ptrdiff_t ldc ) {
+inline void gemm( Order, TransA, TransB, fortran_int_t m, fortran_int_t n,
+        fortran_int_t k, std::complex<double> alpha,
+        const std::complex<double>* a, fortran_int_t lda,
+        const std::complex<double>* b, fortran_int_t ldb,
+        std::complex<double> beta, std::complex<double>* c,
+        fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZGEMM( &blas_option< TransA >::value, &blas_option< TransB >::value,
             &m, &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -290,7 +271,10 @@ struct gemm_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
         detail::gemm( order(), transa(), transb(), size_row(c),
                 size_column(c), size_column(a), alpha, begin_value(a),
                 stride_major(a), begin_value(b), stride_major(b), beta,

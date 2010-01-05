@@ -60,8 +60,7 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void scal( const std::ptrdiff_t n, const float a, float* x,
-        const std::ptrdiff_t incx ) {
+inline void scal( int n, float a, float* x, int incx ) {
     cblas_sscal( n, a, x, incx );
 }
 
@@ -70,8 +69,7 @@ inline void scal( const std::ptrdiff_t n, const float a, float* x,
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void scal( const std::ptrdiff_t n, const double a, double* x,
-        const std::ptrdiff_t incx ) {
+inline void scal( int n, double a, double* x, int incx ) {
     cblas_dscal( n, a, x, incx );
 }
 
@@ -80,8 +78,8 @@ inline void scal( const std::ptrdiff_t n, const double a, double* x,
 // * CBLAS backend, and
 // * complex<float> value-type.
 //
-inline void scal( const std::ptrdiff_t n, const std::complex<float> a,
-        std::complex<float>* x, const std::ptrdiff_t incx ) {
+inline void scal( int n, std::complex<float> a, std::complex<float>* x,
+        int incx ) {
     cblas_cscal( n, &a, x, incx );
 }
 
@@ -90,8 +88,8 @@ inline void scal( const std::ptrdiff_t n, const std::complex<float> a,
 // * CBLAS backend, and
 // * complex<double> value-type.
 //
-inline void scal( const std::ptrdiff_t n, const std::complex<double> a,
-        std::complex<double>* x, const std::ptrdiff_t incx ) {
+inline void scal( int n, std::complex<double> a, std::complex<double>* x,
+        int incx ) {
     cblas_zscal( n, &a, x, incx );
 }
 
@@ -101,8 +99,7 @@ inline void scal( const std::ptrdiff_t n, const std::complex<double> a,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void scal( const std::ptrdiff_t n, const float a, float* x,
-        const std::ptrdiff_t incx ) {
+inline void scal( int n, float a, float* x, int incx ) {
     cublasSscal( n, a, x, incx );
 }
 
@@ -111,8 +108,7 @@ inline void scal( const std::ptrdiff_t n, const float a, float* x,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void scal( const std::ptrdiff_t n, const double a, double* x,
-        const std::ptrdiff_t incx ) {
+inline void scal( int n, double a, double* x, int incx ) {
     cublasDscal( n, a, x, incx );
 }
 
@@ -121,8 +117,8 @@ inline void scal( const std::ptrdiff_t n, const double a, double* x,
 // * CUBLAS backend, and
 // * complex<float> value-type.
 //
-inline void scal( const std::ptrdiff_t n, const std::complex<float> a,
-        std::complex<float>* x, const std::ptrdiff_t incx ) {
+inline void scal( int n, std::complex<float> a, std::complex<float>* x,
+        int incx ) {
     cublasCscal( n, a, x, incx );
 }
 
@@ -131,8 +127,8 @@ inline void scal( const std::ptrdiff_t n, const std::complex<float> a,
 // * CUBLAS backend, and
 // * complex<double> value-type.
 //
-inline void scal( const std::ptrdiff_t n, const std::complex<double> a,
-        std::complex<double>* x, const std::ptrdiff_t incx ) {
+inline void scal( int n, std::complex<double> a, std::complex<double>* x,
+        int incx ) {
     cublasZscal( n, a, x, incx );
 }
 
@@ -142,8 +138,7 @@ inline void scal( const std::ptrdiff_t n, const std::complex<double> a,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void scal( const std::ptrdiff_t n, const float a, float* x,
-        const std::ptrdiff_t incx ) {
+inline void scal( fortran_int_t n, float a, float* x, fortran_int_t incx ) {
     BLAS_SSCAL( &n, &a, x, &incx );
 }
 
@@ -152,8 +147,7 @@ inline void scal( const std::ptrdiff_t n, const float a, float* x,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void scal( const std::ptrdiff_t n, const double a, double* x,
-        const std::ptrdiff_t incx ) {
+inline void scal( fortran_int_t n, double a, double* x, fortran_int_t incx ) {
     BLAS_DSCAL( &n, &a, x, &incx );
 }
 
@@ -162,8 +156,8 @@ inline void scal( const std::ptrdiff_t n, const double a, double* x,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<float> value-type.
 //
-inline void scal( const std::ptrdiff_t n, const std::complex<float> a,
-        std::complex<float>* x, const std::ptrdiff_t incx ) {
+inline void scal( fortran_int_t n, std::complex<float> a,
+        std::complex<float>* x, fortran_int_t incx ) {
     BLAS_CSCAL( &n, &a, x, &incx );
 }
 
@@ -172,8 +166,8 @@ inline void scal( const std::ptrdiff_t n, const std::complex<float> a,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<double> value-type.
 //
-inline void scal( const std::ptrdiff_t n, const std::complex<double> a,
-        std::complex<double>* x, const std::ptrdiff_t incx ) {
+inline void scal( fortran_int_t n, std::complex<double> a,
+        std::complex<double>* x, fortran_int_t incx ) {
     BLAS_ZSCAL( &n, &a, x, &incx );
 }
 
@@ -199,7 +193,7 @@ struct scal_impl {
     //
     template< typename VectorX >
     static return_type invoke( const value_type a, VectorX& x ) {
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
         detail::scal( size(x), a, begin_value(x), stride(x) );
     }
 };

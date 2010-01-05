@@ -64,10 +64,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* a, const std::ptrdiff_t lda, const float* x,
-        const std::ptrdiff_t incx, const float beta, float* y,
-        const std::ptrdiff_t incy ) {
+inline void symv( Order, UpLo, int n, float alpha, const float* a, int lda,
+        const float* x, int incx, float beta, float* y, int incy ) {
     cblas_ssymv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -78,10 +76,8 @@ inline void symv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* a, const std::ptrdiff_t lda, const double* x,
-        const std::ptrdiff_t incx, const double beta, double* y,
-        const std::ptrdiff_t incy ) {
+inline void symv( Order, UpLo, int n, double alpha, const double* a, int lda,
+        const double* x, int incx, double beta, double* y, int incy ) {
     cblas_dsymv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -93,10 +89,8 @@ inline void symv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* a, const std::ptrdiff_t lda, const float* x,
-        const std::ptrdiff_t incx, const float beta, float* y,
-        const std::ptrdiff_t incy ) {
+inline void symv( Order, UpLo, int n, float alpha, const float* a, int lda,
+        const float* x, int incx, float beta, float* y, int incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSsymv( blas_option< UpLo >::value, n, alpha, a, lda, x, incx, beta,
             y, incy );
@@ -108,10 +102,8 @@ inline void symv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* a, const std::ptrdiff_t lda, const double* x,
-        const std::ptrdiff_t incx, const double beta, double* y,
-        const std::ptrdiff_t incy ) {
+inline void symv( Order, UpLo, int n, double alpha, const double* a, int lda,
+        const double* x, int incx, double beta, double* y, int incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -123,10 +115,9 @@ inline void symv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* a, const std::ptrdiff_t lda, const float* x,
-        const std::ptrdiff_t incx, const float beta, float* y,
-        const std::ptrdiff_t incy ) {
+inline void symv( Order, UpLo, fortran_int_t n, float alpha, const float* a,
+        fortran_int_t lda, const float* x, fortran_int_t incx, float beta,
+        float* y, fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SSYMV( &blas_option< UpLo >::value, &n, &alpha, a, &lda, x, &incx,
             &beta, y, &incy );
@@ -138,10 +129,9 @@ inline void symv( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void symv( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* a, const std::ptrdiff_t lda, const double* x,
-        const std::ptrdiff_t incx, const double beta, double* y,
-        const std::ptrdiff_t incy ) {
+inline void symv( Order, UpLo, fortran_int_t n, double alpha, const double* a,
+        fortran_int_t lda, const double* x, fortran_int_t incx, double beta,
+        double* y, fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DSYMV( &blas_option< UpLo >::value, &n, &alpha, a, &lda, x, &incx,
             &beta, y, &incy );
@@ -178,7 +168,8 @@ struct symv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         detail::symv( order(), uplo(), size_column(a), alpha,
                 begin_value(a), stride_major(a), begin_value(x), stride(x),
                 beta, begin_value(y), stride(y) );

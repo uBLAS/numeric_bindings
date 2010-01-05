@@ -15,6 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_HBMV_HPP
 
 #include <boost/assert.hpp>
+#include <boost/numeric/bindings/bandwidth.hpp
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
@@ -64,11 +65,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const std::ptrdiff_t lda, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float> beta,
-        std::complex<float>* y, const std::ptrdiff_t incy ) {
+inline void hbmv( Order, UpLo, int n, int k, std::complex<float> alpha,
+        const std::complex<float>* a, int lda, const std::complex<float>* x,
+        int incx, std::complex<float> beta, std::complex<float>* y,
+        int incy ) {
     cblas_chbmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             k, &alpha, a, lda, x, incx, &beta, y, incy );
 }
@@ -79,11 +79,10 @@ inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const std::ptrdiff_t lda, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double> beta,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
+inline void hbmv( Order, UpLo, int n, int k, std::complex<double> alpha,
+        const std::complex<double>* a, int lda, const std::complex<double>* x,
+        int incx, std::complex<double> beta, std::complex<double>* y,
+        int incy ) {
     cblas_zhbmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             k, &alpha, a, lda, x, incx, &beta, y, incy );
 }
@@ -95,11 +94,10 @@ inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const std::ptrdiff_t lda, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float> beta,
-        std::complex<float>* y, const std::ptrdiff_t incy ) {
+inline void hbmv( Order, UpLo, int n, int k, std::complex<float> alpha,
+        const std::complex<float>* a, int lda, const std::complex<float>* x,
+        int incx, std::complex<float> beta, std::complex<float>* y,
+        int incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasChbmv( blas_option< UpLo >::value, n, k, alpha, a, lda, x, incx,
             beta, y, incy );
@@ -111,11 +109,10 @@ inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const std::ptrdiff_t lda, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double> beta,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
+inline void hbmv( Order, UpLo, int n, int k, std::complex<double> alpha,
+        const std::complex<double>* a, int lda, const std::complex<double>* x,
+        int incx, std::complex<double> beta, std::complex<double>* y,
+        int incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -127,11 +124,11 @@ inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<float> alpha, const std::complex<float>* a,
-        const std::ptrdiff_t lda, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float> beta,
-        std::complex<float>* y, const std::ptrdiff_t incy ) {
+inline void hbmv( Order, UpLo, fortran_int_t n, fortran_int_t k,
+        std::complex<float> alpha, const std::complex<float>* a,
+        fortran_int_t lda, const std::complex<float>* x, fortran_int_t incx,
+        std::complex<float> beta, std::complex<float>* y,
+        fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CHBMV( &blas_option< UpLo >::value, &n, &k, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
@@ -143,11 +140,11 @@ inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void hbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const std::complex<double> alpha, const std::complex<double>* a,
-        const std::ptrdiff_t lda, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double> beta,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
+inline void hbmv( Order, UpLo, fortran_int_t n, fortran_int_t k,
+        std::complex<double> alpha, const std::complex<double>* a,
+        fortran_int_t lda, const std::complex<double>* x, fortran_int_t incx,
+        std::complex<double> beta, std::complex<double>* y,
+        fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZHBMV( &blas_option< UpLo >::value, &n, &k, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
@@ -174,9 +171,8 @@ struct hbmv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type invoke( const std::ptrdiff_t k, const value_type alpha,
-            const MatrixA& a, const VectorX& x, const value_type beta,
-            VectorY& y ) {
+    static return_type invoke( const value_type alpha, const MatrixA& a,
+            const VectorX& x, const value_type beta, VectorY& y ) {
         typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
@@ -185,10 +181,11 @@ struct hbmv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
-        detail::hbmv( order(), uplo(), size_column(a), k, alpha,
-                begin_value(a), stride_major(a), begin_value(x), stride(x),
-                beta, begin_value(y), stride(y) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        detail::hbmv( order(), uplo(), size_column(a),
+                bandwidth_upper(a), alpha, begin_value(a), stride_major(a),
+                begin_value(x), stride(x), beta, begin_value(y), stride(y) );
     }
 };
 
@@ -206,11 +203,11 @@ struct hbmv_impl {
 //
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename hbmv_impl< typename value< MatrixA >::type >::return_type
-hbmv( const std::ptrdiff_t k, const typename value<
-        MatrixA >::type alpha, const MatrixA& a, const VectorX& x,
-        const typename value< MatrixA >::type beta, VectorY& y ) {
-    hbmv_impl< typename value< MatrixA >::type >::invoke( k, alpha, a,
-            x, beta, y );
+hbmv( const typename value< MatrixA >::type alpha, const MatrixA& a,
+        const VectorX& x, const typename value< MatrixA >::type beta,
+        VectorY& y ) {
+    hbmv_impl< typename value< MatrixA >::type >::invoke( alpha, a, x,
+            beta, y );
 }
 
 //
@@ -219,11 +216,11 @@ hbmv( const std::ptrdiff_t k, const typename value<
 //
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename hbmv_impl< typename value< MatrixA >::type >::return_type
-hbmv( const std::ptrdiff_t k, const typename value<
-        MatrixA >::type alpha, const MatrixA& a, const VectorX& x,
-        const typename value< MatrixA >::type beta, const VectorY& y ) {
-    hbmv_impl< typename value< MatrixA >::type >::invoke( k, alpha, a,
-            x, beta, y );
+hbmv( const typename value< MatrixA >::type alpha, const MatrixA& a,
+        const VectorX& x, const typename value< MatrixA >::type beta,
+        const VectorY& y ) {
+    hbmv_impl< typename value< MatrixA >::type >::invoke( alpha, a, x,
+            beta, y );
 }
 
 } // namespace blas

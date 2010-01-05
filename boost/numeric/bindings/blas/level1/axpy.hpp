@@ -60,8 +60,8 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const float a, const float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
+inline void axpy( int n, float a, const float* x, int incx, float* y,
+        int incy ) {
     cblas_saxpy( n, a, x, incx, y, incy );
 }
 
@@ -70,8 +70,8 @@ inline void axpy( const std::ptrdiff_t n, const float a, const float* x,
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const double a, const double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
+inline void axpy( int n, double a, const double* x, int incx, double* y,
+        int incy ) {
     cblas_daxpy( n, a, x, incx, y, incy );
 }
 
@@ -80,9 +80,8 @@ inline void axpy( const std::ptrdiff_t n, const double a, const double* x,
 // * CBLAS backend, and
 // * complex<float> value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const std::complex<float> a,
-        const std::complex<float>* x, const std::ptrdiff_t incx,
-        std::complex<float>* y, const std::ptrdiff_t incy ) {
+inline void axpy( int n, std::complex<float> a, const std::complex<float>* x,
+        int incx, std::complex<float>* y, int incy ) {
     cblas_caxpy( n, &a, x, incx, y, incy );
 }
 
@@ -91,9 +90,9 @@ inline void axpy( const std::ptrdiff_t n, const std::complex<float> a,
 // * CBLAS backend, and
 // * complex<double> value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const std::complex<double> a,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
+inline void axpy( int n, std::complex<double> a,
+        const std::complex<double>* x, int incx, std::complex<double>* y,
+        int incy ) {
     cblas_zaxpy( n, &a, x, incx, y, incy );
 }
 
@@ -103,8 +102,8 @@ inline void axpy( const std::ptrdiff_t n, const std::complex<double> a,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const float a, const float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
+inline void axpy( int n, float a, const float* x, int incx, float* y,
+        int incy ) {
     cublasSaxpy( n, a, x, incx, y, incy );
 }
 
@@ -113,8 +112,8 @@ inline void axpy( const std::ptrdiff_t n, const float a, const float* x,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const double a, const double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
+inline void axpy( int n, double a, const double* x, int incx, double* y,
+        int incy ) {
     cublasDaxpy( n, a, x, incx, y, incy );
 }
 
@@ -123,9 +122,8 @@ inline void axpy( const std::ptrdiff_t n, const double a, const double* x,
 // * CUBLAS backend, and
 // * complex<float> value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const std::complex<float> a,
-        const std::complex<float>* x, const std::ptrdiff_t incx,
-        std::complex<float>* y, const std::ptrdiff_t incy ) {
+inline void axpy( int n, std::complex<float> a, const std::complex<float>* x,
+        int incx, std::complex<float>* y, int incy ) {
     cublasCaxpy( n, a, x, incx, y, incy );
 }
 
@@ -134,9 +132,9 @@ inline void axpy( const std::ptrdiff_t n, const std::complex<float> a,
 // * CUBLAS backend, and
 // * complex<double> value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const std::complex<double> a,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
+inline void axpy( int n, std::complex<double> a,
+        const std::complex<double>* x, int incx, std::complex<double>* y,
+        int incy ) {
     // NOT FOUND();
 }
 
@@ -146,8 +144,8 @@ inline void axpy( const std::ptrdiff_t n, const std::complex<double> a,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const float a, const float* x,
-        const std::ptrdiff_t incx, float* y, const std::ptrdiff_t incy ) {
+inline void axpy( fortran_int_t n, float a, const float* x,
+        fortran_int_t incx, float* y, fortran_int_t incy ) {
     BLAS_SAXPY( &n, &a, x, &incx, y, &incy );
 }
 
@@ -156,8 +154,8 @@ inline void axpy( const std::ptrdiff_t n, const float a, const float* x,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const double a, const double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
+inline void axpy( fortran_int_t n, double a, const double* x,
+        fortran_int_t incx, double* y, fortran_int_t incy ) {
     BLAS_DAXPY( &n, &a, x, &incx, y, &incy );
 }
 
@@ -166,9 +164,9 @@ inline void axpy( const std::ptrdiff_t n, const double a, const double* x,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<float> value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const std::complex<float> a,
-        const std::complex<float>* x, const std::ptrdiff_t incx,
-        std::complex<float>* y, const std::ptrdiff_t incy ) {
+inline void axpy( fortran_int_t n, std::complex<float> a,
+        const std::complex<float>* x, fortran_int_t incx,
+        std::complex<float>* y, fortran_int_t incy ) {
     BLAS_CAXPY( &n, &a, x, &incx, y, &incy );
 }
 
@@ -177,9 +175,9 @@ inline void axpy( const std::ptrdiff_t n, const std::complex<float> a,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<double> value-type.
 //
-inline void axpy( const std::ptrdiff_t n, const std::complex<double> a,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        std::complex<double>* y, const std::ptrdiff_t incy ) {
+inline void axpy( fortran_int_t n, std::complex<double> a,
+        const std::complex<double>* x, fortran_int_t incx,
+        std::complex<double>* y, fortran_int_t incy ) {
     BLAS_ZAXPY( &n, &a, x, &incx, y, &incy );
 }
 
@@ -209,7 +207,7 @@ struct axpy_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
         detail::axpy( size(x), a, begin_value(x), stride(x),
                 begin_value(y), stride(y) );
     }

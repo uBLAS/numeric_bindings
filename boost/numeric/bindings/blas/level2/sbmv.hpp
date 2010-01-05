@@ -15,6 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_SBMV_HPP
 
 #include <boost/assert.hpp>
+#include <boost/numeric/bindings/bandwidth.hpp
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
@@ -64,10 +65,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const float alpha, const float* a, const std::ptrdiff_t lda,
-        const float* x, const std::ptrdiff_t incx, const float beta, float* y,
-        const std::ptrdiff_t incy ) {
+inline void sbmv( Order, UpLo, int n, int k, float alpha, const float* a,
+        int lda, const float* x, int incx, float beta, float* y, int incy ) {
     cblas_ssbmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             k, alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -78,10 +77,9 @@ inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const double alpha, const double* a, const std::ptrdiff_t lda,
-        const double* x, const std::ptrdiff_t incx, const double beta,
-        double* y, const std::ptrdiff_t incy ) {
+inline void sbmv( Order, UpLo, int n, int k, double alpha, const double* a,
+        int lda, const double* x, int incx, double beta, double* y,
+        int incy ) {
     cblas_dsbmv( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             k, alpha, a, lda, x, incx, beta, y, incy );
 }
@@ -93,10 +91,8 @@ inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const float alpha, const float* a, const std::ptrdiff_t lda,
-        const float* x, const std::ptrdiff_t incx, const float beta, float* y,
-        const std::ptrdiff_t incy ) {
+inline void sbmv( Order, UpLo, int n, int k, float alpha, const float* a,
+        int lda, const float* x, int incx, float beta, float* y, int incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSsbmv( blas_option< UpLo >::value, n, k, alpha, a, lda, x, incx,
             beta, y, incy );
@@ -108,10 +104,9 @@ inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const double alpha, const double* a, const std::ptrdiff_t lda,
-        const double* x, const std::ptrdiff_t incx, const double beta,
-        double* y, const std::ptrdiff_t incy ) {
+inline void sbmv( Order, UpLo, int n, int k, double alpha, const double* a,
+        int lda, const double* x, int incx, double beta, double* y,
+        int incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -123,10 +118,9 @@ inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const float alpha, const float* a, const std::ptrdiff_t lda,
-        const float* x, const std::ptrdiff_t incx, const float beta, float* y,
-        const std::ptrdiff_t incy ) {
+inline void sbmv( Order, UpLo, fortran_int_t n, fortran_int_t k, float alpha,
+        const float* a, fortran_int_t lda, const float* x, fortran_int_t incx,
+        float beta, float* y, fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SSBMV( &blas_option< UpLo >::value, &n, &k, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
@@ -138,10 +132,9 @@ inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void sbmv( Order, UpLo, const std::ptrdiff_t n, const std::ptrdiff_t k,
-        const double alpha, const double* a, const std::ptrdiff_t lda,
-        const double* x, const std::ptrdiff_t incx, const double beta,
-        double* y, const std::ptrdiff_t incy ) {
+inline void sbmv( Order, UpLo, fortran_int_t n, fortran_int_t k, double alpha,
+        const double* a, fortran_int_t lda, const double* x,
+        fortran_int_t incx, double beta, double* y, fortran_int_t incy ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DSBMV( &blas_option< UpLo >::value, &n, &k, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
@@ -168,9 +161,8 @@ struct sbmv_impl {
     // * Asserts that most arguments make sense.
     //
     template< typename MatrixA, typename VectorX, typename VectorY >
-    static return_type invoke( const std::ptrdiff_t k, const real_type alpha,
-            const MatrixA& a, const VectorX& x, const real_type beta,
-            VectorY& y ) {
+    static return_type invoke( const real_type alpha, const MatrixA& a,
+            const VectorX& x, const real_type beta, VectorY& y ) {
         typedef typename result_of::data_order< MatrixA >::type order;
         typedef typename result_of::data_side< MatrixA >::type uplo;
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
@@ -179,10 +171,11 @@ struct sbmv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
-        detail::sbmv( order(), uplo(), size_column(a), k, alpha,
-                begin_value(a), stride_major(a), begin_value(x), stride(x),
-                beta, begin_value(y), stride(y) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        detail::sbmv( order(), uplo(), size_column(a),
+                bandwidth_upper(a), alpha, begin_value(a), stride_major(a),
+                begin_value(x), stride(x), beta, begin_value(y), stride(y) );
     }
 };
 
@@ -200,12 +193,12 @@ struct sbmv_impl {
 //
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename sbmv_impl< typename value< MatrixA >::type >::return_type
-sbmv( const std::ptrdiff_t k, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type alpha, const MatrixA& a,
-        const VectorX& x, const typename remove_imaginary< typename value<
+sbmv( const typename remove_imaginary< typename value<
+        MatrixA >::type >::type alpha, const MatrixA& a, const VectorX& x,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type beta, VectorY& y ) {
-    sbmv_impl< typename value< MatrixA >::type >::invoke( k, alpha, a,
-            x, beta, y );
+    sbmv_impl< typename value< MatrixA >::type >::invoke( alpha, a, x,
+            beta, y );
 }
 
 //
@@ -214,12 +207,12 @@ sbmv( const std::ptrdiff_t k, const typename remove_imaginary<
 //
 template< typename MatrixA, typename VectorX, typename VectorY >
 inline typename sbmv_impl< typename value< MatrixA >::type >::return_type
-sbmv( const std::ptrdiff_t k, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type alpha, const MatrixA& a,
-        const VectorX& x, const typename remove_imaginary< typename value<
+sbmv( const typename remove_imaginary< typename value<
+        MatrixA >::type >::type alpha, const MatrixA& a, const VectorX& x,
+        const typename remove_imaginary< typename value<
         MatrixA >::type >::type beta, const VectorY& y ) {
-    sbmv_impl< typename value< MatrixA >::type >::invoke( k, alpha, a,
-            x, beta, y );
+    sbmv_impl< typename value< MatrixA >::type >::invoke( alpha, a, x,
+            beta, y );
 }
 
 } // namespace blas

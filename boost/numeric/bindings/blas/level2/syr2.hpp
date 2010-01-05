@@ -64,9 +64,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr2( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* x, const std::ptrdiff_t incx, const float* y,
-        const std::ptrdiff_t incy, float* a, const std::ptrdiff_t lda ) {
+inline void syr2( Order, UpLo, int n, float alpha, const float* x, int incx,
+        const float* y, int incy, float* a, int lda ) {
     cblas_ssyr2( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, y, incy, a, lda );
 }
@@ -77,9 +76,8 @@ inline void syr2( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr2( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* x, const std::ptrdiff_t incx, const double* y,
-        const std::ptrdiff_t incy, double* a, const std::ptrdiff_t lda ) {
+inline void syr2( Order, UpLo, int n, double alpha, const double* x, int incx,
+        const double* y, int incy, double* a, int lda ) {
     cblas_dsyr2( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, y, incy, a, lda );
 }
@@ -91,9 +89,8 @@ inline void syr2( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr2( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* x, const std::ptrdiff_t incx, const float* y,
-        const std::ptrdiff_t incy, float* a, const std::ptrdiff_t lda ) {
+inline void syr2( Order, UpLo, int n, float alpha, const float* x, int incx,
+        const float* y, int incy, float* a, int lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSsyr2( blas_option< UpLo >::value, n, alpha, x, incx, y, incy, a,
             lda );
@@ -105,9 +102,8 @@ inline void syr2( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr2( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* x, const std::ptrdiff_t incx, const double* y,
-        const std::ptrdiff_t incy, double* a, const std::ptrdiff_t lda ) {
+inline void syr2( Order, UpLo, int n, double alpha, const double* x, int incx,
+        const double* y, int incy, double* a, int lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -119,9 +115,9 @@ inline void syr2( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr2( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* x, const std::ptrdiff_t incx, const float* y,
-        const std::ptrdiff_t incy, float* a, const std::ptrdiff_t lda ) {
+inline void syr2( Order, UpLo, fortran_int_t n, float alpha, const float* x,
+        fortran_int_t incx, const float* y, fortran_int_t incy, float* a,
+        fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SSYR2( &blas_option< UpLo >::value, &n, &alpha, x, &incx, y, &incy,
             a, &lda );
@@ -133,9 +129,9 @@ inline void syr2( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr2( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* x, const std::ptrdiff_t incx, const double* y,
-        const std::ptrdiff_t incy, double* a, const std::ptrdiff_t lda ) {
+inline void syr2( Order, UpLo, fortran_int_t n, double alpha, const double* x,
+        fortran_int_t incx, const double* y, fortran_int_t incy, double* a,
+        fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DSYR2( &blas_option< UpLo >::value, &n, &alpha, x, &incx, y, &incy,
             a, &lda );
@@ -172,7 +168,8 @@ struct syr2_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixA >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         detail::syr2( order(), uplo(), size_column(a), alpha,
                 begin_value(x), stride(x), begin_value(y), stride(y),
                 begin_value(a), stride_major(a) );

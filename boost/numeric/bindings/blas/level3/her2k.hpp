@@ -65,11 +65,10 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<float> alpha,
-        const std::complex<float>* a, const std::ptrdiff_t lda,
-        const std::complex<float>* b, const std::ptrdiff_t ldb,
-        const float beta, std::complex<float>* c, const std::ptrdiff_t ldc ) {
+inline void her2k( Order, UpLo, Trans, int n, int k,
+        std::complex<float> alpha, const std::complex<float>* a, int lda,
+        const std::complex<float>* b, int ldb, float beta,
+        std::complex<float>* c, int ldc ) {
     cblas_cher2k( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, n, k, &alpha, a, lda, b, ldb, beta,
             c, ldc );
@@ -81,12 +80,10 @@ inline void her2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<double> alpha,
-        const std::complex<double>* a, const std::ptrdiff_t lda,
-        const std::complex<double>* b, const std::ptrdiff_t ldb,
-        const double beta, std::complex<double>* c,
-        const std::ptrdiff_t ldc ) {
+inline void her2k( Order, UpLo, Trans, int n, int k,
+        std::complex<double> alpha, const std::complex<double>* a, int lda,
+        const std::complex<double>* b, int ldb, double beta,
+        std::complex<double>* c, int ldc ) {
     cblas_zher2k( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, n, k, &alpha, a, lda, b, ldb, beta,
             c, ldc );
@@ -99,11 +96,10 @@ inline void her2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<float> alpha,
-        const std::complex<float>* a, const std::ptrdiff_t lda,
-        const std::complex<float>* b, const std::ptrdiff_t ldb,
-        const float beta, std::complex<float>* c, const std::ptrdiff_t ldc ) {
+inline void her2k( Order, UpLo, Trans, int n, int k,
+        std::complex<float> alpha, const std::complex<float>* a, int lda,
+        const std::complex<float>* b, int ldb, float beta,
+        std::complex<float>* c, int ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasCher2k( blas_option< UpLo >::value, blas_option< Trans >::value, n,
             k, alpha, a, lda, b, ldb, beta, c, ldc );
@@ -115,12 +111,10 @@ inline void her2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<double> alpha,
-        const std::complex<double>* a, const std::ptrdiff_t lda,
-        const std::complex<double>* b, const std::ptrdiff_t ldb,
-        const double beta, std::complex<double>* c,
-        const std::ptrdiff_t ldc ) {
+inline void her2k( Order, UpLo, Trans, int n, int k,
+        std::complex<double> alpha, const std::complex<double>* a, int lda,
+        const std::complex<double>* b, int ldb, double beta,
+        std::complex<double>* c, int ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -132,11 +126,10 @@ inline void her2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<float> alpha,
-        const std::complex<float>* a, const std::ptrdiff_t lda,
-        const std::complex<float>* b, const std::ptrdiff_t ldb,
-        const float beta, std::complex<float>* c, const std::ptrdiff_t ldc ) {
+inline void her2k( Order, UpLo, Trans, fortran_int_t n, fortran_int_t k,
+        std::complex<float> alpha, const std::complex<float>* a,
+        fortran_int_t lda, const std::complex<float>* b, fortran_int_t ldb,
+        float beta, std::complex<float>* c, fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CHER2K( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -148,12 +141,10 @@ inline void her2k( Order, UpLo, Trans, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans >
-inline void her2k( Order, UpLo, Trans, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<double> alpha,
-        const std::complex<double>* a, const std::ptrdiff_t lda,
-        const std::complex<double>* b, const std::ptrdiff_t ldb,
-        const double beta, std::complex<double>* c,
-        const std::ptrdiff_t ldc ) {
+inline void her2k( Order, UpLo, Trans, fortran_int_t n, fortran_int_t k,
+        std::complex<double> alpha, const std::complex<double>* a,
+        fortran_int_t lda, const std::complex<double>* b, fortran_int_t ldb,
+        double beta, std::complex<double>* c, fortran_int_t ldc ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZHER2K( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
@@ -191,7 +182,10 @@ struct her2k_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< MatrixC >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
         detail::her2k( order(), uplo(), trans(), size_column(c),
                 size_column(a), alpha, begin_value(a), stride_major(a),
                 begin_value(b), stride_major(b), beta, begin_value(c),

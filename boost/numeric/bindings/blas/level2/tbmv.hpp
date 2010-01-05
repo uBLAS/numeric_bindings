@@ -15,6 +15,7 @@
 #define BOOST_NUMERIC_BINDINGS_BLAS_LEVEL2_TBMV_HPP
 
 #include <boost/assert.hpp>
+#include <boost/numeric/bindings/bandwidth.hpp
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/blas/detail/default_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
@@ -66,9 +67,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const float* a, const std::ptrdiff_t lda,
-        float* x, const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, int n, int k, const float* a,
+        int lda, float* x, int incx ) {
     cblas_stbmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, k,
             a, lda, x, incx );
@@ -80,9 +80,8 @@ inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const double* a, const std::ptrdiff_t lda,
-        double* x, const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, int n, int k, const double* a,
+        int lda, double* x, int incx ) {
     cblas_dtbmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, k,
             a, lda, x, incx );
@@ -94,10 +93,9 @@ inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<float>* a,
-        const std::ptrdiff_t lda, std::complex<float>* x,
-        const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, int n, int k,
+        const std::complex<float>* a, int lda, std::complex<float>* x,
+        int incx ) {
     cblas_ctbmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, k,
             a, lda, x, incx );
@@ -109,10 +107,9 @@ inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<double>* a,
-        const std::ptrdiff_t lda, std::complex<double>* x,
-        const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, int n, int k,
+        const std::complex<double>* a, int lda, std::complex<double>* x,
+        int incx ) {
     cblas_ztbmv( cblas_option< Order >::value, cblas_option< UpLo >::value,
             cblas_option< Trans >::value, cblas_option< Diag >::value, n, k,
             a, lda, x, incx );
@@ -125,9 +122,8 @@ inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const float* a, const std::ptrdiff_t lda,
-        float* x, const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, int n, int k, const float* a,
+        int lda, float* x, int incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasStbmv( blas_option< UpLo >::value, blas_option< Trans >::value,
             blas_option< Diag >::value, n, k, a, lda, x, incx );
@@ -139,9 +135,8 @@ inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const double* a, const std::ptrdiff_t lda,
-        double* x, const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, int n, int k, const double* a,
+        int lda, double* x, int incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -152,10 +147,9 @@ inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<float>* a,
-        const std::ptrdiff_t lda, std::complex<float>* x,
-        const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, int n, int k,
+        const std::complex<float>* a, int lda, std::complex<float>* x,
+        int incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasCtbmv( blas_option< UpLo >::value, blas_option< Trans >::value,
             blas_option< Diag >::value, n, k, a, lda, x, incx );
@@ -167,10 +161,9 @@ inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<double>* a,
-        const std::ptrdiff_t lda, std::complex<double>* x,
-        const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, int n, int k,
+        const std::complex<double>* a, int lda, std::complex<double>* x,
+        int incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -182,9 +175,8 @@ inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * float value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const float* a, const std::ptrdiff_t lda,
-        float* x, const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, fortran_int_t n, fortran_int_t k,
+        const float* a, fortran_int_t lda, float* x, fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_STBMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, &k, a, &lda, x, &incx );
@@ -196,9 +188,8 @@ inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * double value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const double* a, const std::ptrdiff_t lda,
-        double* x, const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, fortran_int_t n, fortran_int_t k,
+        const double* a, fortran_int_t lda, double* x, fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DTBMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, &k, a, &lda, x, &incx );
@@ -210,10 +201,9 @@ inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<float>* a,
-        const std::ptrdiff_t lda, std::complex<float>* x,
-        const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, fortran_int_t n, fortran_int_t k,
+        const std::complex<float>* a, fortran_int_t lda,
+        std::complex<float>* x, fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CTBMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, &k, a, &lda, x, &incx );
@@ -225,10 +215,9 @@ inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo, typename Trans, typename Diag >
-inline void tbmv( Order, UpLo, Trans, Diag, const std::ptrdiff_t n,
-        const std::ptrdiff_t k, const std::complex<double>* a,
-        const std::ptrdiff_t lda, std::complex<double>* x,
-        const std::ptrdiff_t incx ) {
+inline void tbmv( Order, UpLo, Trans, Diag, fortran_int_t n, fortran_int_t k,
+        const std::complex<double>* a, fortran_int_t lda,
+        std::complex<double>* x, fortran_int_t incx ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZTBMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, &k, a, &lda, x, &incx );
@@ -264,7 +253,8 @@ struct tbmv_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 MatrixA >::type >::type, typename remove_const<
                 typename value< VectorX >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         detail::tbmv( order(), uplo(), trans(), diag(),
                 size_column_op(a, trans()), k, begin_value(a),
                 stride_major(a), begin_value(x), stride(x) );

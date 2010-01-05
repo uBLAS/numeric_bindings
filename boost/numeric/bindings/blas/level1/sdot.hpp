@@ -60,9 +60,8 @@ namespace detail {
 // * CBLAS backend, and
 // * double value-type.
 //
-inline double sdot( const std::ptrdiff_t n, const float* sx,
-        const std::ptrdiff_t incx, const float* sy,
-        const std::ptrdiff_t incy ) {
+inline double sdot( int n, const float* sx, int incx, const float* sy,
+        int incy ) {
     return cblas_dsdot( n, sx, incx, sy, incy );
 }
 
@@ -72,9 +71,8 @@ inline double sdot( const std::ptrdiff_t n, const float* sx,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline double sdot( const std::ptrdiff_t n, const float* sx,
-        const std::ptrdiff_t incx, const float* sy,
-        const std::ptrdiff_t incy ) {
+inline double sdot( int n, const float* sx, int incx, const float* sy,
+        int incy ) {
     return // NOT FOUND();
 }
 
@@ -84,9 +82,8 @@ inline double sdot( const std::ptrdiff_t n, const float* sx,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline double sdot( const std::ptrdiff_t n, const float* sx,
-        const std::ptrdiff_t incx, const float* sy,
-        const std::ptrdiff_t incy ) {
+inline double sdot( fortran_int_t n, const float* sx, fortran_int_t incx,
+        const float* sy, fortran_int_t incy ) {
     return BLAS_DSDOT( &n, sx, &incx, sy, &incy );
 }
 

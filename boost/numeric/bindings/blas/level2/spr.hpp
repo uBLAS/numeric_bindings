@@ -64,8 +64,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* x, const std::ptrdiff_t incx, float* ap ) {
+inline void spr( Order, UpLo, int n, float alpha, const float* x, int incx,
+        float* ap ) {
     cblas_sspr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, ap );
 }
@@ -76,8 +76,8 @@ inline void spr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* x, const std::ptrdiff_t incx, double* ap ) {
+inline void spr( Order, UpLo, int n, double alpha, const double* x, int incx,
+        double* ap ) {
     cblas_dspr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, ap );
 }
@@ -89,8 +89,8 @@ inline void spr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* x, const std::ptrdiff_t incx, float* ap ) {
+inline void spr( Order, UpLo, int n, float alpha, const float* x, int incx,
+        float* ap ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSspr( blas_option< UpLo >::value, n, alpha, x, incx, ap );
 }
@@ -101,8 +101,8 @@ inline void spr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* x, const std::ptrdiff_t incx, double* ap ) {
+inline void spr( Order, UpLo, int n, double alpha, const double* x, int incx,
+        double* ap ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -114,8 +114,8 @@ inline void spr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* x, const std::ptrdiff_t incx, float* ap ) {
+inline void spr( Order, UpLo, fortran_int_t n, float alpha, const float* x,
+        fortran_int_t incx, float* ap ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SSPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
 }
@@ -126,8 +126,8 @@ inline void spr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void spr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* x, const std::ptrdiff_t incx, double* ap ) {
+inline void spr( Order, UpLo, fortran_int_t n, double alpha, const double* x,
+        fortran_int_t incx, double* ap ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DSPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
 }
@@ -160,7 +160,8 @@ struct spr_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixAP >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
+        BOOST_ASSERT( size_minor(ap) == 1 || stride_minor(ap) == 1 );
         detail::spr( order(), uplo(), size_column(ap), alpha,
                 begin_value(x), stride(x), begin_value(ap) );
     }

@@ -63,11 +63,9 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order >
-inline void geru( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const std::complex<float> alpha, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float>* y,
-        const std::ptrdiff_t incy, std::complex<float>* a,
-        const std::ptrdiff_t lda ) {
+inline void geru( Order, int m, int n, std::complex<float> alpha,
+        const std::complex<float>* x, int incx, const std::complex<float>* y,
+        int incy, std::complex<float>* a, int lda ) {
     cblas_cgeru( cblas_option< Order >::value, m, n, &alpha, x, incx, y, incy,
             a, lda );
 }
@@ -78,11 +76,10 @@ inline void geru( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline void geru( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const std::complex<double> alpha, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double>* y,
-        const std::ptrdiff_t incy, std::complex<double>* a,
-        const std::ptrdiff_t lda ) {
+inline void geru( Order, int m, int n, std::complex<double> alpha,
+        const std::complex<double>* x, int incx,
+        const std::complex<double>* y, int incy, std::complex<double>* a,
+        int lda ) {
     cblas_zgeru( cblas_option< Order >::value, m, n, &alpha, x, incx, y, incy,
             a, lda );
 }
@@ -94,11 +91,9 @@ inline void geru( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order >
-inline void geru( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const std::complex<float> alpha, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float>* y,
-        const std::ptrdiff_t incy, std::complex<float>* a,
-        const std::ptrdiff_t lda ) {
+inline void geru( Order, int m, int n, std::complex<float> alpha,
+        const std::complex<float>* x, int incx, const std::complex<float>* y,
+        int incy, std::complex<float>* a, int lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasCgeru( m, n, alpha, x, incx, y, incy, a, lda );
 }
@@ -109,11 +104,10 @@ inline void geru( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline void geru( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const std::complex<double> alpha, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double>* y,
-        const std::ptrdiff_t incy, std::complex<double>* a,
-        const std::ptrdiff_t lda ) {
+inline void geru( Order, int m, int n, std::complex<double> alpha,
+        const std::complex<double>* x, int incx,
+        const std::complex<double>* y, int incy, std::complex<double>* a,
+        int lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -125,11 +119,10 @@ inline void geru( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 // * complex<float> value-type.
 //
 template< typename Order >
-inline void geru( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const std::complex<float> alpha, const std::complex<float>* x,
-        const std::ptrdiff_t incx, const std::complex<float>* y,
-        const std::ptrdiff_t incy, std::complex<float>* a,
-        const std::ptrdiff_t lda ) {
+inline void geru( Order, fortran_int_t m, fortran_int_t n,
+        std::complex<float> alpha, const std::complex<float>* x,
+        fortran_int_t incx, const std::complex<float>* y, fortran_int_t incy,
+        std::complex<float>* a, fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CGERU( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
 }
@@ -140,11 +133,10 @@ inline void geru( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
 // * complex<double> value-type.
 //
 template< typename Order >
-inline void geru( Order, const std::ptrdiff_t m, const std::ptrdiff_t n,
-        const std::complex<double> alpha, const std::complex<double>* x,
-        const std::ptrdiff_t incx, const std::complex<double>* y,
-        const std::ptrdiff_t incy, std::complex<double>* a,
-        const std::ptrdiff_t lda ) {
+inline void geru( Order, fortran_int_t m, fortran_int_t n,
+        std::complex<double> alpha, const std::complex<double>* x,
+        fortran_int_t incx, const std::complex<double>* y, fortran_int_t incy,
+        std::complex<double>* a, fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZGERU( &m, &n, &alpha, x, &incx, y, &incy, a, &lda );
 }
@@ -179,7 +171,8 @@ struct geru_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixA >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         detail::geru( order(), size_row(a), size_column(a), alpha,
                 begin_value(x), stride(x), begin_value(y), stride(y),
                 begin_value(a), stride_major(a) );

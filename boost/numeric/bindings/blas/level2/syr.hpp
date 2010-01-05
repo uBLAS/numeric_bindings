@@ -64,9 +64,8 @@ namespace detail {
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* x, const std::ptrdiff_t incx, float* a,
-        const std::ptrdiff_t lda ) {
+inline void syr( Order, UpLo, int n, float alpha, const float* x, int incx,
+        float* a, int lda ) {
     cblas_ssyr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, a, lda );
 }
@@ -77,9 +76,8 @@ inline void syr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* x, const std::ptrdiff_t incx, double* a,
-        const std::ptrdiff_t lda ) {
+inline void syr( Order, UpLo, int n, double alpha, const double* x, int incx,
+        double* a, int lda ) {
     cblas_dsyr( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, a, lda );
 }
@@ -91,9 +89,8 @@ inline void syr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* x, const std::ptrdiff_t incx, float* a,
-        const std::ptrdiff_t lda ) {
+inline void syr( Order, UpLo, int n, float alpha, const float* x, int incx,
+        float* a, int lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasSsyr( blas_option< UpLo >::value, n, alpha, x, incx, a, lda );
 }
@@ -104,9 +101,8 @@ inline void syr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* x, const std::ptrdiff_t incx, double* a,
-        const std::ptrdiff_t lda ) {
+inline void syr( Order, UpLo, int n, double alpha, const double* x, int incx,
+        double* a, int lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasDsyr( blas_option< UpLo >::value, n, alpha, x, incx, a, lda );
 }
@@ -118,9 +114,8 @@ inline void syr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * float value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const float* x, const std::ptrdiff_t incx, float* a,
-        const std::ptrdiff_t lda ) {
+inline void syr( Order, UpLo, fortran_int_t n, float alpha, const float* x,
+        fortran_int_t incx, float* a, fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_SSYR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, a, &lda );
 }
@@ -131,9 +126,8 @@ inline void syr( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * double value-type.
 //
 template< typename Order, typename UpLo >
-inline void syr( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const double* x, const std::ptrdiff_t incx, double* a,
-        const std::ptrdiff_t lda ) {
+inline void syr( Order, UpLo, fortran_int_t n, double alpha, const double* x,
+        fortran_int_t incx, double* a, fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_DSYR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, a, &lda );
 }
@@ -166,7 +160,8 @@ struct syr_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixA >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         detail::syr( order(), uplo(), size_column(a), alpha,
                 begin_value(x), stride(x), begin_value(a), stride_major(a) );
     }

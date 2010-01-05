@@ -60,8 +60,7 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void swap( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
-        float* y, const std::ptrdiff_t incy ) {
+inline void swap( int n, float* x, int incx, float* y, int incy ) {
     cblas_sswap( n, x, incx, y, incy );
 }
 
@@ -70,8 +69,7 @@ inline void swap( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void swap( const std::ptrdiff_t n, double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
+inline void swap( int n, double* x, int incx, double* y, int incy ) {
     cblas_dswap( n, x, incx, y, incy );
 }
 
@@ -80,9 +78,8 @@ inline void swap( const std::ptrdiff_t n, double* x,
 // * CBLAS backend, and
 // * complex<float> value-type.
 //
-inline void swap( const std::ptrdiff_t n, std::complex<float>* x,
-        const std::ptrdiff_t incx, std::complex<float>* y,
-        const std::ptrdiff_t incy ) {
+inline void swap( int n, std::complex<float>* x, int incx,
+        std::complex<float>* y, int incy ) {
     cblas_cswap( n, x, incx, y, incy );
 }
 
@@ -91,9 +88,8 @@ inline void swap( const std::ptrdiff_t n, std::complex<float>* x,
 // * CBLAS backend, and
 // * complex<double> value-type.
 //
-inline void swap( const std::ptrdiff_t n, std::complex<double>* x,
-        const std::ptrdiff_t incx, std::complex<double>* y,
-        const std::ptrdiff_t incy ) {
+inline void swap( int n, std::complex<double>* x, int incx,
+        std::complex<double>* y, int incy ) {
     cblas_zswap( n, x, incx, y, incy );
 }
 
@@ -103,8 +99,7 @@ inline void swap( const std::ptrdiff_t n, std::complex<double>* x,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void swap( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
-        float* y, const std::ptrdiff_t incy ) {
+inline void swap( int n, float* x, int incx, float* y, int incy ) {
     cublasSswap( n, x, incx, y, incy );
 }
 
@@ -113,8 +108,7 @@ inline void swap( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void swap( const std::ptrdiff_t n, double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
+inline void swap( int n, double* x, int incx, double* y, int incy ) {
     cublasDswap( n, x, incx, y, incy );
 }
 
@@ -123,9 +117,8 @@ inline void swap( const std::ptrdiff_t n, double* x,
 // * CUBLAS backend, and
 // * complex<float> value-type.
 //
-inline void swap( const std::ptrdiff_t n, std::complex<float>* x,
-        const std::ptrdiff_t incx, std::complex<float>* y,
-        const std::ptrdiff_t incy ) {
+inline void swap( int n, std::complex<float>* x, int incx,
+        std::complex<float>* y, int incy ) {
     cublasCswap( n, x, incx, y, incy );
 }
 
@@ -134,9 +127,8 @@ inline void swap( const std::ptrdiff_t n, std::complex<float>* x,
 // * CUBLAS backend, and
 // * complex<double> value-type.
 //
-inline void swap( const std::ptrdiff_t n, std::complex<double>* x,
-        const std::ptrdiff_t incx, std::complex<double>* y,
-        const std::ptrdiff_t incy ) {
+inline void swap( int n, std::complex<double>* x, int incx,
+        std::complex<double>* y, int incy ) {
     // NOT FOUND();
 }
 
@@ -146,8 +138,8 @@ inline void swap( const std::ptrdiff_t n, std::complex<double>* x,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void swap( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
-        float* y, const std::ptrdiff_t incy ) {
+inline void swap( fortran_int_t n, float* x, fortran_int_t incx, float* y,
+        fortran_int_t incy ) {
     BLAS_SSWAP( &n, x, &incx, y, &incy );
 }
 
@@ -156,8 +148,8 @@ inline void swap( const std::ptrdiff_t n, float* x, const std::ptrdiff_t incx,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void swap( const std::ptrdiff_t n, double* x,
-        const std::ptrdiff_t incx, double* y, const std::ptrdiff_t incy ) {
+inline void swap( fortran_int_t n, double* x, fortran_int_t incx, double* y,
+        fortran_int_t incy ) {
     BLAS_DSWAP( &n, x, &incx, y, &incy );
 }
 
@@ -166,9 +158,8 @@ inline void swap( const std::ptrdiff_t n, double* x,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<float> value-type.
 //
-inline void swap( const std::ptrdiff_t n, std::complex<float>* x,
-        const std::ptrdiff_t incx, std::complex<float>* y,
-        const std::ptrdiff_t incy ) {
+inline void swap( fortran_int_t n, std::complex<float>* x, fortran_int_t incx,
+        std::complex<float>* y, fortran_int_t incy ) {
     BLAS_CSWAP( &n, x, &incx, y, &incy );
 }
 
@@ -177,9 +168,8 @@ inline void swap( const std::ptrdiff_t n, std::complex<float>* x,
 // * netlib-compatible BLAS backend (the default), and
 // * complex<double> value-type.
 //
-inline void swap( const std::ptrdiff_t n, std::complex<double>* x,
-        const std::ptrdiff_t incx, std::complex<double>* y,
-        const std::ptrdiff_t incy ) {
+inline void swap( fortran_int_t n, std::complex<double>* x,
+        fortran_int_t incx, std::complex<double>* y, fortran_int_t incy ) {
     BLAS_ZSWAP( &n, x, &incx, y, &incy );
 }
 
@@ -208,8 +198,8 @@ struct swap_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value ) );
-        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
         detail::swap( size(x), begin_value(x), stride(x),
                 begin_value(y), stride(y) );
     }

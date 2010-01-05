@@ -60,8 +60,7 @@ namespace detail {
 // * CBLAS backend, and
 // * float value-type.
 //
-inline void rotmg( float& d1, float& d2, float& x1, const float y1,
-        float* sparam ) {
+inline void rotmg( float& d1, float& d2, float& x1, float y1, float* sparam ) {
     cblas_srotmg( &d1, &d2, &x1, &y1, sparam );
 }
 
@@ -70,7 +69,7 @@ inline void rotmg( float& d1, float& d2, float& x1, const float y1,
 // * CBLAS backend, and
 // * double value-type.
 //
-inline void rotmg( double& d1, double& d2, double& x1, const double y1,
+inline void rotmg( double& d1, double& d2, double& x1, double y1,
         double* dparam ) {
     cblas_drotmg( &d1, &d2, &x1, &y1, dparam );
 }
@@ -81,8 +80,7 @@ inline void rotmg( double& d1, double& d2, double& x1, const double y1,
 // * CUBLAS backend, and
 // * float value-type.
 //
-inline void rotmg( float& d1, float& d2, float& x1, const float y1,
-        float* sparam ) {
+inline void rotmg( float& d1, float& d2, float& x1, float y1, float* sparam ) {
     cublasSrotmg( &d1, &d2, &x1, &y1, sparam );
 }
 
@@ -91,7 +89,7 @@ inline void rotmg( float& d1, float& d2, float& x1, const float y1,
 // * CUBLAS backend, and
 // * double value-type.
 //
-inline void rotmg( double& d1, double& d2, double& x1, const double y1,
+inline void rotmg( double& d1, double& d2, double& x1, double y1,
         double* dparam ) {
     cublasDrotmg( &d1, &d2, &x1, &y1, dparam );
 }
@@ -102,8 +100,7 @@ inline void rotmg( double& d1, double& d2, double& x1, const double y1,
 // * netlib-compatible BLAS backend (the default), and
 // * float value-type.
 //
-inline void rotmg( float& d1, float& d2, float& x1, const float y1,
-        float* sparam ) {
+inline void rotmg( float& d1, float& d2, float& x1, float y1, float* sparam ) {
     BLAS_SROTMG( &d1, &d2, &x1, &y1, sparam );
 }
 
@@ -112,7 +109,7 @@ inline void rotmg( float& d1, float& d2, float& x1, const float y1,
 // * netlib-compatible BLAS backend (the default), and
 // * double value-type.
 //
-inline void rotmg( double& d1, double& d2, double& x1, const double y1,
+inline void rotmg( double& d1, double& d2, double& x1, double y1,
         double* dparam ) {
     BLAS_DROTMG( &d1, &d2, &x1, &y1, dparam );
 }
@@ -140,7 +137,7 @@ struct rotmg_impl {
     template< typename VectorDPARAM >
     static return_type invoke( real_type& d1, real_type& d2, real_type& x1,
             const real_type y1, VectorDPARAM& dparam ) {
-        BOOST_STATIC_ASSERT( (is_mutable< VectorDPARAM >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorDPARAM >::value) );
         detail::rotmg( d1, d2, x1, y1, begin_value(dparam) );
     }
 };

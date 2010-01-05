@@ -64,9 +64,9 @@ namespace detail {
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const std::complex<float>* x, const std::ptrdiff_t incx,
-        std::complex<float>* a, const std::ptrdiff_t lda ) {
+inline void her( Order, UpLo, int n, float alpha,
+        const std::complex<float>* x, int incx, std::complex<float>* a,
+        int lda ) {
     cblas_cher( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, a, lda );
 }
@@ -77,9 +77,9 @@ inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        std::complex<double>* a, const std::ptrdiff_t lda ) {
+inline void her( Order, UpLo, int n, double alpha,
+        const std::complex<double>* x, int incx, std::complex<double>* a,
+        int lda ) {
     cblas_zher( cblas_option< Order >::value, cblas_option< UpLo >::value, n,
             alpha, x, incx, a, lda );
 }
@@ -91,9 +91,9 @@ inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const std::complex<float>* x, const std::ptrdiff_t incx,
-        std::complex<float>* a, const std::ptrdiff_t lda ) {
+inline void her( Order, UpLo, int n, float alpha,
+        const std::complex<float>* x, int incx, std::complex<float>* a,
+        int lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     cublasCher( blas_option< UpLo >::value, n, alpha, x, incx, a, lda );
 }
@@ -104,9 +104,9 @@ inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        std::complex<double>* a, const std::ptrdiff_t lda ) {
+inline void her( Order, UpLo, int n, double alpha,
+        const std::complex<double>* x, int incx, std::complex<double>* a,
+        int lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     // NOT FOUND();
 }
@@ -118,9 +118,9 @@ inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
 // * complex<float> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
-        const std::complex<float>* x, const std::ptrdiff_t incx,
-        std::complex<float>* a, const std::ptrdiff_t lda ) {
+inline void her( Order, UpLo, fortran_int_t n, float alpha,
+        const std::complex<float>* x, fortran_int_t incx,
+        std::complex<float>* a, fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_CHER( &blas_option< UpLo >::value, &n, &alpha, x, &incx, a, &lda );
 }
@@ -131,9 +131,9 @@ inline void her( Order, UpLo, const std::ptrdiff_t n, const float alpha,
 // * complex<double> value-type.
 //
 template< typename Order, typename UpLo >
-inline void her( Order, UpLo, const std::ptrdiff_t n, const double alpha,
-        const std::complex<double>* x, const std::ptrdiff_t incx,
-        std::complex<double>* a, const std::ptrdiff_t lda ) {
+inline void her( Order, UpLo, fortran_int_t n, double alpha,
+        const std::complex<double>* x, fortran_int_t incx,
+        std::complex<double>* a, fortran_int_t lda ) {
     BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
     BLAS_ZHER( &blas_option< UpLo >::value, &n, &alpha, x, &incx, a, &lda );
 }
@@ -166,7 +166,8 @@ struct her_impl {
         BOOST_STATIC_ASSERT( (is_same< typename remove_const< typename value<
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixA >::type >::type >::value) );
-        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value ) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
         detail::her( order(), uplo(), size_column(a), alpha,
                 begin_value(x), stride(x), begin_value(a), stride_major(a) );
     }

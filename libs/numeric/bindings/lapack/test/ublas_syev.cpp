@@ -10,10 +10,12 @@
 
 #include <boost/numeric/bindings/lapack/driver/syev.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
+#include <boost/numeric/bindings/ublas/matrix_expression.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
+#include <boost/numeric/bindings/ublas/vector_proxy.hpp>
+#include <boost/numeric/bindings/ublas/vector_expression.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
 #include <iostream>
@@ -21,6 +23,7 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
+namespace bindings = boost::numeric::bindings;
 
 template <char UPLO>
 struct translate_uplo {

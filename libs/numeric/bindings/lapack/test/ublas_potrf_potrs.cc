@@ -9,6 +9,7 @@
 #include <boost/numeric/bindings/lapack/computational/potrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/potrs.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_expression.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 #include <boost/numeric/bindings/ublas/hermitian.hpp>
 #include "utils.h"

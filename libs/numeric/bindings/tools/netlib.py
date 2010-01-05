@@ -171,9 +171,8 @@ def call_level0_type( name, properties, arg_map ):
   elif properties.has_key( 'trait_type' ):
     if properties[ 'trait_type' ] == 'lda':
       #
-      # TODO this should be stride_column or stride_row, whatever the orientation
-      # of the library is. In case of LAPACK, stride_column.
-      # Unless this matrix may be transposed, then it is stride_major
+      # stride_major is equal to stride_column or stride_row, whatever the orientation
+      # of the library is.
       # 
       result = "stride_major(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
       #result = "traits::leading_dimension(" + properties[ 'trait_of' ][ 0 ].lower() + ")"
@@ -454,7 +453,9 @@ def level1_assert( name, properties, arg_map ):
     result += [ "BOOST_ASSERT( size(" + call_level1_type( name, properties ) + ") >= " + \
       expand_nested_list( properties[ 'assert_size' ], arg_map ) + ' );' ]
 
-  if properties[ 'type' ] == 'matrix' and call_level1_type( name, properties ) != None:
+  if properties[ 'type' ] == 'matrix' and \
+     call_level1_type( name, properties ) != None and \
+     'ref_lda' in properties:
     result += [ "BOOST_ASSERT( " + \
         "size_minor(" + call_level1_type( name, properties ) +") == 1 || " + \
         "stride_minor(" + call_level1_type( name, properties ) +") == 1 );"

@@ -104,7 +104,6 @@ $TEMPLATE[level1_workspace]
     typedef typename remove_imaginary< Value >::type real_type;
     typedef tag::column_major order;
 
-$INCLUDE_TEMPLATES
     //
     // Static member function for user-defined workspaces, that
     // * Deduces the required arguments for dispatching to LAPACK, and
@@ -198,7 +197,6 @@ $TEMPLATE[level1_noworkspace]
     typedef typename remove_imaginary< Value >::type real_type;
     typedef tag::column_major order;
 
-$INCLUDE_TEMPLATES
     //
     // Static member function, that
     // * Deduces the required arguments for dispatching to LAPACK, and

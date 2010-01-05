@@ -10,21 +10,17 @@
 #define BOOST_NUMERIC_BINDINGS_IS_MUTABLE_HPP
 
 #include <boost/type_traits/is_same.hpp>
-#include <boost/utility/enable_if.hpp>
 #include <boost/numeric/bindings/value.hpp>
-#include <boost/numeric/bindings/has_linear_array.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 
-template< typename T, typename Enable = void >
-struct is_mutable {};
-
 template< typename T >
-struct is_mutable< T, typename enable_if< has_linear_array<T> >::type >:
-        is_same< typename value<T>::type, 
-                 typename remove_const< typename value<T>::type >::type 
+struct is_mutable:
+        is_same<
+            typename value<T>::type, 
+            typename remove_const< typename value<T>::type >::type 
         > {};
 
 } // namespace bindings

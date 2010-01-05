@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -161,7 +161,6 @@ struct spr_impl {
                 VectorX >::type >::type, typename remove_const<
                 typename value< MatrixAP >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
-        BOOST_ASSERT( size_minor(ap) == 1 || stride_minor(ap) == 1 );
         detail::spr( order(), uplo(), size_column(ap), alpha,
                 begin_value(x), stride(x), begin_value(ap) );
     }

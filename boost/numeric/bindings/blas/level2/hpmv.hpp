@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -177,7 +177,6 @@ struct hpmv_impl {
                 MatrixAP >::type >::type, typename remove_const<
                 typename value< VectorY >::type >::type >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorY >::value) );
-        BOOST_ASSERT( size_minor(ap) == 1 || stride_minor(ap) == 1 );
         detail::hpmv( order(), uplo(), size_column(ap), alpha,
                 begin_value(ap), begin_value(x), stride(x), beta,
                 begin_value(y), stride(y) );

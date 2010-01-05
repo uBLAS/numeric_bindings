@@ -57,18 +57,19 @@ struct adaptor< ublas::hermitian_matrix< T, F1, F2, A >, Id, Enable > {
 template< typename T, typename F, typename Id, typename Enable >
 struct adaptor< ublas::hermitian_adaptor< T, F >, Id, Enable > {
 
-    typedef typename value< T >::type value_type;
-    typedef typename property_insert< T, 
+    typedef typename copy_const< Id, typename value< T >::type >::type value_type;
+    typedef typename property_insert< T,
+        mpl::pair< tag::value_type, value_type >,
         mpl::pair< tag::matrix_type, tag::hermitian >,
         mpl::pair< tag::data_side, typename convert_to< tag::data_side, F >::type >
     >::type property_map;
 
     static std::ptrdiff_t size1( const Id& id ) {
-        return id.size1();
+        return bindings::size1( id.data() );
     }
 
     static std::ptrdiff_t size2( const Id& id ) {
-        return id.size2();
+        return bindings::size2( id.data() );
     }
 
     static value_type* begin_value( Id& id ) {

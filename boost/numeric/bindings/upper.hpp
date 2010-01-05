@@ -9,51 +9,33 @@
 #ifndef BOOST_NUMERIC_BINDINGS_UPPER_HPP
 #define BOOST_NUMERIC_BINDINGS_UPPER_HPP
 
-#include <boost/numeric/bindings/detail/adaptor.hpp>
-#include <boost/numeric/bindings/detail/basic_unwrapper.hpp>
+#include <boost/numeric/bindings/detail/basic_wrapper.hpp>
 #include <boost/numeric/bindings/tag.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
-
-namespace detail {
-
-template< typename T >
-struct upper_wrapper: reference_wrapper<T> {
-    upper_wrapper( T& t ): reference_wrapper<T>( t ) {}
-};
-
-template< typename T, typename Id, typename Enable >
-struct adaptor< upper_wrapper<T>, Id, Enable >:
-        basic_unwrapper< T, Id > {
-
-    typedef typename property_insert< T,
-        mpl::pair< tag::matrix_type, tag::triangular >,
-        mpl::pair< tag::data_side, tag::upper >
-    >::type property_map;
-
-};
-
-} // namespace detail
-
 namespace result_of {
 
 template< typename T >
 struct upper {
-    typedef detail::upper_wrapper<T> type;
+    typedef detail::basic_wrapper<
+        T,
+        mpl::pair< tag::matrix_type, tag::triangular >,
+        mpl::pair< tag::data_side, tag::upper >
+    > type;
 };
 
 } // namespace result_of
 
 template< typename T >
-detail::upper_wrapper<T> upper( T& underlying ) {
-    return detail::upper_wrapper<T>( underlying );
+typename result_of::upper< T >::type upper( T& underlying ) {
+    return typename result_of::upper< T >::type( underlying );
 }
 
 template< typename T >
-detail::upper_wrapper<const T> upper( const T& underlying ) {
-    return detail::upper_wrapper<const T>( underlying );
+typename result_of::upper< const T >::type upper( const T& underlying ) {
+    return typename result_of::upper< const T >::type( underlying );
 }
 
 } // namespace bindings

@@ -6,8 +6,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef BOOST_NUMERIC_BINDINGS_LOWER_HPP
-#define BOOST_NUMERIC_BINDINGS_LOWER_HPP
+#ifndef BOOST_NUMERIC_BINDINGS_UNIT_LOWER_HPP
+#define BOOST_NUMERIC_BINDINGS_UNIT_LOWER_HPP
 
 #include <boost/numeric/bindings/detail/basic_wrapper.hpp>
 #include <boost/numeric/bindings/tag.hpp>
@@ -18,10 +18,10 @@ namespace bindings {
 namespace result_of {
 
 template< typename T >
-struct lower {
+struct unit_lower {
     typedef detail::basic_wrapper<
         T,
-        mpl::pair< tag::matrix_type, tag::triangular >,
+        mpl::pair< tag::matrix_type, tag::unit_triangular >,
         mpl::pair< tag::data_side, tag::lower >
     > type;
 };
@@ -29,13 +29,13 @@ struct lower {
 } // namespace result_of
 
 template< typename T >
-typename result_of::lower< T >::type lower( T& underlying ) {
-    return typename result_of::lower< T >::type( underlying );
+typename result_of::unit_lower< T >::type unit_lower( T& underlying ) {
+    return typename result_of::unit_lower< T >::type( underlying );
 }
 
 template< typename T >
-typename result_of::lower< const T >::type lower( const T& underlying ) {
-    return typename result_of::lower< const T >::type( underlying );
+typename result_of::unit_lower< const T >::type unit_lower( const T& underlying ) {
+    return typename result_of::unit_lower< const T >::type( underlying );
 }
 
 } // namespace bindings

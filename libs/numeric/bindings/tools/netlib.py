@@ -399,19 +399,20 @@ def expand_nested_list( arg, arg_map, use_arg_map = True ):
 #
 #
 def level1_assert( name, properties, arg_map ):
-  result = None
+  result = []
   
   if properties.has_key( 'assert_char' ) and \
         name not in [ 'TRANS', 'TRANSA', 'TRANSB', 'TRANSR', 'UPLO', 'DIAG' ]:
-    result = "BOOST_ASSERT( "
+    assert_line = "BOOST_ASSERT( "
     result_array = []
     for char in properties[ 'assert_char' ]:
       result_array += [ call_level0_type( name, properties, arg_map ) + ' == \'' + char + '\'' ]
-    result += " || ".join( result_array )
-    result += " );"
-    
+    assert_line += " || ".join( result_array )
+    assert_line += " );"
+    result += [ assert_line ]
+
   if properties.has_key( 'assert_ge' ) and not properties.has_key( 'workspace_query_for' ):
-    result = "BOOST_ASSERT( " + call_level0_type( name, properties, arg_map ) + " >= " + expand_nested_list( properties[ 'assert_ge' ], arg_map ) + ' );'
+    result += [ "BOOST_ASSERT( " + call_level0_type( name, properties, arg_map ) + " >= " + expand_nested_list( properties[ 'assert_ge' ], arg_map ) + ' );' ]
 
   #if properties[ 'type' ] == 'vector' and properties[ 'call_level1' ] != None:
     #result = "BOOST_ASSERT( min_tensor_rank( " + call_level1_type( name, properties ) + \
@@ -425,13 +426,19 @@ def level1_assert( name, properties, arg_map ):
     min_workspace_call = min_workspace_call_type( name, properties, arg_map )
     if min_workspace_call == None:
       min_workspace_call = '$CALL_MIN_SIZE'
-    result = 'BOOST_ASSERT( size(work.select(' + workspace_type( name, properties ) + '())) >= ' + \
-             'min_size_' + name.lower() + '( ' + min_workspace_call + ' ));'
+    result += [ 'BOOST_ASSERT( size(work.select(' + workspace_type( name, properties ) + '())) >= ' + \
+                'min_size_' + name.lower() + '( ' + min_workspace_call + ' ));' ]
 
   # assert_size is vector-type specific
   elif properties.has_key( 'assert_size' ):
-    result = "BOOST_ASSERT( size(" + call_level1_type( name, properties ) + ") >= " + \
-      expand_nested_list( properties[ 'assert_size' ], arg_map ) + ' );'
+    result += [ "BOOST_ASSERT( size(" + call_level1_type( name, properties ) + ") >= " + \
+      expand_nested_list( properties[ 'assert_size' ], arg_map ) + ' );' ]
+
+  if properties[ 'type' ] == 'matrix' and call_level1_type( name, properties ) != None:
+    result += [ "BOOST_ASSERT( " + \
+        "size_minor( " + call_level1_type( name, properties ) +" ) == 1 || " + \
+        "stride_minor( " + call_level1_type( name, properties ) +" ) == 1 );"
+    ]
 
   return result
 

@@ -1,6 +1,7 @@
+
 #include <boost/numeric/bindings/std/vector.hpp>
 #include <boost/numeric/bindings/ublas/banded.hpp>
-#include <boost/numeric/bindings/ublas/vector2.hpp>
+#include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/lapack/computational/gbtrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/gbtrs.hpp>
 #include <vector>
@@ -8,7 +9,7 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
-namespace traits = boost::numeric::bindings::traits;
+namespace bindings = boost::numeric::bindings;
 
 static const char NORMAL = 'N';
 static const char TRANSPOSE = 'T';

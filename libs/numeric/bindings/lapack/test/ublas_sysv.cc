@@ -3,16 +3,15 @@
 // A symmetric
 // driver function sysv()
 
-#include <boost/numeric/bindings/ublas/matrix.hpp>
-#include <boost/numeric/bindings/std/vector.hpp>
 #include <cstddef>
 #include <iostream>
 #include <complex>
 #include <boost/numeric/bindings/lapack/driver/sysv.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_expression.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 #include <boost/numeric/bindings/std/vector.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
 #include "utils.h"
 
 namespace ublas = boost::numeric::ublas;

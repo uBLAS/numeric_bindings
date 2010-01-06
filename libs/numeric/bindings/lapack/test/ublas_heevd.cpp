@@ -12,10 +12,10 @@
 #include <boost/numeric/bindings/lapack/driver/heevd.hpp>
 #include <boost/numeric/bindings/lapack/driver/syevd.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
+#include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/hermitian.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
+#include <boost/numeric/bindings/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/type_traits/is_complex.hpp>
 #include <boost/mpl/if.hpp>

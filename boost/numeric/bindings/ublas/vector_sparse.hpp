@@ -11,6 +11,7 @@
 
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
+#include <boost/numeric/bindings/ublas/vector_expression.hpp>
 #include <boost/numeric/ublas/vector_sparse.hpp>
 
 namespace boost {

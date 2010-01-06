@@ -23,7 +23,7 @@ namespace bindings {
 namespace detail {
 
 template< typename T, typename Id, typename Enable >
-struct adaptor< ublas::vector_reference< V >, Id, Enable > {
+struct adaptor< ublas::vector_reference< T >, Id, Enable > {
 
     typedef typename copy_const< Id, T >::type adapted_type;
     typedef typename property_map_of< adapted_type >::type property_map;

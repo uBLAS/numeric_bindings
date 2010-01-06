@@ -187,10 +187,8 @@ void print_m_data (M const& m, char const* ch = 0) {
   if (ch)
     std::cout << ch << " data:\n"; 
   using namespace boost::numeric::bindings;
-  for( typename result_of::begin_value< const M >::type st = begin_value( m ); 
-        st != end_value( m ); ++st ) {
-      std::cout << *st << " ";
-  }
+  std::copy( begin_value( m ), end_value( m ), std::ostream_iterator
+        < typename value< const M >::type >( std::cout, " " ) );
   std::cout << std::endl; 
 }
 

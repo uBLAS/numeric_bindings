@@ -13,8 +13,9 @@
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/end.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
-#include <boost/numeric/bindings/value.hpp>
+#include <boost/numeric/bindings/ublas/detail/basic_ublas_adaptor.hpp>
 #include <boost/numeric/bindings/ublas/matrix_expression.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/numeric/ublas/symmetric.hpp>
 
 namespace boost {
@@ -56,40 +57,13 @@ struct adaptor< ublas::symmetric_matrix< T, F1, F2, A >, Id, Enable > {
 };
 
 template< typename T, typename F, typename Id, typename Enable >
-struct adaptor< ublas::symmetric_adaptor< T, F >, Id, Enable > {
-
-    typedef typename copy_const< Id, typename value< T >::type >::type value_type;
-    typedef typename property_insert< T,
-        mpl::pair< tag::value_type, value_type >,
+struct adaptor< ublas::symmetric_adaptor< T, F >, Id, Enable >:
+    basic_ublas_adaptor<
+        T,
+        Id,
         mpl::pair< tag::matrix_type, tag::symmetric >,
         mpl::pair< tag::data_side, typename convert_to< tag::data_side, F >::type >
-    >::type property_map;
-
-    static std::ptrdiff_t size1( const Id& id ) {
-        return bindings::size1( id.data() );
-    }
-
-    static std::ptrdiff_t size2( const Id& id ) {
-        return bindings::size2( id.data() );
-    }
-
-    static value_type* begin_value( Id& id ) {
-        return bindings::begin_value( id.data() );
-    }
-
-    static value_type* end_value( Id& id ) {
-        return bindings::end_value( id.data() );
-    }
-
-    static std::ptrdiff_t stride1( const Id& id ) {
-        return bindings::stride1( id.data() );
-    }
-
-    static std::ptrdiff_t stride2( const Id& id ) {
-        return bindings::stride2( id.data() );
-    }
-
-};
+    > {};
 
 } // namespace detail
 } // namespace bindings

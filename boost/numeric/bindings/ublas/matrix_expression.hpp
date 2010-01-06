@@ -24,33 +24,30 @@ namespace detail {
 template< typename T, typename Id, typename Enable >
 struct adaptor< boost::numeric::ublas::matrix_reference< T >, Id, Enable > {
 
-    typedef typename copy_const< Id, typename value<T>::type >::type value_type;
-    typedef typename property_insert<
-        T,
-        mpl::pair< tag::value_type, value_type >
-    >::type property_map;
+    typedef typename copy_const< Id, T >::type adapted_type;
+    typedef typename property_map_of< adapted_type >::type property_map;
 
     static std::ptrdiff_t size1( const Id& id ) {
-        return bindings::size1( id.expression() );
+        return id.size1();
     }
 
     static std::ptrdiff_t size2( const Id& id ) {
-        return bindings::size2( id.expression() );
+        return id.size2();
     }
 
-    static value_type* begin_value( Id& id ) {
+    static typename result_of::begin_value< adapted_type >::type begin_value( Id& id ) {
         return bindings::begin_value( id.expression() );
     }
 
-    static value_type* end_value( Id& id ) {
+    static typename result_of::end_value< adapted_type >::type end_value( Id& id ) {
         return bindings::end_value( id.expression() );
     }
 
-    static std::ptrdiff_t stride1( const Id& id ) {
+    static typename result_of::stride1< adapted_type >::type stride1( const Id& id ) {
         return bindings::stride1( id.expression() );
     }
 
-    static std::ptrdiff_t stride2( const Id& id ) {
+    static typename result_of::stride2< adapted_type >::type stride2( const Id& id ) {
         return bindings::stride2( id.expression() );
     }
 

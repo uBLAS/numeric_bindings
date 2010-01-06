@@ -23,13 +23,10 @@ namespace bindings {
 namespace detail {
 
 template< typename T, typename Id, typename Enable >
-struct adaptor< ublas::matrix_range< T >, Id, Enable > {
+struct adaptor< ublas::matrix_range< M >, Id, Enable > {
 
-    typedef typename copy_const< Id, typename value<T>::type >::type value_type;
-    typedef typename property_insert<
-        T,
-        mpl::pair< tag::value_type, value_type >
-    >::type property_map;
+    typedef typename copy_const< Id, T >::type adapted_type;
+    typedef typename property_map_of< adapted_type >::type property_map;
 
     static std::ptrdiff_t size1( const Id& id ) {
         return id.size1();
@@ -39,21 +36,21 @@ struct adaptor< ublas::matrix_range< T >, Id, Enable > {
         return id.size2();
     }
 
-    static value_type* begin_value( Id& id ) {
+    static typename result_of::begin_value< adapted_type >::type begin_value( Id& id ) {
         return bindings::begin_value( id.data() ) + 
                id.start1() * stride1( id ) + 
                id.start2() * stride2( id );
     }
 
-    static value_type* end_value( Id& id ) {
+    static typename result_of::end_value< adapted_type >::type end_value( Id& id ) {
         return bindings::end_value( id.data() );
     }
 
-    static std::ptrdiff_t stride1( const Id& id ) {
+    static typename result_of::stride1< adapted_type >::type stride1( const Id& id ) {
         return bindings::stride1( id.data() );
     }
 
-    static std::ptrdiff_t stride2( const Id& id ) {
+    static typename result_of::stride2< adapted_type >::type stride2( const Id& id ) {
         return bindings::stride2( id.data() );
     }
 

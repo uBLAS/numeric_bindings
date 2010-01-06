@@ -55,34 +55,14 @@ struct adaptor< ublas::triangular_matrix< T, F1, F2, A >, Id, Enable > {
 
 };
 
-
 template< typename T, typename F, typename Id, typename Enable >
-struct adaptor< ublas::triangular_adaptor< T, F >, Id, Enable > {
-
-    typedef typename copy_const< Id, typename value< T >::type >::type value_type;
-    typedef typename property_insert< T,
-        mpl::pair< tag::value_type, value_type >,
+struct adaptor< ublas::triangular_adaptor< T, F >, Id, Enable >:
+    basic_ublas_adaptor<
+        T,
+        Id,
         mpl::pair< tag::matrix_type, typename convert_to< tag::matrix_type, F >::type >,
         mpl::pair< tag::data_side, typename convert_to< tag::data_side, F >::type >
-    >::type property_map;
-
-    static std::ptrdiff_t size1( const Id& t ) {
-        return t.size1();
-    }
-
-    static std::ptrdiff_t size2( const Id& t ) {
-        return t.size2();
-    }
-
-    static value_type* begin_value( Id& t ) {
-        return bindings::begin_value( t.data() );
-    }
-
-    static value_type* end_value( Id& t ) {
-        return bindings::end_value( t.data() );
-    }
-
-};
+    > {};
 
 } // detail
 } // bindings

@@ -41,28 +41,28 @@ struct adaptor< boost::numeric::ublas::matrix< T, F, A >, Id, Enable > {
             typename if_row_major< data_order, tag::contiguous, std::ptrdiff_t >::type >
     > property_map;
 
-    static std::ptrdiff_t size1( const Id& t ) {
-        return t.size1();
+    static std::ptrdiff_t size1( const Id& id ) {
+        return id.size1();
     }
 
-    static std::ptrdiff_t size2( const Id& t ) {
-        return t.size2();
+    static std::ptrdiff_t size2( const Id& id ) {
+        return id.size2();
     }
 
-    static value_type* begin_value( Id& t ) {
-        return bindings::begin_value( t.data() );
+    static value_type* begin_value( Id& id ) {
+        return bindings::begin_value( id.data() );
     }
 
-    static value_type* end_value( Id& t ) {
-        return bindings::end_value( t.data() );
+    static value_type* end_value( Id& id ) {
+        return bindings::end_value( id.data() );
     }
 
-    static std::ptrdiff_t stride1( const Id& t ) {
-        return t.size2();
+    static std::ptrdiff_t stride1( const Id& id ) {
+        return id.size2();
     }
 
-    static std::ptrdiff_t stride2( const Id& t ) {
-        return t.size1();
+    static std::ptrdiff_t stride2( const Id& id ) {
+        return id.size1();
     }
 
 };

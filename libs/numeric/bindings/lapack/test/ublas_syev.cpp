@@ -11,11 +11,9 @@
 #include <boost/numeric/bindings/lapack/driver/syev.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
 #include <boost/numeric/bindings/ublas/matrix_proxy.hpp>
-#include <boost/numeric/bindings/ublas/matrix_expression.hpp>
 #include <boost/numeric/bindings/ublas/symmetric.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
 #include <boost/numeric/bindings/ublas/vector_proxy.hpp>
-#include <boost/numeric/bindings/ublas/vector_expression.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
 #include <iostream>

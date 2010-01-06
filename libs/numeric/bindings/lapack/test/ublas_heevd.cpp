@@ -25,6 +25,7 @@
 
 namespace ublas = boost::numeric::ublas;
 namespace lapack = boost::numeric::bindings::lapack;
+namespace bindings = boost::numeric::bindings;
 
 struct apply_real {
   template< typename MatrixA, typename VectorW, typename Workspace >

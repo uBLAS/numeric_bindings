@@ -9,7 +9,6 @@
 #include <boost/numeric/bindings/lapack/driver/hesv.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/bindings/ublas/matrix.hpp>
-#include <boost/numeric/bindings/ublas/matrix_expression.hpp>
 #include <boost/numeric/bindings/ublas/hermitian.hpp>
 #include <boost/numeric/bindings/std/vector.hpp>
 #include "utils.h"

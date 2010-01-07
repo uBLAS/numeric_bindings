@@ -123,6 +123,7 @@ $TEMPLATE[level1_workspace]
     // * Figures out the minimal workspace requirements, and passes
     //   the results to the user-defined workspace overload of the 
     //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< $TYPES >
     static void invoke( $LEVEL1, minimal_workspace work ) {
@@ -137,6 +138,7 @@ $SETUP_MIN_WORKARRAYS_POST
     // * Figures out the optimal workspace requirements, and passes
     //   the results to the user-defined workspace overload of the 
     //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
     //
     template< $TYPES >
     static void invoke( $LEVEL1, optimal_workspace work ) {

@@ -19,7 +19,8 @@ namespace numeric {
 namespace bindings {
 namespace detail {
 
-template< typename T, typename Id, typename P1, typename P2 >
+template< typename T, typename Id, typename P1 = mpl::void_,
+          typename P2 = mpl::void_, typename P3 = mpl::void_ >
 struct basic_ublas_adaptor {
 
     typedef typename copy_const< Id, T >::type adapted_type;

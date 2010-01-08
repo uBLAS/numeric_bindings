@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,16 +15,21 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TREVC_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -32,241 +37,1601 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void trevc( const char side, const char howmny, logical_t* select,
-        const integer_t n, const float* t, const integer_t ldt, float* vl,
-        const integer_t ldvl, float* vr, const integer_t ldvr,
-        const integer_t mm, integer_t& m, float* work, integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void trevc( char side, char howmny, logical_t* select, fortran_int_t n,
+        const float* t, fortran_int_t ldt, float* vl, fortran_int_t ldvl,
+        float* vr, fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m,
+        float* work, fortran_int_t& info ) {
     LAPACK_STREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             &mm, &m, work, &info );
 }
-inline void trevc( const char side, const char howmny, logical_t* select,
-        const integer_t n, const double* t, const integer_t ldt, double* vl,
-        const integer_t ldvl, double* vr, const integer_t ldvr,
-        const integer_t mm, integer_t& m, double* work, integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void trevc( char side, char howmny, logical_t* select, fortran_int_t n,
+        const double* t, fortran_int_t ldt, double* vl, fortran_int_t ldvl,
+        double* vr, fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m,
+        double* work, fortran_int_t& info ) {
     LAPACK_DTREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
             &mm, &m, work, &info );
 }
-inline void trevc( const char side, const char howmny,
-        const logical_t* select, const integer_t n, traits::complex_f* t,
-        const integer_t ldt, traits::complex_f* vl, const integer_t ldvl,
-        traits::complex_f* vr, const integer_t ldvr, const integer_t mm,
-        integer_t& m, traits::complex_f* work, float* rwork,
-        integer_t& info ) {
-    LAPACK_CTREVC( &side, &howmny, select, &n, traits::complex_ptr(t), &ldt,
-            traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr,
-            &mm, &m, traits::complex_ptr(work), rwork, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void trevc( char side, char howmny, const logical_t* select,
+        fortran_int_t n, std::complex<float>* t, fortran_int_t ldt,
+        std::complex<float>* vl, fortran_int_t ldvl, std::complex<float>* vr,
+        fortran_int_t ldvr, fortran_int_t mm, fortran_int_t& m,
+        std::complex<float>* work, float* rwork, fortran_int_t& info ) {
+    LAPACK_CTREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
+            &mm, &m, work, rwork, &info );
 }
-inline void trevc( const char side, const char howmny,
-        const logical_t* select, const integer_t n, traits::complex_d* t,
-        const integer_t ldt, traits::complex_d* vl, const integer_t ldvl,
-        traits::complex_d* vr, const integer_t ldvr, const integer_t mm,
-        integer_t& m, traits::complex_d* work, double* rwork,
-        integer_t& info ) {
-    LAPACK_ZTREVC( &side, &howmny, select, &n, traits::complex_ptr(t), &ldt,
-            traits::complex_ptr(vl), &ldvl, traits::complex_ptr(vr), &ldvr,
-            &mm, &m, traits::complex_ptr(work), rwork, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void trevc( char side, char howmny, const logical_t* select,
+        fortran_int_t n, std::complex<double>* t, fortran_int_t ldt,
+        std::complex<double>* vl, fortran_int_t ldvl,
+        std::complex<double>* vr, fortran_int_t ldvr, fortran_int_t mm,
+        fortran_int_t& m, std::complex<double>* work, double* rwork,
+        fortran_int_t& info ) {
+    LAPACK_ZTREVC( &side, &howmny, select, &n, t, &ldt, vl, &ldvl, vr, &ldvr,
+            &mm, &m, work, rwork, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct trevc_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to trevc.
+//
+template< typename Value, typename Enable = void >
+struct trevc_impl {};
 
-// real specialization
-template< typename ValueType >
-struct trevc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct trevc_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename WORK >
     static void invoke( const char side, const char howmny,
             VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
-            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
-            detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixT >::value_type, typename traits::matrix_traits<
-                MatrixVL >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixT >::value_type, typename traits::matrix_traits<
-                MatrixVR >::value_type >::value) );
-        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
+            MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixT >::type >::type,
+                typename remove_const< typename value<
+                MatrixVL >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixT >::type >::type,
+                typename remove_const< typename value<
+                MatrixVR >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorSELECT >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
-        BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(t) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( traits::matrix_num_columns(t) ));
-        detail::trevc( side, howmny, traits::vector_storage(select),
-                traits::matrix_num_columns(t), traits::matrix_storage(t),
-                traits::leading_dimension(t), traits::matrix_storage(vl),
-                traits::leading_dimension(vl), traits::matrix_storage(vr),
-                traits::leading_dimension(vr), mm, m,
-                traits::vector_storage(work.select(real_type())), info );
         BOOST_ASSERT( mm >= m );
+        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                size_column(t) ));
+        BOOST_ASSERT( size_column(t) >= 0 );
+        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
+        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
+        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
+        BOOST_ASSERT( stride_major(t) >= std::max< std::ptrdiff_t >(1,
+                size_column(t)) );
+        detail::trevc( side, howmny, begin_value(select), size_column(t),
+                begin_value(t), stride_major(t), begin_value(vl),
+                stride_major(vl), begin_value(vr), stride_major(vr), mm, m,
+                begin_value(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR >
     static void invoke( const char side, const char howmny,
             VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
-            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
-            minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_num_columns(t) ) );
+            MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, minimal_workspace work ) {
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                size_column(t) ) );
         invoke( side, howmny, select, t, vl, vr, mm, m, info,
                 workspace( tmp_work ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR >
     static void invoke( const char side, const char howmny,
             VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
-            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
-            optimal_workspace work ) {
+            MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, optimal_workspace work ) {
         invoke( side, howmny, select, t, vl, vr, mm, m, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         return 3*n;
     }
 };
 
-// complex specialization
-template< typename ValueType >
-struct trevc_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct trevc_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR, typename WORK, typename RWORK >
     static void invoke( const char side, const char howmny,
             const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
-            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
-            detail::workspace2< WORK, RWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixT >::value_type, typename traits::matrix_traits<
-                MatrixVL >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixT >::value_type, typename traits::matrix_traits<
-                MatrixVR >::value_type >::value) );
-        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
+            MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, detail::workspace2< WORK, RWORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixT >::type >::type,
+                typename remove_const< typename value<
+                MatrixVL >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixT >::type >::type,
+                typename remove_const< typename value<
+                MatrixVR >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixVL >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixVR >::value) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'B' || howmny == 'S' );
-        BOOST_ASSERT( traits::matrix_num_columns(t) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(t) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(t)) );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( traits::matrix_num_columns(t) ));
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_rwork( traits::matrix_num_columns(t) ));
-        detail::trevc( side, howmny, traits::vector_storage(select),
-                traits::matrix_num_columns(t), traits::matrix_storage(t),
-                traits::leading_dimension(t), traits::matrix_storage(vl),
-                traits::leading_dimension(vl), traits::matrix_storage(vr),
-                traits::leading_dimension(vr), mm, m,
-                traits::vector_storage(work.select(value_type())),
-                traits::vector_storage(work.select(real_type())), info );
         BOOST_ASSERT( mm >= m );
+        BOOST_ASSERT( side == 'R' || side == 'L' || side == 'B' );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
+                size_column(t) ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                size_column(t) ));
+        BOOST_ASSERT( size_column(t) >= 0 );
+        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
+        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
+        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
+        BOOST_ASSERT( stride_major(t) >= std::max< std::ptrdiff_t >(1,
+                size_column(t)) );
+        detail::trevc( side, howmny, begin_value(select), size_column(t),
+                begin_value(t), stride_major(t), begin_value(vl),
+                stride_major(vl), begin_value(vr), stride_major(vr), mm, m,
+                begin_value(work.select(value_type())),
+                begin_value(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR >
     static void invoke( const char side, const char howmny,
             const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
-            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
-            minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_num_columns(t) ) );
-        traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_num_columns(t) ) );
+            MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, minimal_workspace work ) {
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                size_column(t) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                size_column(t) ) );
         invoke( side, howmny, select, t, vl, vr, mm, m, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
             typename MatrixVR >
     static void invoke( const char side, const char howmny,
             const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
-            MatrixVR& vr, const integer_t mm, integer_t& m, integer_t& info,
-            optimal_workspace work ) {
+            MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, optimal_workspace work ) {
         invoke( side, howmny, select, t, vl, vr, mm, m, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array rwork.
+    //
+    static std::ptrdiff_t min_size_rwork( const std::ptrdiff_t n ) {
         return n;
     }
 };
 
 
-/*
-// template function to call trevc
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the trevc_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR, typename Workspace >
-inline integer_t trevc( const char side, const char howmny,
-        VectorSELECT& select, const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-        const integer_t mm, integer_t& m, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
-    integer_t info(0);
-    trevc_impl< value_type >::invoke( side, howmny, select, t, vl, vr,
-            mm, m, info, work );
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
     return info;
 }
 
-// template function to call trevc, default workspace type
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR >
-inline integer_t trevc( const char side, const char howmny,
-        VectorSELECT& select, const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-        const integer_t mm, integer_t& m ) {
-    typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
-    integer_t info(0);
-    trevc_impl< value_type >::invoke( side, howmny, select, t, vl, vr,
-            mm, m, info, optimal_workspace() );
-    return info;
-}
-*/
-// template function to call trevc
-template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
-        typename MatrixVR, typename Workspace >
-inline integer_t trevc( const char side, const char howmny,
-        const VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-        const integer_t mm, integer_t& m, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
-    integer_t info(0);
-    trevc_impl< value_type >::invoke( side, howmny, select, t, vl, vr,
-            mm, m, info, work );
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
     return info;
 }
 
-// template function to call trevc, default workspace type
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
         typename MatrixVR >
-inline integer_t trevc( const char side, const char howmny,
+inline std::ptrdiff_t trevc( const char side, const char howmny,
         const VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
-        const integer_t mm, integer_t& m ) {
-    typedef typename traits::matrix_traits< MatrixT >::value_type value_type;
-    integer_t info(0);
-    trevc_impl< value_type >::invoke( side, howmny, select, t, vl, vr,
-            mm, m, info, optimal_workspace() );
+        const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
+        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
+        const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, const MatrixVL& vl, MatrixVR& vr,
+        const fortran_int_t mm, const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
+        const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, MatrixVL& vl, const MatrixVR& vr,
+        const fortran_int_t mm, const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR, typename Workspace >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for trevc. Its overload differs for
+// * const VectorSELECT&
+// * const MatrixT&
+// * const MatrixVL&
+// * const MatrixVR&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
+        typename MatrixVR >
+inline std::ptrdiff_t trevc( const char side, const char howmny,
+        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
+        const MatrixVR& vr, const fortran_int_t mm,
+        const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    trevc_impl< typename value< MatrixT >::type >::invoke( side, howmny,
+            select, t, vl, vr, mm, m, info, optimal_workspace() );
     return info;
 }
 

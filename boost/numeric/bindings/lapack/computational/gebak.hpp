@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,14 +15,19 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GEBAK_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -30,108 +35,164 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void gebak( const char job, const char side, const integer_t n,
-        const integer_t ilo, const integer_t ihi, const float* scale,
-        const integer_t m, float* v, const integer_t ldv, integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void gebak( char job, char side, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, const float* scale, fortran_int_t m, float* v,
+        fortran_int_t ldv, fortran_int_t& info ) {
     LAPACK_SGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
 }
-inline void gebak( const char job, const char side, const integer_t n,
-        const integer_t ilo, const integer_t ihi, const double* scale,
-        const integer_t m, double* v, const integer_t ldv, integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void gebak( char job, char side, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, const double* scale, fortran_int_t m, double* v,
+        fortran_int_t ldv, fortran_int_t& info ) {
     LAPACK_DGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
 }
-inline void gebak( const char job, const char side, const integer_t n,
-        const integer_t ilo, const integer_t ihi, const float* scale,
-        const integer_t m, traits::complex_f* v, const integer_t ldv,
-        integer_t& info ) {
-    LAPACK_CGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m,
-            traits::complex_ptr(v), &ldv, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void gebak( char job, char side, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, const float* scale, fortran_int_t m,
+        std::complex<float>* v, fortran_int_t ldv, fortran_int_t& info ) {
+    LAPACK_CGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
 }
-inline void gebak( const char job, const char side, const integer_t n,
-        const integer_t ilo, const integer_t ihi, const double* scale,
-        const integer_t m, traits::complex_d* v, const integer_t ldv,
-        integer_t& info ) {
-    LAPACK_ZGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m,
-            traits::complex_ptr(v), &ldv, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void gebak( char job, char side, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, const double* scale, fortran_int_t m,
+        std::complex<double>* v, fortran_int_t ldv, fortran_int_t& info ) {
+    LAPACK_ZGEBAK( &job, &side, &n, &ilo, &ihi, scale, &m, v, &ldv, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct gebak_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to gebak.
+//
+template< typename Value, typename Enable = void >
+struct gebak_impl {};
 
-// real specialization
-template< typename ValueType >
-struct gebak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct gebak_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorSCALE, typename MatrixV >
-    static void invoke( const char job, const char side, const integer_t ilo,
-            const integer_t ihi, const VectorSCALE& scale, MatrixV& v,
-            integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorSCALE >::value_type, typename traits::matrix_traits<
-                MatrixV >::value_type >::value) );
+    static void invoke( const char job, const char side,
+            const fortran_int_t ilo, const fortran_int_t ihi,
+            const VectorSCALE& scale, MatrixV& v, fortran_int_t& info ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorSCALE >::type >::type,
+                typename remove_const< typename value<
+                MatrixV >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( side == 'R' || side == 'L' );
-        BOOST_ASSERT( traits::matrix_num_rows(v) >= 0 );
-        BOOST_ASSERT( traits::vector_size(scale) >=
-                traits::matrix_num_rows(v) );
-        BOOST_ASSERT( traits::matrix_num_columns(v) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(v) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(v)) );
-        detail::gebak( job, side, traits::matrix_num_rows(v), ilo, ihi,
-                traits::vector_storage(scale), traits::matrix_num_columns(v),
-                traits::matrix_storage(v), traits::leading_dimension(v),
-                info );
+        BOOST_ASSERT( size(scale) >= size_row(v) );
+        BOOST_ASSERT( size_column(v) >= 0 );
+        BOOST_ASSERT( size_minor(v) == 1 || stride_minor(v) == 1 );
+        BOOST_ASSERT( size_row(v) >= 0 );
+        BOOST_ASSERT( stride_major(v) >= std::max< std::ptrdiff_t >(1,
+                size_row(v)) );
+        detail::gebak( job, side, size_row(v), ilo, ihi, begin_value(scale),
+                size_column(v), begin_value(v), stride_major(v), info );
     }
+
 };
 
-// complex specialization
-template< typename ValueType >
-struct gebak_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct gebak_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorSCALE, typename MatrixV >
-    static void invoke( const char job, const char side, const integer_t ilo,
-            const integer_t ihi, const VectorSCALE& scale, MatrixV& v,
-            integer_t& info ) {
+    static void invoke( const char job, const char side,
+            const fortran_int_t ilo, const fortran_int_t ihi,
+            const VectorSCALE& scale, MatrixV& v, fortran_int_t& info ) {
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( side == 'R' || side == 'L' );
-        BOOST_ASSERT( traits::matrix_num_rows(v) >= 0 );
-        BOOST_ASSERT( traits::vector_size(scale) >=
-                traits::matrix_num_rows(v) );
-        BOOST_ASSERT( traits::matrix_num_columns(v) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(v) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(v)) );
-        detail::gebak( job, side, traits::matrix_num_rows(v), ilo, ihi,
-                traits::vector_storage(scale), traits::matrix_num_columns(v),
-                traits::matrix_storage(v), traits::leading_dimension(v),
-                info );
+        BOOST_ASSERT( size(scale) >= size_row(v) );
+        BOOST_ASSERT( size_column(v) >= 0 );
+        BOOST_ASSERT( size_minor(v) == 1 || stride_minor(v) == 1 );
+        BOOST_ASSERT( size_row(v) >= 0 );
+        BOOST_ASSERT( stride_major(v) >= std::max< std::ptrdiff_t >(1,
+                size_row(v)) );
+        detail::gebak( job, side, size_row(v), ilo, ihi, begin_value(scale),
+                size_column(v), begin_value(v), stride_major(v), info );
     }
+
 };
 
 
-// template function to call gebak
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the gebak_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for gebak. Its overload differs for
+// * MatrixV&
+//
 template< typename VectorSCALE, typename MatrixV >
-inline integer_t gebak( const char job, const char side,
-        const integer_t ilo, const integer_t ihi, const VectorSCALE& scale,
-        MatrixV& v ) {
-    typedef typename traits::matrix_traits< MatrixV >::value_type value_type;
-    integer_t info(0);
-    gebak_impl< value_type >::invoke( job, side, ilo, ihi, scale, v,
-            info );
+inline std::ptrdiff_t gebak( const char job, const char side,
+        const fortran_int_t ilo, const fortran_int_t ihi,
+        const VectorSCALE& scale, MatrixV& v ) {
+    fortran_int_t info(0);
+    gebak_impl< typename value< MatrixV >::type >::invoke( job, side,
+            ilo, ihi, scale, v, info );
+    return info;
+}
+
+//
+// Overloaded function for gebak. Its overload differs for
+// * const MatrixV&
+//
+template< typename VectorSCALE, typename MatrixV >
+inline std::ptrdiff_t gebak( const char job, const char side,
+        const fortran_int_t ilo, const fortran_int_t ihi,
+        const VectorSCALE& scale, const MatrixV& v ) {
+    fortran_int_t info(0);
+    gebak_impl< typename value< MatrixV >::type >::invoke( job, side,
+            ilo, ihi, scale, v, info );
     return info;
 }
 

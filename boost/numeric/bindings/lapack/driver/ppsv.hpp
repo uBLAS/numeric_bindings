@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,87 +15,165 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_PPSV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void ppsv( const char uplo, const integer_t n, const integer_t nrhs,
-        float* ap, float* b, const integer_t ldb, integer_t& info ) {
-    LAPACK_SPPSV( &uplo, &n, &nrhs, ap, b, &ldb, &info );
+//
+// Overloaded function for dispatching to float value-type.
+//
+template< typename UpLo >
+inline void ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs, float* ap,
+        float* b, fortran_int_t ldb, fortran_int_t& info ) {
+    LAPACK_SPPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
+            &info );
 }
-inline void ppsv( const char uplo, const integer_t n, const integer_t nrhs,
-        double* ap, double* b, const integer_t ldb, integer_t& info ) {
-    LAPACK_DPPSV( &uplo, &n, &nrhs, ap, b, &ldb, &info );
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+template< typename UpLo >
+inline void ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs, double* ap,
+        double* b, fortran_int_t ldb, fortran_int_t& info ) {
+    LAPACK_DPPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
+            &info );
 }
-inline void ppsv( const char uplo, const integer_t n, const integer_t nrhs,
-        traits::complex_f* ap, traits::complex_f* b, const integer_t ldb,
-        integer_t& info ) {
-    LAPACK_CPPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap),
-            traits::complex_ptr(b), &ldb, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+template< typename UpLo >
+inline void ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        std::complex<float>* ap, std::complex<float>* b, fortran_int_t ldb,
+        fortran_int_t& info ) {
+    LAPACK_CPPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
+            &info );
 }
-inline void ppsv( const char uplo, const integer_t n, const integer_t nrhs,
-        traits::complex_d* ap, traits::complex_d* b, const integer_t ldb,
-        integer_t& info ) {
-    LAPACK_ZPPSV( &uplo, &n, &nrhs, traits::complex_ptr(ap),
-            traits::complex_ptr(b), &ldb, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+template< typename UpLo >
+inline void ppsv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        std::complex<double>* ap, std::complex<double>* b, fortran_int_t ldb,
+        fortran_int_t& info ) {
+    LAPACK_ZPPSV( &lapack_option< UpLo >::value, &n, &nrhs, ap, b, &ldb,
+            &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to ppsv.
+//
+template< typename Value >
 struct ppsv_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // high-level solve typedefs and functions
-    typedef boost::mpl::bool_<false> has_pivot;
-
-    template< typename MatrixA, typename MatrixB, typename VectorP >
-    static void solve( MatrixA& A, MatrixB& B, VectorP const&,
-            integer_t& info ) {
-        invoke( A, B, info );
-    }
-
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixAP, typename MatrixB >
-    static void invoke( MatrixAP& ap, MatrixB& b, integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAP >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_ASSERT( traits::matrix_uplo_tag(ap) == 'U' ||
-                traits::matrix_uplo_tag(ap) == 'L' );
-        BOOST_ASSERT( traits::matrix_num_columns(ap) >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(ap)) );
-        detail::ppsv( traits::matrix_uplo_tag(ap),
-                traits::matrix_num_columns(ap), traits::matrix_num_columns(b),
-                traits::matrix_storage(ap), traits::matrix_storage(b),
-                traits::leading_dimension(b), info );
+    static void invoke( MatrixAP& ap, MatrixB& b, fortran_int_t& info ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAP >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_ASSERT( size_column(ap) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(ap)) );
+        detail::ppsv( uplo(), size_column(ap), size_column(b),
+                begin_value(ap), begin_value(b), stride_major(b), info );
     }
+
 };
 
 
-// template function to call ppsv
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the ppsv_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for ppsv. Its overload differs for
+// * MatrixAP&
+// * MatrixB&
+//
 template< typename MatrixAP, typename MatrixB >
-inline integer_t ppsv( MatrixAP& ap, MatrixB& b ) {
-    typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
-    integer_t info(0);
-    ppsv_impl< value_type >::invoke( ap, b, info );
+inline std::ptrdiff_t ppsv( MatrixAP& ap, MatrixB& b ) {
+    fortran_int_t info(0);
+    ppsv_impl< typename value< MatrixAP >::type >::invoke( ap, b, info );
+    return info;
+}
+
+//
+// Overloaded function for ppsv. Its overload differs for
+// * const MatrixAP&
+// * MatrixB&
+//
+template< typename MatrixAP, typename MatrixB >
+inline std::ptrdiff_t ppsv( const MatrixAP& ap, MatrixB& b ) {
+    fortran_int_t info(0);
+    ppsv_impl< typename value< MatrixAP >::type >::invoke( ap, b, info );
+    return info;
+}
+
+//
+// Overloaded function for ppsv. Its overload differs for
+// * MatrixAP&
+// * const MatrixB&
+//
+template< typename MatrixAP, typename MatrixB >
+inline std::ptrdiff_t ppsv( MatrixAP& ap, const MatrixB& b ) {
+    fortran_int_t info(0);
+    ppsv_impl< typename value< MatrixAP >::type >::invoke( ap, b, info );
+    return info;
+}
+
+//
+// Overloaded function for ppsv. Its overload differs for
+// * const MatrixAP&
+// * const MatrixB&
+//
+template< typename MatrixAP, typename MatrixB >
+inline std::ptrdiff_t ppsv( const MatrixAP& ap, const MatrixB& b ) {
+    fortran_int_t info(0);
+    ppsv_impl< typename value< MatrixAP >::type >::invoke( ap, b, info );
     return info;
 }
 

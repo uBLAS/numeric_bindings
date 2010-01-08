@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,16 +15,21 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GBBRD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -32,249 +37,3050 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void gbbrd( const char vect, const integer_t m, const integer_t n,
-        const integer_t ncc, const integer_t kl, const integer_t ku,
-        float* ab, const integer_t ldab, float* d, float* e, float* q,
-        const integer_t ldq, float* pt, const integer_t ldpt, float* c,
-        const integer_t ldc, float* work, integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void gbbrd( char vect, fortran_int_t m, fortran_int_t n,
+        fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku, float* ab,
+        fortran_int_t ldab, float* d, float* e, float* q, fortran_int_t ldq,
+        float* pt, fortran_int_t ldpt, float* c, fortran_int_t ldc,
+        float* work, fortran_int_t& info ) {
     LAPACK_SGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
             pt, &ldpt, c, &ldc, work, &info );
 }
-inline void gbbrd( const char vect, const integer_t m, const integer_t n,
-        const integer_t ncc, const integer_t kl, const integer_t ku,
-        double* ab, const integer_t ldab, double* d, double* e, double* q,
-        const integer_t ldq, double* pt, const integer_t ldpt, double* c,
-        const integer_t ldc, double* work, integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void gbbrd( char vect, fortran_int_t m, fortran_int_t n,
+        fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku, double* ab,
+        fortran_int_t ldab, double* d, double* e, double* q,
+        fortran_int_t ldq, double* pt, fortran_int_t ldpt, double* c,
+        fortran_int_t ldc, double* work, fortran_int_t& info ) {
     LAPACK_DGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
             pt, &ldpt, c, &ldc, work, &info );
 }
-inline void gbbrd( const char vect, const integer_t m, const integer_t n,
-        const integer_t ncc, const integer_t kl, const integer_t ku,
-        traits::complex_f* ab, const integer_t ldab, float* d, float* e,
-        traits::complex_f* q, const integer_t ldq, traits::complex_f* pt,
-        const integer_t ldpt, traits::complex_f* c, const integer_t ldc,
-        traits::complex_f* work, float* rwork, integer_t& info ) {
-    LAPACK_CGBBRD( &vect, &m, &n, &ncc, &kl, &ku, traits::complex_ptr(ab),
-            &ldab, d, e, traits::complex_ptr(q), &ldq,
-            traits::complex_ptr(pt), &ldpt, traits::complex_ptr(c), &ldc,
-            traits::complex_ptr(work), rwork, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void gbbrd( char vect, fortran_int_t m, fortran_int_t n,
+        fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku,
+        std::complex<float>* ab, fortran_int_t ldab, float* d, float* e,
+        std::complex<float>* q, fortran_int_t ldq, std::complex<float>* pt,
+        fortran_int_t ldpt, std::complex<float>* c, fortran_int_t ldc,
+        std::complex<float>* work, float* rwork, fortran_int_t& info ) {
+    LAPACK_CGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
+            pt, &ldpt, c, &ldc, work, rwork, &info );
 }
-inline void gbbrd( const char vect, const integer_t m, const integer_t n,
-        const integer_t ncc, const integer_t kl, const integer_t ku,
-        traits::complex_d* ab, const integer_t ldab, double* d, double* e,
-        traits::complex_d* q, const integer_t ldq, traits::complex_d* pt,
-        const integer_t ldpt, traits::complex_d* c, const integer_t ldc,
-        traits::complex_d* work, double* rwork, integer_t& info ) {
-    LAPACK_ZGBBRD( &vect, &m, &n, &ncc, &kl, &ku, traits::complex_ptr(ab),
-            &ldab, d, e, traits::complex_ptr(q), &ldq,
-            traits::complex_ptr(pt), &ldpt, traits::complex_ptr(c), &ldc,
-            traits::complex_ptr(work), rwork, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void gbbrd( char vect, fortran_int_t m, fortran_int_t n,
+        fortran_int_t ncc, fortran_int_t kl, fortran_int_t ku,
+        std::complex<double>* ab, fortran_int_t ldab, double* d, double* e,
+        std::complex<double>* q, fortran_int_t ldq, std::complex<double>* pt,
+        fortran_int_t ldpt, std::complex<double>* c, fortran_int_t ldc,
+        std::complex<double>* work, double* rwork, fortran_int_t& info ) {
+    LAPACK_ZGBBRD( &vect, &m, &n, &ncc, &kl, &ku, ab, &ldab, d, e, q, &ldq,
+            pt, &ldpt, c, &ldc, work, rwork, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct gbbrd_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to gbbrd.
+//
+template< typename Value, typename Enable = void >
+struct gbbrd_impl {};
 
-// real specialization
-template< typename ValueType >
-struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct gbbrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC,
             typename WORK >
-    static void invoke( const char vect, const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
-            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
+            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
             detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::vector_traits<
-                VectorD >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::vector_traits<
-                VectorE >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::matrix_traits<
-                MatrixQ >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::matrix_traits<
-                MatrixPT >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::matrix_traits<
-                MatrixC >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                VectorD >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                VectorE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                MatrixQ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                MatrixPT >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                MatrixC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixPT >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
+        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( size(d) >= std::min< std::ptrdiff_t >(size_row(ab),
+                size_column(ab)) );
+        BOOST_ASSERT( size(e) >= std::min< std::ptrdiff_t >(size_row(ab),
+                size_column(ab))-1 );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                size_row(ab), size_column(ab) ));
+        BOOST_ASSERT( size_column(ab) >= 0 );
+        BOOST_ASSERT( size_column(c) >= 0 );
+        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
+        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
+        BOOST_ASSERT( size_minor(pt) == 1 || stride_minor(pt) == 1 );
+        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
+        BOOST_ASSERT( size_row(ab) >= 0 );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth_lower(ab)+
+                bandwidth_upper(ab)+1 );
         BOOST_ASSERT( vect == 'N' || vect == 'Q' || vect == 'P' ||
                 vect == 'B' );
-        BOOST_ASSERT( m >= 0 );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
-        BOOST_ASSERT( kl >= 0 );
-        BOOST_ASSERT( ku >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
-        BOOST_ASSERT( traits::vector_size(d) >= std::min< std::ptrdiff_t >(m,
-                n) );
-        BOOST_ASSERT( traits::vector_size(e) >= std::min< std::ptrdiff_t >(m,
-                n)-1 );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( m, n ));
-        detail::gbbrd( vect, m, n, traits::matrix_num_columns(c), kl, ku,
-                traits::matrix_storage(ab), traits::leading_dimension(ab),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::matrix_storage(q), traits::leading_dimension(q),
-                traits::matrix_storage(pt), traits::leading_dimension(pt),
-                traits::matrix_storage(c), traits::leading_dimension(c),
-                traits::vector_storage(work.select(real_type())), info );
+        detail::gbbrd( vect, size_row(ab), size_column(ab), size_column(c),
+                bandwidth_lower(ab), bandwidth_upper(ab), begin_value(ab),
+                stride_major(ab), begin_value(d), begin_value(e),
+                begin_value(q), stride_major(q), begin_value(pt),
+                stride_major(pt), begin_value(c), stride_major(c),
+                begin_value(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( const char vect, const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
-            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
+            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
             minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work( m, n ) );
-        invoke( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
-                workspace( tmp_work ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                size_row(ab), size_column(ab) ) );
+        invoke( vect, ab, d, e, q, pt, c, info, workspace( tmp_work ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( const char vect, const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
-            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
+            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
             optimal_workspace work ) {
-        invoke( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
-                minimal_workspace() );
+        invoke( vect, ab, d, e, q, pt, c, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t m, const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return 2*std::max< std::ptrdiff_t >(m,n);
     }
 };
 
-// complex specialization
-template< typename ValueType >
-struct gbbrd_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct gbbrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC,
             typename WORK, typename RWORK >
-    static void invoke( const char vect, const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
-            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
+            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
             detail::workspace2< WORK, RWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::vector_traits<
-                VectorE >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::matrix_traits<
-                MatrixQ >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::matrix_traits<
-                MatrixPT >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::matrix_traits<
-                MatrixC >::value_type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                VectorE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                MatrixQ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                MatrixPT >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                MatrixC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixPT >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
+        BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
+        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( size(d) >= std::min< std::ptrdiff_t >(size_row(ab),
+                size_column(ab)) );
+        BOOST_ASSERT( size(e) >= std::min< std::ptrdiff_t >(size_row(ab),
+                size_column(ab))-1 );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
+                size_row(ab), size_column(ab) ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                size_row(ab), size_column(ab) ));
+        BOOST_ASSERT( size_column(ab) >= 0 );
+        BOOST_ASSERT( size_column(c) >= 0 );
+        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
+        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
+        BOOST_ASSERT( size_minor(pt) == 1 || stride_minor(pt) == 1 );
+        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
+        BOOST_ASSERT( size_row(ab) >= 0 );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth_lower(ab)+
+                bandwidth_upper(ab)+1 );
         BOOST_ASSERT( vect == 'N' || vect == 'Q' || vect == 'P' ||
                 vect == 'B' );
-        BOOST_ASSERT( m >= 0 );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
-        BOOST_ASSERT( kl >= 0 );
-        BOOST_ASSERT( ku >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
-        BOOST_ASSERT( traits::vector_size(d) >= std::min< std::ptrdiff_t >(m,
-                n) );
-        BOOST_ASSERT( traits::vector_size(e) >= std::min< std::ptrdiff_t >(m,
-                n)-1 );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( m, n ));
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_rwork( m, n ));
-        detail::gbbrd( vect, m, n, traits::matrix_num_columns(c), kl, ku,
-                traits::matrix_storage(ab), traits::leading_dimension(ab),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::matrix_storage(q), traits::leading_dimension(q),
-                traits::matrix_storage(pt), traits::leading_dimension(pt),
-                traits::matrix_storage(c), traits::leading_dimension(c),
-                traits::vector_storage(work.select(value_type())),
-                traits::vector_storage(work.select(real_type())), info );
+        detail::gbbrd( vect, size_row(ab), size_column(ab), size_column(c),
+                bandwidth_lower(ab), bandwidth_upper(ab), begin_value(ab),
+                stride_major(ab), begin_value(d), begin_value(e),
+                begin_value(q), stride_major(q), begin_value(pt),
+                stride_major(pt), begin_value(c), stride_major(c),
+                begin_value(work.select(value_type())),
+                begin_value(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( const char vect, const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
-            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
+            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
             minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work( m, n ) );
-        traits::detail::array< real_type > tmp_rwork( min_size_rwork( m, n ) );
-        invoke( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
-                workspace( tmp_work, tmp_rwork ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                size_row(ab), size_column(ab) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                size_row(ab), size_column(ab) ) );
+        invoke( vect, ab, d, e, q, pt, c, info, workspace( tmp_work,
+                tmp_rwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename MatrixPT, typename MatrixC >
-    static void invoke( const char vect, const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, MatrixAB& ab, VectorD& d,
-            VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, integer_t& info,
+    static void invoke( const char vect, MatrixAB& ab, VectorD& d, VectorE& e,
+            MatrixQ& q, MatrixPT& pt, MatrixC& c, fortran_int_t& info,
             optimal_workspace work ) {
-        invoke( vect, m, n, kl, ku, ab, d, e, q, pt, c, info,
-                minimal_workspace() );
+        invoke( vect, ab, d, e, q, pt, c, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t m, const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >(m,n);
     }
 
-    static integer_t min_size_rwork( const integer_t m, const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array rwork.
+    //
+    static std::ptrdiff_t min_size_rwork( const std::ptrdiff_t m,
+            const std::ptrdiff_t n ) {
         return std::max< std::ptrdiff_t >(m,n);
     }
 };
 
 
-// template function to call gbbrd
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the gbbrd_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC,
         typename Workspace >
-inline integer_t gbbrd( const char vect, const integer_t m,
-        const integer_t n, const integer_t kl, const integer_t ku,
-        MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
-        MatrixC& c, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
-    integer_t info(0);
-    gbbrd_impl< value_type >::invoke( vect, m, n, kl, ku, ab, d, e, q,
-            pt, c, info, work );
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
     return info;
 }
 
-// template function to call gbbrd, default workspace type
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename MatrixPT, typename MatrixC >
-inline integer_t gbbrd( const char vect, const integer_t m,
-        const integer_t n, const integer_t kl, const integer_t ku,
-        MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
         MatrixC& c ) {
-    typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
-    integer_t info(0);
-    gbbrd_impl< value_type >::invoke( vect, m, n, kl, ku, ab, d, e, q,
-            pt, c, info, optimal_workspace() );
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, const MatrixQ& q, MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, MatrixQ& q, const MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, const MatrixQ& q, const MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, const MatrixQ& q, const MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, const MatrixQ& q, const MatrixPT& pt, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, const MatrixQ& q, const MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q,
+        const MatrixPT& pt, MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q,
+        const MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q,
+        const MatrixPT& pt, MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q,
+        const MatrixPT& pt, MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, MatrixQ& q, MatrixPT& pt, const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, const MatrixQ& q, MatrixPT& pt, const MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, const MatrixQ& q, MatrixPT& pt, const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, const MatrixQ& q, MatrixPT& pt, const MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, const MatrixQ& q, MatrixPT& pt, const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q, MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, MatrixQ& q, const MatrixPT& pt, const MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, MatrixQ& q, const MatrixPT& pt, const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, MatrixQ& q, const MatrixPT& pt, const MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, MatrixQ& q, const MatrixPT& pt, const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, const MatrixQ& q, const MatrixPT& pt, const MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        VectorE& e, const MatrixQ& q, const MatrixPT& pt, const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab, VectorD& d,
+        const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        VectorD& d, const VectorE& e, const MatrixQ& q, const MatrixPT& pt,
+        const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q,
+        const MatrixPT& pt, const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q,
+        const MatrixPT& pt, const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q,
+        const MatrixPT& pt, const MatrixC& c, Workspace work ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gbbrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * const MatrixPT&
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename MatrixPT, typename MatrixC >
+inline std::ptrdiff_t gbbrd( const char vect, const MatrixAB& ab,
+        const VectorD& d, const VectorE& e, const MatrixQ& q,
+        const MatrixPT& pt, const MatrixC& c ) {
+    fortran_int_t info(0);
+    gbbrd_impl< typename value< MatrixAB >::type >::invoke( vect, ab, d,
+            e, q, pt, c, info, optimal_workspace() );
     return info;
 }
 

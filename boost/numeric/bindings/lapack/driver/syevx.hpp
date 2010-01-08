@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,179 +15,1848 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_SYEVX_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void syevx( const char jobz, const char range, const char uplo,
-        const integer_t n, float* a, const integer_t lda, const float vl,
-        const float vu, const integer_t il, const integer_t iu,
-        const float abstol, integer_t& m, float* w, float* z,
-        const integer_t ldz, float* work, const integer_t lwork,
-        integer_t* iwork, integer_t* ifail, integer_t& info ) {
-    LAPACK_SSYEVX( &jobz, &range, &uplo, &n, a, &lda, &vl, &vu, &il, &iu,
-            &abstol, &m, w, z, &ldz, work, &lwork, iwork, ifail, &info );
+//
+// Overloaded function for dispatching to float value-type.
+//
+template< typename UpLo >
+inline void syevx( char jobz, char range, UpLo, fortran_int_t n, float* a,
+        fortran_int_t lda, float vl, float vu, fortran_int_t il,
+        fortran_int_t iu, float abstol, fortran_int_t& m, float* w, float* z,
+        fortran_int_t ldz, float* work, fortran_int_t lwork,
+        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t& info ) {
+    LAPACK_SSYEVX( &jobz, &range, &lapack_option< UpLo >::value, &n, a, &lda,
+            &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, &lwork, iwork,
+            ifail, &info );
 }
-inline void syevx( const char jobz, const char range, const char uplo,
-        const integer_t n, double* a, const integer_t lda, const double vl,
-        const double vu, const integer_t il, const integer_t iu,
-        const double abstol, integer_t& m, double* w, double* z,
-        const integer_t ldz, double* work, const integer_t lwork,
-        integer_t* iwork, integer_t* ifail, integer_t& info ) {
-    LAPACK_DSYEVX( &jobz, &range, &uplo, &n, a, &lda, &vl, &vu, &il, &iu,
-            &abstol, &m, w, z, &ldz, work, &lwork, iwork, ifail, &info );
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+template< typename UpLo >
+inline void syevx( char jobz, char range, UpLo, fortran_int_t n, double* a,
+        fortran_int_t lda, double vl, double vu, fortran_int_t il,
+        fortran_int_t iu, double abstol, fortran_int_t& m, double* w,
+        double* z, fortran_int_t ldz, double* work, fortran_int_t lwork,
+        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t& info ) {
+    LAPACK_DSYEVX( &jobz, &range, &lapack_option< UpLo >::value, &n, a, &lda,
+            &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, work, &lwork, iwork,
+            ifail, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to syevx.
+//
+template< typename Value >
 struct syevx_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorIFAIL, typename WORK, typename IWORK >
     static void invoke( const char jobz, const char range, MatrixA& a,
-            const real_type vl, const real_type vu, const integer_t il,
-            const integer_t iu, const real_type abstol, integer_t& m,
-            VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
             detail::workspace2< WORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorW >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type >::value) );
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorW >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixZ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAIL >::value) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
-                traits::matrix_uplo_tag(a) == 'L' );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::vector_size(w) >=
-                traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( traits::matrix_num_columns(a) ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
-                min_size_iwork( traits::matrix_num_columns(a) ));
-        detail::syevx( jobz, range, traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), vl, vu, il, iu, abstol, m,
-                traits::vector_storage(w), traits::matrix_storage(z),
-                traits::leading_dimension(z),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_size(work.select(real_type())),
-                traits::vector_storage(work.select(integer_t())),
-                traits::vector_storage(ifail), info );
+        BOOST_ASSERT( size(w) >= size_column(a) );
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+                min_size_iwork( size_column(a) ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                size_column(a) ));
+        BOOST_ASSERT( size_column(a) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        detail::syevx( jobz, range, uplo(), size_column(a), begin_value(a),
+                stride_major(a), vl, vu, il, iu, abstol, m, begin_value(w),
+                begin_value(z), stride_major(z),
+                begin_value(work.select(real_type())),
+                size(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())),
+                begin_value(ifail), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorIFAIL >
     static void invoke( const char jobz, const char range, MatrixA& a,
-            const real_type vl, const real_type vu, const integer_t il,
-            const integer_t iu, const real_type abstol, integer_t& m,
-            VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
             minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_num_columns(a) ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_num_columns(a) ) );
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                size_column(a) ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( size_column(a) ) );
         invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorIFAIL >
     static void invoke( const char jobz, const char range, MatrixA& a,
-            const real_type vl, const real_type vu, const integer_t il,
-            const integer_t iu, const real_type abstol, integer_t& m,
-            VectorW& w, MatrixZ& z, VectorIFAIL& ifail, integer_t& info,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
             optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         real_type opt_size_work;
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_num_columns(a) ) );
-        detail::syevx( jobz, range, traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), vl, vu, il, iu, abstol, m,
-                traits::vector_storage(w), traits::matrix_storage(z),
-                traits::leading_dimension(z), &opt_size_work, -1,
-                traits::vector_storage(tmp_iwork),
-                traits::vector_storage(ifail), info );
-        traits::detail::array< real_type > tmp_work(
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( size_column(a) ) );
+        detail::syevx( jobz, range, uplo(), size_column(a),
+                begin_value(a), stride_major(a), vl, vu, il, iu, abstol, m,
+                begin_value(w), begin_value(z), stride_major(z),
+                &opt_size_work, -1, begin_value(tmp_iwork),
+                begin_value(ifail), info );
+        bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         if ( n < 2 )
             return 1;
         else
             return 8*n;
     }
 
-    static integer_t min_size_iwork( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t n ) {
         return 5*n;
     }
 };
 
 
-// template function to call syevx
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the syevx_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline integer_t syevx( const char jobz, const char range, MatrixA& a,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vl,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vu, const integer_t il,
-        const integer_t iu, const typename traits::type_traits<
-        typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    syevx_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,
-            abstol, m, w, z, ifail, info, work );
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
     return info;
 }
 
-// template function to call syevx, default workspace type
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorIFAIL >
-inline integer_t syevx( const char jobz, const char range, MatrixA& a,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vl,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vu, const integer_t il,
-        const integer_t iu, const typename traits::type_traits<
-        typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorIFAIL& ifail ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    syevx_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,
-            abstol, m, w, z, ifail, info, optimal_workspace() );
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
+        Workspace work ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for syevx. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t syevx( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    syevx_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, ifail, info,
+            optimal_workspace() );
     return info;
 }
 

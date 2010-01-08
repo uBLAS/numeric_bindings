@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,14 +15,19 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GBEQU_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -30,118 +35,226 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
-        const integer_t ku, const float* ab, const integer_t ldab, float* r,
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void gbequ( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
+        fortran_int_t ku, const float* ab, fortran_int_t ldab, float* r,
         float* c, float& rowcnd, float& colcnd, float& amax,
-        integer_t& info ) {
+        fortran_int_t& info ) {
     LAPACK_SGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
             &info );
 }
-inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
-        const integer_t ku, const double* ab, const integer_t ldab, double* r,
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void gbequ( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
+        fortran_int_t ku, const double* ab, fortran_int_t ldab, double* r,
         double* c, double& rowcnd, double& colcnd, double& amax,
-        integer_t& info ) {
+        fortran_int_t& info ) {
     LAPACK_DGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
             &info );
 }
-inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
-        const integer_t ku, const traits::complex_f* ab, const integer_t ldab,
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void gbequ( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
+        fortran_int_t ku, const std::complex<float>* ab, fortran_int_t ldab,
         float* r, float* c, float& rowcnd, float& colcnd, float& amax,
-        integer_t& info ) {
-    LAPACK_CGBEQU( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, r, c,
-            &rowcnd, &colcnd, &amax, &info );
+        fortran_int_t& info ) {
+    LAPACK_CGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
+            &info );
 }
-inline void gbequ( const integer_t m, const integer_t n, const integer_t kl,
-        const integer_t ku, const traits::complex_d* ab, const integer_t ldab,
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void gbequ( fortran_int_t m, fortran_int_t n, fortran_int_t kl,
+        fortran_int_t ku, const std::complex<double>* ab, fortran_int_t ldab,
         double* r, double* c, double& rowcnd, double& colcnd, double& amax,
-        integer_t& info ) {
-    LAPACK_ZGBEQU( &m, &n, &kl, &ku, traits::complex_ptr(ab), &ldab, r, c,
-            &rowcnd, &colcnd, &amax, &info );
+        fortran_int_t& info ) {
+    LAPACK_ZGBEQU( &m, &n, &kl, &ku, ab, &ldab, r, c, &rowcnd, &colcnd, &amax,
+            &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct gbequ_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to gbequ.
+//
+template< typename Value, typename Enable = void >
+struct gbequ_impl {};
 
-// real specialization
-template< typename ValueType >
-struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct gbequ_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixAB, typename VectorR, typename VectorC >
-    static void invoke( const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, const MatrixAB& ab,
-            VectorR& r, VectorC& c, real_type& rowcnd, real_type& colcnd,
-            real_type& amax, integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::vector_traits<
-                VectorR >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::vector_traits<
-                VectorC >::value_type >::value) );
-        BOOST_ASSERT( m >= 0 );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( kl >= 0 );
-        BOOST_ASSERT( ku >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
-        detail::gbequ( m, n, kl, ku, traits::matrix_storage(ab),
-                traits::leading_dimension(ab), traits::vector_storage(r),
-                traits::vector_storage(c), rowcnd, colcnd, amax, info );
+    static void invoke( const MatrixAB& ab, VectorR& r, VectorC& c,
+            real_type& rowcnd, real_type& colcnd, real_type& amax,
+            fortran_int_t& info ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                VectorR >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                VectorC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorR >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
+        BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
+        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( size_column(ab) >= 0 );
+        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
+        BOOST_ASSERT( size_row(ab) >= 0 );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth_lower(ab)+
+                bandwidth_upper(ab)+1 );
+        detail::gbequ( size_row(ab), size_column(ab), bandwidth_lower(ab),
+                bandwidth_upper(ab), begin_value(ab), stride_major(ab),
+                begin_value(r), begin_value(c), rowcnd, colcnd, amax, info );
     }
+
 };
 
-// complex specialization
-template< typename ValueType >
-struct gbequ_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct gbequ_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixAB, typename VectorR, typename VectorC >
-    static void invoke( const integer_t m, const integer_t n,
-            const integer_t kl, const integer_t ku, const MatrixAB& ab,
-            VectorR& r, VectorC& c, real_type& rowcnd, real_type& colcnd,
-            real_type& amax, integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorR >::value_type, typename traits::vector_traits<
-                VectorC >::value_type >::value) );
-        BOOST_ASSERT( m >= 0 );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( kl >= 0 );
-        BOOST_ASSERT( ku >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(ab) >= kl+ku+1 );
-        detail::gbequ( m, n, kl, ku, traits::matrix_storage(ab),
-                traits::leading_dimension(ab), traits::vector_storage(r),
-                traits::vector_storage(c), rowcnd, colcnd, amax, info );
+    static void invoke( const MatrixAB& ab, VectorR& r, VectorC& c,
+            real_type& rowcnd, real_type& colcnd, real_type& amax,
+            fortran_int_t& info ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorR >::type >::type,
+                typename remove_const< typename value<
+                VectorC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorR >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorC >::value) );
+        BOOST_ASSERT( bandwidth_lower(ab) >= 0 );
+        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
+        BOOST_ASSERT( size_column(ab) >= 0 );
+        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
+        BOOST_ASSERT( size_row(ab) >= 0 );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth_lower(ab)+
+                bandwidth_upper(ab)+1 );
+        detail::gbequ( size_row(ab), size_column(ab), bandwidth_lower(ab),
+                bandwidth_upper(ab), begin_value(ab), stride_major(ab),
+                begin_value(r), begin_value(c), rowcnd, colcnd, amax, info );
     }
+
 };
 
 
-// template function to call gbequ
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the gbequ_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for gbequ. Its overload differs for
+// * VectorR&
+// * VectorC&
+//
 template< typename MatrixAB, typename VectorR, typename VectorC >
-inline integer_t gbequ( const integer_t m, const integer_t n,
-        const integer_t kl, const integer_t ku, const MatrixAB& ab,
-        VectorR& r, VectorC& c, typename traits::type_traits<
-        typename traits::matrix_traits<
-        MatrixAB >::value_type >::real_type& rowcnd,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAB >::value_type >::real_type& colcnd,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixAB >::value_type >::real_type& amax ) {
-    typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
-    integer_t info(0);
-    gbequ_impl< value_type >::invoke( m, n, kl, ku, ab, r, c, rowcnd,
-            colcnd, amax, info );
+inline std::ptrdiff_t gbequ( const MatrixAB& ab, VectorR& r, VectorC& c,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rowcnd, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& colcnd,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& amax ) {
+    fortran_int_t info(0);
+    gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r, c,
+            rowcnd, colcnd, amax, info );
+    return info;
+}
+
+//
+// Overloaded function for gbequ. Its overload differs for
+// * const VectorR&
+// * VectorC&
+//
+template< typename MatrixAB, typename VectorR, typename VectorC >
+inline std::ptrdiff_t gbequ( const MatrixAB& ab, const VectorR& r,
+        VectorC& c, typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rowcnd, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& colcnd,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& amax ) {
+    fortran_int_t info(0);
+    gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r, c,
+            rowcnd, colcnd, amax, info );
+    return info;
+}
+
+//
+// Overloaded function for gbequ. Its overload differs for
+// * VectorR&
+// * const VectorC&
+//
+template< typename MatrixAB, typename VectorR, typename VectorC >
+inline std::ptrdiff_t gbequ( const MatrixAB& ab, VectorR& r,
+        const VectorC& c, typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rowcnd, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& colcnd,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& amax ) {
+    fortran_int_t info(0);
+    gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r, c,
+            rowcnd, colcnd, amax, info );
+    return info;
+}
+
+//
+// Overloaded function for gbequ. Its overload differs for
+// * const VectorR&
+// * const VectorC&
+//
+template< typename MatrixAB, typename VectorR, typename VectorC >
+inline std::ptrdiff_t gbequ( const MatrixAB& ab, const VectorR& r,
+        const VectorC& c, typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& rowcnd, typename remove_imaginary<
+        typename value< MatrixAB >::type >::type& colcnd,
+        typename remove_imaginary< typename value<
+        MatrixAB >::type >::type& amax ) {
+    fortran_int_t info(0);
+    gbequ_impl< typename value< MatrixAB >::type >::invoke( ab, r, c,
+            rowcnd, colcnd, amax, info );
     return info;
 }
 

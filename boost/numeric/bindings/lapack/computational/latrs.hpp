@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,14 +15,22 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_LATRS_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/diag_tag.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -30,119 +38,218 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void latrs( const char uplo, const char trans, const char diag,
-        const char normin, const integer_t n, const float* a,
-        const integer_t lda, float* x, float& scale, float* cnorm,
-        integer_t& info ) {
-    LAPACK_SLATRS( &uplo, &trans, &diag, &normin, &n, a, &lda, x, &scale,
-            cnorm, &info );
+//
+// Overloaded function for dispatching to float value-type.
+//
+template< typename Trans, typename Diag >
+inline void latrs( char uplo, Trans, Diag, char normin, fortran_int_t n,
+        const float* a, fortran_int_t lda, float* x, float& scale,
+        float* cnorm, fortran_int_t& info ) {
+    LAPACK_SLATRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
+            Diag >::value, &normin, &n, a, &lda, x, &scale, cnorm, &info );
 }
-inline void latrs( const char uplo, const char trans, const char diag,
-        const char normin, const integer_t n, const double* a,
-        const integer_t lda, double* x, double& scale, double* cnorm,
-        integer_t& info ) {
-    LAPACK_DLATRS( &uplo, &trans, &diag, &normin, &n, a, &lda, x, &scale,
-            cnorm, &info );
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+template< typename Trans, typename Diag >
+inline void latrs( char uplo, Trans, Diag, char normin, fortran_int_t n,
+        const double* a, fortran_int_t lda, double* x, double& scale,
+        double* cnorm, fortran_int_t& info ) {
+    LAPACK_DLATRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
+            Diag >::value, &normin, &n, a, &lda, x, &scale, cnorm, &info );
 }
-inline void latrs( const char uplo, const char trans, const char diag,
-        const char normin, const integer_t n, const traits::complex_f* a,
-        const integer_t lda, traits::complex_f* x, float& scale, float* cnorm,
-        integer_t& info ) {
-    LAPACK_CLATRS( &uplo, &trans, &diag, &normin, &n, traits::complex_ptr(a),
-            &lda, traits::complex_ptr(x), &scale, cnorm, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+template< typename Trans, typename Diag >
+inline void latrs( char uplo, Trans, Diag, char normin, fortran_int_t n,
+        const std::complex<float>* a, fortran_int_t lda,
+        std::complex<float>* x, float& scale, float* cnorm,
+        fortran_int_t& info ) {
+    LAPACK_CLATRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
+            Diag >::value, &normin, &n, a, &lda, x, &scale, cnorm, &info );
 }
-inline void latrs( const char uplo, const char trans, const char diag,
-        const char normin, const integer_t n, const traits::complex_d* a,
-        const integer_t lda, traits::complex_d* x, double& scale,
-        double* cnorm, integer_t& info ) {
-    LAPACK_ZLATRS( &uplo, &trans, &diag, &normin, &n, traits::complex_ptr(a),
-            &lda, traits::complex_ptr(x), &scale, cnorm, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+template< typename Trans, typename Diag >
+inline void latrs( char uplo, Trans, Diag, char normin, fortran_int_t n,
+        const std::complex<double>* a, fortran_int_t lda,
+        std::complex<double>* x, double& scale, double* cnorm,
+        fortran_int_t& info ) {
+    LAPACK_ZLATRS( &uplo, &lapack_option< Trans >::value, &lapack_option<
+            Diag >::value, &normin, &n, a, &lda, x, &scale, cnorm, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct latrs_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to latrs.
+//
+template< typename Value, typename Enable = void >
+struct latrs_impl {};
 
-// real specialization
-template< typename ValueType >
-struct latrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct latrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorX, typename VectorCNORM >
-    static void invoke( const char uplo, const char trans, const char diag,
-            const char normin, const MatrixA& a, VectorX& x, real_type& scale,
-            VectorCNORM& cnorm, integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorX >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorCNORM >::value_type >::value) );
-        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
-        BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
-        BOOST_ASSERT( diag == 'N' || diag == 'U' );
+    static void invoke( const char uplo, const char normin, const MatrixA& a,
+            VectorX& x, real_type& scale, VectorCNORM& cnorm,
+            fortran_int_t& info ) {
+        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
+        typedef typename result_of::diag_tag< MatrixA >::type diag;
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorCNORM >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorCNORM >::value) );
         BOOST_ASSERT( normin == 'Y' || normin == 'N' );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= ?MAX );
-        BOOST_ASSERT( traits::vector_size(x) >=
-                traits::matrix_num_columns(a) );
-        detail::latrs( uplo, trans, diag, normin,
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(x),
-                scale, traits::vector_storage(cnorm), info );
+        BOOST_ASSERT( size(x) >= size_column_op(a, trans()) );
+        BOOST_ASSERT( size_column_op(a, trans()) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( stride_major(a) >= ?MAX );
+        detail::latrs( uplo, trans(), diag(), normin, size_column_op(a,
+                trans()), begin_value(a), stride_major(a), begin_value(x),
+                scale, begin_value(cnorm), info );
     }
+
 };
 
-// complex specialization
-template< typename ValueType >
-struct latrs_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct latrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorX, typename VectorCNORM >
-    static void invoke( const char uplo, const char trans, const char diag,
-            const char normin, const MatrixA& a, VectorX& x, real_type& scale,
-            VectorCNORM& cnorm, integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorX >::value_type >::value) );
-        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
-        BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
-        BOOST_ASSERT( diag == 'N' || diag == 'U' );
+    static void invoke( const char uplo, const char normin, const MatrixA& a,
+            VectorX& x, real_type& scale, VectorCNORM& cnorm,
+            fortran_int_t& info ) {
+        typedef typename result_of::trans_tag< MatrixA, order >::type trans;
+        typedef typename result_of::diag_tag< MatrixA >::type diag;
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorCNORM >::value) );
         BOOST_ASSERT( normin == 'Y' || normin == 'N' );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= ?MAX );
-        BOOST_ASSERT( traits::vector_size(x) >=
-                traits::matrix_num_columns(a) );
-        detail::latrs( uplo, trans, diag, normin,
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(x),
-                scale, traits::vector_storage(cnorm), info );
+        BOOST_ASSERT( size(x) >= size_column_op(a, trans()) );
+        BOOST_ASSERT( size_column_op(a, trans()) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( stride_major(a) >= ?MAX );
+        detail::latrs( uplo, trans(), diag(), normin, size_column_op(a,
+                trans()), begin_value(a), stride_major(a), begin_value(x),
+                scale, begin_value(cnorm), info );
     }
+
 };
 
 
-// template function to call latrs
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the latrs_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for latrs. Its overload differs for
+// * VectorX&
+// * VectorCNORM&
+//
 template< typename MatrixA, typename VectorX, typename VectorCNORM >
-inline integer_t latrs( const char uplo, const char trans,
-        const char diag, const char normin, const MatrixA& a, VectorX& x,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type& scale, VectorCNORM& cnorm ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    latrs_impl< value_type >::invoke( uplo, trans, diag, normin, a, x,
-            scale, cnorm, info );
+inline std::ptrdiff_t latrs( const char uplo, const char normin,
+        const MatrixA& a, VectorX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& scale, VectorCNORM& cnorm ) {
+    fortran_int_t info(0);
+    latrs_impl< typename value< MatrixA >::type >::invoke( uplo, normin,
+            a, x, scale, cnorm, info );
+    return info;
+}
+
+//
+// Overloaded function for latrs. Its overload differs for
+// * const VectorX&
+// * VectorCNORM&
+//
+template< typename MatrixA, typename VectorX, typename VectorCNORM >
+inline std::ptrdiff_t latrs( const char uplo, const char normin,
+        const MatrixA& a, const VectorX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& scale, VectorCNORM& cnorm ) {
+    fortran_int_t info(0);
+    latrs_impl< typename value< MatrixA >::type >::invoke( uplo, normin,
+            a, x, scale, cnorm, info );
+    return info;
+}
+
+//
+// Overloaded function for latrs. Its overload differs for
+// * VectorX&
+// * const VectorCNORM&
+//
+template< typename MatrixA, typename VectorX, typename VectorCNORM >
+inline std::ptrdiff_t latrs( const char uplo, const char normin,
+        const MatrixA& a, VectorX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& scale,
+        const VectorCNORM& cnorm ) {
+    fortran_int_t info(0);
+    latrs_impl< typename value< MatrixA >::type >::invoke( uplo, normin,
+            a, x, scale, cnorm, info );
+    return info;
+}
+
+//
+// Overloaded function for latrs. Its overload differs for
+// * const VectorX&
+// * const VectorCNORM&
+//
+template< typename MatrixA, typename VectorX, typename VectorCNORM >
+inline std::ptrdiff_t latrs( const char uplo, const char normin,
+        const MatrixA& a, const VectorX& x, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& scale,
+        const VectorCNORM& cnorm ) {
+    fortran_int_t info(0);
+    latrs_impl< typename value< MatrixA >::type >::invoke( uplo, normin,
+            a, x, scale, cnorm, info );
     return info;
 }
 

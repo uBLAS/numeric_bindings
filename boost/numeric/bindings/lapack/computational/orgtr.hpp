@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,112 +15,201 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_ORGTR_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void orgtr( const char uplo, const integer_t n, float* a,
-        const integer_t lda, const float* tau, float* work,
-        const integer_t lwork, integer_t& info ) {
-    LAPACK_SORGTR( &uplo, &n, a, &lda, tau, work, &lwork, &info );
+//
+// Overloaded function for dispatching to float value-type.
+//
+template< typename UpLo >
+inline void orgtr( UpLo, fortran_int_t n, float* a, fortran_int_t lda,
+        const float* tau, float* work, fortran_int_t lwork,
+        fortran_int_t& info ) {
+    LAPACK_SORGTR( &lapack_option< UpLo >::value, &n, a, &lda, tau, work,
+            &lwork, &info );
 }
-inline void orgtr( const char uplo, const integer_t n, double* a,
-        const integer_t lda, const double* tau, double* work,
-        const integer_t lwork, integer_t& info ) {
-    LAPACK_DORGTR( &uplo, &n, a, &lda, tau, work, &lwork, &info );
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+template< typename UpLo >
+inline void orgtr( UpLo, fortran_int_t n, double* a, fortran_int_t lda,
+        const double* tau, double* work, fortran_int_t lwork,
+        fortran_int_t& info ) {
+    LAPACK_DORGTR( &lapack_option< UpLo >::value, &n, a, &lda, tau, work,
+            &lwork, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to orgtr.
+//
+template< typename Value >
 struct orgtr_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorTAU, typename WORK >
-    static void invoke( const integer_t n, MatrixA& a, const VectorTAU& tau,
-            integer_t& info, detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAU >::value_type >::value) );
-        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
-                traits::matrix_uplo_tag(a) == 'L' );
+    static void invoke( const fortran_int_t n, MatrixA& a,
+            const VectorTAU& tau, fortran_int_t& info, detail::workspace1<
+            WORK > work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorTAU >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( traits::vector_size(tau) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( n ));
-        detail::orgtr( traits::matrix_uplo_tag(a), n,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(tau),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_size(work.select(real_type())), info );
+        BOOST_ASSERT( size(tau) >= n-1 );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
+        detail::orgtr( uplo(), n, begin_value(a), stride_major(a),
+                begin_value(tau), begin_value(work.select(real_type())),
+                size(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( const integer_t n, MatrixA& a, const VectorTAU& tau,
-            integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work( n ) );
+    static void invoke( const fortran_int_t n, MatrixA& a,
+            const VectorTAU& tau, fortran_int_t& info,
+            minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         invoke( n, a, tau, info, workspace( tmp_work ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixA, typename VectorTAU >
-    static void invoke( const integer_t n, MatrixA& a, const VectorTAU& tau,
-            integer_t& info, optimal_workspace work ) {
+    static void invoke( const fortran_int_t n, MatrixA& a,
+            const VectorTAU& tau, fortran_int_t& info,
+            optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         real_type opt_size_work;
-        detail::orgtr( traits::matrix_uplo_tag(a), n,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(tau), &opt_size_work, -1, info );
-        traits::detail::array< real_type > tmp_work(
+        detail::orgtr( uplo(), n, begin_value(a), stride_major(a),
+                begin_value(tau), &opt_size_work, -1, info );
+        bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         invoke( n, a, tau, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
-        return std::max( 1, n-1 );
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, n-1 );
     }
 };
 
 
-// template function to call orgtr
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the orgtr_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for orgtr. Its overload differs for
+// * MatrixA&
+// * User-defined workspace
+//
 template< typename MatrixA, typename VectorTAU, typename Workspace >
-inline integer_t orgtr( const integer_t n, MatrixA& a,
+inline std::ptrdiff_t orgtr( const fortran_int_t n, MatrixA& a,
         const VectorTAU& tau, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    orgtr_impl< value_type >::invoke( n, a, tau, info, work );
+    fortran_int_t info(0);
+    orgtr_impl< typename value< MatrixA >::type >::invoke( n, a, tau,
+            info, work );
     return info;
 }
 
-// template function to call orgtr, default workspace type
+//
+// Overloaded function for orgtr. Its overload differs for
+// * MatrixA&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixA, typename VectorTAU >
-inline integer_t orgtr( const integer_t n, MatrixA& a,
+inline std::ptrdiff_t orgtr( const fortran_int_t n, MatrixA& a,
         const VectorTAU& tau ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    orgtr_impl< value_type >::invoke( n, a, tau, info,
-            optimal_workspace() );
+    fortran_int_t info(0);
+    orgtr_impl< typename value< MatrixA >::type >::invoke( n, a, tau,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for orgtr. Its overload differs for
+// * const MatrixA&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAU, typename Workspace >
+inline std::ptrdiff_t orgtr( const fortran_int_t n, const MatrixA& a,
+        const VectorTAU& tau, Workspace work ) {
+    fortran_int_t info(0);
+    orgtr_impl< typename value< MatrixA >::type >::invoke( n, a, tau,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for orgtr. Its overload differs for
+// * const MatrixA&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAU >
+inline std::ptrdiff_t orgtr( const fortran_int_t n, const MatrixA& a,
+        const VectorTAU& tau ) {
+    fortran_int_t info(0);
+    orgtr_impl< typename value< MatrixA >::type >::invoke( n, a, tau,
+            info, optimal_workspace() );
     return info;
 }
 

@@ -28,3631 +28,3916 @@ extern "C" {
 //
 
 // Value-type variants of hbgst
-void LAPACK_CHBGST( const char* vect, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, fcomplex_t* ab,
-        const integer_t* ldab, const fcomplex_t* bb, const integer_t* ldbb,
-        fcomplex_t* x, const integer_t* ldx, fcomplex_t* work, float* rwork,
-        integer_t* info );
-void LAPACK_ZHBGST( const char* vect, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, dcomplex_t* ab,
-        const integer_t* ldab, const dcomplex_t* bb, const integer_t* ldbb,
-        dcomplex_t* x, const integer_t* ldx, dcomplex_t* work, double* rwork,
-        integer_t* info );
+void LAPACK_CHBGST( const char* vect, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, void* ab, const fortran_int_t* ldab,
+        const void* bb, const fortran_int_t* ldbb, void* x,
+        const fortran_int_t* ldx, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZHBGST( const char* vect, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, void* ab, const fortran_int_t* ldab,
+        const void* bb, const fortran_int_t* ldbb, void* x,
+        const fortran_int_t* ldx, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of hegst
-void LAPACK_CHEGST( const integer_t* itype, const char* uplo,
-        const integer_t* n, fcomplex_t* a, const integer_t* lda,
-        const fcomplex_t* b, const integer_t* ldb, integer_t* info );
-void LAPACK_ZHEGST( const integer_t* itype, const char* uplo,
-        const integer_t* n, dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* b, const integer_t* ldb, integer_t* info );
+void LAPACK_CHEGST( const fortran_int_t* itype, const char* uplo,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        const void* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZHEGST( const fortran_int_t* itype, const char* uplo,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        const void* b, const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of pbstf
-void LAPACK_SPBSTF( const char* uplo, const integer_t* n, const integer_t* kd,
-        float* ab, const integer_t* ldab, integer_t* info );
-void LAPACK_DPBSTF( const char* uplo, const integer_t* n, const integer_t* kd,
-        double* ab, const integer_t* ldab, integer_t* info );
-void LAPACK_CPBSTF( const char* uplo, const integer_t* n, const integer_t* kd,
-        fcomplex_t* ab, const integer_t* ldab, integer_t* info );
-void LAPACK_ZPBSTF( const char* uplo, const integer_t* n, const integer_t* kd,
-        dcomplex_t* ab, const integer_t* ldab, integer_t* info );
+void LAPACK_SPBSTF( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, float* ab, const fortran_int_t* ldab,
+        fortran_int_t* info );
+void LAPACK_DPBSTF( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, double* ab, const fortran_int_t* ldab,
+        fortran_int_t* info );
+void LAPACK_CPBSTF( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, void* ab, const fortran_int_t* ldab,
+        fortran_int_t* info );
+void LAPACK_ZPBSTF( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, void* ab, const fortran_int_t* ldab,
+        fortran_int_t* info );
 
 // Value-type variants of sbgst
-void LAPACK_SSBGST( const char* vect, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, float* ab,
-        const integer_t* ldab, const float* bb, const integer_t* ldbb,
-        float* x, const integer_t* ldx, float* work, integer_t* info );
-void LAPACK_DSBGST( const char* vect, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, double* ab,
-        const integer_t* ldab, const double* bb, const integer_t* ldbb,
-        double* x, const integer_t* ldx, double* work, integer_t* info );
+void LAPACK_SSBGST( const char* vect, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, float* ab, const fortran_int_t* ldab,
+        const float* bb, const fortran_int_t* ldbb, float* x,
+        const fortran_int_t* ldx, float* work, fortran_int_t* info );
+void LAPACK_DSBGST( const char* vect, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, double* ab, const fortran_int_t* ldab,
+        const double* bb, const fortran_int_t* ldbb, double* x,
+        const fortran_int_t* ldx, double* work, fortran_int_t* info );
 
 // Value-type variants of sygst
-void LAPACK_SSYGST( const integer_t* itype, const char* uplo,
-        const integer_t* n, float* a, const integer_t* lda, const float* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_DSYGST( const integer_t* itype, const char* uplo,
-        const integer_t* n, double* a, const integer_t* lda, const double* b,
-        const integer_t* ldb, integer_t* info );
+void LAPACK_SSYGST( const fortran_int_t* itype, const char* uplo,
+        const fortran_int_t* n, float* a, const fortran_int_t* lda,
+        const float* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_DSYGST( const fortran_int_t* itype, const char* uplo,
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        const double* b, const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of ggqrf
-void LAPACK_SGGQRF( const integer_t* n, const integer_t* m,
-        const integer_t* p, float* a, const integer_t* lda, float* taua,
-        float* b, const integer_t* ldb, float* taub, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DGGQRF( const integer_t* n, const integer_t* m,
-        const integer_t* p, double* a, const integer_t* lda, double* taua,
-        double* b, const integer_t* ldb, double* taub, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CGGQRF( const integer_t* n, const integer_t* m,
-        const integer_t* p, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* taua, fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* taub, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZGGQRF( const integer_t* n, const integer_t* m,
-        const integer_t* p, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* taua, dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* taub, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SGGQRF( const fortran_int_t* n, const fortran_int_t* m,
+        const fortran_int_t* p, float* a, const fortran_int_t* lda,
+        float* taua, float* b, const fortran_int_t* ldb, float* taub,
+        float* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGGQRF( const fortran_int_t* n, const fortran_int_t* m,
+        const fortran_int_t* p, double* a, const fortran_int_t* lda,
+        double* taua, double* b, const fortran_int_t* ldb, double* taub,
+        double* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGGQRF( const fortran_int_t* n, const fortran_int_t* m,
+        const fortran_int_t* p, void* a, const fortran_int_t* lda, void* taua,
+        void* b, const fortran_int_t* ldb, void* taub, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZGGQRF( const fortran_int_t* n, const fortran_int_t* m,
+        const fortran_int_t* p, void* a, const fortran_int_t* lda, void* taua,
+        void* b, const fortran_int_t* ldb, void* taub, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of ggrqf
-void LAPACK_SGGRQF( const integer_t* m, const integer_t* p,
-        const integer_t* n, float* a, const integer_t* lda, float* taua,
-        float* b, const integer_t* ldb, float* taub, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DGGRQF( const integer_t* m, const integer_t* p,
-        const integer_t* n, double* a, const integer_t* lda, double* taua,
-        double* b, const integer_t* ldb, double* taub, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CGGRQF( const integer_t* m, const integer_t* p,
-        const integer_t* n, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* taua, fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* taub, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZGGRQF( const integer_t* m, const integer_t* p,
-        const integer_t* n, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* taua, dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* taub, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SGGRQF( const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, float* a, const fortran_int_t* lda,
+        float* taua, float* b, const fortran_int_t* ldb, float* taub,
+        float* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGGRQF( const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        double* taua, double* b, const fortran_int_t* ldb, double* taub,
+        double* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGGRQF( const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* taua,
+        void* b, const fortran_int_t* ldb, void* taub, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZGGRQF( const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* taua,
+        void* b, const fortran_int_t* ldb, void* taub, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of gelqf
-void LAPACK_SGELQF( const integer_t* m, const integer_t* n, float* a,
-        const integer_t* lda, float* tau, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DGELQF( const integer_t* m, const integer_t* n, double* a,
-        const integer_t* lda, double* tau, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CGELQF( const integer_t* m, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* tau, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_ZGELQF( const integer_t* m, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* tau, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_SGELQF( const fortran_int_t* m, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* tau, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGELQF( const fortran_int_t* m, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* tau, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGELQF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZGELQF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of geqlf
-void LAPACK_SGEQLF( const integer_t* m, const integer_t* n, float* a,
-        const integer_t* lda, float* tau, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DGEQLF( const integer_t* m, const integer_t* n, double* a,
-        const integer_t* lda, double* tau, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CGEQLF( const integer_t* m, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* tau, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_ZGEQLF( const integer_t* m, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* tau, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_SGEQLF( const fortran_int_t* m, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* tau, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGEQLF( const fortran_int_t* m, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* tau, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGEQLF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZGEQLF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of geqp3
-void LAPACK_SGEQP3( const integer_t* m, const integer_t* n, float* a,
-        const integer_t* lda, integer_t* jpvt, float* tau, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DGEQP3( const integer_t* m, const integer_t* n, double* a,
-        const integer_t* lda, integer_t* jpvt, double* tau, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CGEQP3( const integer_t* m, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, integer_t* jpvt, fcomplex_t* tau,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        integer_t* info );
-void LAPACK_ZGEQP3( const integer_t* m, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, integer_t* jpvt, dcomplex_t* tau,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        integer_t* info );
+void LAPACK_SGEQP3( const fortran_int_t* m, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, fortran_int_t* jpvt, float* tau,
+        float* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGEQP3( const fortran_int_t* m, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, fortran_int_t* jpvt, double* tau,
+        double* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGEQP3( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* jpvt, void* tau, void* work,
+        const fortran_int_t* lwork, float* rwork, fortran_int_t* info );
+void LAPACK_ZGEQP3( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* jpvt, void* tau, void* work,
+        const fortran_int_t* lwork, double* rwork, fortran_int_t* info );
 
 // Value-type variants of geqrf
-void LAPACK_SGEQRF( const integer_t* m, const integer_t* n, float* a,
-        const integer_t* lda, float* tau, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DGEQRF( const integer_t* m, const integer_t* n, double* a,
-        const integer_t* lda, double* tau, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CGEQRF( const integer_t* m, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* tau, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_ZGEQRF( const integer_t* m, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* tau, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_SGEQRF( const fortran_int_t* m, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* tau, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGEQRF( const fortran_int_t* m, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* tau, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGEQRF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZGEQRF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of gerqf
-void LAPACK_SGERQF( const integer_t* m, const integer_t* n, float* a,
-        const integer_t* lda, float* tau, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DGERQF( const integer_t* m, const integer_t* n, double* a,
-        const integer_t* lda, double* tau, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CGERQF( const integer_t* m, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* tau, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_ZGERQF( const integer_t* m, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* tau, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_SGERQF( const fortran_int_t* m, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* tau, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGERQF( const fortran_int_t* m, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* tau, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGERQF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZGERQF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of larz
-void LAPACK_SLARZ( const char* side, const integer_t* m, const integer_t* n,
-        const integer_t* l, const float* v, const integer_t* incv,
-        const float* tau, float* c, const integer_t* ldc, float* work );
-void LAPACK_DLARZ( const char* side, const integer_t* m, const integer_t* n,
-        const integer_t* l, const double* v, const integer_t* incv,
-        const double* tau, double* c, const integer_t* ldc, double* work );
-void LAPACK_CLARZ( const char* side, const integer_t* m, const integer_t* n,
-        const integer_t* l, const fcomplex_t* v, const integer_t* incv,
-        const fcomplex_t* tau, fcomplex_t* c, const integer_t* ldc,
-        fcomplex_t* work );
-void LAPACK_ZLARZ( const char* side, const integer_t* m, const integer_t* n,
-        const integer_t* l, const dcomplex_t* v, const integer_t* incv,
-        const dcomplex_t* tau, dcomplex_t* c, const integer_t* ldc,
-        dcomplex_t* work );
+void LAPACK_SLARZ( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* l, const float* v,
+        const fortran_int_t* incv, const float* tau, float* c,
+        const fortran_int_t* ldc, float* work );
+void LAPACK_DLARZ( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* l, const double* v,
+        const fortran_int_t* incv, const double* tau, double* c,
+        const fortran_int_t* ldc, double* work );
+void LAPACK_CLARZ( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* l, const void* v,
+        const fortran_int_t* incv, const void* tau, void* c,
+        const fortran_int_t* ldc, void* work );
+void LAPACK_ZLARZ( const char* side, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* l, const void* v,
+        const fortran_int_t* incv, const void* tau, void* c,
+        const fortran_int_t* ldc, void* work );
 
 // Value-type variants of latrz
-void LAPACK_SLATRZ( const integer_t* m, const integer_t* n,
-        const integer_t* l, float* a, const integer_t* lda, float* tau,
-        float* work );
-void LAPACK_DLATRZ( const integer_t* m, const integer_t* n,
-        const integer_t* l, double* a, const integer_t* lda, double* tau,
-        double* work );
-void LAPACK_CLATRZ( const integer_t* m, const integer_t* n,
-        const integer_t* l, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* tau, fcomplex_t* work );
-void LAPACK_ZLATRZ( const integer_t* m, const integer_t* n,
-        const integer_t* l, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* tau, dcomplex_t* work );
+void LAPACK_SLATRZ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* l, float* a, const fortran_int_t* lda,
+        float* tau, float* work );
+void LAPACK_DLATRZ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* l, double* a, const fortran_int_t* lda,
+        double* tau, double* work );
+void LAPACK_CLATRZ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* l, void* a, const fortran_int_t* lda, void* tau,
+        void* work );
+void LAPACK_ZLATRZ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* l, void* a, const fortran_int_t* lda, void* tau,
+        void* work );
 
 // Value-type variants of orglq
-void LAPACK_SORGLQ( const integer_t* m, const integer_t* n,
-        const integer_t* k, float* a, const integer_t* lda, const float* tau,
-        float* work, const integer_t* lwork, integer_t* info );
-void LAPACK_DORGLQ( const integer_t* m, const integer_t* n,
-        const integer_t* k, double* a, const integer_t* lda,
-        const double* tau, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORGLQ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, float* a, const fortran_int_t* lda,
+        const float* tau, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DORGLQ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, double* a, const fortran_int_t* lda,
+        const double* tau, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of orgql
-void LAPACK_SORGQL( const integer_t* m, const integer_t* n,
-        const integer_t* k, float* a, const integer_t* lda, const float* tau,
-        float* work, const integer_t* lwork, integer_t* info );
-void LAPACK_DORGQL( const integer_t* m, const integer_t* n,
-        const integer_t* k, double* a, const integer_t* lda,
-        const double* tau, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORGQL( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, float* a, const fortran_int_t* lda,
+        const float* tau, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DORGQL( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, double* a, const fortran_int_t* lda,
+        const double* tau, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of orgqr
-void LAPACK_SORGQR( const integer_t* m, const integer_t* n,
-        const integer_t* k, float* a, const integer_t* lda, const float* tau,
-        float* work, const integer_t* lwork, integer_t* info );
-void LAPACK_DORGQR( const integer_t* m, const integer_t* n,
-        const integer_t* k, double* a, const integer_t* lda,
-        const double* tau, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORGQR( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, float* a, const fortran_int_t* lda,
+        const float* tau, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DORGQR( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, double* a, const fortran_int_t* lda,
+        const double* tau, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of orgrq
-void LAPACK_SORGRQ( const integer_t* m, const integer_t* n,
-        const integer_t* k, float* a, const integer_t* lda, const float* tau,
-        float* work, const integer_t* lwork, integer_t* info );
-void LAPACK_DORGRQ( const integer_t* m, const integer_t* n,
-        const integer_t* k, double* a, const integer_t* lda,
-        const double* tau, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORGRQ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, float* a, const fortran_int_t* lda,
+        const float* tau, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DORGRQ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, double* a, const fortran_int_t* lda,
+        const double* tau, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of ormlq
-void LAPACK_SORMLQ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const float* a,
-        const integer_t* lda, const float* tau, float* c,
-        const integer_t* ldc, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DORMLQ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const double* a,
-        const integer_t* lda, const double* tau, double* c,
-        const integer_t* ldc, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORMLQ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const float* a, const fortran_int_t* lda,
+        const float* tau, float* c, const fortran_int_t* ldc, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DORMLQ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const double* a, const fortran_int_t* lda,
+        const double* tau, double* c, const fortran_int_t* ldc, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of ormql
-void LAPACK_SORMQL( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const float* a,
-        const integer_t* lda, const float* tau, float* c,
-        const integer_t* ldc, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DORMQL( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const double* a,
-        const integer_t* lda, const double* tau, double* c,
-        const integer_t* ldc, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORMQL( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const float* a, const fortran_int_t* lda,
+        const float* tau, float* c, const fortran_int_t* ldc, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DORMQL( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const double* a, const fortran_int_t* lda,
+        const double* tau, double* c, const fortran_int_t* ldc, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of ormqr
-void LAPACK_SORMQR( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const float* a,
-        const integer_t* lda, const float* tau, float* c,
-        const integer_t* ldc, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DORMQR( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const double* a,
-        const integer_t* lda, const double* tau, double* c,
-        const integer_t* ldc, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORMQR( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const float* a, const fortran_int_t* lda,
+        const float* tau, float* c, const fortran_int_t* ldc, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DORMQR( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const double* a, const fortran_int_t* lda,
+        const double* tau, double* c, const fortran_int_t* ldc, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of ormrq
-void LAPACK_SORMRQ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const float* a,
-        const integer_t* lda, const float* tau, float* c,
-        const integer_t* ldc, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DORMRQ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const double* a,
-        const integer_t* lda, const double* tau, double* c,
-        const integer_t* ldc, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORMRQ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const float* a, const fortran_int_t* lda,
+        const float* tau, float* c, const fortran_int_t* ldc, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DORMRQ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const double* a, const fortran_int_t* lda,
+        const double* tau, double* c, const fortran_int_t* ldc, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of ormrz
-void LAPACK_SORMRZ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const integer_t* l,
-        const float* a, const integer_t* lda, const float* tau, float* c,
-        const integer_t* ldc, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DORMRZ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const integer_t* l,
-        const double* a, const integer_t* lda, const double* tau, double* c,
-        const integer_t* ldc, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORMRZ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const fortran_int_t* l, const float* a,
+        const fortran_int_t* lda, const float* tau, float* c,
+        const fortran_int_t* ldc, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DORMRZ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const fortran_int_t* l, const double* a,
+        const fortran_int_t* lda, const double* tau, double* c,
+        const fortran_int_t* ldc, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of tzrzf
-void LAPACK_STZRZF( const integer_t* m, const integer_t* n, float* a,
-        const integer_t* lda, float* tau, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DTZRZF( const integer_t* m, const integer_t* n, double* a,
-        const integer_t* lda, double* tau, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CTZRZF( const integer_t* m, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* tau, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_ZTZRZF( const integer_t* m, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* tau, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_STZRZF( const fortran_int_t* m, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* tau, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DTZRZF( const fortran_int_t* m, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* tau, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CTZRZF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZTZRZF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of unglq
-void LAPACK_CUNGLQ( const integer_t* m, const integer_t* n,
-        const integer_t* k, fcomplex_t* a, const integer_t* lda,
-        const fcomplex_t* tau, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZUNGLQ( const integer_t* m, const integer_t* n,
-        const integer_t* k, dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* tau, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_CUNGLQ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, void* a, const fortran_int_t* lda,
+        const void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_ZUNGLQ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, void* a, const fortran_int_t* lda,
+        const void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of ungql
-void LAPACK_CUNGQL( const integer_t* m, const integer_t* n,
-        const integer_t* k, fcomplex_t* a, const integer_t* lda,
-        const fcomplex_t* tau, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZUNGQL( const integer_t* m, const integer_t* n,
-        const integer_t* k, dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* tau, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_CUNGQL( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, void* a, const fortran_int_t* lda,
+        const void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_ZUNGQL( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, void* a, const fortran_int_t* lda,
+        const void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of ungqr
-void LAPACK_CUNGQR( const integer_t* m, const integer_t* n,
-        const integer_t* k, fcomplex_t* a, const integer_t* lda,
-        const fcomplex_t* tau, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZUNGQR( const integer_t* m, const integer_t* n,
-        const integer_t* k, dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* tau, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_CUNGQR( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, void* a, const fortran_int_t* lda,
+        const void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_ZUNGQR( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, void* a, const fortran_int_t* lda,
+        const void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of ungrq
-void LAPACK_CUNGRQ( const integer_t* m, const integer_t* n,
-        const integer_t* k, fcomplex_t* a, const integer_t* lda,
-        const fcomplex_t* tau, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZUNGRQ( const integer_t* m, const integer_t* n,
-        const integer_t* k, dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* tau, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_CUNGRQ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, void* a, const fortran_int_t* lda,
+        const void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_ZUNGRQ( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, void* a, const fortran_int_t* lda,
+        const void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of unmlq
-void LAPACK_CUNMLQ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const fcomplex_t* a,
-        const integer_t* lda, const fcomplex_t* tau, fcomplex_t* c,
-        const integer_t* ldc, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZUNMLQ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const dcomplex_t* a,
-        const integer_t* lda, const dcomplex_t* tau, dcomplex_t* c,
-        const integer_t* ldc, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_CUNMLQ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* a, const fortran_int_t* lda,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZUNMLQ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* a, const fortran_int_t* lda,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of unmql
-void LAPACK_CUNMQL( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const fcomplex_t* a,
-        const integer_t* lda, const fcomplex_t* tau, fcomplex_t* c,
-        const integer_t* ldc, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZUNMQL( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const dcomplex_t* a,
-        const integer_t* lda, const dcomplex_t* tau, dcomplex_t* c,
-        const integer_t* ldc, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_CUNMQL( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* a, const fortran_int_t* lda,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZUNMQL( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* a, const fortran_int_t* lda,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of unmqr
-void LAPACK_CUNMQR( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const fcomplex_t* a,
-        const integer_t* lda, const fcomplex_t* tau, fcomplex_t* c,
-        const integer_t* ldc, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZUNMQR( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const dcomplex_t* a,
-        const integer_t* lda, const dcomplex_t* tau, dcomplex_t* c,
-        const integer_t* ldc, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_CUNMQR( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* a, const fortran_int_t* lda,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZUNMQR( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* a, const fortran_int_t* lda,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of unmrq
-void LAPACK_CUNMRQ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const fcomplex_t* a,
-        const integer_t* lda, const fcomplex_t* tau, fcomplex_t* c,
-        const integer_t* ldc, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZUNMRQ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const dcomplex_t* a,
-        const integer_t* lda, const dcomplex_t* tau, dcomplex_t* c,
-        const integer_t* ldc, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_CUNMRQ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* a, const fortran_int_t* lda,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZUNMRQ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* a, const fortran_int_t* lda,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of unmrz
-void LAPACK_CUNMRZ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const integer_t* l,
-        const fcomplex_t* a, const integer_t* lda, const fcomplex_t* tau,
-        fcomplex_t* c, const integer_t* ldc, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_ZUNMRZ( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* k, const integer_t* l,
-        const dcomplex_t* a, const integer_t* lda, const dcomplex_t* tau,
-        dcomplex_t* c, const integer_t* ldc, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_CUNMRZ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const fortran_int_t* l, const void* a,
+        const fortran_int_t* lda, const void* tau, void* c,
+        const fortran_int_t* ldc, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_ZUNMRZ( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const fortran_int_t* l, const void* a,
+        const fortran_int_t* lda, const void* tau, void* c,
+        const fortran_int_t* ldc, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of bdsdc
-void LAPACK_SBDSDC( const char* uplo, const char* compq, const integer_t* n,
-        float* d, float* e, float* u, const integer_t* ldu, float* vt,
-        const integer_t* ldvt, float* q, integer_t* iq, float* work,
-        integer_t* iwork, integer_t* info );
-void LAPACK_DBDSDC( const char* uplo, const char* compq, const integer_t* n,
-        double* d, double* e, double* u, const integer_t* ldu, double* vt,
-        const integer_t* ldvt, double* q, integer_t* iq, double* work,
-        integer_t* iwork, integer_t* info );
+void LAPACK_SBDSDC( const char* uplo, const char* compq,
+        const fortran_int_t* n, float* d, float* e, float* u,
+        const fortran_int_t* ldu, float* vt, const fortran_int_t* ldvt,
+        float* q, fortran_int_t* iq, float* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DBDSDC( const char* uplo, const char* compq,
+        const fortran_int_t* n, double* d, double* e, double* u,
+        const fortran_int_t* ldu, double* vt, const fortran_int_t* ldvt,
+        double* q, fortran_int_t* iq, double* work, fortran_int_t* iwork,
+        fortran_int_t* info );
 
 // Value-type variants of bdsqr
-void LAPACK_SBDSQR( const char* uplo, const integer_t* n,
-        const integer_t* ncvt, const integer_t* nru, const integer_t* ncc,
-        float* d, float* e, float* vt, const integer_t* ldvt, float* u,
-        const integer_t* ldu, float* c, const integer_t* ldc, float* work,
-        integer_t* info );
-void LAPACK_DBDSQR( const char* uplo, const integer_t* n,
-        const integer_t* ncvt, const integer_t* nru, const integer_t* ncc,
-        double* d, double* e, double* vt, const integer_t* ldvt, double* u,
-        const integer_t* ldu, double* c, const integer_t* ldc, double* work,
-        integer_t* info );
-void LAPACK_CBDSQR( const char* uplo, const integer_t* n,
-        const integer_t* ncvt, const integer_t* nru, const integer_t* ncc,
-        float* d, float* e, fcomplex_t* vt, const integer_t* ldvt,
-        fcomplex_t* u, const integer_t* ldu, fcomplex_t* c,
-        const integer_t* ldc, float* rwork, integer_t* info );
-void LAPACK_ZBDSQR( const char* uplo, const integer_t* n,
-        const integer_t* ncvt, const integer_t* nru, const integer_t* ncc,
-        double* d, double* e, dcomplex_t* vt, const integer_t* ldvt,
-        dcomplex_t* u, const integer_t* ldu, dcomplex_t* c,
-        const integer_t* ldc, double* rwork, integer_t* info );
+void LAPACK_SBDSQR( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* ncvt, const fortran_int_t* nru,
+        const fortran_int_t* ncc, float* d, float* e, float* vt,
+        const fortran_int_t* ldvt, float* u, const fortran_int_t* ldu,
+        float* c, const fortran_int_t* ldc, float* work, fortran_int_t* info );
+void LAPACK_DBDSQR( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* ncvt, const fortran_int_t* nru,
+        const fortran_int_t* ncc, double* d, double* e, double* vt,
+        const fortran_int_t* ldvt, double* u, const fortran_int_t* ldu,
+        double* c, const fortran_int_t* ldc, double* work,
+        fortran_int_t* info );
+void LAPACK_CBDSQR( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* ncvt, const fortran_int_t* nru,
+        const fortran_int_t* ncc, float* d, float* e, void* vt,
+        const fortran_int_t* ldvt, void* u, const fortran_int_t* ldu, void* c,
+        const fortran_int_t* ldc, float* rwork, fortran_int_t* info );
+void LAPACK_ZBDSQR( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* ncvt, const fortran_int_t* nru,
+        const fortran_int_t* ncc, double* d, double* e, void* vt,
+        const fortran_int_t* ldvt, void* u, const fortran_int_t* ldu, void* c,
+        const fortran_int_t* ldc, double* rwork, fortran_int_t* info );
 
 // Value-type variants of gbbrd
-void LAPACK_SGBBRD( const char* vect, const integer_t* m, const integer_t* n,
-        const integer_t* ncc, const integer_t* kl, const integer_t* ku,
-        float* ab, const integer_t* ldab, float* d, float* e, float* q,
-        const integer_t* ldq, float* pt, const integer_t* ldpt, float* c,
-        const integer_t* ldc, float* work, integer_t* info );
-void LAPACK_DGBBRD( const char* vect, const integer_t* m, const integer_t* n,
-        const integer_t* ncc, const integer_t* kl, const integer_t* ku,
-        double* ab, const integer_t* ldab, double* d, double* e, double* q,
-        const integer_t* ldq, double* pt, const integer_t* ldpt, double* c,
-        const integer_t* ldc, double* work, integer_t* info );
-void LAPACK_CGBBRD( const char* vect, const integer_t* m, const integer_t* n,
-        const integer_t* ncc, const integer_t* kl, const integer_t* ku,
-        fcomplex_t* ab, const integer_t* ldab, float* d, float* e,
-        fcomplex_t* q, const integer_t* ldq, fcomplex_t* pt,
-        const integer_t* ldpt, fcomplex_t* c, const integer_t* ldc,
-        fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZGBBRD( const char* vect, const integer_t* m, const integer_t* n,
-        const integer_t* ncc, const integer_t* kl, const integer_t* ku,
-        dcomplex_t* ab, const integer_t* ldab, double* d, double* e,
-        dcomplex_t* q, const integer_t* ldq, dcomplex_t* pt,
-        const integer_t* ldpt, dcomplex_t* c, const integer_t* ldc,
-        dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SGBBRD( const char* vect, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* ncc,
+        const fortran_int_t* kl, const fortran_int_t* ku, float* ab,
+        const fortran_int_t* ldab, float* d, float* e, float* q,
+        const fortran_int_t* ldq, float* pt, const fortran_int_t* ldpt,
+        float* c, const fortran_int_t* ldc, float* work, fortran_int_t* info );
+void LAPACK_DGBBRD( const char* vect, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* ncc,
+        const fortran_int_t* kl, const fortran_int_t* ku, double* ab,
+        const fortran_int_t* ldab, double* d, double* e, double* q,
+        const fortran_int_t* ldq, double* pt, const fortran_int_t* ldpt,
+        double* c, const fortran_int_t* ldc, double* work,
+        fortran_int_t* info );
+void LAPACK_CGBBRD( const char* vect, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* ncc,
+        const fortran_int_t* kl, const fortran_int_t* ku, void* ab,
+        const fortran_int_t* ldab, float* d, float* e, void* q,
+        const fortran_int_t* ldq, void* pt, const fortran_int_t* ldpt,
+        void* c, const fortran_int_t* ldc, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZGBBRD( const char* vect, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* ncc,
+        const fortran_int_t* kl, const fortran_int_t* ku, void* ab,
+        const fortran_int_t* ldab, double* d, double* e, void* q,
+        const fortran_int_t* ldq, void* pt, const fortran_int_t* ldpt,
+        void* c, const fortran_int_t* ldc, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of gebrd
-void LAPACK_SGEBRD( const integer_t* m, const integer_t* n, float* a,
-        const integer_t* lda, float* d, float* e, float* tauq, float* taup,
-        float* work, const integer_t* lwork, integer_t* info );
-void LAPACK_DGEBRD( const integer_t* m, const integer_t* n, double* a,
-        const integer_t* lda, double* d, double* e, double* tauq,
-        double* taup, double* work, const integer_t* lwork, integer_t* info );
-void LAPACK_CGEBRD( const integer_t* m, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, float* d, float* e, fcomplex_t* tauq,
-        fcomplex_t* taup, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZGEBRD( const integer_t* m, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, double* d, double* e, dcomplex_t* tauq,
-        dcomplex_t* taup, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SGEBRD( const fortran_int_t* m, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* d, float* e, float* tauq,
+        float* taup, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DGEBRD( const fortran_int_t* m, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* d, double* e, double* tauq,
+        double* taup, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_CGEBRD( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, float* d, float* e, void* tauq, void* taup,
+        void* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZGEBRD( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, double* d, double* e, void* tauq,
+        void* taup, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of labrd
-void LAPACK_SLABRD( const integer_t* m, const integer_t* n,
-        const integer_t* nb, float* a, const integer_t* lda, float* d,
-        float* e, float* tauq, float* taup, float* x, const integer_t* ldx,
-        float* y, const integer_t* ldy );
-void LAPACK_DLABRD( const integer_t* m, const integer_t* n,
-        const integer_t* nb, double* a, const integer_t* lda, double* d,
-        double* e, double* tauq, double* taup, double* x,
-        const integer_t* ldx, double* y, const integer_t* ldy );
-void LAPACK_CLABRD( const integer_t* m, const integer_t* n,
-        const integer_t* nb, fcomplex_t* a, const integer_t* lda, float* d,
-        float* e, fcomplex_t* tauq, fcomplex_t* taup, fcomplex_t* x,
-        const integer_t* ldx, fcomplex_t* y, const integer_t* ldy );
-void LAPACK_ZLABRD( const integer_t* m, const integer_t* n,
-        const integer_t* nb, dcomplex_t* a, const integer_t* lda, double* d,
-        double* e, dcomplex_t* tauq, dcomplex_t* taup, dcomplex_t* x,
-        const integer_t* ldx, dcomplex_t* y, const integer_t* ldy );
+void LAPACK_SLABRD( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nb, float* a, const fortran_int_t* lda, float* d,
+        float* e, float* tauq, float* taup, float* x,
+        const fortran_int_t* ldx, float* y, const fortran_int_t* ldy );
+void LAPACK_DLABRD( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nb, double* a, const fortran_int_t* lda,
+        double* d, double* e, double* tauq, double* taup, double* x,
+        const fortran_int_t* ldx, double* y, const fortran_int_t* ldy );
+void LAPACK_CLABRD( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nb, void* a, const fortran_int_t* lda, float* d,
+        float* e, void* tauq, void* taup, void* x, const fortran_int_t* ldx,
+        void* y, const fortran_int_t* ldy );
+void LAPACK_ZLABRD( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nb, void* a, const fortran_int_t* lda, double* d,
+        double* e, void* tauq, void* taup, void* x, const fortran_int_t* ldx,
+        void* y, const fortran_int_t* ldy );
 
 // Value-type variants of orgbr
-void LAPACK_SORGBR( const char* vect, const integer_t* m, const integer_t* n,
-        const integer_t* k, float* a, const integer_t* lda, const float* tau,
-        float* work, const integer_t* lwork, integer_t* info );
-void LAPACK_DORGBR( const char* vect, const integer_t* m, const integer_t* n,
-        const integer_t* k, double* a, const integer_t* lda,
-        const double* tau, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORGBR( const char* vect, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* k, float* a,
+        const fortran_int_t* lda, const float* tau, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DORGBR( const char* vect, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* k, double* a,
+        const fortran_int_t* lda, const double* tau, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of ormbr
 void LAPACK_SORMBR( const char* vect, const char* side, const char* trans,
-        const integer_t* m, const integer_t* n, const integer_t* k,
-        const float* a, const integer_t* lda, const float* tau, float* c,
-        const integer_t* ldc, float* work, const integer_t* lwork,
-        integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const float* a, const fortran_int_t* lda,
+        const float* tau, float* c, const fortran_int_t* ldc, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 void LAPACK_DORMBR( const char* vect, const char* side, const char* trans,
-        const integer_t* m, const integer_t* n, const integer_t* k,
-        const double* a, const integer_t* lda, const double* tau, double* c,
-        const integer_t* ldc, double* work, const integer_t* lwork,
-        integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const double* a, const fortran_int_t* lda,
+        const double* tau, double* c, const fortran_int_t* ldc, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of ungbr
-void LAPACK_CUNGBR( const char* vect, const integer_t* m, const integer_t* n,
-        const integer_t* k, fcomplex_t* a, const integer_t* lda,
-        const fcomplex_t* tau, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZUNGBR( const char* vect, const integer_t* m, const integer_t* n,
-        const integer_t* k, dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* tau, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_CUNGBR( const char* vect, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* k, void* a,
+        const fortran_int_t* lda, const void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZUNGBR( const char* vect, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* k, void* a,
+        const fortran_int_t* lda, const void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of unmbr
 void LAPACK_CUNMBR( const char* vect, const char* side, const char* trans,
-        const integer_t* m, const integer_t* n, const integer_t* k,
-        const fcomplex_t* a, const integer_t* lda, const fcomplex_t* tau,
-        fcomplex_t* c, const integer_t* ldc, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* a, const fortran_int_t* lda,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 void LAPACK_ZUNMBR( const char* vect, const char* side, const char* trans,
-        const integer_t* m, const integer_t* n, const integer_t* k,
-        const dcomplex_t* a, const integer_t* lda, const dcomplex_t* tau,
-        dcomplex_t* c, const integer_t* ldc, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* k, const void* a, const fortran_int_t* lda,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of gebak
-void LAPACK_SGEBAK( const char* job, const char* side, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, const float* scale,
-        const integer_t* m, float* v, const integer_t* ldv, integer_t* info );
-void LAPACK_DGEBAK( const char* job, const char* side, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, const double* scale,
-        const integer_t* m, double* v, const integer_t* ldv, integer_t* info );
-void LAPACK_CGEBAK( const char* job, const char* side, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, const float* scale,
-        const integer_t* m, fcomplex_t* v, const integer_t* ldv,
-        integer_t* info );
-void LAPACK_ZGEBAK( const char* job, const char* side, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, const double* scale,
-        const integer_t* m, dcomplex_t* v, const integer_t* ldv,
-        integer_t* info );
+void LAPACK_SGEBAK( const char* job, const char* side, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi,
+        const float* scale, const fortran_int_t* m, float* v,
+        const fortran_int_t* ldv, fortran_int_t* info );
+void LAPACK_DGEBAK( const char* job, const char* side, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi,
+        const double* scale, const fortran_int_t* m, double* v,
+        const fortran_int_t* ldv, fortran_int_t* info );
+void LAPACK_CGEBAK( const char* job, const char* side, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi,
+        const float* scale, const fortran_int_t* m, void* v,
+        const fortran_int_t* ldv, fortran_int_t* info );
+void LAPACK_ZGEBAK( const char* job, const char* side, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi,
+        const double* scale, const fortran_int_t* m, void* v,
+        const fortran_int_t* ldv, fortran_int_t* info );
 
 // Value-type variants of gebal
-void LAPACK_SGEBAL( const char* job, const integer_t* n, float* a,
-        const integer_t* lda, integer_t* ilo, integer_t* ihi, float* scale,
-        integer_t* info );
-void LAPACK_DGEBAL( const char* job, const integer_t* n, double* a,
-        const integer_t* lda, integer_t* ilo, integer_t* ihi, double* scale,
-        integer_t* info );
-void LAPACK_CGEBAL( const char* job, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, integer_t* ilo, integer_t* ihi, float* scale,
-        integer_t* info );
-void LAPACK_ZGEBAL( const char* job, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, integer_t* ilo, integer_t* ihi, double* scale,
-        integer_t* info );
+void LAPACK_SGEBAL( const char* job, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, fortran_int_t* ilo, fortran_int_t* ihi,
+        float* scale, fortran_int_t* info );
+void LAPACK_DGEBAL( const char* job, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, fortran_int_t* ilo, fortran_int_t* ihi,
+        double* scale, fortran_int_t* info );
+void LAPACK_CGEBAL( const char* job, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* ilo, fortran_int_t* ihi,
+        float* scale, fortran_int_t* info );
+void LAPACK_ZGEBAL( const char* job, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* ilo, fortran_int_t* ihi,
+        double* scale, fortran_int_t* info );
 
 // Value-type variants of gehrd
-void LAPACK_SGEHRD( const integer_t* n, const integer_t* ilo,
-        const integer_t* ihi, float* a, const integer_t* lda, float* tau,
-        float* work, const integer_t* lwork, integer_t* info );
-void LAPACK_DGEHRD( const integer_t* n, const integer_t* ilo,
-        const integer_t* ihi, double* a, const integer_t* lda, double* tau,
-        double* work, const integer_t* lwork, integer_t* info );
-void LAPACK_CGEHRD( const integer_t* n, const integer_t* ilo,
-        const integer_t* ihi, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* tau, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZGEHRD( const integer_t* n, const integer_t* ilo,
-        const integer_t* ihi, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* tau, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SGEHRD( const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, float* a, const fortran_int_t* lda,
+        float* tau, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DGEHRD( const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, double* a, const fortran_int_t* lda,
+        double* tau, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_CGEHRD( const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, void* a, const fortran_int_t* lda,
+        void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_ZGEHRD( const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, void* a, const fortran_int_t* lda,
+        void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of hsein
 void LAPACK_SHSEIN( const char* side, const char* eigsrc, const char* initv,
-        logical_t* select, const integer_t* n, const float* h,
-        const integer_t* ldh, float* wr, const float* wi, float* vl,
-        const integer_t* ldvl, float* vr, const integer_t* ldvr,
-        const integer_t* mm, integer_t* m, float* work, integer_t* ifaill,
-        integer_t* ifailr, integer_t* info );
+        logical_t* select, const fortran_int_t* n, const float* h,
+        const fortran_int_t* ldh, float* wr, const float* wi, float* vl,
+        const fortran_int_t* ldvl, float* vr, const fortran_int_t* ldvr,
+        const fortran_int_t* mm, fortran_int_t* m, float* work,
+        fortran_int_t* ifaill, fortran_int_t* ifailr, fortran_int_t* info );
 void LAPACK_DHSEIN( const char* side, const char* eigsrc, const char* initv,
-        logical_t* select, const integer_t* n, const double* h,
-        const integer_t* ldh, double* wr, const double* wi, double* vl,
-        const integer_t* ldvl, double* vr, const integer_t* ldvr,
-        const integer_t* mm, integer_t* m, double* work, integer_t* ifaill,
-        integer_t* ifailr, integer_t* info );
+        logical_t* select, const fortran_int_t* n, const double* h,
+        const fortran_int_t* ldh, double* wr, const double* wi, double* vl,
+        const fortran_int_t* ldvl, double* vr, const fortran_int_t* ldvr,
+        const fortran_int_t* mm, fortran_int_t* m, double* work,
+        fortran_int_t* ifaill, fortran_int_t* ifailr, fortran_int_t* info );
 void LAPACK_CHSEIN( const char* side, const char* eigsrc, const char* initv,
-        const logical_t* select, const integer_t* n, const fcomplex_t* h,
-        const integer_t* ldh, fcomplex_t* w, fcomplex_t* vl,
-        const integer_t* ldvl, fcomplex_t* vr, const integer_t* ldvr,
-        const integer_t* mm, integer_t* m, fcomplex_t* work, float* rwork,
-        integer_t* ifaill, integer_t* ifailr, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const void* h,
+        const fortran_int_t* ldh, void* w, void* vl,
+        const fortran_int_t* ldvl, void* vr, const fortran_int_t* ldvr,
+        const fortran_int_t* mm, fortran_int_t* m, void* work, float* rwork,
+        fortran_int_t* ifaill, fortran_int_t* ifailr, fortran_int_t* info );
 void LAPACK_ZHSEIN( const char* side, const char* eigsrc, const char* initv,
-        const logical_t* select, const integer_t* n, const dcomplex_t* h,
-        const integer_t* ldh, dcomplex_t* w, dcomplex_t* vl,
-        const integer_t* ldvl, dcomplex_t* vr, const integer_t* ldvr,
-        const integer_t* mm, integer_t* m, dcomplex_t* work, double* rwork,
-        integer_t* ifaill, integer_t* ifailr, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const void* h,
+        const fortran_int_t* ldh, void* w, void* vl,
+        const fortran_int_t* ldvl, void* vr, const fortran_int_t* ldvr,
+        const fortran_int_t* mm, fortran_int_t* m, void* work, double* rwork,
+        fortran_int_t* ifaill, fortran_int_t* ifailr, fortran_int_t* info );
 
 // Value-type variants of hseqr
-void LAPACK_SHSEQR( const char* job, const char* compz, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, float* h,
-        const integer_t* ldh, float* wr, float* wi, float* z,
-        const integer_t* ldz, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DHSEQR( const char* job, const char* compz, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, double* h,
-        const integer_t* ldh, double* wr, double* wi, double* z,
-        const integer_t* ldz, double* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_CHSEQR( const char* job, const char* compz, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, fcomplex_t* h,
-        const integer_t* ldh, fcomplex_t* w, fcomplex_t* z,
-        const integer_t* ldz, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZHSEQR( const char* job, const char* compz, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, dcomplex_t* h,
-        const integer_t* ldh, dcomplex_t* w, dcomplex_t* z,
-        const integer_t* ldz, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SHSEQR( const char* job, const char* compz,
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, float* h, const fortran_int_t* ldh,
+        float* wr, float* wi, float* z, const fortran_int_t* ldz, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DHSEQR( const char* job, const char* compz,
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, double* h, const fortran_int_t* ldh,
+        double* wr, double* wi, double* z, const fortran_int_t* ldz,
+        double* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CHSEQR( const char* job, const char* compz,
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, void* h, const fortran_int_t* ldh, void* w,
+        void* z, const fortran_int_t* ldz, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZHSEQR( const char* job, const char* compz,
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, void* h, const fortran_int_t* ldh, void* w,
+        void* z, const fortran_int_t* ldz, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of orghr
-void LAPACK_SORGHR( const integer_t* n, const integer_t* ilo,
-        const integer_t* ihi, float* a, const integer_t* lda,
-        const float* tau, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DORGHR( const integer_t* n, const integer_t* ilo,
-        const integer_t* ihi, double* a, const integer_t* lda,
-        const double* tau, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORGHR( const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, float* a, const fortran_int_t* lda,
+        const float* tau, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DORGHR( const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, double* a, const fortran_int_t* lda,
+        const double* tau, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of ormhr
-void LAPACK_SORMHR( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* ilo, const integer_t* ihi,
-        const float* a, const integer_t* lda, const float* tau, float* c,
-        const integer_t* ldc, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DORMHR( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* ilo, const integer_t* ihi,
-        const double* a, const integer_t* lda, const double* tau, double* c,
-        const integer_t* ldc, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SORMHR( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi, const float* a,
+        const fortran_int_t* lda, const float* tau, float* c,
+        const fortran_int_t* ldc, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DORMHR( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi, const double* a,
+        const fortran_int_t* lda, const double* tau, double* c,
+        const fortran_int_t* ldc, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of trevc
 void LAPACK_STREVC( const char* side, const char* howmny, logical_t* select,
-        const integer_t* n, const float* t, const integer_t* ldt, float* vl,
-        const integer_t* ldvl, float* vr, const integer_t* ldvr,
-        const integer_t* mm, integer_t* m, float* work, integer_t* info );
+        const fortran_int_t* n, const float* t, const fortran_int_t* ldt,
+        float* vl, const fortran_int_t* ldvl, float* vr,
+        const fortran_int_t* ldvr, const fortran_int_t* mm, fortran_int_t* m,
+        float* work, fortran_int_t* info );
 void LAPACK_DTREVC( const char* side, const char* howmny, logical_t* select,
-        const integer_t* n, const double* t, const integer_t* ldt, double* vl,
-        const integer_t* ldvl, double* vr, const integer_t* ldvr,
-        const integer_t* mm, integer_t* m, double* work, integer_t* info );
+        const fortran_int_t* n, const double* t, const fortran_int_t* ldt,
+        double* vl, const fortran_int_t* ldvl, double* vr,
+        const fortran_int_t* ldvr, const fortran_int_t* mm, fortran_int_t* m,
+        double* work, fortran_int_t* info );
 void LAPACK_CTREVC( const char* side, const char* howmny,
-        const logical_t* select, const integer_t* n, fcomplex_t* t,
-        const integer_t* ldt, fcomplex_t* vl, const integer_t* ldvl,
-        fcomplex_t* vr, const integer_t* ldvr, const integer_t* mm,
-        integer_t* m, fcomplex_t* work, float* rwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, void* t,
+        const fortran_int_t* ldt, void* vl, const fortran_int_t* ldvl,
+        void* vr, const fortran_int_t* ldvr, const fortran_int_t* mm,
+        fortran_int_t* m, void* work, float* rwork, fortran_int_t* info );
 void LAPACK_ZTREVC( const char* side, const char* howmny,
-        const logical_t* select, const integer_t* n, dcomplex_t* t,
-        const integer_t* ldt, dcomplex_t* vl, const integer_t* ldvl,
-        dcomplex_t* vr, const integer_t* ldvr, const integer_t* mm,
-        integer_t* m, dcomplex_t* work, double* rwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, void* t,
+        const fortran_int_t* ldt, void* vl, const fortran_int_t* ldvl,
+        void* vr, const fortran_int_t* ldvr, const fortran_int_t* mm,
+        fortran_int_t* m, void* work, double* rwork, fortran_int_t* info );
 
 // Value-type variants of trexc
-void LAPACK_STREXC( const char* compq, const integer_t* n, float* t,
-        const integer_t* ldt, float* q, const integer_t* ldq, integer_t* ifst,
-        integer_t* ilst, float* work, integer_t* info );
-void LAPACK_DTREXC( const char* compq, const integer_t* n, double* t,
-        const integer_t* ldt, double* q, const integer_t* ldq,
-        integer_t* ifst, integer_t* ilst, double* work, integer_t* info );
-void LAPACK_CTREXC( const char* compq, const integer_t* n, fcomplex_t* t,
-        const integer_t* ldt, fcomplex_t* q, const integer_t* ldq,
-        const integer_t* ifst, const integer_t* ilst, integer_t* info );
-void LAPACK_ZTREXC( const char* compq, const integer_t* n, dcomplex_t* t,
-        const integer_t* ldt, dcomplex_t* q, const integer_t* ldq,
-        const integer_t* ifst, const integer_t* ilst, integer_t* info );
+void LAPACK_STREXC( const char* compq, const fortran_int_t* n, float* t,
+        const fortran_int_t* ldt, float* q, const fortran_int_t* ldq,
+        fortran_int_t* ifst, fortran_int_t* ilst, float* work,
+        fortran_int_t* info );
+void LAPACK_DTREXC( const char* compq, const fortran_int_t* n, double* t,
+        const fortran_int_t* ldt, double* q, const fortran_int_t* ldq,
+        fortran_int_t* ifst, fortran_int_t* ilst, double* work,
+        fortran_int_t* info );
+void LAPACK_CTREXC( const char* compq, const fortran_int_t* n, void* t,
+        const fortran_int_t* ldt, void* q, const fortran_int_t* ldq,
+        const fortran_int_t* ifst, const fortran_int_t* ilst,
+        fortran_int_t* info );
+void LAPACK_ZTREXC( const char* compq, const fortran_int_t* n, void* t,
+        const fortran_int_t* ldt, void* q, const fortran_int_t* ldq,
+        const fortran_int_t* ifst, const fortran_int_t* ilst,
+        fortran_int_t* info );
 
 // Value-type variants of trsen
 void LAPACK_CTRSEN( const char* job, const char* compq,
-        const logical_t* select, const integer_t* n, fcomplex_t* t,
-        const integer_t* ldt, fcomplex_t* q, const integer_t* ldq,
-        fcomplex_t* w, integer_t* m, float* s, float* sep, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, void* t,
+        const fortran_int_t* ldt, void* q, const fortran_int_t* ldq, void* w,
+        fortran_int_t* m, float* s, float* sep, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 void LAPACK_ZTRSEN( const char* job, const char* compq,
-        const logical_t* select, const integer_t* n, dcomplex_t* t,
-        const integer_t* ldt, dcomplex_t* q, const integer_t* ldq,
-        dcomplex_t* w, integer_t* m, double* s, double* sep, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, void* t,
+        const fortran_int_t* ldt, void* q, const fortran_int_t* ldq, void* w,
+        fortran_int_t* m, double* s, double* sep, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of trsna
 void LAPACK_STRSNA( const char* job, const char* howmny,
-        const logical_t* select, const integer_t* n, const float* t,
-        const integer_t* ldt, const float* vl, const integer_t* ldvl,
-        const float* vr, const integer_t* ldvr, float* s, float* sep,
-        const integer_t* mm, integer_t* m, float* work,
-        const integer_t* ldwork, integer_t* iwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const float* t,
+        const fortran_int_t* ldt, const float* vl, const fortran_int_t* ldvl,
+        const float* vr, const fortran_int_t* ldvr, float* s, float* sep,
+        const fortran_int_t* mm, fortran_int_t* m, float* work,
+        const fortran_int_t* ldwork, fortran_int_t* iwork,
+        fortran_int_t* info );
 void LAPACK_DTRSNA( const char* job, const char* howmny,
-        const logical_t* select, const integer_t* n, const double* t,
-        const integer_t* ldt, const double* vl, const integer_t* ldvl,
-        const double* vr, const integer_t* ldvr, double* s, double* sep,
-        const integer_t* mm, integer_t* m, double* work,
-        const integer_t* ldwork, integer_t* iwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const double* t,
+        const fortran_int_t* ldt, const double* vl, const fortran_int_t* ldvl,
+        const double* vr, const fortran_int_t* ldvr, double* s, double* sep,
+        const fortran_int_t* mm, fortran_int_t* m, double* work,
+        const fortran_int_t* ldwork, fortran_int_t* iwork,
+        fortran_int_t* info );
 void LAPACK_CTRSNA( const char* job, const char* howmny,
-        const logical_t* select, const integer_t* n, const fcomplex_t* t,
-        const integer_t* ldt, const fcomplex_t* vl, const integer_t* ldvl,
-        const fcomplex_t* vr, const integer_t* ldvr, float* s, float* sep,
-        const integer_t* mm, integer_t* m, fcomplex_t* work,
-        const integer_t* ldwork, float* rwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const void* t,
+        const fortran_int_t* ldt, const void* vl, const fortran_int_t* ldvl,
+        const void* vr, const fortran_int_t* ldvr, float* s, float* sep,
+        const fortran_int_t* mm, fortran_int_t* m, void* work,
+        const fortran_int_t* ldwork, float* rwork, fortran_int_t* info );
 void LAPACK_ZTRSNA( const char* job, const char* howmny,
-        const logical_t* select, const integer_t* n, const dcomplex_t* t,
-        const integer_t* ldt, const dcomplex_t* vl, const integer_t* ldvl,
-        const dcomplex_t* vr, const integer_t* ldvr, double* s, double* sep,
-        const integer_t* mm, integer_t* m, dcomplex_t* work,
-        const integer_t* ldwork, double* rwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const void* t,
+        const fortran_int_t* ldt, const void* vl, const fortran_int_t* ldvl,
+        const void* vr, const fortran_int_t* ldvr, double* s, double* sep,
+        const fortran_int_t* mm, fortran_int_t* m, void* work,
+        const fortran_int_t* ldwork, double* rwork, fortran_int_t* info );
 
 // Value-type variants of trsyl
 void LAPACK_STRSYL( const char* trana, const char* tranb,
-        const integer_t* isgn, const integer_t* m, const integer_t* n,
-        const float* a, const integer_t* lda, const float* b,
-        const integer_t* ldb, float* c, const integer_t* ldc, float* scale,
-        integer_t* info );
+        const fortran_int_t* isgn, const fortran_int_t* m,
+        const fortran_int_t* n, const float* a, const fortran_int_t* lda,
+        const float* b, const fortran_int_t* ldb, float* c,
+        const fortran_int_t* ldc, float* scale, fortran_int_t* info );
 void LAPACK_DTRSYL( const char* trana, const char* tranb,
-        const integer_t* isgn, const integer_t* m, const integer_t* n,
-        const double* a, const integer_t* lda, const double* b,
-        const integer_t* ldb, double* c, const integer_t* ldc, double* scale,
-        integer_t* info );
+        const fortran_int_t* isgn, const fortran_int_t* m,
+        const fortran_int_t* n, const double* a, const fortran_int_t* lda,
+        const double* b, const fortran_int_t* ldb, double* c,
+        const fortran_int_t* ldc, double* scale, fortran_int_t* info );
 void LAPACK_CTRSYL( const char* trana, const char* tranb,
-        const integer_t* isgn, const integer_t* m, const integer_t* n,
-        const fcomplex_t* a, const integer_t* lda, const fcomplex_t* b,
-        const integer_t* ldb, fcomplex_t* c, const integer_t* ldc,
-        float* scale, integer_t* info );
+        const fortran_int_t* isgn, const fortran_int_t* m,
+        const fortran_int_t* n, const void* a, const fortran_int_t* lda,
+        const void* b, const fortran_int_t* ldb, void* c,
+        const fortran_int_t* ldc, float* scale, fortran_int_t* info );
 void LAPACK_ZTRSYL( const char* trana, const char* tranb,
-        const integer_t* isgn, const integer_t* m, const integer_t* n,
-        const dcomplex_t* a, const integer_t* lda, const dcomplex_t* b,
-        const integer_t* ldb, dcomplex_t* c, const integer_t* ldc,
-        double* scale, integer_t* info );
+        const fortran_int_t* isgn, const fortran_int_t* m,
+        const fortran_int_t* n, const void* a, const fortran_int_t* lda,
+        const void* b, const fortran_int_t* ldb, void* c,
+        const fortran_int_t* ldc, double* scale, fortran_int_t* info );
 
 // Value-type variants of unghr
-void LAPACK_CUNGHR( const integer_t* n, const integer_t* ilo,
-        const integer_t* ihi, fcomplex_t* a, const integer_t* lda,
-        const fcomplex_t* tau, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZUNGHR( const integer_t* n, const integer_t* ilo,
-        const integer_t* ihi, dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* tau, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_CUNGHR( const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, void* a, const fortran_int_t* lda,
+        const void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_ZUNGHR( const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, void* a, const fortran_int_t* lda,
+        const void* tau, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of unmhr
-void LAPACK_CUNMHR( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* ilo, const integer_t* ihi,
-        const fcomplex_t* a, const integer_t* lda, const fcomplex_t* tau,
-        fcomplex_t* c, const integer_t* ldc, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_ZUNMHR( const char* side, const char* trans, const integer_t* m,
-        const integer_t* n, const integer_t* ilo, const integer_t* ihi,
-        const dcomplex_t* a, const integer_t* lda, const dcomplex_t* tau,
-        dcomplex_t* c, const integer_t* ldc, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_CUNMHR( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi, const void* a,
+        const fortran_int_t* lda, const void* tau, void* c,
+        const fortran_int_t* ldc, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_ZUNMHR( const char* side, const char* trans,
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi, const void* a,
+        const fortran_int_t* lda, const void* tau, void* c,
+        const fortran_int_t* ldc, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of gbcon
-void LAPACK_SGBCON( const char* norm, const integer_t* n, const integer_t* kl,
-        const integer_t* ku, const float* ab, const integer_t* ldab,
-        const integer_t* ipiv, const float* anorm, float* rcond, float* work,
-        integer_t* iwork, integer_t* info );
-void LAPACK_DGBCON( const char* norm, const integer_t* n, const integer_t* kl,
-        const integer_t* ku, const double* ab, const integer_t* ldab,
-        const integer_t* ipiv, const double* anorm, double* rcond,
-        double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CGBCON( const char* norm, const integer_t* n, const integer_t* kl,
-        const integer_t* ku, const fcomplex_t* ab, const integer_t* ldab,
-        const integer_t* ipiv, const float* anorm, float* rcond,
-        fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZGBCON( const char* norm, const integer_t* n, const integer_t* kl,
-        const integer_t* ku, const dcomplex_t* ab, const integer_t* ldab,
-        const integer_t* ipiv, const double* anorm, double* rcond,
-        dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SGBCON( const char* norm, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const float* ab,
+        const fortran_int_t* ldab, const fortran_int_t* ipiv,
+        const float* anorm, float* rcond, float* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DGBCON( const char* norm, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const double* ab,
+        const fortran_int_t* ldab, const fortran_int_t* ipiv,
+        const double* anorm, double* rcond, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CGBCON( const char* norm, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const void* ab,
+        const fortran_int_t* ldab, const fortran_int_t* ipiv,
+        const float* anorm, float* rcond, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZGBCON( const char* norm, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const void* ab,
+        const fortran_int_t* ldab, const fortran_int_t* ipiv,
+        const double* anorm, double* rcond, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of gbequ
-void LAPACK_SGBEQU( const integer_t* m, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const float* ab,
-        const integer_t* ldab, float* r, float* c, float* rowcnd,
-        float* colcnd, float* amax, integer_t* info );
-void LAPACK_DGBEQU( const integer_t* m, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const double* ab,
-        const integer_t* ldab, double* r, double* c, double* rowcnd,
-        double* colcnd, double* amax, integer_t* info );
-void LAPACK_CGBEQU( const integer_t* m, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const fcomplex_t* ab,
-        const integer_t* ldab, float* r, float* c, float* rowcnd,
-        float* colcnd, float* amax, integer_t* info );
-void LAPACK_ZGBEQU( const integer_t* m, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const dcomplex_t* ab,
-        const integer_t* ldab, double* r, double* c, double* rowcnd,
-        double* colcnd, double* amax, integer_t* info );
+void LAPACK_SGBEQU( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const float* ab,
+        const fortran_int_t* ldab, float* r, float* c, float* rowcnd,
+        float* colcnd, float* amax, fortran_int_t* info );
+void LAPACK_DGBEQU( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const double* ab,
+        const fortran_int_t* ldab, double* r, double* c, double* rowcnd,
+        double* colcnd, double* amax, fortran_int_t* info );
+void LAPACK_CGBEQU( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const void* ab,
+        const fortran_int_t* ldab, float* r, float* c, float* rowcnd,
+        float* colcnd, float* amax, fortran_int_t* info );
+void LAPACK_ZGBEQU( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, const void* ab,
+        const fortran_int_t* ldab, double* r, double* c, double* rowcnd,
+        double* colcnd, double* amax, fortran_int_t* info );
 
 // Value-type variants of gbrfs
-void LAPACK_SGBRFS( const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        const float* ab, const integer_t* ldab, const float* afb,
-        const integer_t* ldafb, const integer_t* ipiv, const float* b,
-        const integer_t* ldb, float* x, const integer_t* ldx, float* ferr,
-        float* berr, float* work, integer_t* iwork, integer_t* info );
-void LAPACK_DGBRFS( const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        const double* ab, const integer_t* ldab, const double* afb,
-        const integer_t* ldafb, const integer_t* ipiv, const double* b,
-        const integer_t* ldb, double* x, const integer_t* ldx, double* ferr,
-        double* berr, double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CGBRFS( const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        const fcomplex_t* ab, const integer_t* ldab, const fcomplex_t* afb,
-        const integer_t* ldafb, const integer_t* ipiv, const fcomplex_t* b,
-        const integer_t* ldb, fcomplex_t* x, const integer_t* ldx,
-        float* ferr, float* berr, fcomplex_t* work, float* rwork,
-        integer_t* info );
-void LAPACK_ZGBRFS( const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        const dcomplex_t* ab, const integer_t* ldab, const dcomplex_t* afb,
-        const integer_t* ldafb, const integer_t* ipiv, const dcomplex_t* b,
-        const integer_t* ldb, dcomplex_t* x, const integer_t* ldx,
-        double* ferr, double* berr, dcomplex_t* work, double* rwork,
-        integer_t* info );
+void LAPACK_SGBRFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku,
+        const fortran_int_t* nrhs, const float* ab, const fortran_int_t* ldab,
+        const float* afb, const fortran_int_t* ldafb,
+        const fortran_int_t* ipiv, const float* b, const fortran_int_t* ldb,
+        float* x, const fortran_int_t* ldx, float* ferr, float* berr,
+        float* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DGBRFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku,
+        const fortran_int_t* nrhs, const double* ab,
+        const fortran_int_t* ldab, const double* afb,
+        const fortran_int_t* ldafb, const fortran_int_t* ipiv,
+        const double* b, const fortran_int_t* ldb, double* x,
+        const fortran_int_t* ldx, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CGBRFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku,
+        const fortran_int_t* nrhs, const void* ab, const fortran_int_t* ldab,
+        const void* afb, const fortran_int_t* ldafb,
+        const fortran_int_t* ipiv, const void* b, const fortran_int_t* ldb,
+        void* x, const fortran_int_t* ldx, float* ferr, float* berr,
+        void* work, float* rwork, fortran_int_t* info );
+void LAPACK_ZGBRFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku,
+        const fortran_int_t* nrhs, const void* ab, const fortran_int_t* ldab,
+        const void* afb, const fortran_int_t* ldafb,
+        const fortran_int_t* ipiv, const void* b, const fortran_int_t* ldb,
+        void* x, const fortran_int_t* ldx, double* ferr, double* berr,
+        void* work, double* rwork, fortran_int_t* info );
 
 // Value-type variants of gbtrf
-void LAPACK_SGBTRF( const integer_t* m, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, float* ab,
-        const integer_t* ldab, integer_t* ipiv, integer_t* info );
-void LAPACK_DGBTRF( const integer_t* m, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, double* ab,
-        const integer_t* ldab, integer_t* ipiv, integer_t* info );
-void LAPACK_CGBTRF( const integer_t* m, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, fcomplex_t* ab,
-        const integer_t* ldab, integer_t* ipiv, integer_t* info );
-void LAPACK_ZGBTRF( const integer_t* m, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, dcomplex_t* ab,
-        const integer_t* ldab, integer_t* ipiv, integer_t* info );
+void LAPACK_SGBTRF( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, float* ab,
+        const fortran_int_t* ldab, fortran_int_t* ipiv, fortran_int_t* info );
+void LAPACK_DGBTRF( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, double* ab,
+        const fortran_int_t* ldab, fortran_int_t* ipiv, fortran_int_t* info );
+void LAPACK_CGBTRF( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, void* ab,
+        const fortran_int_t* ldab, fortran_int_t* ipiv, fortran_int_t* info );
+void LAPACK_ZGBTRF( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku, void* ab,
+        const fortran_int_t* ldab, fortran_int_t* ipiv, fortran_int_t* info );
 
 // Value-type variants of gbtrs
-void LAPACK_SGBTRS( const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        const float* ab, const integer_t* ldab, const integer_t* ipiv,
-        float* b, const integer_t* ldb, integer_t* info );
-void LAPACK_DGBTRS( const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        const double* ab, const integer_t* ldab, const integer_t* ipiv,
-        double* b, const integer_t* ldb, integer_t* info );
-void LAPACK_CGBTRS( const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        const fcomplex_t* ab, const integer_t* ldab, const integer_t* ipiv,
-        fcomplex_t* b, const integer_t* ldb, integer_t* info );
-void LAPACK_ZGBTRS( const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        const dcomplex_t* ab, const integer_t* ldab, const integer_t* ipiv,
-        dcomplex_t* b, const integer_t* ldb, integer_t* info );
+void LAPACK_SGBTRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku,
+        const fortran_int_t* nrhs, const float* ab, const fortran_int_t* ldab,
+        const fortran_int_t* ipiv, float* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_DGBTRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku,
+        const fortran_int_t* nrhs, const double* ab,
+        const fortran_int_t* ldab, const fortran_int_t* ipiv, double* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_CGBTRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku,
+        const fortran_int_t* nrhs, const void* ab, const fortran_int_t* ldab,
+        const fortran_int_t* ipiv, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_ZGBTRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* kl, const fortran_int_t* ku,
+        const fortran_int_t* nrhs, const void* ab, const fortran_int_t* ldab,
+        const fortran_int_t* ipiv, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 
 // Value-type variants of gecon
-void LAPACK_SGECON( const char* norm, const integer_t* n, const float* a,
-        const integer_t* lda, const float* anorm, float* rcond, float* work,
-        integer_t* iwork, integer_t* info );
-void LAPACK_DGECON( const char* norm, const integer_t* n, const double* a,
-        const integer_t* lda, const double* anorm, double* rcond,
-        double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CGECON( const char* norm, const integer_t* n, const fcomplex_t* a,
-        const integer_t* lda, const float* anorm, float* rcond,
-        fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZGECON( const char* norm, const integer_t* n, const dcomplex_t* a,
-        const integer_t* lda, const double* anorm, double* rcond,
-        dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SGECON( const char* norm, const fortran_int_t* n, const float* a,
+        const fortran_int_t* lda, const float* anorm, float* rcond,
+        float* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DGECON( const char* norm, const fortran_int_t* n, const double* a,
+        const fortran_int_t* lda, const double* anorm, double* rcond,
+        double* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CGECON( const char* norm, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const float* anorm, float* rcond,
+        void* work, float* rwork, fortran_int_t* info );
+void LAPACK_ZGECON( const char* norm, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const double* anorm, double* rcond,
+        void* work, double* rwork, fortran_int_t* info );
 
 // Value-type variants of geequ
-void LAPACK_SGEEQU( const integer_t* m, const integer_t* n, const float* a,
-        const integer_t* lda, float* r, float* c, float* rowcnd,
-        float* colcnd, float* amax, integer_t* info );
-void LAPACK_DGEEQU( const integer_t* m, const integer_t* n, const double* a,
-        const integer_t* lda, double* r, double* c, double* rowcnd,
-        double* colcnd, double* amax, integer_t* info );
-void LAPACK_CGEEQU( const integer_t* m, const integer_t* n,
-        const fcomplex_t* a, const integer_t* lda, float* r, float* c,
-        float* rowcnd, float* colcnd, float* amax, integer_t* info );
-void LAPACK_ZGEEQU( const integer_t* m, const integer_t* n,
-        const dcomplex_t* a, const integer_t* lda, double* r, double* c,
-        double* rowcnd, double* colcnd, double* amax, integer_t* info );
+void LAPACK_SGEEQU( const fortran_int_t* m, const fortran_int_t* n,
+        const float* a, const fortran_int_t* lda, float* r, float* c,
+        float* rowcnd, float* colcnd, float* amax, fortran_int_t* info );
+void LAPACK_DGEEQU( const fortran_int_t* m, const fortran_int_t* n,
+        const double* a, const fortran_int_t* lda, double* r, double* c,
+        double* rowcnd, double* colcnd, double* amax, fortran_int_t* info );
+void LAPACK_CGEEQU( const fortran_int_t* m, const fortran_int_t* n,
+        const void* a, const fortran_int_t* lda, float* r, float* c,
+        float* rowcnd, float* colcnd, float* amax, fortran_int_t* info );
+void LAPACK_ZGEEQU( const fortran_int_t* m, const fortran_int_t* n,
+        const void* a, const fortran_int_t* lda, double* r, double* c,
+        double* rowcnd, double* colcnd, double* amax, fortran_int_t* info );
 
 // Value-type variants of gerfs
-void LAPACK_SGERFS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const float* a, const integer_t* lda,
-        const float* af, const integer_t* ldaf, const integer_t* ipiv,
-        const float* b, const integer_t* ldb, float* x, const integer_t* ldx,
-        float* ferr, float* berr, float* work, integer_t* iwork,
-        integer_t* info );
-void LAPACK_DGERFS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const double* a, const integer_t* lda,
-        const double* af, const integer_t* ldaf, const integer_t* ipiv,
-        const double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* ferr, double* berr, double* work,
-        integer_t* iwork, integer_t* info );
-void LAPACK_CGERFS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* a, const integer_t* lda,
-        const fcomplex_t* af, const integer_t* ldaf, const integer_t* ipiv,
-        const fcomplex_t* b, const integer_t* ldb, fcomplex_t* x,
-        const integer_t* ldx, float* ferr, float* berr, fcomplex_t* work,
-        float* rwork, integer_t* info );
-void LAPACK_ZGERFS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* af, const integer_t* ldaf, const integer_t* ipiv,
-        const dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, double* ferr, double* berr, dcomplex_t* work,
-        double* rwork, integer_t* info );
+void LAPACK_SGERFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* a, const fortran_int_t* lda,
+        const float* af, const fortran_int_t* ldaf, const fortran_int_t* ipiv,
+        const float* b, const fortran_int_t* ldb, float* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DGERFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* a, const fortran_int_t* lda,
+        const double* af, const fortran_int_t* ldaf,
+        const fortran_int_t* ipiv, const double* b, const fortran_int_t* ldb,
+        double* x, const fortran_int_t* ldx, double* ferr, double* berr,
+        double* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CGERFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const void* af, const fortran_int_t* ldaf, const fortran_int_t* ipiv,
+        const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, void* work,
+        float* rwork, fortran_int_t* info );
+void LAPACK_ZGERFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const void* af, const fortran_int_t* ldaf, const fortran_int_t* ipiv,
+        const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, double* ferr, double* berr, void* work,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of getrf
-void LAPACK_SGETRF( const integer_t* m, const integer_t* n, float* a,
-        const integer_t* lda, integer_t* ipiv, integer_t* info );
-void LAPACK_DGETRF( const integer_t* m, const integer_t* n, double* a,
-        const integer_t* lda, integer_t* ipiv, integer_t* info );
-void LAPACK_CGETRF( const integer_t* m, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, integer_t* ipiv, integer_t* info );
-void LAPACK_ZGETRF( const integer_t* m, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, integer_t* ipiv, integer_t* info );
+void LAPACK_SGETRF( const fortran_int_t* m, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, fortran_int_t* info );
+void LAPACK_DGETRF( const fortran_int_t* m, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, fortran_int_t* info );
+void LAPACK_CGETRF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, fortran_int_t* info );
+void LAPACK_ZGETRF( const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, fortran_int_t* info );
 
 // Value-type variants of getri
-void LAPACK_SGETRI( const integer_t* n, float* a, const integer_t* lda,
-        const integer_t* ipiv, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DGETRI( const integer_t* n, double* a, const integer_t* lda,
-        const integer_t* ipiv, double* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_CGETRI( const integer_t* n, fcomplex_t* a, const integer_t* lda,
-        const integer_t* ipiv, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZGETRI( const integer_t* n, dcomplex_t* a, const integer_t* lda,
-        const integer_t* ipiv, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SGETRI( const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGETRI( const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGETRI( const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_ZGETRI( const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of getrs
-void LAPACK_SGETRS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const float* a, const integer_t* lda,
-        const integer_t* ipiv, float* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_DGETRS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const double* a, const integer_t* lda,
-        const integer_t* ipiv, double* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_CGETRS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* a, const integer_t* lda,
-        const integer_t* ipiv, fcomplex_t* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_ZGETRS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, const integer_t* lda,
-        const integer_t* ipiv, dcomplex_t* b, const integer_t* ldb,
-        integer_t* info );
+void LAPACK_SGETRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, float* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_DGETRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, double* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_CGETRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_ZGETRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 
 // Value-type variants of gtrfs
-void LAPACK_SGTRFS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const float* dl, const float* d,
+void LAPACK_SGTRFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* dl, const float* d,
         const float* du, const float* dlf, const float* df, const float* duf,
-        const float* du2, const integer_t* ipiv, const float* b,
-        const integer_t* ldb, float* x, const integer_t* ldx, float* ferr,
-        float* berr, float* work, integer_t* iwork, integer_t* info );
-void LAPACK_DGTRFS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const double* dl, const double* d,
+        const float* du2, const fortran_int_t* ipiv, const float* b,
+        const fortran_int_t* ldb, float* x, const fortran_int_t* ldx,
+        float* ferr, float* berr, float* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DGTRFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* dl, const double* d,
         const double* du, const double* dlf, const double* df,
-        const double* duf, const double* du2, const integer_t* ipiv,
-        const double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* ferr, double* berr, double* work,
-        integer_t* iwork, integer_t* info );
-void LAPACK_CGTRFS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* dl, const fcomplex_t* d,
-        const fcomplex_t* du, const fcomplex_t* dlf, const fcomplex_t* df,
-        const fcomplex_t* duf, const fcomplex_t* du2, const integer_t* ipiv,
-        const fcomplex_t* b, const integer_t* ldb, fcomplex_t* x,
-        const integer_t* ldx, float* ferr, float* berr, fcomplex_t* work,
-        float* rwork, integer_t* info );
-void LAPACK_ZGTRFS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* dl, const dcomplex_t* d,
-        const dcomplex_t* du, const dcomplex_t* dlf, const dcomplex_t* df,
-        const dcomplex_t* duf, const dcomplex_t* du2, const integer_t* ipiv,
-        const dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, double* ferr, double* berr, dcomplex_t* work,
-        double* rwork, integer_t* info );
+        const double* duf, const double* du2, const fortran_int_t* ipiv,
+        const double* b, const fortran_int_t* ldb, double* x,
+        const fortran_int_t* ldx, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CGTRFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* dl, const void* d,
+        const void* du, const void* dlf, const void* df, const void* duf,
+        const void* du2, const fortran_int_t* ipiv, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        float* ferr, float* berr, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZGTRFS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* dl, const void* d,
+        const void* du, const void* dlf, const void* df, const void* duf,
+        const void* du2, const fortran_int_t* ipiv, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        double* ferr, double* berr, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of gttrs
-void LAPACK_SGTTRS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const float* dl, const float* d,
-        const float* du, const float* du2, const integer_t* ipiv, float* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_DGTTRS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const double* dl, const double* d,
-        const double* du, const double* du2, const integer_t* ipiv, double* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_CGTTRS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* dl, const fcomplex_t* d,
-        const fcomplex_t* du, const fcomplex_t* du2, const integer_t* ipiv,
-        fcomplex_t* b, const integer_t* ldb, integer_t* info );
-void LAPACK_ZGTTRS( const char* trans, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* dl, const dcomplex_t* d,
-        const dcomplex_t* du, const dcomplex_t* du2, const integer_t* ipiv,
-        dcomplex_t* b, const integer_t* ldb, integer_t* info );
+void LAPACK_SGTTRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* dl, const float* d,
+        const float* du, const float* du2, const fortran_int_t* ipiv,
+        float* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_DGTTRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* dl, const double* d,
+        const double* du, const double* du2, const fortran_int_t* ipiv,
+        double* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_CGTTRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* dl, const void* d,
+        const void* du, const void* du2, const fortran_int_t* ipiv, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZGTTRS( const char* trans, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* dl, const void* d,
+        const void* du, const void* du2, const fortran_int_t* ipiv, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of hecon
-void LAPACK_CHECON( const char* uplo, const integer_t* n, const fcomplex_t* a,
-        const integer_t* lda, const integer_t* ipiv, const float* anorm,
-        float* rcond, fcomplex_t* work, integer_t* info );
-void LAPACK_ZHECON( const char* uplo, const integer_t* n, const dcomplex_t* a,
-        const integer_t* lda, const integer_t* ipiv, const double* anorm,
-        double* rcond, dcomplex_t* work, integer_t* info );
+void LAPACK_CHECON( const char* uplo, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv,
+        const float* anorm, float* rcond, void* work, fortran_int_t* info );
+void LAPACK_ZHECON( const char* uplo, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv,
+        const double* anorm, double* rcond, void* work, fortran_int_t* info );
 
 // Value-type variants of herfs
-void LAPACK_CHERFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* a, const integer_t* lda,
-        const fcomplex_t* af, const integer_t* ldaf, const integer_t* ipiv,
-        const fcomplex_t* b, const integer_t* ldb, fcomplex_t* x,
-        const integer_t* ldx, float* ferr, float* berr, fcomplex_t* work,
-        float* rwork, integer_t* info );
-void LAPACK_ZHERFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* af, const integer_t* ldaf, const integer_t* ipiv,
-        const dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, double* ferr, double* berr, dcomplex_t* work,
-        double* rwork, integer_t* info );
+void LAPACK_CHERFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const void* af, const fortran_int_t* ldaf, const fortran_int_t* ipiv,
+        const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, void* work,
+        float* rwork, fortran_int_t* info );
+void LAPACK_ZHERFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const void* af, const fortran_int_t* ldaf, const fortran_int_t* ipiv,
+        const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, double* ferr, double* berr, void* work,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of hetrf
-void LAPACK_CHETRF( const char* uplo, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, integer_t* ipiv, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_ZHETRF( const char* uplo, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, integer_t* ipiv, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_CHETRF( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZHETRF( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of hetri
-void LAPACK_CHETRI( const char* uplo, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, const integer_t* ipiv, fcomplex_t* work,
-        integer_t* info );
-void LAPACK_ZHETRI( const char* uplo, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, const integer_t* ipiv, dcomplex_t* work,
-        integer_t* info );
+void LAPACK_CHETRI( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv, void* work,
+        fortran_int_t* info );
+void LAPACK_ZHETRI( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv, void* work,
+        fortran_int_t* info );
 
 // Value-type variants of hetrs
-void LAPACK_CHETRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* a, const integer_t* lda,
-        const integer_t* ipiv, fcomplex_t* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_ZHETRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, const integer_t* lda,
-        const integer_t* ipiv, dcomplex_t* b, const integer_t* ldb,
-        integer_t* info );
+void LAPACK_CHETRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_ZHETRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 
 // Value-type variants of hprfs
-void LAPACK_CHPRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* ap, const fcomplex_t* afp,
-        const integer_t* ipiv, const fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* x, const integer_t* ldx, float* ferr, float* berr,
-        fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZHPRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* ap, const dcomplex_t* afp,
-        const integer_t* ipiv, const dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* x, const integer_t* ldx, double* ferr, double* berr,
-        dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_CHPRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, const void* afp,
+        const fortran_int_t* ipiv, const void* b, const fortran_int_t* ldb,
+        void* x, const fortran_int_t* ldx, float* ferr, float* berr,
+        void* work, float* rwork, fortran_int_t* info );
+void LAPACK_ZHPRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, const void* afp,
+        const fortran_int_t* ipiv, const void* b, const fortran_int_t* ldb,
+        void* x, const fortran_int_t* ldx, double* ferr, double* berr,
+        void* work, double* rwork, fortran_int_t* info );
+
+// Value-type variants of hptrf
+void LAPACK_CHPTRF( const char* uplo, const fortran_int_t* n, void* ap,
+        fortran_int_t* ipiv, fortran_int_t* info );
+void LAPACK_ZHPTRF( const char* uplo, const fortran_int_t* n, void* ap,
+        fortran_int_t* ipiv, fortran_int_t* info );
 
 // Value-type variants of hptrs
-void LAPACK_CHPTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* ap, const integer_t* ipiv,
-        fcomplex_t* b, const integer_t* ldb, integer_t* info );
-void LAPACK_ZHPTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* ap, const integer_t* ipiv,
-        dcomplex_t* b, const integer_t* ldb, integer_t* info );
+void LAPACK_CHPTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, const fortran_int_t* ipiv,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZHPTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, const fortran_int_t* ipiv,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of lacon
-void LAPACK_SLACON( const integer_t* n, float* v, float* x, integer_t* isgn,
-        float* est, integer_t* kase );
-void LAPACK_DLACON( const integer_t* n, double* v, double* x, integer_t* isgn,
-        double* est, integer_t* kase );
-void LAPACK_CLACON( const integer_t* n, fcomplex_t* v, fcomplex_t* x,
-        float* est, integer_t* kase );
-void LAPACK_ZLACON( const integer_t* n, dcomplex_t* v, dcomplex_t* x,
-        double* est, integer_t* kase );
+void LAPACK_SLACON( const fortran_int_t* n, float* v, float* x,
+        fortran_int_t* isgn, float* est, fortran_int_t* kase );
+void LAPACK_DLACON( const fortran_int_t* n, double* v, double* x,
+        fortran_int_t* isgn, double* est, fortran_int_t* kase );
+void LAPACK_CLACON( const fortran_int_t* n, void* v, void* x, float* est,
+        fortran_int_t* kase );
+void LAPACK_ZLACON( const fortran_int_t* n, void* v, void* x, double* est,
+        fortran_int_t* kase );
 
 // Value-type variants of latrs
 void LAPACK_SLATRS( const char* uplo, const char* trans, const char* diag,
-        const char* normin, const integer_t* n, const float* a,
-        const integer_t* lda, float* x, float* scale, float* cnorm,
-        integer_t* info );
+        const char* normin, const fortran_int_t* n, const float* a,
+        const fortran_int_t* lda, float* x, float* scale, float* cnorm,
+        fortran_int_t* info );
 void LAPACK_DLATRS( const char* uplo, const char* trans, const char* diag,
-        const char* normin, const integer_t* n, const double* a,
-        const integer_t* lda, double* x, double* scale, double* cnorm,
-        integer_t* info );
+        const char* normin, const fortran_int_t* n, const double* a,
+        const fortran_int_t* lda, double* x, double* scale, double* cnorm,
+        fortran_int_t* info );
 void LAPACK_CLATRS( const char* uplo, const char* trans, const char* diag,
-        const char* normin, const integer_t* n, const fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* x, float* scale, float* cnorm,
-        integer_t* info );
+        const char* normin, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, void* x, float* scale, float* cnorm,
+        fortran_int_t* info );
 void LAPACK_ZLATRS( const char* uplo, const char* trans, const char* diag,
-        const char* normin, const integer_t* n, const dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* x, double* scale, double* cnorm,
-        integer_t* info );
+        const char* normin, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, void* x, double* scale, double* cnorm,
+        fortran_int_t* info );
 
 // Value-type variants of pbcon
-void LAPACK_SPBCON( const char* uplo, const integer_t* n, const integer_t* kd,
-        const float* ab, const integer_t* ldab, const float* anorm,
-        float* rcond, float* work, integer_t* iwork, integer_t* info );
-void LAPACK_DPBCON( const char* uplo, const integer_t* n, const integer_t* kd,
-        const double* ab, const integer_t* ldab, const double* anorm,
-        double* rcond, double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CPBCON( const char* uplo, const integer_t* n, const integer_t* kd,
-        const fcomplex_t* ab, const integer_t* ldab, const float* anorm,
-        float* rcond, fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZPBCON( const char* uplo, const integer_t* n, const integer_t* kd,
-        const dcomplex_t* ab, const integer_t* ldab, const double* anorm,
-        double* rcond, dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SPBCON( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const float* ab, const fortran_int_t* ldab,
+        const float* anorm, float* rcond, float* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DPBCON( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const double* ab, const fortran_int_t* ldab,
+        const double* anorm, double* rcond, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CPBCON( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const void* ab, const fortran_int_t* ldab,
+        const float* anorm, float* rcond, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZPBCON( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const void* ab, const fortran_int_t* ldab,
+        const double* anorm, double* rcond, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of pbequ
-void LAPACK_SPBEQU( const char* uplo, const integer_t* n, const integer_t* kd,
-        const float* ab, const integer_t* ldab, float* s, float* scond,
-        float* amax, integer_t* info );
-void LAPACK_DPBEQU( const char* uplo, const integer_t* n, const integer_t* kd,
-        const double* ab, const integer_t* ldab, double* s, double* scond,
-        double* amax, integer_t* info );
-void LAPACK_CPBEQU( const char* uplo, const integer_t* n, const integer_t* kd,
-        const fcomplex_t* ab, const integer_t* ldab, float* s, float* scond,
-        float* amax, integer_t* info );
-void LAPACK_ZPBEQU( const char* uplo, const integer_t* n, const integer_t* kd,
-        const dcomplex_t* ab, const integer_t* ldab, double* s, double* scond,
-        double* amax, integer_t* info );
+void LAPACK_SPBEQU( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const float* ab, const fortran_int_t* ldab,
+        float* s, float* scond, float* amax, fortran_int_t* info );
+void LAPACK_DPBEQU( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const double* ab, const fortran_int_t* ldab,
+        double* s, double* scond, double* amax, fortran_int_t* info );
+void LAPACK_CPBEQU( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const void* ab, const fortran_int_t* ldab,
+        float* s, float* scond, float* amax, fortran_int_t* info );
+void LAPACK_ZPBEQU( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const void* ab, const fortran_int_t* ldab,
+        double* s, double* scond, double* amax, fortran_int_t* info );
 
 // Value-type variants of pbrfs
-void LAPACK_SPBRFS( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, const float* ab, const integer_t* ldab,
-        const float* afb, const integer_t* ldafb, const float* b,
-        const integer_t* ldb, float* x, const integer_t* ldx, float* ferr,
-        float* berr, float* work, integer_t* iwork, integer_t* info );
-void LAPACK_DPBRFS( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, const double* ab, const integer_t* ldab,
-        const double* afb, const integer_t* ldafb, const double* b,
-        const integer_t* ldb, double* x, const integer_t* ldx, double* ferr,
-        double* berr, double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CPBRFS( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, const fcomplex_t* ab, const integer_t* ldab,
-        const fcomplex_t* afb, const integer_t* ldafb, const fcomplex_t* b,
-        const integer_t* ldb, fcomplex_t* x, const integer_t* ldx,
-        float* ferr, float* berr, fcomplex_t* work, float* rwork,
-        integer_t* info );
-void LAPACK_ZPBRFS( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, const dcomplex_t* ab, const integer_t* ldab,
-        const dcomplex_t* afb, const integer_t* ldafb, const dcomplex_t* b,
-        const integer_t* ldb, dcomplex_t* x, const integer_t* ldx,
-        double* ferr, double* berr, dcomplex_t* work, double* rwork,
-        integer_t* info );
+void LAPACK_SPBRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, const float* ab,
+        const fortran_int_t* ldab, const float* afb,
+        const fortran_int_t* ldafb, const float* b, const fortran_int_t* ldb,
+        float* x, const fortran_int_t* ldx, float* ferr, float* berr,
+        float* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DPBRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, const double* ab,
+        const fortran_int_t* ldab, const double* afb,
+        const fortran_int_t* ldafb, const double* b, const fortran_int_t* ldb,
+        double* x, const fortran_int_t* ldx, double* ferr, double* berr,
+        double* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CPBRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, const void* ab,
+        const fortran_int_t* ldab, const void* afb,
+        const fortran_int_t* ldafb, const void* b, const fortran_int_t* ldb,
+        void* x, const fortran_int_t* ldx, float* ferr, float* berr,
+        void* work, float* rwork, fortran_int_t* info );
+void LAPACK_ZPBRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, const void* ab,
+        const fortran_int_t* ldab, const void* afb,
+        const fortran_int_t* ldafb, const void* b, const fortran_int_t* ldb,
+        void* x, const fortran_int_t* ldx, double* ferr, double* berr,
+        void* work, double* rwork, fortran_int_t* info );
 
 // Value-type variants of pbtrf
-void LAPACK_SPBTRF( const char* uplo, const integer_t* n, const integer_t* kd,
-        float* ab, const integer_t* ldab, integer_t* info );
-void LAPACK_DPBTRF( const char* uplo, const integer_t* n, const integer_t* kd,
-        double* ab, const integer_t* ldab, integer_t* info );
-void LAPACK_CPBTRF( const char* uplo, const integer_t* n, const integer_t* kd,
-        fcomplex_t* ab, const integer_t* ldab, integer_t* info );
-void LAPACK_ZPBTRF( const char* uplo, const integer_t* n, const integer_t* kd,
-        dcomplex_t* ab, const integer_t* ldab, integer_t* info );
+void LAPACK_SPBTRF( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, float* ab, const fortran_int_t* ldab,
+        fortran_int_t* info );
+void LAPACK_DPBTRF( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, double* ab, const fortran_int_t* ldab,
+        fortran_int_t* info );
+void LAPACK_CPBTRF( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, void* ab, const fortran_int_t* ldab,
+        fortran_int_t* info );
+void LAPACK_ZPBTRF( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, void* ab, const fortran_int_t* ldab,
+        fortran_int_t* info );
 
 // Value-type variants of pbtrs
-void LAPACK_SPBTRS( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, const float* ab, const integer_t* ldab,
-        float* b, const integer_t* ldb, integer_t* info );
-void LAPACK_DPBTRS( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, const double* ab, const integer_t* ldab,
-        double* b, const integer_t* ldb, integer_t* info );
-void LAPACK_CPBTRS( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, const fcomplex_t* ab, const integer_t* ldab,
-        fcomplex_t* b, const integer_t* ldb, integer_t* info );
-void LAPACK_ZPBTRS( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, const dcomplex_t* ab, const integer_t* ldab,
-        dcomplex_t* b, const integer_t* ldb, integer_t* info );
+void LAPACK_SPBTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, const float* ab,
+        const fortran_int_t* ldab, float* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_DPBTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, const double* ab,
+        const fortran_int_t* ldab, double* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_CPBTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, const void* ab,
+        const fortran_int_t* ldab, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_ZPBTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, const void* ab,
+        const fortran_int_t* ldab, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+
+// Value-type variants of pftrf
+void LAPACK_SPFTRF( const char* transr, const char* uplo,
+        const fortran_int_t* n, float* a, fortran_int_t* info );
+void LAPACK_DPFTRF( const char* transr, const char* uplo,
+        const fortran_int_t* n, double* a, fortran_int_t* info );
+void LAPACK_CPFTRF( const char* transr, const char* uplo,
+        const fortran_int_t* n, void* a, fortran_int_t* info );
+void LAPACK_ZPFTRF( const char* transr, const char* uplo,
+        const fortran_int_t* n, void* a, fortran_int_t* info );
+
+// Value-type variants of pftri
+void LAPACK_SPFTRI( const char* transr, const char* uplo,
+        const fortran_int_t* n, float* a, fortran_int_t* info );
+void LAPACK_DPFTRI( const char* transr, const char* uplo,
+        const fortran_int_t* n, double* a, fortran_int_t* info );
+void LAPACK_CPFTRI( const char* transr, const char* uplo,
+        const fortran_int_t* n, void* a, fortran_int_t* info );
+void LAPACK_ZPFTRI( const char* transr, const char* uplo,
+        const fortran_int_t* n, void* a, fortran_int_t* info );
 
 // Value-type variants of pftrs
-void LAPACK_SPFTRS( const char* transr, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* a, float* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_DPFTRS( const char* transr, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* a, double* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_CPFTRS( const char* transr, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* a, fcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_ZPFTRS( const char* transr, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, dcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
+void LAPACK_SPFTRS( const char* transr, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const float* a,
+        float* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_DPFTRS( const char* transr, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const double* a,
+        double* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_CPFTRS( const char* transr, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* a,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZPFTRS( const char* transr, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* a,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of pocon
-void LAPACK_SPOCON( const char* uplo, const integer_t* n, const float* a,
-        const integer_t* lda, const float* anorm, float* rcond, float* work,
-        integer_t* iwork, integer_t* info );
-void LAPACK_DPOCON( const char* uplo, const integer_t* n, const double* a,
-        const integer_t* lda, const double* anorm, double* rcond,
-        double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CPOCON( const char* uplo, const integer_t* n, const fcomplex_t* a,
-        const integer_t* lda, const float* anorm, float* rcond,
-        fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZPOCON( const char* uplo, const integer_t* n, const dcomplex_t* a,
-        const integer_t* lda, const double* anorm, double* rcond,
-        dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SPOCON( const char* uplo, const fortran_int_t* n, const float* a,
+        const fortran_int_t* lda, const float* anorm, float* rcond,
+        float* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DPOCON( const char* uplo, const fortran_int_t* n, const double* a,
+        const fortran_int_t* lda, const double* anorm, double* rcond,
+        double* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CPOCON( const char* uplo, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const float* anorm, float* rcond,
+        void* work, float* rwork, fortran_int_t* info );
+void LAPACK_ZPOCON( const char* uplo, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const double* anorm, double* rcond,
+        void* work, double* rwork, fortran_int_t* info );
 
 // Value-type variants of poequ
-void LAPACK_SPOEQU( const integer_t* n, const float* a, const integer_t* lda,
-        float* s, float* scond, float* amax, integer_t* info );
-void LAPACK_DPOEQU( const integer_t* n, const double* a, const integer_t* lda,
-        double* s, double* scond, double* amax, integer_t* info );
-void LAPACK_CPOEQU( const integer_t* n, const fcomplex_t* a,
-        const integer_t* lda, float* s, float* scond, float* amax,
-        integer_t* info );
-void LAPACK_ZPOEQU( const integer_t* n, const dcomplex_t* a,
-        const integer_t* lda, double* s, double* scond, double* amax,
-        integer_t* info );
+void LAPACK_SPOEQU( const fortran_int_t* n, const float* a,
+        const fortran_int_t* lda, float* s, float* scond, float* amax,
+        fortran_int_t* info );
+void LAPACK_DPOEQU( const fortran_int_t* n, const double* a,
+        const fortran_int_t* lda, double* s, double* scond, double* amax,
+        fortran_int_t* info );
+void LAPACK_CPOEQU( const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, float* s, float* scond, float* amax,
+        fortran_int_t* info );
+void LAPACK_ZPOEQU( const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, double* s, double* scond, double* amax,
+        fortran_int_t* info );
 
 // Value-type variants of porfs
-void LAPACK_SPORFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* a, const integer_t* lda,
-        const float* af, const integer_t* ldaf, const float* b,
-        const integer_t* ldb, float* x, const integer_t* ldx, float* ferr,
-        float* berr, float* work, integer_t* iwork, integer_t* info );
-void LAPACK_DPORFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* a, const integer_t* lda,
-        const double* af, const integer_t* ldaf, const double* b,
-        const integer_t* ldb, double* x, const integer_t* ldx, double* ferr,
-        double* berr, double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CPORFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* a, const integer_t* lda,
-        const fcomplex_t* af, const integer_t* ldaf, const fcomplex_t* b,
-        const integer_t* ldb, fcomplex_t* x, const integer_t* ldx,
-        float* ferr, float* berr, fcomplex_t* work, float* rwork,
-        integer_t* info );
-void LAPACK_ZPORFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* af, const integer_t* ldaf, const dcomplex_t* b,
-        const integer_t* ldb, dcomplex_t* x, const integer_t* ldx,
-        double* ferr, double* berr, dcomplex_t* work, double* rwork,
-        integer_t* info );
+void LAPACK_SPORFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* a, const fortran_int_t* lda,
+        const float* af, const fortran_int_t* ldaf, const float* b,
+        const fortran_int_t* ldb, float* x, const fortran_int_t* ldx,
+        float* ferr, float* berr, float* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DPORFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* a, const fortran_int_t* lda,
+        const double* af, const fortran_int_t* ldaf, const double* b,
+        const fortran_int_t* ldb, double* x, const fortran_int_t* ldx,
+        double* ferr, double* berr, double* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_CPORFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const void* af, const fortran_int_t* ldaf, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        float* ferr, float* berr, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZPORFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const void* af, const fortran_int_t* ldaf, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        double* ferr, double* berr, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of potrf
-void LAPACK_SPOTRF( const char* uplo, const integer_t* n, float* a,
-        const integer_t* lda, integer_t* info );
-void LAPACK_DPOTRF( const char* uplo, const integer_t* n, double* a,
-        const integer_t* lda, integer_t* info );
-void LAPACK_CPOTRF( const char* uplo, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, integer_t* info );
-void LAPACK_ZPOTRF( const char* uplo, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, integer_t* info );
+void LAPACK_SPOTRF( const char* uplo, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, fortran_int_t* info );
+void LAPACK_DPOTRF( const char* uplo, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, fortran_int_t* info );
+void LAPACK_CPOTRF( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* info );
+void LAPACK_ZPOTRF( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* info );
 
 // Value-type variants of potri
-void LAPACK_SPOTRI( const char* uplo, const integer_t* n, float* a,
-        const integer_t* lda, integer_t* info );
-void LAPACK_DPOTRI( const char* uplo, const integer_t* n, double* a,
-        const integer_t* lda, integer_t* info );
-void LAPACK_CPOTRI( const char* uplo, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, integer_t* info );
-void LAPACK_ZPOTRI( const char* uplo, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, integer_t* info );
+void LAPACK_SPOTRI( const char* uplo, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, fortran_int_t* info );
+void LAPACK_DPOTRI( const char* uplo, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, fortran_int_t* info );
+void LAPACK_CPOTRI( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* info );
+void LAPACK_ZPOTRI( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* info );
 
 // Value-type variants of potrs
-void LAPACK_SPOTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* a, const integer_t* lda, float* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_DPOTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* a, const integer_t* lda,
-        double* b, const integer_t* ldb, integer_t* info );
-void LAPACK_CPOTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* b, const integer_t* ldb, integer_t* info );
-void LAPACK_ZPOTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* b, const integer_t* ldb, integer_t* info );
+void LAPACK_SPOTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* a, const fortran_int_t* lda,
+        float* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_DPOTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_CPOTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZPOTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of pprfs
-void LAPACK_SPPRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* ap, const float* afp,
-        const float* b, const integer_t* ldb, float* x, const integer_t* ldx,
-        float* ferr, float* berr, float* work, integer_t* iwork,
-        integer_t* info );
-void LAPACK_DPPRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* ap, const double* afp,
-        const double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* ferr, double* berr, double* work,
-        integer_t* iwork, integer_t* info );
-void LAPACK_CPPRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* ap, const fcomplex_t* afp,
-        const fcomplex_t* b, const integer_t* ldb, fcomplex_t* x,
-        const integer_t* ldx, float* ferr, float* berr, fcomplex_t* work,
-        float* rwork, integer_t* info );
-void LAPACK_ZPPRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* ap, const dcomplex_t* afp,
-        const dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, double* ferr, double* berr, dcomplex_t* work,
-        double* rwork, integer_t* info );
+void LAPACK_SPPRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* ap, const float* afp,
+        const float* b, const fortran_int_t* ldb, float* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DPPRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* ap, const double* afp,
+        const double* b, const fortran_int_t* ldb, double* x,
+        const fortran_int_t* ldx, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CPPRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, const void* afp,
+        const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, void* work,
+        float* rwork, fortran_int_t* info );
+void LAPACK_ZPPRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, const void* afp,
+        const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, double* ferr, double* berr, void* work,
+        double* rwork, fortran_int_t* info );
+
+// Value-type variants of pptrf
+void LAPACK_SPPTRF( const char* uplo, const fortran_int_t* n, float* ap,
+        fortran_int_t* info );
+void LAPACK_DPPTRF( const char* uplo, const fortran_int_t* n, double* ap,
+        fortran_int_t* info );
+void LAPACK_CPPTRF( const char* uplo, const fortran_int_t* n, void* ap,
+        fortran_int_t* info );
+void LAPACK_ZPPTRF( const char* uplo, const fortran_int_t* n, void* ap,
+        fortran_int_t* info );
 
 // Value-type variants of pptrs
-void LAPACK_SPPTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* ap, float* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_DPPTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* ap, double* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_CPPTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* ap, fcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_ZPPTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* ap, dcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
+void LAPACK_SPPTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* ap, float* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_DPPTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* ap, double* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_CPPTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZPPTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of ptrfs
-void LAPACK_SPTRFS( const integer_t* n, const integer_t* nrhs, const float* d,
-        const float* e, const float* df, const float* ef, const float* b,
-        const integer_t* ldb, float* x, const integer_t* ldx, float* ferr,
-        float* berr, float* work, integer_t* info );
-void LAPACK_DPTRFS( const integer_t* n, const integer_t* nrhs,
+void LAPACK_SPTRFS( const fortran_int_t* n, const fortran_int_t* nrhs,
+        const float* d, const float* e, const float* df, const float* ef,
+        const float* b, const fortran_int_t* ldb, float* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, float* work,
+        fortran_int_t* info );
+void LAPACK_DPTRFS( const fortran_int_t* n, const fortran_int_t* nrhs,
         const double* d, const double* e, const double* df, const double* ef,
-        const double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* ferr, double* berr, double* work,
-        integer_t* info );
-void LAPACK_CPTRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* d, const fcomplex_t* e,
-        const float* df, const fcomplex_t* ef, const fcomplex_t* b,
-        const integer_t* ldb, fcomplex_t* x, const integer_t* ldx,
-        float* ferr, float* berr, fcomplex_t* work, float* rwork,
-        integer_t* info );
-void LAPACK_ZPTRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* d, const dcomplex_t* e,
-        const double* df, const dcomplex_t* ef, const dcomplex_t* b,
-        const integer_t* ldb, dcomplex_t* x, const integer_t* ldx,
-        double* ferr, double* berr, dcomplex_t* work, double* rwork,
-        integer_t* info );
+        const double* b, const fortran_int_t* ldb, double* x,
+        const fortran_int_t* ldx, double* ferr, double* berr, double* work,
+        fortran_int_t* info );
+void LAPACK_CPTRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* d, const void* e,
+        const float* df, const void* ef, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        float* ferr, float* berr, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZPTRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* d, const void* e,
+        const double* df, const void* ef, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        double* ferr, double* berr, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of pttrs
-void LAPACK_SPTTRS( const integer_t* n, const integer_t* nrhs, const float* d,
-        const float* e, float* b, const integer_t* ldb, integer_t* info );
-void LAPACK_DPTTRS( const integer_t* n, const integer_t* nrhs,
-        const double* d, const double* e, double* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_CPTTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* d, const fcomplex_t* e,
-        fcomplex_t* b, const integer_t* ldb, integer_t* info );
-void LAPACK_ZPTTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* d, const dcomplex_t* e,
-        dcomplex_t* b, const integer_t* ldb, integer_t* info );
+void LAPACK_SPTTRS( const fortran_int_t* n, const fortran_int_t* nrhs,
+        const float* d, const float* e, float* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_DPTTRS( const fortran_int_t* n, const fortran_int_t* nrhs,
+        const double* d, const double* e, double* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_CPTTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* d, const void* e, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZPTTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* d, const void* e, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of sprfs
-void LAPACK_SSPRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* ap, const float* afp,
-        const integer_t* ipiv, const float* b, const integer_t* ldb, float* x,
-        const integer_t* ldx, float* ferr, float* berr, float* work,
-        integer_t* iwork, integer_t* info );
-void LAPACK_DSPRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* ap, const double* afp,
-        const integer_t* ipiv, const double* b, const integer_t* ldb,
-        double* x, const integer_t* ldx, double* ferr, double* berr,
-        double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CSPRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* ap, const fcomplex_t* afp,
-        const integer_t* ipiv, const fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* x, const integer_t* ldx, float* ferr, float* berr,
-        fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZSPRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* ap, const dcomplex_t* afp,
-        const integer_t* ipiv, const dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* x, const integer_t* ldx, double* ferr, double* berr,
-        dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SSPRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* ap, const float* afp,
+        const fortran_int_t* ipiv, const float* b, const fortran_int_t* ldb,
+        float* x, const fortran_int_t* ldx, float* ferr, float* berr,
+        float* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DSPRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* ap, const double* afp,
+        const fortran_int_t* ipiv, const double* b, const fortran_int_t* ldb,
+        double* x, const fortran_int_t* ldx, double* ferr, double* berr,
+        double* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CSPRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, const void* afp,
+        const fortran_int_t* ipiv, const void* b, const fortran_int_t* ldb,
+        void* x, const fortran_int_t* ldx, float* ferr, float* berr,
+        void* work, float* rwork, fortran_int_t* info );
+void LAPACK_ZSPRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, const void* afp,
+        const fortran_int_t* ipiv, const void* b, const fortran_int_t* ldb,
+        void* x, const fortran_int_t* ldx, double* ferr, double* berr,
+        void* work, double* rwork, fortran_int_t* info );
+
+// Value-type variants of sptrf
+void LAPACK_SSPTRF( const char* uplo, const fortran_int_t* n, float* ap,
+        fortran_int_t* ipiv, fortran_int_t* info );
+void LAPACK_DSPTRF( const char* uplo, const fortran_int_t* n, double* ap,
+        fortran_int_t* ipiv, fortran_int_t* info );
+void LAPACK_CSPTRF( const char* uplo, const fortran_int_t* n, void* ap,
+        fortran_int_t* ipiv, fortran_int_t* info );
+void LAPACK_ZSPTRF( const char* uplo, const fortran_int_t* n, void* ap,
+        fortran_int_t* ipiv, fortran_int_t* info );
 
 // Value-type variants of sptrs
-void LAPACK_SSPTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* ap, const integer_t* ipiv,
-        float* b, const integer_t* ldb, integer_t* info );
-void LAPACK_DSPTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* ap, const integer_t* ipiv,
-        double* b, const integer_t* ldb, integer_t* info );
-void LAPACK_CSPTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* ap, const integer_t* ipiv,
-        fcomplex_t* b, const integer_t* ldb, integer_t* info );
-void LAPACK_ZSPTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* ap, const integer_t* ipiv,
-        dcomplex_t* b, const integer_t* ldb, integer_t* info );
+void LAPACK_SSPTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* ap, const fortran_int_t* ipiv,
+        float* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_DSPTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* ap,
+        const fortran_int_t* ipiv, double* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_CSPTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, const fortran_int_t* ipiv,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZSPTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* ap, const fortran_int_t* ipiv,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of sycon
-void LAPACK_SSYCON( const char* uplo, const integer_t* n, const float* a,
-        const integer_t* lda, const integer_t* ipiv, const float* anorm,
-        float* rcond, float* work, integer_t* iwork, integer_t* info );
-void LAPACK_DSYCON( const char* uplo, const integer_t* n, const double* a,
-        const integer_t* lda, const integer_t* ipiv, const double* anorm,
-        double* rcond, double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CSYCON( const char* uplo, const integer_t* n, const fcomplex_t* a,
-        const integer_t* lda, const integer_t* ipiv, const float* anorm,
-        float* rcond, fcomplex_t* work, integer_t* info );
-void LAPACK_ZSYCON( const char* uplo, const integer_t* n, const dcomplex_t* a,
-        const integer_t* lda, const integer_t* ipiv, const double* anorm,
-        double* rcond, dcomplex_t* work, integer_t* info );
+void LAPACK_SSYCON( const char* uplo, const fortran_int_t* n, const float* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv,
+        const float* anorm, float* rcond, float* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DSYCON( const char* uplo, const fortran_int_t* n, const double* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv,
+        const double* anorm, double* rcond, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CSYCON( const char* uplo, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv,
+        const float* anorm, float* rcond, void* work, fortran_int_t* info );
+void LAPACK_ZSYCON( const char* uplo, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv,
+        const double* anorm, double* rcond, void* work, fortran_int_t* info );
 
 // Value-type variants of syrfs
-void LAPACK_SSYRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* a, const integer_t* lda,
-        const float* af, const integer_t* ldaf, const integer_t* ipiv,
-        const float* b, const integer_t* ldb, float* x, const integer_t* ldx,
-        float* ferr, float* berr, float* work, integer_t* iwork,
-        integer_t* info );
-void LAPACK_DSYRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* a, const integer_t* lda,
-        const double* af, const integer_t* ldaf, const integer_t* ipiv,
-        const double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* ferr, double* berr, double* work,
-        integer_t* iwork, integer_t* info );
-void LAPACK_CSYRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* a, const integer_t* lda,
-        const fcomplex_t* af, const integer_t* ldaf, const integer_t* ipiv,
-        const fcomplex_t* b, const integer_t* ldb, fcomplex_t* x,
-        const integer_t* ldx, float* ferr, float* berr, fcomplex_t* work,
-        float* rwork, integer_t* info );
-void LAPACK_ZSYRFS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* af, const integer_t* ldaf, const integer_t* ipiv,
-        const dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, double* ferr, double* berr, dcomplex_t* work,
-        double* rwork, integer_t* info );
+void LAPACK_SSYRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* a, const fortran_int_t* lda,
+        const float* af, const fortran_int_t* ldaf, const fortran_int_t* ipiv,
+        const float* b, const fortran_int_t* ldb, float* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DSYRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* a, const fortran_int_t* lda,
+        const double* af, const fortran_int_t* ldaf,
+        const fortran_int_t* ipiv, const double* b, const fortran_int_t* ldb,
+        double* x, const fortran_int_t* ldx, double* ferr, double* berr,
+        double* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CSYRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const void* af, const fortran_int_t* ldaf, const fortran_int_t* ipiv,
+        const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, void* work,
+        float* rwork, fortran_int_t* info );
+void LAPACK_ZSYRFS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const void* af, const fortran_int_t* ldaf, const fortran_int_t* ipiv,
+        const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, double* ferr, double* berr, void* work,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of sytrf
-void LAPACK_SSYTRF( const char* uplo, const integer_t* n, float* a,
-        const integer_t* lda, integer_t* ipiv, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DSYTRF( const char* uplo, const integer_t* n, double* a,
-        const integer_t* lda, integer_t* ipiv, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CSYTRF( const char* uplo, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, integer_t* ipiv, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_ZSYTRF( const char* uplo, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, integer_t* ipiv, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_SSYTRF( const char* uplo, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DSYTRF( const char* uplo, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CSYTRF( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZSYTRF( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of sytri
-void LAPACK_SSYTRI( const char* uplo, const integer_t* n, float* a,
-        const integer_t* lda, const integer_t* ipiv, float* work,
-        integer_t* info );
-void LAPACK_DSYTRI( const char* uplo, const integer_t* n, double* a,
-        const integer_t* lda, const integer_t* ipiv, double* work,
-        integer_t* info );
-void LAPACK_CSYTRI( const char* uplo, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, const integer_t* ipiv, fcomplex_t* work,
-        integer_t* info );
-void LAPACK_ZSYTRI( const char* uplo, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, const integer_t* ipiv, dcomplex_t* work,
-        integer_t* info );
+void LAPACK_SSYTRI( const char* uplo, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv, float* work,
+        fortran_int_t* info );
+void LAPACK_DSYTRI( const char* uplo, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv, double* work,
+        fortran_int_t* info );
+void LAPACK_CSYTRI( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv, void* work,
+        fortran_int_t* info );
+void LAPACK_ZSYTRI( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, const fortran_int_t* ipiv, void* work,
+        fortran_int_t* info );
 
 // Value-type variants of sytrs
-void LAPACK_SSYTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* a, const integer_t* lda,
-        const integer_t* ipiv, float* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_DSYTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* a, const integer_t* lda,
-        const integer_t* ipiv, double* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_CSYTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* a, const integer_t* lda,
-        const integer_t* ipiv, fcomplex_t* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_ZSYTRS( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, const integer_t* lda,
-        const integer_t* ipiv, dcomplex_t* b, const integer_t* ldb,
-        integer_t* info );
+void LAPACK_SSYTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, float* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_DSYTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, double* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_CSYTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_ZSYTRS( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        const fortran_int_t* ipiv, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 
 // Value-type variants of tbcon
 void LAPACK_STBCON( const char* norm, const char* uplo, const char* diag,
-        const integer_t* n, const integer_t* kd, const float* ab,
-        const integer_t* ldab, float* rcond, float* work, integer_t* iwork,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd, const float* ab,
+        const fortran_int_t* ldab, float* rcond, float* work,
+        fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_DTBCON( const char* norm, const char* uplo, const char* diag,
-        const integer_t* n, const integer_t* kd, const double* ab,
-        const integer_t* ldab, double* rcond, double* work, integer_t* iwork,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd, const double* ab,
+        const fortran_int_t* ldab, double* rcond, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_CTBCON( const char* norm, const char* uplo, const char* diag,
-        const integer_t* n, const integer_t* kd, const fcomplex_t* ab,
-        const integer_t* ldab, float* rcond, fcomplex_t* work, float* rwork,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd, const void* ab,
+        const fortran_int_t* ldab, float* rcond, void* work, float* rwork,
+        fortran_int_t* info );
 void LAPACK_ZTBCON( const char* norm, const char* uplo, const char* diag,
-        const integer_t* n, const integer_t* kd, const dcomplex_t* ab,
-        const integer_t* ldab, double* rcond, dcomplex_t* work, double* rwork,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd, const void* ab,
+        const fortran_int_t* ldab, double* rcond, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of tbrfs
 void LAPACK_STBRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* kd, const integer_t* nrhs,
-        const float* ab, const integer_t* ldab, const float* b,
-        const integer_t* ldb, const float* x, const integer_t* ldx,
-        float* ferr, float* berr, float* work, integer_t* iwork,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, const float* ab, const fortran_int_t* ldab,
+        const float* b, const fortran_int_t* ldb, const float* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_DTBRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* kd, const integer_t* nrhs,
-        const double* ab, const integer_t* ldab, const double* b,
-        const integer_t* ldb, const double* x, const integer_t* ldx,
-        double* ferr, double* berr, double* work, integer_t* iwork,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, const double* ab,
+        const fortran_int_t* ldab, const double* b, const fortran_int_t* ldb,
+        const double* x, const fortran_int_t* ldx, double* ferr, double* berr,
+        double* work, fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_CTBRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* kd, const integer_t* nrhs,
-        const fcomplex_t* ab, const integer_t* ldab, const fcomplex_t* b,
-        const integer_t* ldb, const fcomplex_t* x, const integer_t* ldx,
-        float* ferr, float* berr, fcomplex_t* work, float* rwork,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, const void* ab, const fortran_int_t* ldab,
+        const void* b, const fortran_int_t* ldb, const void* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, void* work,
+        float* rwork, fortran_int_t* info );
 void LAPACK_ZTBRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* kd, const integer_t* nrhs,
-        const dcomplex_t* ab, const integer_t* ldab, const dcomplex_t* b,
-        const integer_t* ldb, const dcomplex_t* x, const integer_t* ldx,
-        double* ferr, double* berr, dcomplex_t* work, double* rwork,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, const void* ab, const fortran_int_t* ldab,
+        const void* b, const fortran_int_t* ldb, const void* x,
+        const fortran_int_t* ldx, double* ferr, double* berr, void* work,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of tbtrs
 void LAPACK_STBTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* kd, const integer_t* nrhs,
-        const float* ab, const integer_t* ldab, float* b,
-        const integer_t* ldb, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, const float* ab, const fortran_int_t* ldab,
+        float* b, const fortran_int_t* ldb, fortran_int_t* info );
 void LAPACK_DTBTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* kd, const integer_t* nrhs,
-        const double* ab, const integer_t* ldab, double* b,
-        const integer_t* ldb, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, const double* ab,
+        const fortran_int_t* ldab, double* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 void LAPACK_CTBTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* kd, const integer_t* nrhs,
-        const fcomplex_t* ab, const integer_t* ldab, fcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, const void* ab, const fortran_int_t* ldab,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
 void LAPACK_ZTBTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* kd, const integer_t* nrhs,
-        const dcomplex_t* ab, const integer_t* ldab, dcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, const void* ab, const fortran_int_t* ldab,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
+
+// Value-type variants of tftri
+void LAPACK_STFTRI( const char* transr, const char* uplo, const char* diag,
+        const fortran_int_t* n, float* a, fortran_int_t* info );
+void LAPACK_DTFTRI( const char* transr, const char* uplo, const char* diag,
+        const fortran_int_t* n, double* a, fortran_int_t* info );
+void LAPACK_CTFTRI( const char* transr, const char* uplo, const char* diag,
+        const fortran_int_t* n, void* a, fortran_int_t* info );
+void LAPACK_ZTFTRI( const char* transr, const char* uplo, const char* diag,
+        const fortran_int_t* n, void* a, fortran_int_t* info );
 
 // Value-type variants of tprfs
 void LAPACK_STPRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const float* ap,
-        const float* b, const integer_t* ldb, const float* x,
-        const integer_t* ldx, float* ferr, float* berr, float* work,
-        integer_t* iwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const float* ap,
+        const float* b, const fortran_int_t* ldb, const float* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_DTPRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const double* ap,
-        const double* b, const integer_t* ldb, const double* x,
-        const integer_t* ldx, double* ferr, double* berr, double* work,
-        integer_t* iwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const double* ap,
+        const double* b, const fortran_int_t* ldb, const double* x,
+        const fortran_int_t* ldx, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_CTPRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const fcomplex_t* ap,
-        const fcomplex_t* b, const integer_t* ldb, const fcomplex_t* x,
-        const integer_t* ldx, float* ferr, float* berr, fcomplex_t* work,
-        float* rwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* ap,
+        const void* b, const fortran_int_t* ldb, const void* x,
+        const fortran_int_t* ldx, float* ferr, float* berr, void* work,
+        float* rwork, fortran_int_t* info );
 void LAPACK_ZTPRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const dcomplex_t* ap,
-        const dcomplex_t* b, const integer_t* ldb, const dcomplex_t* x,
-        const integer_t* ldx, double* ferr, double* berr, dcomplex_t* work,
-        double* rwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* ap,
+        const void* b, const fortran_int_t* ldb, const void* x,
+        const fortran_int_t* ldx, double* ferr, double* berr, void* work,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of tptri
-void LAPACK_STPTRI( const char* uplo, const char* diag, const integer_t* n,
-        float* ap, integer_t* info );
-void LAPACK_DTPTRI( const char* uplo, const char* diag, const integer_t* n,
-        double* ap, integer_t* info );
-void LAPACK_CTPTRI( const char* uplo, const char* diag, const integer_t* n,
-        fcomplex_t* ap, integer_t* info );
-void LAPACK_ZTPTRI( const char* uplo, const char* diag, const integer_t* n,
-        dcomplex_t* ap, integer_t* info );
+void LAPACK_STPTRI( const char* uplo, const char* diag,
+        const fortran_int_t* n, float* ap, fortran_int_t* info );
+void LAPACK_DTPTRI( const char* uplo, const char* diag,
+        const fortran_int_t* n, double* ap, fortran_int_t* info );
+void LAPACK_CTPTRI( const char* uplo, const char* diag,
+        const fortran_int_t* n, void* ap, fortran_int_t* info );
+void LAPACK_ZTPTRI( const char* uplo, const char* diag,
+        const fortran_int_t* n, void* ap, fortran_int_t* info );
 
 // Value-type variants of tptrs
 void LAPACK_STPTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const float* ap, float* b,
-        const integer_t* ldb, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const float* ap,
+        float* b, const fortran_int_t* ldb, fortran_int_t* info );
 void LAPACK_DTPTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const double* ap,
-        double* b, const integer_t* ldb, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const double* ap,
+        double* b, const fortran_int_t* ldb, fortran_int_t* info );
 void LAPACK_CTPTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const fcomplex_t* ap,
-        fcomplex_t* b, const integer_t* ldb, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* ap,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
 void LAPACK_ZTPTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const dcomplex_t* ap,
-        dcomplex_t* b, const integer_t* ldb, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* ap,
+        void* b, const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of trcon
 void LAPACK_STRCON( const char* norm, const char* uplo, const char* diag,
-        const integer_t* n, const float* a, const integer_t* lda,
-        float* rcond, float* work, integer_t* iwork, integer_t* info );
+        const fortran_int_t* n, const float* a, const fortran_int_t* lda,
+        float* rcond, float* work, fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_DTRCON( const char* norm, const char* uplo, const char* diag,
-        const integer_t* n, const double* a, const integer_t* lda,
-        double* rcond, double* work, integer_t* iwork, integer_t* info );
+        const fortran_int_t* n, const double* a, const fortran_int_t* lda,
+        double* rcond, double* work, fortran_int_t* iwork,
+        fortran_int_t* info );
 void LAPACK_CTRCON( const char* norm, const char* uplo, const char* diag,
-        const integer_t* n, const fcomplex_t* a, const integer_t* lda,
-        float* rcond, fcomplex_t* work, float* rwork, integer_t* info );
+        const fortran_int_t* n, const void* a, const fortran_int_t* lda,
+        float* rcond, void* work, float* rwork, fortran_int_t* info );
 void LAPACK_ZTRCON( const char* norm, const char* uplo, const char* diag,
-        const integer_t* n, const dcomplex_t* a, const integer_t* lda,
-        double* rcond, dcomplex_t* work, double* rwork, integer_t* info );
+        const fortran_int_t* n, const void* a, const fortran_int_t* lda,
+        double* rcond, void* work, double* rwork, fortran_int_t* info );
 
 // Value-type variants of trrfs
 void LAPACK_STRRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const float* a,
-        const integer_t* lda, const float* b, const integer_t* ldb,
-        const float* x, const integer_t* ldx, float* ferr, float* berr,
-        float* work, integer_t* iwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const float* a,
+        const fortran_int_t* lda, const float* b, const fortran_int_t* ldb,
+        const float* x, const fortran_int_t* ldx, float* ferr, float* berr,
+        float* work, fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_DTRRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const double* a,
-        const integer_t* lda, const double* b, const integer_t* ldb,
-        const double* x, const integer_t* ldx, double* ferr, double* berr,
-        double* work, integer_t* iwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const double* a,
+        const fortran_int_t* lda, const double* b, const fortran_int_t* ldb,
+        const double* x, const fortran_int_t* ldx, double* ferr, double* berr,
+        double* work, fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_CTRRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const fcomplex_t* a,
-        const integer_t* lda, const fcomplex_t* b, const integer_t* ldb,
-        const fcomplex_t* x, const integer_t* ldx, float* ferr, float* berr,
-        fcomplex_t* work, float* rwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* a,
+        const fortran_int_t* lda, const void* b, const fortran_int_t* ldb,
+        const void* x, const fortran_int_t* ldx, float* ferr, float* berr,
+        void* work, float* rwork, fortran_int_t* info );
 void LAPACK_ZTRRFS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const dcomplex_t* a,
-        const integer_t* lda, const dcomplex_t* b, const integer_t* ldb,
-        const dcomplex_t* x, const integer_t* ldx, double* ferr, double* berr,
-        dcomplex_t* work, double* rwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* a,
+        const fortran_int_t* lda, const void* b, const fortran_int_t* ldb,
+        const void* x, const fortran_int_t* ldx, double* ferr, double* berr,
+        void* work, double* rwork, fortran_int_t* info );
 
 // Value-type variants of trtri
-void LAPACK_STRTRI( const char* uplo, const char* diag, const integer_t* n,
-        float* a, const integer_t* lda, integer_t* info );
-void LAPACK_DTRTRI( const char* uplo, const char* diag, const integer_t* n,
-        double* a, const integer_t* lda, integer_t* info );
-void LAPACK_CTRTRI( const char* uplo, const char* diag, const integer_t* n,
-        fcomplex_t* a, const integer_t* lda, integer_t* info );
-void LAPACK_ZTRTRI( const char* uplo, const char* diag, const integer_t* n,
-        dcomplex_t* a, const integer_t* lda, integer_t* info );
+void LAPACK_STRTRI( const char* uplo, const char* diag,
+        const fortran_int_t* n, float* a, const fortran_int_t* lda,
+        fortran_int_t* info );
+void LAPACK_DTRTRI( const char* uplo, const char* diag,
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        fortran_int_t* info );
+void LAPACK_CTRTRI( const char* uplo, const char* diag,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        fortran_int_t* info );
+void LAPACK_ZTRTRI( const char* uplo, const char* diag,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        fortran_int_t* info );
 
 // Value-type variants of trtrs
 void LAPACK_STRTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const float* a,
-        const integer_t* lda, float* b, const integer_t* ldb,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const float* a,
+        const fortran_int_t* lda, float* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 void LAPACK_DTRTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const double* a,
-        const integer_t* lda, double* b, const integer_t* ldb,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const double* a,
+        const fortran_int_t* lda, double* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 void LAPACK_CTRTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* b, const integer_t* ldb,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 void LAPACK_ZTRTRS( const char* uplo, const char* trans, const char* diag,
-        const integer_t* n, const integer_t* nrhs, const dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* b, const integer_t* ldb,
-        integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 
 // Value-type variants of hbtrd
-void LAPACK_CHBTRD( const char* vect, const char* uplo, const integer_t* n,
-        const integer_t* kd, fcomplex_t* ab, const integer_t* ldab, float* d,
-        float* e, fcomplex_t* q, const integer_t* ldq, fcomplex_t* work,
-        integer_t* info );
-void LAPACK_ZHBTRD( const char* vect, const char* uplo, const integer_t* n,
-        const integer_t* kd, dcomplex_t* ab, const integer_t* ldab, double* d,
-        double* e, dcomplex_t* q, const integer_t* ldq, dcomplex_t* work,
-        integer_t* info );
+void LAPACK_CHBTRD( const char* vect, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd, void* ab,
+        const fortran_int_t* ldab, float* d, float* e, void* q,
+        const fortran_int_t* ldq, void* work, fortran_int_t* info );
+void LAPACK_ZHBTRD( const char* vect, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd, void* ab,
+        const fortran_int_t* ldab, double* d, double* e, void* q,
+        const fortran_int_t* ldq, void* work, fortran_int_t* info );
 
 // Value-type variants of hetrd
-void LAPACK_CHETRD( const char* uplo, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, float* d, float* e, fcomplex_t* tau,
-        fcomplex_t* work, const integer_t* lwork, integer_t* info );
-void LAPACK_ZHETRD( const char* uplo, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, double* d, double* e, dcomplex_t* tau,
-        dcomplex_t* work, const integer_t* lwork, integer_t* info );
+void LAPACK_CHETRD( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, float* d, float* e, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZHETRD( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, double* d, double* e, void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of laebz
-void LAPACK_SLAEBZ( const integer_t* ijob, const integer_t* nitmax,
-        const integer_t* n, const integer_t* mmax, const integer_t* minp,
-        const integer_t* nbmin, const float* abstol, const float* reltol,
-        const float* pivmin, const float* d, const float* e, const float* e2,
-        integer_t* nval, float* ab, float* c, integer_t* mout, integer_t* nab,
-        float* work, integer_t* iwork, integer_t* info );
-void LAPACK_DLAEBZ( const integer_t* ijob, const integer_t* nitmax,
-        const integer_t* n, const integer_t* mmax, const integer_t* minp,
-        const integer_t* nbmin, const double* abstol, const double* reltol,
-        const double* pivmin, const double* d, const double* e,
-        const double* e2, integer_t* nval, double* ab, double* c,
-        integer_t* mout, integer_t* nab, double* work, integer_t* iwork,
-        integer_t* info );
+void LAPACK_SLAEBZ( const fortran_int_t* ijob, const fortran_int_t* nitmax,
+        const fortran_int_t* n, const fortran_int_t* mmax,
+        const fortran_int_t* minp, const fortran_int_t* nbmin,
+        const float* abstol, const float* reltol, const float* pivmin,
+        const float* d, const float* e, const float* e2, fortran_int_t* nval,
+        float* ab, float* c, fortran_int_t* mout, fortran_int_t* nab,
+        float* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DLAEBZ( const fortran_int_t* ijob, const fortran_int_t* nitmax,
+        const fortran_int_t* n, const fortran_int_t* mmax,
+        const fortran_int_t* minp, const fortran_int_t* nbmin,
+        const double* abstol, const double* reltol, const double* pivmin,
+        const double* d, const double* e, const double* e2,
+        fortran_int_t* nval, double* ab, double* c, fortran_int_t* mout,
+        fortran_int_t* nab, double* work, fortran_int_t* iwork,
+        fortran_int_t* info );
 
 // Value-type variants of latrd
-void LAPACK_SLATRD( const char* uplo, const integer_t* n, const integer_t* nb,
-        float* a, const integer_t* lda, float* e, float* tau, float* w,
-        const integer_t* ldw );
-void LAPACK_DLATRD( const char* uplo, const integer_t* n, const integer_t* nb,
-        double* a, const integer_t* lda, double* e, double* tau, double* w,
-        const integer_t* ldw );
-void LAPACK_CLATRD( const char* uplo, const integer_t* n, const integer_t* nb,
-        fcomplex_t* a, const integer_t* lda, float* e, fcomplex_t* tau,
-        fcomplex_t* w, const integer_t* ldw );
-void LAPACK_ZLATRD( const char* uplo, const integer_t* n, const integer_t* nb,
-        dcomplex_t* a, const integer_t* lda, double* e, dcomplex_t* tau,
-        dcomplex_t* w, const integer_t* ldw );
+void LAPACK_SLATRD( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nb, float* a, const fortran_int_t* lda, float* e,
+        float* tau, float* w, const fortran_int_t* ldw );
+void LAPACK_DLATRD( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nb, double* a, const fortran_int_t* lda,
+        double* e, double* tau, double* w, const fortran_int_t* ldw );
+void LAPACK_CLATRD( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nb, void* a, const fortran_int_t* lda, float* e,
+        void* tau, void* w, const fortran_int_t* ldw );
+void LAPACK_ZLATRD( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nb, void* a, const fortran_int_t* lda, double* e,
+        void* tau, void* w, const fortran_int_t* ldw );
 
 // Value-type variants of opgtr
-void LAPACK_SOPGTR( const char* uplo, const integer_t* n, const float* ap,
-        const float* tau, float* q, const integer_t* ldq, float* work,
-        integer_t* info );
-void LAPACK_DOPGTR( const char* uplo, const integer_t* n, const double* ap,
-        const double* tau, double* q, const integer_t* ldq, double* work,
-        integer_t* info );
+void LAPACK_SOPGTR( const char* uplo, const fortran_int_t* n, const float* ap,
+        const float* tau, float* q, const fortran_int_t* ldq, float* work,
+        fortran_int_t* info );
+void LAPACK_DOPGTR( const char* uplo, const fortran_int_t* n,
+        const double* ap, const double* tau, double* q,
+        const fortran_int_t* ldq, double* work, fortran_int_t* info );
 
 // Value-type variants of opmtr
 void LAPACK_SOPMTR( const char* side, const char* uplo, const char* trans,
-        const integer_t* m, const integer_t* n, const float* ap,
-        const float* tau, float* c, const integer_t* ldc, float* work,
-        integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n, const float* ap,
+        const float* tau, float* c, const fortran_int_t* ldc, float* work,
+        fortran_int_t* info );
 void LAPACK_DOPMTR( const char* side, const char* uplo, const char* trans,
-        const integer_t* m, const integer_t* n, const double* ap,
-        const double* tau, double* c, const integer_t* ldc, double* work,
-        integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n, const double* ap,
+        const double* tau, double* c, const fortran_int_t* ldc, double* work,
+        fortran_int_t* info );
 
 // Value-type variants of orgtr
-void LAPACK_SORGTR( const char* uplo, const integer_t* n, float* a,
-        const integer_t* lda, const float* tau, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DORGTR( const char* uplo, const integer_t* n, double* a,
-        const integer_t* lda, const double* tau, double* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_SORGTR( const char* uplo, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, const float* tau, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DORGTR( const char* uplo, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, const double* tau, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of ormtr
 void LAPACK_SORMTR( const char* side, const char* uplo, const char* trans,
-        const integer_t* m, const integer_t* n, const float* a,
-        const integer_t* lda, const float* tau, float* c,
-        const integer_t* ldc, float* work, const integer_t* lwork,
-        integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n, const float* a,
+        const fortran_int_t* lda, const float* tau, float* c,
+        const fortran_int_t* ldc, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 void LAPACK_DORMTR( const char* side, const char* uplo, const char* trans,
-        const integer_t* m, const integer_t* n, const double* a,
-        const integer_t* lda, const double* tau, double* c,
-        const integer_t* ldc, double* work, const integer_t* lwork,
-        integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n, const double* a,
+        const fortran_int_t* lda, const double* tau, double* c,
+        const fortran_int_t* ldc, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of pteqr
-void LAPACK_SPTEQR( const char* compz, const integer_t* n, float* d, float* e,
-        float* z, const integer_t* ldz, float* work, integer_t* info );
-void LAPACK_DPTEQR( const char* compz, const integer_t* n, double* d,
-        double* e, double* z, const integer_t* ldz, double* work,
-        integer_t* info );
-void LAPACK_CPTEQR( const char* compz, const integer_t* n, float* d, float* e,
-        fcomplex_t* z, const integer_t* ldz, float* work, integer_t* info );
-void LAPACK_ZPTEQR( const char* compz, const integer_t* n, double* d,
-        double* e, dcomplex_t* z, const integer_t* ldz, double* work,
-        integer_t* info );
+void LAPACK_SPTEQR( const char* compz, const fortran_int_t* n, float* d,
+        float* e, float* z, const fortran_int_t* ldz, float* work,
+        fortran_int_t* info );
+void LAPACK_DPTEQR( const char* compz, const fortran_int_t* n, double* d,
+        double* e, double* z, const fortran_int_t* ldz, double* work,
+        fortran_int_t* info );
+void LAPACK_CPTEQR( const char* compz, const fortran_int_t* n, float* d,
+        float* e, void* z, const fortran_int_t* ldz, float* work,
+        fortran_int_t* info );
+void LAPACK_ZPTEQR( const char* compz, const fortran_int_t* n, double* d,
+        double* e, void* z, const fortran_int_t* ldz, double* work,
+        fortran_int_t* info );
 
 // Value-type variants of sbtrd
-void LAPACK_SSBTRD( const char* vect, const char* uplo, const integer_t* n,
-        const integer_t* kd, float* ab, const integer_t* ldab, float* d,
-        float* e, float* q, const integer_t* ldq, float* work,
-        integer_t* info );
-void LAPACK_DSBTRD( const char* vect, const char* uplo, const integer_t* n,
-        const integer_t* kd, double* ab, const integer_t* ldab, double* d,
-        double* e, double* q, const integer_t* ldq, double* work,
-        integer_t* info );
+void LAPACK_SSBTRD( const char* vect, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd, float* ab,
+        const fortran_int_t* ldab, float* d, float* e, float* q,
+        const fortran_int_t* ldq, float* work, fortran_int_t* info );
+void LAPACK_DSBTRD( const char* vect, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd, double* ab,
+        const fortran_int_t* ldab, double* d, double* e, double* q,
+        const fortran_int_t* ldq, double* work, fortran_int_t* info );
 
 // Value-type variants of stebz
-void LAPACK_SSTEBZ( const char* range, const char* order, const integer_t* n,
-        const float* vl, const float* vu, const integer_t* il,
-        const integer_t* iu, const float* abstol, const float* d,
-        const float* e, integer_t* m, integer_t* nsplit, float* w,
-        integer_t* iblock, integer_t* isplit, float* work, integer_t* iwork,
-        integer_t* info );
-void LAPACK_DSTEBZ( const char* range, const char* order, const integer_t* n,
-        const double* vl, const double* vu, const integer_t* il,
-        const integer_t* iu, const double* abstol, const double* d,
-        const double* e, integer_t* m, integer_t* nsplit, double* w,
-        integer_t* iblock, integer_t* isplit, double* work, integer_t* iwork,
-        integer_t* info );
+void LAPACK_SSTEBZ( const char* range, const char* order,
+        const fortran_int_t* n, const float* vl, const float* vu,
+        const fortran_int_t* il, const fortran_int_t* iu, const float* abstol,
+        const float* d, const float* e, fortran_int_t* m,
+        fortran_int_t* nsplit, float* w, fortran_int_t* iblock,
+        fortran_int_t* isplit, float* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DSTEBZ( const char* range, const char* order,
+        const fortran_int_t* n, const double* vl, const double* vu,
+        const fortran_int_t* il, const fortran_int_t* iu,
+        const double* abstol, const double* d, const double* e,
+        fortran_int_t* m, fortran_int_t* nsplit, double* w,
+        fortran_int_t* iblock, fortran_int_t* isplit, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
 
 // Value-type variants of stedc
-void LAPACK_SSTEDC( const char* compz, const integer_t* n, float* d, float* e,
-        float* z, const integer_t* ldz, float* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_DSTEDC( const char* compz, const integer_t* n, double* d,
-        double* e, double* z, const integer_t* ldz, double* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
-void LAPACK_CSTEDC( const char* compz, const integer_t* n, float* d, float* e,
-        fcomplex_t* z, const integer_t* ldz, fcomplex_t* work,
-        const integer_t* lwork, float* rwork, const integer_t* lrwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_ZSTEDC( const char* compz, const integer_t* n, double* d,
-        double* e, dcomplex_t* z, const integer_t* ldz, dcomplex_t* work,
-        const integer_t* lwork, double* rwork, const integer_t* lrwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
+void LAPACK_SSTEDC( const char* compz, const fortran_int_t* n, float* d,
+        float* e, float* z, const fortran_int_t* ldz, float* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_DSTEDC( const char* compz, const fortran_int_t* n, double* d,
+        double* e, double* z, const fortran_int_t* ldz, double* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_CSTEDC( const char* compz, const fortran_int_t* n, float* d,
+        float* e, void* z, const fortran_int_t* ldz, void* work,
+        const fortran_int_t* lwork, float* rwork, const fortran_int_t* lrwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
+void LAPACK_ZSTEDC( const char* compz, const fortran_int_t* n, double* d,
+        double* e, void* z, const fortran_int_t* ldz, void* work,
+        const fortran_int_t* lwork, double* rwork,
+        const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of stegr
-void LAPACK_SSTEGR( const char* jobz, const char* range, const integer_t* n,
-        float* d, float* e, const float* vl, const float* vu,
-        const integer_t* il, const integer_t* iu, const float* abstol,
-        integer_t* m, float* w, float* z, const integer_t* ldz,
-        integer_t* isuppz, float* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_DSTEGR( const char* jobz, const char* range, const integer_t* n,
-        double* d, double* e, const double* vl, const double* vu,
-        const integer_t* il, const integer_t* iu, const double* abstol,
-        integer_t* m, double* w, double* z, const integer_t* ldz,
-        integer_t* isuppz, double* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_CSTEGR( const char* jobz, const char* range, const integer_t* n,
-        float* d, float* e, const float* vl, const float* vu,
-        const integer_t* il, const integer_t* iu, const float* abstol,
-        integer_t* m, float* w, fcomplex_t* z, const integer_t* ldz,
-        integer_t* isuppz, float* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_ZSTEGR( const char* jobz, const char* range, const integer_t* n,
-        double* d, double* e, const double* vl, const double* vu,
-        const integer_t* il, const integer_t* iu, const double* abstol,
-        integer_t* m, double* w, dcomplex_t* z, const integer_t* ldz,
-        integer_t* isuppz, double* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
+void LAPACK_SSTEGR( const char* jobz, const char* range,
+        const fortran_int_t* n, float* d, float* e, const float* vl,
+        const float* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        const float* abstol, fortran_int_t* m, float* w, float* z,
+        const fortran_int_t* ldz, fortran_int_t* isuppz, float* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_DSTEGR( const char* jobz, const char* range,
+        const fortran_int_t* n, double* d, double* e, const double* vl,
+        const double* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        const double* abstol, fortran_int_t* m, double* w, double* z,
+        const fortran_int_t* ldz, fortran_int_t* isuppz, double* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_CSTEGR( const char* jobz, const char* range,
+        const fortran_int_t* n, float* d, float* e, const float* vl,
+        const float* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        const float* abstol, fortran_int_t* m, float* w, void* z,
+        const fortran_int_t* ldz, fortran_int_t* isuppz, float* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_ZSTEGR( const char* jobz, const char* range,
+        const fortran_int_t* n, double* d, double* e, const double* vl,
+        const double* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        const double* abstol, fortran_int_t* m, double* w, void* z,
+        const fortran_int_t* ldz, fortran_int_t* isuppz, double* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of stein
-void LAPACK_SSTEIN( const integer_t* n, const float* d, const float* e,
-        const integer_t* m, const float* w, const integer_t* iblock,
-        const integer_t* isplit, float* z, const integer_t* ldz, float* work,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
-void LAPACK_DSTEIN( const integer_t* n, const double* d, const double* e,
-        const integer_t* m, const double* w, const integer_t* iblock,
-        const integer_t* isplit, double* z, const integer_t* ldz,
-        double* work, integer_t* iwork, integer_t* ifail, integer_t* info );
-void LAPACK_CSTEIN( const integer_t* n, const float* d, const float* e,
-        const integer_t* m, const float* w, const integer_t* iblock,
-        const integer_t* isplit, fcomplex_t* z, const integer_t* ldz,
-        float* work, integer_t* iwork, integer_t* ifail, integer_t* info );
-void LAPACK_ZSTEIN( const integer_t* n, const double* d, const double* e,
-        const integer_t* m, const double* w, const integer_t* iblock,
-        const integer_t* isplit, dcomplex_t* z, const integer_t* ldz,
-        double* work, integer_t* iwork, integer_t* ifail, integer_t* info );
+void LAPACK_SSTEIN( const fortran_int_t* n, const float* d, const float* e,
+        const fortran_int_t* m, const float* w, const fortran_int_t* iblock,
+        const fortran_int_t* isplit, float* z, const fortran_int_t* ldz,
+        float* work, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t* info );
+void LAPACK_DSTEIN( const fortran_int_t* n, const double* d, const double* e,
+        const fortran_int_t* m, const double* w, const fortran_int_t* iblock,
+        const fortran_int_t* isplit, double* z, const fortran_int_t* ldz,
+        double* work, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t* info );
+void LAPACK_CSTEIN( const fortran_int_t* n, const float* d, const float* e,
+        const fortran_int_t* m, const float* w, const fortran_int_t* iblock,
+        const fortran_int_t* isplit, void* z, const fortran_int_t* ldz,
+        float* work, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t* info );
+void LAPACK_ZSTEIN( const fortran_int_t* n, const double* d, const double* e,
+        const fortran_int_t* m, const double* w, const fortran_int_t* iblock,
+        const fortran_int_t* isplit, void* z, const fortran_int_t* ldz,
+        double* work, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t* info );
 
 // Value-type variants of stemr
-void LAPACK_SSTEMR( const char* jobz, const char* range, const integer_t* n,
-        float* d, float* e, const float* vl, const float* vu,
-        const integer_t* il, const integer_t* iu, integer_t* m, float* w,
-        float* z, const integer_t* ldz, const integer_t* nzc,
-        integer_t* isuppz, logical_t* tryrac, float* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
-void LAPACK_DSTEMR( const char* jobz, const char* range, const integer_t* n,
-        double* d, double* e, const double* vl, const double* vu,
-        const integer_t* il, const integer_t* iu, integer_t* m, double* w,
-        double* z, const integer_t* ldz, const integer_t* nzc,
-        integer_t* isuppz, logical_t* tryrac, double* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
-void LAPACK_CSTEMR( const char* jobz, const char* range, const integer_t* n,
-        float* d, float* e, const float* vl, const float* vu,
-        const integer_t* il, const integer_t* iu, integer_t* m, float* w,
-        fcomplex_t* z, const integer_t* ldz, const integer_t* nzc,
-        integer_t* isuppz, logical_t* tryrac, float* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
-void LAPACK_ZSTEMR( const char* jobz, const char* range, const integer_t* n,
-        double* d, double* e, const double* vl, const double* vu,
-        const integer_t* il, const integer_t* iu, integer_t* m, double* w,
-        dcomplex_t* z, const integer_t* ldz, const integer_t* nzc,
-        integer_t* isuppz, logical_t* tryrac, double* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+void LAPACK_SSTEMR( const char* jobz, const char* range,
+        const fortran_int_t* n, float* d, float* e, const float* vl,
+        const float* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        fortran_int_t* m, float* w, float* z, const fortran_int_t* ldz,
+        const fortran_int_t* nzc, fortran_int_t* isuppz, logical_t* tryrac,
+        float* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_DSTEMR( const char* jobz, const char* range,
+        const fortran_int_t* n, double* d, double* e, const double* vl,
+        const double* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        fortran_int_t* m, double* w, double* z, const fortran_int_t* ldz,
+        const fortran_int_t* nzc, fortran_int_t* isuppz, logical_t* tryrac,
+        double* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_CSTEMR( const char* jobz, const char* range,
+        const fortran_int_t* n, float* d, float* e, const float* vl,
+        const float* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        fortran_int_t* m, float* w, void* z, const fortran_int_t* ldz,
+        const fortran_int_t* nzc, fortran_int_t* isuppz, logical_t* tryrac,
+        float* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_ZSTEMR( const char* jobz, const char* range,
+        const fortran_int_t* n, double* d, double* e, const double* vl,
+        const double* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        fortran_int_t* m, double* w, void* z, const fortran_int_t* ldz,
+        const fortran_int_t* nzc, fortran_int_t* isuppz, logical_t* tryrac,
+        double* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of steqr
-void LAPACK_SSTEQR( const char* compz, const integer_t* n, float* d, float* e,
-        float* z, const integer_t* ldz, float* work, integer_t* info );
-void LAPACK_DSTEQR( const char* compz, const integer_t* n, double* d,
-        double* e, double* z, const integer_t* ldz, double* work,
-        integer_t* info );
-void LAPACK_CSTEQR( const char* compz, const integer_t* n, float* d, float* e,
-        fcomplex_t* z, const integer_t* ldz, float* work, integer_t* info );
-void LAPACK_ZSTEQR( const char* compz, const integer_t* n, double* d,
-        double* e, dcomplex_t* z, const integer_t* ldz, double* work,
-        integer_t* info );
+void LAPACK_SSTEQR( const char* compz, const fortran_int_t* n, float* d,
+        float* e, float* z, const fortran_int_t* ldz, float* work,
+        fortran_int_t* info );
+void LAPACK_DSTEQR( const char* compz, const fortran_int_t* n, double* d,
+        double* e, double* z, const fortran_int_t* ldz, double* work,
+        fortran_int_t* info );
+void LAPACK_CSTEQR( const char* compz, const fortran_int_t* n, float* d,
+        float* e, void* z, const fortran_int_t* ldz, float* work,
+        fortran_int_t* info );
+void LAPACK_ZSTEQR( const char* compz, const fortran_int_t* n, double* d,
+        double* e, void* z, const fortran_int_t* ldz, double* work,
+        fortran_int_t* info );
 
 // Value-type variants of sterf
-void LAPACK_SSTERF( const integer_t* n, float* d, float* e, integer_t* info );
-void LAPACK_DSTERF( const integer_t* n, double* d, double* e,
-        integer_t* info );
+void LAPACK_SSTERF( const fortran_int_t* n, float* d, float* e,
+        fortran_int_t* info );
+void LAPACK_DSTERF( const fortran_int_t* n, double* d, double* e,
+        fortran_int_t* info );
 
 // Value-type variants of sytrd
-void LAPACK_SSYTRD( const char* uplo, const integer_t* n, float* a,
-        const integer_t* lda, float* d, float* e, float* tau, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DSYTRD( const char* uplo, const integer_t* n, double* a,
-        const integer_t* lda, double* d, double* e, double* tau, double* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_SSYTRD( const char* uplo, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* d, float* e, float* tau, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DSYTRD( const char* uplo, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* d, double* e, double* tau,
+        double* work, const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of ungtr
-void LAPACK_CUNGTR( const char* uplo, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, const fcomplex_t* tau, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_ZUNGTR( const char* uplo, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, const dcomplex_t* tau, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_CUNGTR( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, const void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZUNGTR( const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, const void* tau, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of unmtr
 void LAPACK_CUNMTR( const char* side, const char* uplo, const char* trans,
-        const integer_t* m, const integer_t* n, const fcomplex_t* a,
-        const integer_t* lda, const fcomplex_t* tau, fcomplex_t* c,
-        const integer_t* ldc, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const void* tau, void* c,
+        const fortran_int_t* ldc, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 void LAPACK_ZUNMTR( const char* side, const char* uplo, const char* trans,
-        const integer_t* m, const integer_t* n, const dcomplex_t* a,
-        const integer_t* lda, const dcomplex_t* tau, dcomplex_t* c,
-        const integer_t* ldc, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const void* tau, void* c,
+        const fortran_int_t* ldc, void* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of upgtr
-void LAPACK_CUPGTR( const char* uplo, const integer_t* n,
-        const fcomplex_t* ap, const fcomplex_t* tau, fcomplex_t* q,
-        const integer_t* ldq, fcomplex_t* work, integer_t* info );
-void LAPACK_ZUPGTR( const char* uplo, const integer_t* n,
-        const dcomplex_t* ap, const dcomplex_t* tau, dcomplex_t* q,
-        const integer_t* ldq, dcomplex_t* work, integer_t* info );
+void LAPACK_CUPGTR( const char* uplo, const fortran_int_t* n, const void* ap,
+        const void* tau, void* q, const fortran_int_t* ldq, void* work,
+        fortran_int_t* info );
+void LAPACK_ZUPGTR( const char* uplo, const fortran_int_t* n, const void* ap,
+        const void* tau, void* q, const fortran_int_t* ldq, void* work,
+        fortran_int_t* info );
 
 // Value-type variants of upmtr
 void LAPACK_CUPMTR( const char* side, const char* uplo, const char* trans,
-        const integer_t* m, const integer_t* n, const fcomplex_t* ap,
-        const fcomplex_t* tau, fcomplex_t* c, const integer_t* ldc,
-        fcomplex_t* work, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n, const void* ap,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        fortran_int_t* info );
 void LAPACK_ZUPMTR( const char* side, const char* uplo, const char* trans,
-        const integer_t* m, const integer_t* n, const dcomplex_t* ap,
-        const dcomplex_t* tau, dcomplex_t* c, const integer_t* ldc,
-        dcomplex_t* work, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n, const void* ap,
+        const void* tau, void* c, const fortran_int_t* ldc, void* work,
+        fortran_int_t* info );
 
 // Value-type variants of ggbak
-void LAPACK_SGGBAK( const char* job, const char* side, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, const float* lscale,
-        const float* rscale, const integer_t* m, float* v,
-        const integer_t* ldv, integer_t* info );
-void LAPACK_DGGBAK( const char* job, const char* side, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, const double* lscale,
-        const double* rscale, const integer_t* m, double* v,
-        const integer_t* ldv, integer_t* info );
-void LAPACK_CGGBAK( const char* job, const char* side, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, const float* lscale,
-        const float* rscale, const integer_t* m, fcomplex_t* v,
-        const integer_t* ldv, integer_t* info );
-void LAPACK_ZGGBAK( const char* job, const char* side, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, const double* lscale,
-        const double* rscale, const integer_t* m, dcomplex_t* v,
-        const integer_t* ldv, integer_t* info );
+void LAPACK_SGGBAK( const char* job, const char* side, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi,
+        const float* lscale, const float* rscale, const fortran_int_t* m,
+        float* v, const fortran_int_t* ldv, fortran_int_t* info );
+void LAPACK_DGGBAK( const char* job, const char* side, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi,
+        const double* lscale, const double* rscale, const fortran_int_t* m,
+        double* v, const fortran_int_t* ldv, fortran_int_t* info );
+void LAPACK_CGGBAK( const char* job, const char* side, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi,
+        const float* lscale, const float* rscale, const fortran_int_t* m,
+        void* v, const fortran_int_t* ldv, fortran_int_t* info );
+void LAPACK_ZGGBAK( const char* job, const char* side, const fortran_int_t* n,
+        const fortran_int_t* ilo, const fortran_int_t* ihi,
+        const double* lscale, const double* rscale, const fortran_int_t* m,
+        void* v, const fortran_int_t* ldv, fortran_int_t* info );
 
 // Value-type variants of ggbal
-void LAPACK_SGGBAL( const char* job, const integer_t* n, float* a,
-        const integer_t* lda, float* b, const integer_t* ldb, integer_t* ilo,
-        integer_t* ihi, float* lscale, float* rscale, float* work,
-        integer_t* info );
-void LAPACK_DGGBAL( const char* job, const integer_t* n, double* a,
-        const integer_t* lda, double* b, const integer_t* ldb, integer_t* ilo,
-        integer_t* ihi, double* lscale, double* rscale, double* work,
-        integer_t* info );
-void LAPACK_CGGBAL( const char* job, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* b, const integer_t* ldb,
-        integer_t* ilo, integer_t* ihi, float* lscale, float* rscale,
-        float* work, integer_t* info );
-void LAPACK_ZGGBAL( const char* job, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* b, const integer_t* ldb,
-        integer_t* ilo, integer_t* ihi, double* lscale, double* rscale,
-        double* work, integer_t* info );
+void LAPACK_SGGBAL( const char* job, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* b, const fortran_int_t* ldb,
+        fortran_int_t* ilo, fortran_int_t* ihi, float* lscale, float* rscale,
+        float* work, fortran_int_t* info );
+void LAPACK_DGGBAL( const char* job, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* b, const fortran_int_t* ldb,
+        fortran_int_t* ilo, fortran_int_t* ihi, double* lscale,
+        double* rscale, double* work, fortran_int_t* info );
+void LAPACK_CGGBAL( const char* job, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        fortran_int_t* ilo, fortran_int_t* ihi, float* lscale, float* rscale,
+        float* work, fortran_int_t* info );
+void LAPACK_ZGGBAL( const char* job, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        fortran_int_t* ilo, fortran_int_t* ihi, double* lscale,
+        double* rscale, double* work, fortran_int_t* info );
 
 // Value-type variants of gghrd
-void LAPACK_SGGHRD( const char* compq, const char* compz, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, float* a,
-        const integer_t* lda, float* b, const integer_t* ldb, float* q,
-        const integer_t* ldq, float* z, const integer_t* ldz,
-        integer_t* info );
-void LAPACK_DGGHRD( const char* compq, const char* compz, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, double* a,
-        const integer_t* lda, double* b, const integer_t* ldb, double* q,
-        const integer_t* ldq, double* z, const integer_t* ldz,
-        integer_t* info );
-void LAPACK_CGGHRD( const char* compq, const char* compz, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* q, const integer_t* ldq, fcomplex_t* z,
-        const integer_t* ldz, integer_t* info );
-void LAPACK_ZGGHRD( const char* compq, const char* compz, const integer_t* n,
-        const integer_t* ilo, const integer_t* ihi, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* q, const integer_t* ldq, dcomplex_t* z,
-        const integer_t* ldz, integer_t* info );
+void LAPACK_SGGHRD( const char* compq, const char* compz,
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, float* a, const fortran_int_t* lda,
+        float* b, const fortran_int_t* ldb, float* q,
+        const fortran_int_t* ldq, float* z, const fortran_int_t* ldz,
+        fortran_int_t* info );
+void LAPACK_DGGHRD( const char* compq, const char* compz,
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, double* q,
+        const fortran_int_t* ldq, double* z, const fortran_int_t* ldz,
+        fortran_int_t* info );
+void LAPACK_CGGHRD( const char* compq, const char* compz,
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* q, const fortran_int_t* ldq, void* z,
+        const fortran_int_t* ldz, fortran_int_t* info );
+void LAPACK_ZGGHRD( const char* compq, const char* compz,
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* q, const fortran_int_t* ldq, void* z,
+        const fortran_int_t* ldz, fortran_int_t* info );
 
 // Value-type variants of hgeqz
 void LAPACK_SHGEQZ( const char* job, const char* compq, const char* compz,
-        const integer_t* n, const integer_t* ilo, const integer_t* ihi,
-        float* h, const integer_t* ldh, float* t, const integer_t* ldt,
-        float* alphar, float* alphai, float* beta, float* q,
-        const integer_t* ldq, float* z, const integer_t* ldz, float* work,
-        const integer_t* lwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, float* h, const fortran_int_t* ldh,
+        float* t, const fortran_int_t* ldt, float* alphar, float* alphai,
+        float* beta, float* q, const fortran_int_t* ldq, float* z,
+        const fortran_int_t* ldz, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 void LAPACK_DHGEQZ( const char* job, const char* compq, const char* compz,
-        const integer_t* n, const integer_t* ilo, const integer_t* ihi,
-        double* h, const integer_t* ldh, double* t, const integer_t* ldt,
-        double* alphar, double* alphai, double* beta, double* q,
-        const integer_t* ldq, double* z, const integer_t* ldz, double* work,
-        const integer_t* lwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, double* h, const fortran_int_t* ldh,
+        double* t, const fortran_int_t* ldt, double* alphar, double* alphai,
+        double* beta, double* q, const fortran_int_t* ldq, double* z,
+        const fortran_int_t* ldz, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 void LAPACK_CHGEQZ( const char* job, const char* compq, const char* compz,
-        const integer_t* n, const integer_t* ilo, const integer_t* ihi,
-        fcomplex_t* h, const integer_t* ldh, fcomplex_t* t,
-        const integer_t* ldt, fcomplex_t* alpha, fcomplex_t* beta,
-        fcomplex_t* q, const integer_t* ldq, fcomplex_t* z,
-        const integer_t* ldz, fcomplex_t* work, const integer_t* lwork,
-        float* rwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, void* h, const fortran_int_t* ldh, void* t,
+        const fortran_int_t* ldt, void* alpha, void* beta, void* q,
+        const fortran_int_t* ldq, void* z, const fortran_int_t* ldz,
+        void* work, const fortran_int_t* lwork, float* rwork,
+        fortran_int_t* info );
 void LAPACK_ZHGEQZ( const char* job, const char* compq, const char* compz,
-        const integer_t* n, const integer_t* ilo, const integer_t* ihi,
-        dcomplex_t* h, const integer_t* ldh, dcomplex_t* t,
-        const integer_t* ldt, dcomplex_t* alpha, dcomplex_t* beta,
-        dcomplex_t* q, const integer_t* ldq, dcomplex_t* z,
-        const integer_t* ldz, dcomplex_t* work, const integer_t* lwork,
-        double* rwork, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* ilo,
+        const fortran_int_t* ihi, void* h, const fortran_int_t* ldh, void* t,
+        const fortran_int_t* ldt, void* alpha, void* beta, void* q,
+        const fortran_int_t* ldq, void* z, const fortran_int_t* ldz,
+        void* work, const fortran_int_t* lwork, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of tgevc
 void LAPACK_STGEVC( const char* side, const char* howmny,
-        const logical_t* select, const integer_t* n, const float* s,
-        const integer_t* lds, const float* p, const integer_t* ldp, float* vl,
-        const integer_t* ldvl, float* vr, const integer_t* ldvr,
-        const integer_t* mm, integer_t* m, float* work, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const float* s,
+        const fortran_int_t* lds, const float* p, const fortran_int_t* ldp,
+        float* vl, const fortran_int_t* ldvl, float* vr,
+        const fortran_int_t* ldvr, const fortran_int_t* mm, fortran_int_t* m,
+        float* work, fortran_int_t* info );
 void LAPACK_DTGEVC( const char* side, const char* howmny,
-        const logical_t* select, const integer_t* n, const double* s,
-        const integer_t* lds, const double* p, const integer_t* ldp,
-        double* vl, const integer_t* ldvl, double* vr, const integer_t* ldvr,
-        const integer_t* mm, integer_t* m, double* work, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const double* s,
+        const fortran_int_t* lds, const double* p, const fortran_int_t* ldp,
+        double* vl, const fortran_int_t* ldvl, double* vr,
+        const fortran_int_t* ldvr, const fortran_int_t* mm, fortran_int_t* m,
+        double* work, fortran_int_t* info );
 void LAPACK_CTGEVC( const char* side, const char* howmny,
-        const logical_t* select, const integer_t* n, const fcomplex_t* s,
-        const integer_t* lds, const fcomplex_t* p, const integer_t* ldp,
-        fcomplex_t* vl, const integer_t* ldvl, fcomplex_t* vr,
-        const integer_t* ldvr, const integer_t* mm, integer_t* m,
-        fcomplex_t* work, float* rwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const void* s,
+        const fortran_int_t* lds, const void* p, const fortran_int_t* ldp,
+        void* vl, const fortran_int_t* ldvl, void* vr,
+        const fortran_int_t* ldvr, const fortran_int_t* mm, fortran_int_t* m,
+        void* work, float* rwork, fortran_int_t* info );
 void LAPACK_ZTGEVC( const char* side, const char* howmny,
-        const logical_t* select, const integer_t* n, const dcomplex_t* s,
-        const integer_t* lds, const dcomplex_t* p, const integer_t* ldp,
-        dcomplex_t* vl, const integer_t* ldvl, dcomplex_t* vr,
-        const integer_t* ldvr, const integer_t* mm, integer_t* m,
-        dcomplex_t* work, double* rwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const void* s,
+        const fortran_int_t* lds, const void* p, const fortran_int_t* ldp,
+        void* vl, const fortran_int_t* ldvl, void* vr,
+        const fortran_int_t* ldvr, const fortran_int_t* mm, fortran_int_t* m,
+        void* work, double* rwork, fortran_int_t* info );
 
 // Value-type variants of tgexc
 void LAPACK_STGEXC( const logical_t* wantq, const logical_t* wantz,
-        const integer_t* n, float* a, const integer_t* lda, float* b,
-        const integer_t* ldb, float* q, const integer_t* ldq, float* z,
-        const integer_t* ldz, integer_t* ifst, integer_t* ilst, float* work,
-        const integer_t* lwork, integer_t* info );
+        const fortran_int_t* n, float* a, const fortran_int_t* lda, float* b,
+        const fortran_int_t* ldb, float* q, const fortran_int_t* ldq,
+        float* z, const fortran_int_t* ldz, fortran_int_t* ifst,
+        fortran_int_t* ilst, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 void LAPACK_DTGEXC( const logical_t* wantq, const logical_t* wantz,
-        const integer_t* n, double* a, const integer_t* lda, double* b,
-        const integer_t* ldb, double* q, const integer_t* ldq, double* z,
-        const integer_t* ldz, integer_t* ifst, integer_t* ilst, double* work,
-        const integer_t* lwork, integer_t* info );
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, double* q,
+        const fortran_int_t* ldq, double* z, const fortran_int_t* ldz,
+        fortran_int_t* ifst, fortran_int_t* ilst, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 void LAPACK_CTGEXC( const logical_t* wantq, const logical_t* wantz,
-        const integer_t* n, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* b, const integer_t* ldb, fcomplex_t* q,
-        const integer_t* ldq, fcomplex_t* z, const integer_t* ldz,
-        const integer_t* ifst, integer_t* ilst, integer_t* info );
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* q, const fortran_int_t* ldq, void* z,
+        const fortran_int_t* ldz, const fortran_int_t* ifst,
+        fortran_int_t* ilst, fortran_int_t* info );
 void LAPACK_ZTGEXC( const logical_t* wantq, const logical_t* wantz,
-        const integer_t* n, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* b, const integer_t* ldb, dcomplex_t* q,
-        const integer_t* ldq, dcomplex_t* z, const integer_t* ldz,
-        const integer_t* ifst, integer_t* ilst, integer_t* info );
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* q, const fortran_int_t* ldq, void* z,
+        const fortran_int_t* ldz, const fortran_int_t* ifst,
+        fortran_int_t* ilst, fortran_int_t* info );
 
 // Value-type variants of tgsen
-void LAPACK_STGSEN( const integer_t* ijob, const logical_t* wantq,
-        const logical_t* wantz, const logical_t* select, const integer_t* n,
-        float* a, const integer_t* lda, float* b, const integer_t* ldb,
-        float* alphar, float* alphai, float* beta, float* q,
-        const integer_t* ldq, float* z, const integer_t* ldz, integer_t* m,
-        float* pl, float* pr, float* dif, float* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_DTGSEN( const integer_t* ijob, const logical_t* wantq,
-        const logical_t* wantz, const logical_t* select, const integer_t* n,
-        double* a, const integer_t* lda, double* b, const integer_t* ldb,
-        double* alphar, double* alphai, double* beta, double* q,
-        const integer_t* ldq, double* z, const integer_t* ldz, integer_t* m,
-        double* pl, double* pr, double* dif, double* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
-void LAPACK_CTGSEN( const integer_t* ijob, const logical_t* wantq,
-        const logical_t* wantz, const logical_t* select, const integer_t* n,
-        fcomplex_t* a, const integer_t* lda, fcomplex_t* b,
-        const integer_t* ldb, fcomplex_t* alpha, fcomplex_t* beta,
-        fcomplex_t* q, const integer_t* ldq, fcomplex_t* z,
-        const integer_t* ldz, integer_t* m, float* pl, float* pr, float* dif,
-        fcomplex_t* work, const integer_t* lwork, integer_t* iwork,
-        const integer_t* liwork, integer_t* info );
-void LAPACK_ZTGSEN( const integer_t* ijob, const logical_t* wantq,
-        const logical_t* wantz, const logical_t* select, const integer_t* n,
-        dcomplex_t* a, const integer_t* lda, dcomplex_t* b,
-        const integer_t* ldb, dcomplex_t* alpha, dcomplex_t* beta,
-        dcomplex_t* q, const integer_t* ldq, dcomplex_t* z,
-        const integer_t* ldz, integer_t* m, double* pl, double* pr,
-        double* dif, dcomplex_t* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
+void LAPACK_STGSEN( const fortran_int_t* ijob, const logical_t* wantq,
+        const logical_t* wantz, const logical_t* select,
+        const fortran_int_t* n, float* a, const fortran_int_t* lda, float* b,
+        const fortran_int_t* ldb, float* alphar, float* alphai, float* beta,
+        float* q, const fortran_int_t* ldq, float* z,
+        const fortran_int_t* ldz, fortran_int_t* m, float* pl, float* pr,
+        float* dif, float* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
+void LAPACK_DTGSEN( const fortran_int_t* ijob, const logical_t* wantq,
+        const logical_t* wantz, const logical_t* select,
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, double* alphar, double* alphai,
+        double* beta, double* q, const fortran_int_t* ldq, double* z,
+        const fortran_int_t* ldz, fortran_int_t* m, double* pl, double* pr,
+        double* dif, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
+void LAPACK_CTGSEN( const fortran_int_t* ijob, const logical_t* wantq,
+        const logical_t* wantz, const logical_t* select,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* alpha, void* beta, void* q,
+        const fortran_int_t* ldq, void* z, const fortran_int_t* ldz,
+        fortran_int_t* m, float* pl, float* pr, float* dif, void* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_ZTGSEN( const fortran_int_t* ijob, const logical_t* wantq,
+        const logical_t* wantz, const logical_t* select,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* alpha, void* beta, void* q,
+        const fortran_int_t* ldq, void* z, const fortran_int_t* ldz,
+        fortran_int_t* m, double* pl, double* pr, double* dif, void* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of tgsna
 void LAPACK_STGSNA( const char* job, const char* howmny,
-        const logical_t* select, const integer_t* n, const float* a,
-        const integer_t* lda, const float* b, const integer_t* ldb,
-        const float* vl, const integer_t* ldvl, const float* vr,
-        const integer_t* ldvr, float* s, float* dif, const integer_t* mm,
-        integer_t* m, float* work, const integer_t* lwork, integer_t* iwork,
-        integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const float* a,
+        const fortran_int_t* lda, const float* b, const fortran_int_t* ldb,
+        const float* vl, const fortran_int_t* ldvl, const float* vr,
+        const fortran_int_t* ldvr, float* s, float* dif,
+        const fortran_int_t* mm, fortran_int_t* m, float* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* info );
 void LAPACK_DTGSNA( const char* job, const char* howmny,
-        const logical_t* select, const integer_t* n, const double* a,
-        const integer_t* lda, const double* b, const integer_t* ldb,
-        const double* vl, const integer_t* ldvl, const double* vr,
-        const integer_t* ldvr, double* s, double* dif, const integer_t* mm,
-        integer_t* m, double* work, const integer_t* lwork, integer_t* iwork,
-        integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const double* a,
+        const fortran_int_t* lda, const double* b, const fortran_int_t* ldb,
+        const double* vl, const fortran_int_t* ldvl, const double* vr,
+        const fortran_int_t* ldvr, double* s, double* dif,
+        const fortran_int_t* mm, fortran_int_t* m, double* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* info );
 void LAPACK_CTGSNA( const char* job, const char* howmny,
-        const logical_t* select, const integer_t* n, const fcomplex_t* a,
-        const integer_t* lda, const fcomplex_t* b, const integer_t* ldb,
-        const fcomplex_t* vl, const integer_t* ldvl, const fcomplex_t* vr,
-        const integer_t* ldvr, float* s, float* dif, const integer_t* mm,
-        integer_t* m, fcomplex_t* work, const integer_t* lwork,
-        integer_t* iwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const void* b, const fortran_int_t* ldb,
+        const void* vl, const fortran_int_t* ldvl, const void* vr,
+        const fortran_int_t* ldvr, float* s, float* dif,
+        const fortran_int_t* mm, fortran_int_t* m, void* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* info );
 void LAPACK_ZTGSNA( const char* job, const char* howmny,
-        const logical_t* select, const integer_t* n, const dcomplex_t* a,
-        const integer_t* lda, const dcomplex_t* b, const integer_t* ldb,
-        const dcomplex_t* vl, const integer_t* ldvl, const dcomplex_t* vr,
-        const integer_t* ldvr, double* s, double* dif, const integer_t* mm,
-        integer_t* m, dcomplex_t* work, const integer_t* lwork,
-        integer_t* iwork, integer_t* info );
+        const logical_t* select, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const void* b, const fortran_int_t* ldb,
+        const void* vl, const fortran_int_t* ldvl, const void* vr,
+        const fortran_int_t* ldvr, double* s, double* dif,
+        const fortran_int_t* mm, fortran_int_t* m, void* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* info );
 
 // Value-type variants of tgsyl
-void LAPACK_STGSYL( const char* trans, const integer_t* ijob,
-        const integer_t* m, const integer_t* n, const float* a,
-        const integer_t* lda, const float* b, const integer_t* ldb, float* c,
-        const integer_t* ldc, const float* d, const integer_t* ldd,
-        const float* e, const integer_t* lde, float* f, const integer_t* ldf,
-        float* scale, float* dif, float* work, const integer_t* lwork,
-        integer_t* iwork, integer_t* info );
-void LAPACK_DTGSYL( const char* trans, const integer_t* ijob,
-        const integer_t* m, const integer_t* n, const double* a,
-        const integer_t* lda, const double* b, const integer_t* ldb,
-        double* c, const integer_t* ldc, const double* d,
-        const integer_t* ldd, const double* e, const integer_t* lde,
-        double* f, const integer_t* ldf, double* scale, double* dif,
-        double* work, const integer_t* lwork, integer_t* iwork,
-        integer_t* info );
-void LAPACK_CTGSYL( const char* trans, const integer_t* ijob,
-        const integer_t* m, const integer_t* n, const fcomplex_t* a,
-        const integer_t* lda, const fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* c, const integer_t* ldc, const fcomplex_t* d,
-        const integer_t* ldd, const fcomplex_t* e, const integer_t* lde,
-        fcomplex_t* f, const integer_t* ldf, float* scale, float* dif,
-        fcomplex_t* work, const integer_t* lwork, integer_t* iwork,
-        integer_t* info );
-void LAPACK_ZTGSYL( const char* trans, const integer_t* ijob,
-        const integer_t* m, const integer_t* n, const dcomplex_t* a,
-        const integer_t* lda, const dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* c, const integer_t* ldc, const dcomplex_t* d,
-        const integer_t* ldd, const dcomplex_t* e, const integer_t* lde,
-        dcomplex_t* f, const integer_t* ldf, double* scale, double* dif,
-        dcomplex_t* work, const integer_t* lwork, integer_t* iwork,
-        integer_t* info );
+void LAPACK_STGSYL( const char* trans, const fortran_int_t* ijob,
+        const fortran_int_t* m, const fortran_int_t* n, const float* a,
+        const fortran_int_t* lda, const float* b, const fortran_int_t* ldb,
+        float* c, const fortran_int_t* ldc, const float* d,
+        const fortran_int_t* ldd, const float* e, const fortran_int_t* lde,
+        float* f, const fortran_int_t* ldf, float* scale, float* dif,
+        float* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DTGSYL( const char* trans, const fortran_int_t* ijob,
+        const fortran_int_t* m, const fortran_int_t* n, const double* a,
+        const fortran_int_t* lda, const double* b, const fortran_int_t* ldb,
+        double* c, const fortran_int_t* ldc, const double* d,
+        const fortran_int_t* ldd, const double* e, const fortran_int_t* lde,
+        double* f, const fortran_int_t* ldf, double* scale, double* dif,
+        double* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_CTGSYL( const char* trans, const fortran_int_t* ijob,
+        const fortran_int_t* m, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const void* b, const fortran_int_t* ldb,
+        void* c, const fortran_int_t* ldc, const void* d,
+        const fortran_int_t* ldd, const void* e, const fortran_int_t* lde,
+        void* f, const fortran_int_t* ldf, float* scale, float* dif,
+        void* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_ZTGSYL( const char* trans, const fortran_int_t* ijob,
+        const fortran_int_t* m, const fortran_int_t* n, const void* a,
+        const fortran_int_t* lda, const void* b, const fortran_int_t* ldb,
+        void* c, const fortran_int_t* ldc, const void* d,
+        const fortran_int_t* ldd, const void* e, const fortran_int_t* lde,
+        void* f, const fortran_int_t* ldf, double* scale, double* dif,
+        void* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* info );
 
 // Value-type variants of ggsvp
 void LAPACK_SGGSVP( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* p, const integer_t* n, float* a,
-        const integer_t* lda, float* b, const integer_t* ldb,
-        const float* tola, const float* tolb, integer_t* k, integer_t* l,
-        float* u, const integer_t* ldu, float* v, const integer_t* ldv,
-        float* q, const integer_t* ldq, integer_t* iwork, float* tau,
-        float* work, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, float* a, const fortran_int_t* lda, float* b,
+        const fortran_int_t* ldb, const float* tola, const float* tolb,
+        fortran_int_t* k, fortran_int_t* l, float* u,
+        const fortran_int_t* ldu, float* v, const fortran_int_t* ldv,
+        float* q, const fortran_int_t* ldq, fortran_int_t* iwork, float* tau,
+        float* work, fortran_int_t* info );
 void LAPACK_DGGSVP( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* p, const integer_t* n, double* a,
-        const integer_t* lda, double* b, const integer_t* ldb,
-        const double* tola, const double* tolb, integer_t* k, integer_t* l,
-        double* u, const integer_t* ldu, double* v, const integer_t* ldv,
-        double* q, const integer_t* ldq, integer_t* iwork, double* tau,
-        double* work, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, const double* tola,
+        const double* tolb, fortran_int_t* k, fortran_int_t* l, double* u,
+        const fortran_int_t* ldu, double* v, const fortran_int_t* ldv,
+        double* q, const fortran_int_t* ldq, fortran_int_t* iwork,
+        double* tau, double* work, fortran_int_t* info );
 void LAPACK_CGGSVP( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* p, const integer_t* n,
-        fcomplex_t* a, const integer_t* lda, fcomplex_t* b,
-        const integer_t* ldb, const float* tola, const float* tolb,
-        integer_t* k, integer_t* l, fcomplex_t* u, const integer_t* ldu,
-        fcomplex_t* v, const integer_t* ldv, fcomplex_t* q,
-        const integer_t* ldq, integer_t* iwork, float* rwork, fcomplex_t* tau,
-        fcomplex_t* work, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, const float* tola, const float* tolb,
+        fortran_int_t* k, fortran_int_t* l, void* u, const fortran_int_t* ldu,
+        void* v, const fortran_int_t* ldv, void* q, const fortran_int_t* ldq,
+        fortran_int_t* iwork, float* rwork, void* tau, void* work,
+        fortran_int_t* info );
 void LAPACK_ZGGSVP( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* p, const integer_t* n,
-        dcomplex_t* a, const integer_t* lda, dcomplex_t* b,
-        const integer_t* ldb, const double* tola, const double* tolb,
-        integer_t* k, integer_t* l, dcomplex_t* u, const integer_t* ldu,
-        dcomplex_t* v, const integer_t* ldv, dcomplex_t* q,
-        const integer_t* ldq, integer_t* iwork, double* rwork,
-        dcomplex_t* tau, dcomplex_t* work, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, const double* tola, const double* tolb,
+        fortran_int_t* k, fortran_int_t* l, void* u, const fortran_int_t* ldu,
+        void* v, const fortran_int_t* ldv, void* q, const fortran_int_t* ldq,
+        fortran_int_t* iwork, double* rwork, void* tau, void* work,
+        fortran_int_t* info );
 
 // Value-type variants of tgsja
 void LAPACK_STGSJA( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* p, const integer_t* n,
-        const integer_t* k, const integer_t* l, float* a,
-        const integer_t* lda, float* b, const integer_t* ldb,
-        const float* tola, const float* tolb, float* alpha, float* beta,
-        float* u, const integer_t* ldu, float* v, const integer_t* ldv,
-        float* q, const integer_t* ldq, float* work, integer_t* ncycle,
-        integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, const fortran_int_t* k,
+        const fortran_int_t* l, float* a, const fortran_int_t* lda, float* b,
+        const fortran_int_t* ldb, const float* tola, const float* tolb,
+        float* alpha, float* beta, float* u, const fortran_int_t* ldu,
+        float* v, const fortran_int_t* ldv, float* q,
+        const fortran_int_t* ldq, float* work, fortran_int_t* ncycle,
+        fortran_int_t* info );
 void LAPACK_DTGSJA( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* p, const integer_t* n,
-        const integer_t* k, const integer_t* l, double* a,
-        const integer_t* lda, double* b, const integer_t* ldb,
-        const double* tola, const double* tolb, double* alpha, double* beta,
-        double* u, const integer_t* ldu, double* v, const integer_t* ldv,
-        double* q, const integer_t* ldq, double* work, integer_t* ncycle,
-        integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, const fortran_int_t* k,
+        const fortran_int_t* l, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, const double* tola,
+        const double* tolb, double* alpha, double* beta, double* u,
+        const fortran_int_t* ldu, double* v, const fortran_int_t* ldv,
+        double* q, const fortran_int_t* ldq, double* work,
+        fortran_int_t* ncycle, fortran_int_t* info );
 void LAPACK_CTGSJA( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* p, const integer_t* n,
-        const integer_t* k, const integer_t* l, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* b, const integer_t* ldb,
-        const float* tola, const float* tolb, float* alpha, float* beta,
-        fcomplex_t* u, const integer_t* ldu, fcomplex_t* v,
-        const integer_t* ldv, fcomplex_t* q, const integer_t* ldq,
-        fcomplex_t* work, integer_t* ncycle, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, const fortran_int_t* k,
+        const fortran_int_t* l, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, const float* tola, const float* tolb,
+        float* alpha, float* beta, void* u, const fortran_int_t* ldu, void* v,
+        const fortran_int_t* ldv, void* q, const fortran_int_t* ldq,
+        void* work, fortran_int_t* ncycle, fortran_int_t* info );
 void LAPACK_ZTGSJA( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* p, const integer_t* n,
-        const integer_t* k, const integer_t* l, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* b, const integer_t* ldb,
-        const double* tola, const double* tolb, double* alpha, double* beta,
-        dcomplex_t* u, const integer_t* ldu, dcomplex_t* v,
-        const integer_t* ldv, dcomplex_t* q, const integer_t* ldq,
-        dcomplex_t* work, integer_t* ncycle, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* p,
+        const fortran_int_t* n, const fortran_int_t* k,
+        const fortran_int_t* l, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, const double* tola, const double* tolb,
+        double* alpha, double* beta, void* u, const fortran_int_t* ldu,
+        void* v, const fortran_int_t* ldv, void* q, const fortran_int_t* ldq,
+        void* work, fortran_int_t* ncycle, fortran_int_t* info );
 
 //
 // LAPACK driver routines
 //
 
 // Value-type variants of gegv
-void LAPACK_SGEGV( const char* jobvl, const char* jobvr, const integer_t* n,
-        float* a, const integer_t* lda, float* b, const integer_t* ldb,
-        float* alphar, float* alphai, float* beta, float* vl,
-        const integer_t* ldvl, float* vr, const integer_t* ldvr, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DGEGV( const char* jobvl, const char* jobvr, const integer_t* n,
-        double* a, const integer_t* lda, double* b, const integer_t* ldb,
-        double* alphar, double* alphai, double* beta, double* vl,
-        const integer_t* ldvl, double* vr, const integer_t* ldvr,
-        double* work, const integer_t* lwork, integer_t* info );
-void LAPACK_CGEGV( const char* jobvl, const char* jobvr, const integer_t* n,
-        fcomplex_t* a, const integer_t* lda, fcomplex_t* b,
-        const integer_t* ldb, fcomplex_t* alpha, fcomplex_t* beta,
-        fcomplex_t* vl, const integer_t* ldvl, fcomplex_t* vr,
-        const integer_t* ldvr, fcomplex_t* work, const integer_t* lwork,
-        float* rwork, integer_t* info );
-void LAPACK_ZGEGV( const char* jobvl, const char* jobvr, const integer_t* n,
-        dcomplex_t* a, const integer_t* lda, dcomplex_t* b,
-        const integer_t* ldb, dcomplex_t* alpha, dcomplex_t* beta,
-        dcomplex_t* vl, const integer_t* ldvl, dcomplex_t* vr,
-        const integer_t* ldvr, dcomplex_t* work, const integer_t* lwork,
-        double* rwork, integer_t* info );
+void LAPACK_SGEGV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, float* a, const fortran_int_t* lda, float* b,
+        const fortran_int_t* ldb, float* alphar, float* alphai, float* beta,
+        float* vl, const fortran_int_t* ldvl, float* vr,
+        const fortran_int_t* ldvr, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DGEGV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, double* alphar, double* alphai,
+        double* beta, double* vl, const fortran_int_t* ldvl, double* vr,
+        const fortran_int_t* ldvr, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_CGEGV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* alpha, void* beta, void* vl,
+        const fortran_int_t* ldvl, void* vr, const fortran_int_t* ldvr,
+        void* work, const fortran_int_t* lwork, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZGEGV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* alpha, void* beta, void* vl,
+        const fortran_int_t* ldvl, void* vr, const fortran_int_t* ldvr,
+        void* work, const fortran_int_t* lwork, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of gges
 void LAPACK_SGGES( const char* jobvsl, const char* jobvsr, const char* sort,
-        logical_t* selctg, const integer_t* n, float* a, const integer_t* lda,
-        float* b, const integer_t* ldb, integer_t* sdim, float* alphar,
-        float* alphai, float* beta, float* vsl, const integer_t* ldvsl,
-        float* vsr, const integer_t* ldvsr, float* work,
-        const integer_t* lwork, logical_t* bwork, integer_t* info );
+        logical_t* selctg, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* b, const fortran_int_t* ldb,
+        fortran_int_t* sdim, float* alphar, float* alphai, float* beta,
+        float* vsl, const fortran_int_t* ldvsl, float* vsr,
+        const fortran_int_t* ldvsr, float* work, const fortran_int_t* lwork,
+        logical_t* bwork, fortran_int_t* info );
 void LAPACK_DGGES( const char* jobvsl, const char* jobvsr, const char* sort,
-        logical_t* selctg, const integer_t* n, double* a,
-        const integer_t* lda, double* b, const integer_t* ldb,
-        integer_t* sdim, double* alphar, double* alphai, double* beta,
-        double* vsl, const integer_t* ldvsl, double* vsr,
-        const integer_t* ldvsr, double* work, const integer_t* lwork,
-        logical_t* bwork, integer_t* info );
+        logical_t* selctg, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* b, const fortran_int_t* ldb,
+        fortran_int_t* sdim, double* alphar, double* alphai, double* beta,
+        double* vsl, const fortran_int_t* ldvsl, double* vsr,
+        const fortran_int_t* ldvsr, double* work, const fortran_int_t* lwork,
+        logical_t* bwork, fortran_int_t* info );
 void LAPACK_CGGES( const char* jobvsl, const char* jobvsr, const char* sort,
-        logical_t* selctg, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* b, const integer_t* ldb,
-        integer_t* sdim, fcomplex_t* alpha, fcomplex_t* beta, fcomplex_t* vsl,
-        const integer_t* ldvsl, fcomplex_t* vsr, const integer_t* ldvsr,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        logical_t* bwork, integer_t* info );
+        logical_t* selctg, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        fortran_int_t* sdim, void* alpha, void* beta, void* vsl,
+        const fortran_int_t* ldvsl, void* vsr, const fortran_int_t* ldvsr,
+        void* work, const fortran_int_t* lwork, float* rwork,
+        logical_t* bwork, fortran_int_t* info );
 void LAPACK_ZGGES( const char* jobvsl, const char* jobvsr, const char* sort,
-        logical_t* selctg, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* b, const integer_t* ldb,
-        integer_t* sdim, dcomplex_t* alpha, dcomplex_t* beta, dcomplex_t* vsl,
-        const integer_t* ldvsl, dcomplex_t* vsr, const integer_t* ldvsr,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        logical_t* bwork, integer_t* info );
+        logical_t* selctg, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        fortran_int_t* sdim, void* alpha, void* beta, void* vsl,
+        const fortran_int_t* ldvsl, void* vsr, const fortran_int_t* ldvsr,
+        void* work, const fortran_int_t* lwork, double* rwork,
+        logical_t* bwork, fortran_int_t* info );
 
 // Value-type variants of ggesx
 void LAPACK_SGGESX( const char* jobvsl, const char* jobvsr, const char* sort,
-        logical_t* selctg, const char* sense, const integer_t* n, float* a,
-        const integer_t* lda, float* b, const integer_t* ldb, integer_t* sdim,
-        float* alphar, float* alphai, float* beta, float* vsl,
-        const integer_t* ldvsl, float* vsr, const integer_t* ldvsr,
-        float* rconde, float* rcondv, float* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, logical_t* bwork,
-        integer_t* info );
+        logical_t* selctg, const char* sense, const fortran_int_t* n,
+        float* a, const fortran_int_t* lda, float* b,
+        const fortran_int_t* ldb, fortran_int_t* sdim, float* alphar,
+        float* alphai, float* beta, float* vsl, const fortran_int_t* ldvsl,
+        float* vsr, const fortran_int_t* ldvsr, float* rconde, float* rcondv,
+        float* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, logical_t* bwork, fortran_int_t* info );
 void LAPACK_DGGESX( const char* jobvsl, const char* jobvsr, const char* sort,
-        logical_t* selctg, const char* sense, const integer_t* n, double* a,
-        const integer_t* lda, double* b, const integer_t* ldb,
-        integer_t* sdim, double* alphar, double* alphai, double* beta,
-        double* vsl, const integer_t* ldvsl, double* vsr,
-        const integer_t* ldvsr, double* rconde, double* rcondv, double* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        logical_t* bwork, integer_t* info );
+        logical_t* selctg, const char* sense, const fortran_int_t* n,
+        double* a, const fortran_int_t* lda, double* b,
+        const fortran_int_t* ldb, fortran_int_t* sdim, double* alphar,
+        double* alphai, double* beta, double* vsl, const fortran_int_t* ldvsl,
+        double* vsr, const fortran_int_t* ldvsr, double* rconde,
+        double* rcondv, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork, logical_t* bwork,
+        fortran_int_t* info );
 void LAPACK_CGGESX( const char* jobvsl, const char* jobvsr, const char* sort,
-        logical_t* selctg, const char* sense, const integer_t* n,
-        fcomplex_t* a, const integer_t* lda, fcomplex_t* b,
-        const integer_t* ldb, integer_t* sdim, fcomplex_t* alpha,
-        fcomplex_t* beta, fcomplex_t* vsl, const integer_t* ldvsl,
-        fcomplex_t* vsr, const integer_t* ldvsr, float* rconde, float* rcondv,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        integer_t* iwork, const integer_t* liwork, logical_t* bwork,
-        integer_t* info );
+        logical_t* selctg, const char* sense, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        fortran_int_t* sdim, void* alpha, void* beta, void* vsl,
+        const fortran_int_t* ldvsl, void* vsr, const fortran_int_t* ldvsr,
+        float* rconde, float* rcondv, void* work, const fortran_int_t* lwork,
+        float* rwork, fortran_int_t* iwork, const fortran_int_t* liwork,
+        logical_t* bwork, fortran_int_t* info );
 void LAPACK_ZGGESX( const char* jobvsl, const char* jobvsr, const char* sort,
-        logical_t* selctg, const char* sense, const integer_t* n,
-        dcomplex_t* a, const integer_t* lda, dcomplex_t* b,
-        const integer_t* ldb, integer_t* sdim, dcomplex_t* alpha,
-        dcomplex_t* beta, dcomplex_t* vsl, const integer_t* ldvsl,
-        dcomplex_t* vsr, const integer_t* ldvsr, double* rconde,
-        double* rcondv, dcomplex_t* work, const integer_t* lwork,
-        double* rwork, integer_t* iwork, const integer_t* liwork,
-        logical_t* bwork, integer_t* info );
+        logical_t* selctg, const char* sense, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        fortran_int_t* sdim, void* alpha, void* beta, void* vsl,
+        const fortran_int_t* ldvsl, void* vsr, const fortran_int_t* ldvsr,
+        double* rconde, double* rcondv, void* work,
+        const fortran_int_t* lwork, double* rwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, logical_t* bwork, fortran_int_t* info );
 
 // Value-type variants of ggev
-void LAPACK_SGGEV( const char* jobvl, const char* jobvr, const integer_t* n,
-        float* a, const integer_t* lda, float* b, const integer_t* ldb,
-        float* alphar, float* alphai, float* beta, float* vl,
-        const integer_t* ldvl, float* vr, const integer_t* ldvr, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DGGEV( const char* jobvl, const char* jobvr, const integer_t* n,
-        double* a, const integer_t* lda, double* b, const integer_t* ldb,
-        double* alphar, double* alphai, double* beta, double* vl,
-        const integer_t* ldvl, double* vr, const integer_t* ldvr,
-        double* work, const integer_t* lwork, integer_t* info );
-void LAPACK_CGGEV( const char* jobvl, const char* jobvr, const integer_t* n,
-        fcomplex_t* a, const integer_t* lda, fcomplex_t* b,
-        const integer_t* ldb, fcomplex_t* alpha, fcomplex_t* beta,
-        fcomplex_t* vl, const integer_t* ldvl, fcomplex_t* vr,
-        const integer_t* ldvr, fcomplex_t* work, const integer_t* lwork,
-        float* rwork, integer_t* info );
-void LAPACK_ZGGEV( const char* jobvl, const char* jobvr, const integer_t* n,
-        dcomplex_t* a, const integer_t* lda, dcomplex_t* b,
-        const integer_t* ldb, dcomplex_t* alpha, dcomplex_t* beta,
-        dcomplex_t* vl, const integer_t* ldvl, dcomplex_t* vr,
-        const integer_t* ldvr, dcomplex_t* work, const integer_t* lwork,
-        double* rwork, integer_t* info );
+void LAPACK_SGGEV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, float* a, const fortran_int_t* lda, float* b,
+        const fortran_int_t* ldb, float* alphar, float* alphai, float* beta,
+        float* vl, const fortran_int_t* ldvl, float* vr,
+        const fortran_int_t* ldvr, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DGGEV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, double* alphar, double* alphai,
+        double* beta, double* vl, const fortran_int_t* ldvl, double* vr,
+        const fortran_int_t* ldvr, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_CGGEV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* alpha, void* beta, void* vl,
+        const fortran_int_t* ldvl, void* vr, const fortran_int_t* ldvr,
+        void* work, const fortran_int_t* lwork, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZGGEV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* alpha, void* beta, void* vl,
+        const fortran_int_t* ldvl, void* vr, const fortran_int_t* ldvr,
+        void* work, const fortran_int_t* lwork, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of ggevx
 void LAPACK_SGGEVX( const char* balanc, const char* jobvl, const char* jobvr,
-        const char* sense, const integer_t* n, float* a, const integer_t* lda,
-        float* b, const integer_t* ldb, float* alphar, float* alphai,
-        float* beta, float* vl, const integer_t* ldvl, float* vr,
-        const integer_t* ldvr, integer_t* ilo, integer_t* ihi, float* lscale,
-        float* rscale, float* abnrm, float* bbnrm, float* rconde,
-        float* rcondv, float* work, const integer_t* lwork, integer_t* iwork,
-        logical_t* bwork, integer_t* info );
+        const char* sense, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* b, const fortran_int_t* ldb,
+        float* alphar, float* alphai, float* beta, float* vl,
+        const fortran_int_t* ldvl, float* vr, const fortran_int_t* ldvr,
+        fortran_int_t* ilo, fortran_int_t* ihi, float* lscale, float* rscale,
+        float* abnrm, float* bbnrm, float* rconde, float* rcondv, float* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork, logical_t* bwork,
+        fortran_int_t* info );
 void LAPACK_DGGEVX( const char* balanc, const char* jobvl, const char* jobvr,
-        const char* sense, const integer_t* n, double* a,
-        const integer_t* lda, double* b, const integer_t* ldb, double* alphar,
-        double* alphai, double* beta, double* vl, const integer_t* ldvl,
-        double* vr, const integer_t* ldvr, integer_t* ilo, integer_t* ihi,
-        double* lscale, double* rscale, double* abnrm, double* bbnrm,
-        double* rconde, double* rcondv, double* work, const integer_t* lwork,
-        integer_t* iwork, logical_t* bwork, integer_t* info );
+        const char* sense, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* b, const fortran_int_t* ldb,
+        double* alphar, double* alphai, double* beta, double* vl,
+        const fortran_int_t* ldvl, double* vr, const fortran_int_t* ldvr,
+        fortran_int_t* ilo, fortran_int_t* ihi, double* lscale,
+        double* rscale, double* abnrm, double* bbnrm, double* rconde,
+        double* rcondv, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, logical_t* bwork, fortran_int_t* info );
 void LAPACK_CGGEVX( const char* balanc, const char* jobvl, const char* jobvr,
-        const char* sense, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* alpha, fcomplex_t* beta, fcomplex_t* vl,
-        const integer_t* ldvl, fcomplex_t* vr, const integer_t* ldvr,
-        integer_t* ilo, integer_t* ihi, float* lscale, float* rscale,
-        float* abnrm, float* bbnrm, float* rconde, float* rcondv,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        integer_t* iwork, logical_t* bwork, integer_t* info );
+        const char* sense, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        void* alpha, void* beta, void* vl, const fortran_int_t* ldvl,
+        void* vr, const fortran_int_t* ldvr, fortran_int_t* ilo,
+        fortran_int_t* ihi, float* lscale, float* rscale, float* abnrm,
+        float* bbnrm, float* rconde, float* rcondv, void* work,
+        const fortran_int_t* lwork, float* rwork, fortran_int_t* iwork,
+        logical_t* bwork, fortran_int_t* info );
 void LAPACK_ZGGEVX( const char* balanc, const char* jobvl, const char* jobvr,
-        const char* sense, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* alpha, dcomplex_t* beta, dcomplex_t* vl,
-        const integer_t* ldvl, dcomplex_t* vr, const integer_t* ldvr,
-        integer_t* ilo, integer_t* ihi, double* lscale, double* rscale,
-        double* abnrm, double* bbnrm, double* rconde, double* rcondv,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        integer_t* iwork, logical_t* bwork, integer_t* info );
+        const char* sense, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        void* alpha, void* beta, void* vl, const fortran_int_t* ldvl,
+        void* vr, const fortran_int_t* ldvr, fortran_int_t* ilo,
+        fortran_int_t* ihi, double* lscale, double* rscale, double* abnrm,
+        double* bbnrm, double* rconde, double* rcondv, void* work,
+        const fortran_int_t* lwork, double* rwork, fortran_int_t* iwork,
+        logical_t* bwork, fortran_int_t* info );
 
 // Value-type variants of ggsvd
 void LAPACK_SGGSVD( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* n, const integer_t* p,
-        integer_t* k, integer_t* l, float* a, const integer_t* lda, float* b,
-        const integer_t* ldb, float* alpha, float* beta, float* u,
-        const integer_t* ldu, float* v, const integer_t* ldv, float* q,
-        const integer_t* ldq, float* work, integer_t* iwork, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* p, fortran_int_t* k, fortran_int_t* l, float* a,
+        const fortran_int_t* lda, float* b, const fortran_int_t* ldb,
+        float* alpha, float* beta, float* u, const fortran_int_t* ldu,
+        float* v, const fortran_int_t* ldv, float* q,
+        const fortran_int_t* ldq, float* work, fortran_int_t* iwork,
+        fortran_int_t* info );
 void LAPACK_DGGSVD( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* n, const integer_t* p,
-        integer_t* k, integer_t* l, double* a, const integer_t* lda,
-        double* b, const integer_t* ldb, double* alpha, double* beta,
-        double* u, const integer_t* ldu, double* v, const integer_t* ldv,
-        double* q, const integer_t* ldq, double* work, integer_t* iwork,
-        integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* p, fortran_int_t* k, fortran_int_t* l, double* a,
+        const fortran_int_t* lda, double* b, const fortran_int_t* ldb,
+        double* alpha, double* beta, double* u, const fortran_int_t* ldu,
+        double* v, const fortran_int_t* ldv, double* q,
+        const fortran_int_t* ldq, double* work, fortran_int_t* iwork,
+        fortran_int_t* info );
 void LAPACK_CGGSVD( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* n, const integer_t* p,
-        integer_t* k, integer_t* l, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* b, const integer_t* ldb, float* alpha, float* beta,
-        fcomplex_t* u, const integer_t* ldu, fcomplex_t* v,
-        const integer_t* ldv, fcomplex_t* q, const integer_t* ldq,
-        fcomplex_t* work, float* rwork, integer_t* iwork, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* p, fortran_int_t* k, fortran_int_t* l, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        float* alpha, float* beta, void* u, const fortran_int_t* ldu, void* v,
+        const fortran_int_t* ldv, void* q, const fortran_int_t* ldq,
+        void* work, float* rwork, fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_ZGGSVD( const char* jobu, const char* jobv, const char* jobq,
-        const integer_t* m, const integer_t* n, const integer_t* p,
-        integer_t* k, integer_t* l, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* b, const integer_t* ldb, double* alpha, double* beta,
-        dcomplex_t* u, const integer_t* ldu, dcomplex_t* v,
-        const integer_t* ldv, dcomplex_t* q, const integer_t* ldq,
-        dcomplex_t* work, double* rwork, integer_t* iwork, integer_t* info );
+        const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* p, fortran_int_t* k, fortran_int_t* l, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        double* alpha, double* beta, void* u, const fortran_int_t* ldu,
+        void* v, const fortran_int_t* ldv, void* q, const fortran_int_t* ldq,
+        void* work, double* rwork, fortran_int_t* iwork, fortran_int_t* info );
 
 // Value-type variants of hbgv
-void LAPACK_CHBGV( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, fcomplex_t* ab,
-        const integer_t* ldab, fcomplex_t* bb, const integer_t* ldbb,
-        float* w, fcomplex_t* z, const integer_t* ldz, fcomplex_t* work,
-        float* rwork, integer_t* info );
-void LAPACK_ZHBGV( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, dcomplex_t* ab,
-        const integer_t* ldab, dcomplex_t* bb, const integer_t* ldbb,
-        double* w, dcomplex_t* z, const integer_t* ldz, dcomplex_t* work,
-        double* rwork, integer_t* info );
+void LAPACK_CHBGV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* ka, const fortran_int_t* kb, void* ab,
+        const fortran_int_t* ldab, void* bb, const fortran_int_t* ldbb,
+        float* w, void* z, const fortran_int_t* ldz, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZHBGV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* ka, const fortran_int_t* kb, void* ab,
+        const fortran_int_t* ldab, void* bb, const fortran_int_t* ldbb,
+        double* w, void* z, const fortran_int_t* ldz, void* work,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of hbgvd
-void LAPACK_CHBGVD( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, fcomplex_t* ab,
-        const integer_t* ldab, fcomplex_t* bb, const integer_t* ldbb,
-        float* w, fcomplex_t* z, const integer_t* ldz, fcomplex_t* work,
-        const integer_t* lwork, float* rwork, const integer_t* lrwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_ZHBGVD( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, dcomplex_t* ab,
-        const integer_t* ldab, dcomplex_t* bb, const integer_t* ldbb,
-        double* w, dcomplex_t* z, const integer_t* ldz, dcomplex_t* work,
-        const integer_t* lwork, double* rwork, const integer_t* lrwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
+void LAPACK_CHBGVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, void* ab, const fortran_int_t* ldab,
+        void* bb, const fortran_int_t* ldbb, float* w, void* z,
+        const fortran_int_t* ldz, void* work, const fortran_int_t* lwork,
+        float* rwork, const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_ZHBGVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, void* ab, const fortran_int_t* ldab,
+        void* bb, const fortran_int_t* ldbb, double* w, void* z,
+        const fortran_int_t* ldz, void* work, const fortran_int_t* lwork,
+        double* rwork, const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of hbgvx
 void LAPACK_CHBGVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, const integer_t* ka, const integer_t* kb,
-        fcomplex_t* ab, const integer_t* ldab, fcomplex_t* bb,
-        const integer_t* ldbb, fcomplex_t* q, const integer_t* ldq,
-        const float* vl, const float* vu, const integer_t* il,
-        const integer_t* iu, const float* abstol, integer_t* m, float* w,
-        fcomplex_t* z, const integer_t* ldz, fcomplex_t* work, float* rwork,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, void* ab, const fortran_int_t* ldab,
+        void* bb, const fortran_int_t* ldbb, void* q,
+        const fortran_int_t* ldq, const float* vl, const float* vu,
+        const fortran_int_t* il, const fortran_int_t* iu, const float* abstol,
+        fortran_int_t* m, float* w, void* z, const fortran_int_t* ldz,
+        void* work, float* rwork, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t* info );
 void LAPACK_ZHBGVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, const integer_t* ka, const integer_t* kb,
-        dcomplex_t* ab, const integer_t* ldab, dcomplex_t* bb,
-        const integer_t* ldbb, dcomplex_t* q, const integer_t* ldq,
-        const double* vl, const double* vu, const integer_t* il,
-        const integer_t* iu, const double* abstol, integer_t* m, double* w,
-        dcomplex_t* z, const integer_t* ldz, dcomplex_t* work, double* rwork,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, void* ab, const fortran_int_t* ldab,
+        void* bb, const fortran_int_t* ldbb, void* q,
+        const fortran_int_t* ldq, const double* vl, const double* vu,
+        const fortran_int_t* il, const fortran_int_t* iu,
+        const double* abstol, fortran_int_t* m, double* w, void* z,
+        const fortran_int_t* ldz, void* work, double* rwork,
+        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t* info );
 
 // Value-type variants of hegv
-void LAPACK_CHEGV( const integer_t* itype, const char* jobz, const char* uplo,
-        const integer_t* n, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* b, const integer_t* ldb, float* w, fcomplex_t* work,
-        const integer_t* lwork, float* rwork, integer_t* info );
-void LAPACK_ZHEGV( const integer_t* itype, const char* jobz, const char* uplo,
-        const integer_t* n, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* b, const integer_t* ldb, double* w, dcomplex_t* work,
-        const integer_t* lwork, double* rwork, integer_t* info );
+void LAPACK_CHEGV( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb, float* w,
+        void* work, const fortran_int_t* lwork, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZHEGV( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        double* w, void* work, const fortran_int_t* lwork, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of hegvd
-void LAPACK_CHEGVD( const integer_t* itype, const char* jobz,
-        const char* uplo, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* b, const integer_t* ldb, float* w,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        const integer_t* lrwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
-void LAPACK_ZHEGVD( const integer_t* itype, const char* jobz,
-        const char* uplo, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* b, const integer_t* ldb, double* w,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        const integer_t* lrwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+void LAPACK_CHEGVD( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb, float* w,
+        void* work, const fortran_int_t* lwork, float* rwork,
+        const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_ZHEGVD( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        double* w, void* work, const fortran_int_t* lwork, double* rwork,
+        const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of hegvx
-void LAPACK_CHEGVX( const integer_t* itype, const char* jobz,
-        const char* range, const char* uplo, const integer_t* n,
-        fcomplex_t* a, const integer_t* lda, fcomplex_t* b,
-        const integer_t* ldb, const float* vl, const float* vu,
-        const integer_t* il, const integer_t* iu, const float* abstol,
-        integer_t* m, float* w, fcomplex_t* z, const integer_t* ldz,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
-void LAPACK_ZHEGVX( const integer_t* itype, const char* jobz,
-        const char* range, const char* uplo, const integer_t* n,
-        dcomplex_t* a, const integer_t* lda, dcomplex_t* b,
-        const integer_t* ldb, const double* vl, const double* vu,
-        const integer_t* il, const integer_t* iu, const double* abstol,
-        integer_t* m, double* w, dcomplex_t* z, const integer_t* ldz,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
+void LAPACK_CHEGVX( const fortran_int_t* itype, const char* jobz,
+        const char* range, const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        const float* vl, const float* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const float* abstol, fortran_int_t* m,
+        float* w, void* z, const fortran_int_t* ldz, void* work,
+        const fortran_int_t* lwork, float* rwork, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
+void LAPACK_ZHEGVX( const fortran_int_t* itype, const char* jobz,
+        const char* range, const char* uplo, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        const double* vl, const double* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const double* abstol, fortran_int_t* m,
+        double* w, void* z, const fortran_int_t* ldz, void* work,
+        const fortran_int_t* lwork, double* rwork, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
 
 // Value-type variants of hpgv
-void LAPACK_CHPGV( const integer_t* itype, const char* jobz, const char* uplo,
-        const integer_t* n, fcomplex_t* ap, fcomplex_t* bp, float* w,
-        fcomplex_t* z, const integer_t* ldz, fcomplex_t* work, float* rwork,
-        integer_t* info );
-void LAPACK_ZHPGV( const integer_t* itype, const char* jobz, const char* uplo,
-        const integer_t* n, dcomplex_t* ap, dcomplex_t* bp, double* w,
-        dcomplex_t* z, const integer_t* ldz, dcomplex_t* work, double* rwork,
-        integer_t* info );
+void LAPACK_CHPGV( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, void* ap, void* bp,
+        float* w, void* z, const fortran_int_t* ldz, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZHPGV( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, void* ap, void* bp,
+        double* w, void* z, const fortran_int_t* ldz, void* work,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of hpgvd
-void LAPACK_CHPGVD( const integer_t* itype, const char* jobz,
-        const char* uplo, const integer_t* n, fcomplex_t* ap, fcomplex_t* bp,
-        float* w, fcomplex_t* z, const integer_t* ldz, fcomplex_t* work,
-        const integer_t* lwork, float* rwork, const integer_t* lrwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_ZHPGVD( const integer_t* itype, const char* jobz,
-        const char* uplo, const integer_t* n, dcomplex_t* ap, dcomplex_t* bp,
-        double* w, dcomplex_t* z, const integer_t* ldz, dcomplex_t* work,
-        const integer_t* lwork, double* rwork, const integer_t* lrwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
+void LAPACK_CHPGVD( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, void* ap, void* bp,
+        float* w, void* z, const fortran_int_t* ldz, void* work,
+        const fortran_int_t* lwork, float* rwork, const fortran_int_t* lrwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
+void LAPACK_ZHPGVD( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, void* ap, void* bp,
+        double* w, void* z, const fortran_int_t* ldz, void* work,
+        const fortran_int_t* lwork, double* rwork,
+        const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of hpgvx
-void LAPACK_CHPGVX( const integer_t* itype, const char* jobz,
-        const char* range, const char* uplo, const integer_t* n,
-        fcomplex_t* ap, fcomplex_t* bp, const float* vl, const float* vu,
-        const integer_t* il, const integer_t* iu, const float* abstol,
-        integer_t* m, float* w, fcomplex_t* z, const integer_t* ldz,
-        fcomplex_t* work, float* rwork, integer_t* iwork, integer_t* ifail,
-        integer_t* info );
-void LAPACK_ZHPGVX( const integer_t* itype, const char* jobz,
-        const char* range, const char* uplo, const integer_t* n,
-        dcomplex_t* ap, dcomplex_t* bp, const double* vl, const double* vu,
-        const integer_t* il, const integer_t* iu, const double* abstol,
-        integer_t* m, double* w, dcomplex_t* z, const integer_t* ldz,
-        dcomplex_t* work, double* rwork, integer_t* iwork, integer_t* ifail,
-        integer_t* info );
+void LAPACK_CHPGVX( const fortran_int_t* itype, const char* jobz,
+        const char* range, const char* uplo, const fortran_int_t* n, void* ap,
+        void* bp, const float* vl, const float* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const float* abstol, fortran_int_t* m,
+        float* w, void* z, const fortran_int_t* ldz, void* work, float* rwork,
+        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t* info );
+void LAPACK_ZHPGVX( const fortran_int_t* itype, const char* jobz,
+        const char* range, const char* uplo, const fortran_int_t* n, void* ap,
+        void* bp, const double* vl, const double* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const double* abstol, fortran_int_t* m,
+        double* w, void* z, const fortran_int_t* ldz, void* work,
+        double* rwork, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t* info );
 
 // Value-type variants of lacgv
-void LAPACK_CLACGV( const integer_t* n, fcomplex_t* x, const integer_t* incx );
-void LAPACK_ZLACGV( const integer_t* n, dcomplex_t* x, const integer_t* incx );
+void LAPACK_CLACGV( const fortran_int_t* n, void* x,
+        const fortran_int_t* incx );
+void LAPACK_ZLACGV( const fortran_int_t* n, void* x,
+        const fortran_int_t* incx );
 
 // Value-type variants of largv
-void LAPACK_SLARGV( const integer_t* n, float* x, const integer_t* incx,
-        float* y, const integer_t* incy, float* c, const integer_t* incc );
-void LAPACK_DLARGV( const integer_t* n, double* x, const integer_t* incx,
-        double* y, const integer_t* incy, double* c, const integer_t* incc );
-void LAPACK_CLARGV( const integer_t* n, fcomplex_t* x, const integer_t* incx,
-        fcomplex_t* y, const integer_t* incy, float* c,
-        const integer_t* incc );
-void LAPACK_ZLARGV( const integer_t* n, dcomplex_t* x, const integer_t* incx,
-        dcomplex_t* y, const integer_t* incy, double* c,
-        const integer_t* incc );
+void LAPACK_SLARGV( const fortran_int_t* n, float* x,
+        const fortran_int_t* incx, float* y, const fortran_int_t* incy,
+        float* c, const fortran_int_t* incc );
+void LAPACK_DLARGV( const fortran_int_t* n, double* x,
+        const fortran_int_t* incx, double* y, const fortran_int_t* incy,
+        double* c, const fortran_int_t* incc );
+void LAPACK_CLARGV( const fortran_int_t* n, void* x,
+        const fortran_int_t* incx, void* y, const fortran_int_t* incy,
+        float* c, const fortran_int_t* incc );
+void LAPACK_ZLARGV( const fortran_int_t* n, void* x,
+        const fortran_int_t* incx, void* y, const fortran_int_t* incy,
+        double* c, const fortran_int_t* incc );
 
 // Value-type variants of sbgv
-void LAPACK_SSBGV( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, float* ab,
-        const integer_t* ldab, float* bb, const integer_t* ldbb, float* w,
-        float* z, const integer_t* ldz, float* work, integer_t* info );
-void LAPACK_DSBGV( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, double* ab,
-        const integer_t* ldab, double* bb, const integer_t* ldbb, double* w,
-        double* z, const integer_t* ldz, double* work, integer_t* info );
+void LAPACK_SSBGV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* ka, const fortran_int_t* kb, float* ab,
+        const fortran_int_t* ldab, float* bb, const fortran_int_t* ldbb,
+        float* w, float* z, const fortran_int_t* ldz, float* work,
+        fortran_int_t* info );
+void LAPACK_DSBGV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* ka, const fortran_int_t* kb, double* ab,
+        const fortran_int_t* ldab, double* bb, const fortran_int_t* ldbb,
+        double* w, double* z, const fortran_int_t* ldz, double* work,
+        fortran_int_t* info );
 
 // Value-type variants of sbgvd
-void LAPACK_SSBGVD( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, float* ab,
-        const integer_t* ldab, float* bb, const integer_t* ldbb, float* w,
-        float* z, const integer_t* ldz, float* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_DSBGVD( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* ka, const integer_t* kb, double* ab,
-        const integer_t* ldab, double* bb, const integer_t* ldbb, double* w,
-        double* z, const integer_t* ldz, double* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
+void LAPACK_SSBGVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, float* ab, const fortran_int_t* ldab,
+        float* bb, const fortran_int_t* ldbb, float* w, float* z,
+        const fortran_int_t* ldz, float* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
+void LAPACK_DSBGVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, double* ab, const fortran_int_t* ldab,
+        double* bb, const fortran_int_t* ldbb, double* w, double* z,
+        const fortran_int_t* ldz, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
 
 // Value-type variants of sbgvx
 void LAPACK_SSBGVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, const integer_t* ka, const integer_t* kb,
-        float* ab, const integer_t* ldab, float* bb, const integer_t* ldbb,
-        float* q, const integer_t* ldq, const float* vl, const float* vu,
-        const integer_t* il, const integer_t* iu, const float* abstol,
-        integer_t* m, float* w, float* z, const integer_t* ldz, float* work,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, float* ab, const fortran_int_t* ldab,
+        float* bb, const fortran_int_t* ldbb, float* q,
+        const fortran_int_t* ldq, const float* vl, const float* vu,
+        const fortran_int_t* il, const fortran_int_t* iu, const float* abstol,
+        fortran_int_t* m, float* w, float* z, const fortran_int_t* ldz,
+        float* work, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t* info );
 void LAPACK_DSBGVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, const integer_t* ka, const integer_t* kb,
-        double* ab, const integer_t* ldab, double* bb, const integer_t* ldbb,
-        double* q, const integer_t* ldq, const double* vl, const double* vu,
-        const integer_t* il, const integer_t* iu, const double* abstol,
-        integer_t* m, double* w, double* z, const integer_t* ldz,
-        double* work, integer_t* iwork, integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* ka,
+        const fortran_int_t* kb, double* ab, const fortran_int_t* ldab,
+        double* bb, const fortran_int_t* ldbb, double* q,
+        const fortran_int_t* ldq, const double* vl, const double* vu,
+        const fortran_int_t* il, const fortran_int_t* iu,
+        const double* abstol, fortran_int_t* m, double* w, double* z,
+        const fortran_int_t* ldz, double* work, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
 
 // Value-type variants of spgv
-void LAPACK_SSPGV( const integer_t* itype, const char* jobz, const char* uplo,
-        const integer_t* n, float* ap, float* bp, float* w, float* z,
-        const integer_t* ldz, float* work, integer_t* info );
-void LAPACK_DSPGV( const integer_t* itype, const char* jobz, const char* uplo,
-        const integer_t* n, double* ap, double* bp, double* w, double* z,
-        const integer_t* ldz, double* work, integer_t* info );
+void LAPACK_SSPGV( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, float* ap, float* bp,
+        float* w, float* z, const fortran_int_t* ldz, float* work,
+        fortran_int_t* info );
+void LAPACK_DSPGV( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, double* ap, double* bp,
+        double* w, double* z, const fortran_int_t* ldz, double* work,
+        fortran_int_t* info );
 
 // Value-type variants of spgvd
-void LAPACK_SSPGVD( const integer_t* itype, const char* jobz,
-        const char* uplo, const integer_t* n, float* ap, float* bp, float* w,
-        float* z, const integer_t* ldz, float* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_DSPGVD( const integer_t* itype, const char* jobz,
-        const char* uplo, const integer_t* n, double* ap, double* bp,
-        double* w, double* z, const integer_t* ldz, double* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+void LAPACK_SSPGVD( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, float* ap, float* bp,
+        float* w, float* z, const fortran_int_t* ldz, float* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_DSPGVD( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, double* ap, double* bp,
+        double* w, double* z, const fortran_int_t* ldz, double* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of spgvx
-void LAPACK_SSPGVX( const integer_t* itype, const char* jobz,
-        const char* range, const char* uplo, const integer_t* n, float* ap,
-        float* bp, const float* vl, const float* vu, const integer_t* il,
-        const integer_t* iu, const float* abstol, integer_t* m, float* w,
-        float* z, const integer_t* ldz, float* work, integer_t* iwork,
-        integer_t* ifail, integer_t* info );
-void LAPACK_DSPGVX( const integer_t* itype, const char* jobz,
-        const char* range, const char* uplo, const integer_t* n, double* ap,
-        double* bp, const double* vl, const double* vu, const integer_t* il,
-        const integer_t* iu, const double* abstol, integer_t* m, double* w,
-        double* z, const integer_t* ldz, double* work, integer_t* iwork,
-        integer_t* ifail, integer_t* info );
+void LAPACK_SSPGVX( const fortran_int_t* itype, const char* jobz,
+        const char* range, const char* uplo, const fortran_int_t* n,
+        float* ap, float* bp, const float* vl, const float* vu,
+        const fortran_int_t* il, const fortran_int_t* iu, const float* abstol,
+        fortran_int_t* m, float* w, float* z, const fortran_int_t* ldz,
+        float* work, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t* info );
+void LAPACK_DSPGVX( const fortran_int_t* itype, const char* jobz,
+        const char* range, const char* uplo, const fortran_int_t* n,
+        double* ap, double* bp, const double* vl, const double* vu,
+        const fortran_int_t* il, const fortran_int_t* iu,
+        const double* abstol, fortran_int_t* m, double* w, double* z,
+        const fortran_int_t* ldz, double* work, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
 
 // Value-type variants of sygv
-void LAPACK_SSYGV( const integer_t* itype, const char* jobz, const char* uplo,
-        const integer_t* n, float* a, const integer_t* lda, float* b,
-        const integer_t* ldb, float* w, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DSYGV( const integer_t* itype, const char* jobz, const char* uplo,
-        const integer_t* n, double* a, const integer_t* lda, double* b,
-        const integer_t* ldb, double* w, double* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SSYGV( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* b, const fortran_int_t* ldb,
+        float* w, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DSYGV( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* b, const fortran_int_t* ldb,
+        double* w, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
 
 // Value-type variants of sygvd
-void LAPACK_SSYGVD( const integer_t* itype, const char* jobz,
-        const char* uplo, const integer_t* n, float* a, const integer_t* lda,
-        float* b, const integer_t* ldb, float* w, float* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
-void LAPACK_DSYGVD( const integer_t* itype, const char* jobz,
-        const char* uplo, const integer_t* n, double* a, const integer_t* lda,
-        double* b, const integer_t* ldb, double* w, double* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+void LAPACK_SSYGVD( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* b, const fortran_int_t* ldb,
+        float* w, float* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
+void LAPACK_DSYGVD( const fortran_int_t* itype, const char* jobz,
+        const char* uplo, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* b, const fortran_int_t* ldb,
+        double* w, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
 
 // Value-type variants of sygvx
-void LAPACK_SSYGVX( const integer_t* itype, const char* jobz,
-        const char* range, const char* uplo, const integer_t* n, float* a,
-        const integer_t* lda, float* b, const integer_t* ldb, const float* vl,
-        const float* vu, const integer_t* il, const integer_t* iu,
-        const float* abstol, integer_t* m, float* w, float* z,
-        const integer_t* ldz, float* work, const integer_t* lwork,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
-void LAPACK_DSYGVX( const integer_t* itype, const char* jobz,
-        const char* range, const char* uplo, const integer_t* n, double* a,
-        const integer_t* lda, double* b, const integer_t* ldb,
-        const double* vl, const double* vu, const integer_t* il,
-        const integer_t* iu, const double* abstol, integer_t* m, double* w,
-        double* z, const integer_t* ldz, double* work, const integer_t* lwork,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
+void LAPACK_SSYGVX( const fortran_int_t* itype, const char* jobz,
+        const char* range, const char* uplo, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* b, const fortran_int_t* ldb,
+        const float* vl, const float* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const float* abstol, fortran_int_t* m,
+        float* w, float* z, const fortran_int_t* ldz, float* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
+void LAPACK_DSYGVX( const fortran_int_t* itype, const char* jobz,
+        const char* range, const char* uplo, const fortran_int_t* n,
+        double* a, const fortran_int_t* lda, double* b,
+        const fortran_int_t* ldb, const double* vl, const double* vu,
+        const fortran_int_t* il, const fortran_int_t* iu,
+        const double* abstol, fortran_int_t* m, double* w, double* z,
+        const fortran_int_t* ldz, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t* info );
 
 // Value-type variants of ggglm
-void LAPACK_SGGGLM( const integer_t* n, const integer_t* m,
-        const integer_t* p, float* a, const integer_t* lda, float* b,
-        const integer_t* ldb, float* d, float* x, float* y, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DGGGLM( const integer_t* n, const integer_t* m,
-        const integer_t* p, double* a, const integer_t* lda, double* b,
-        const integer_t* ldb, double* d, double* x, double* y, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CGGGLM( const integer_t* n, const integer_t* m,
-        const integer_t* p, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* b, const integer_t* ldb, fcomplex_t* d, fcomplex_t* x,
-        fcomplex_t* y, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZGGGLM( const integer_t* n, const integer_t* m,
-        const integer_t* p, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* b, const integer_t* ldb, dcomplex_t* d, dcomplex_t* x,
-        dcomplex_t* y, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SGGGLM( const fortran_int_t* n, const fortran_int_t* m,
+        const fortran_int_t* p, float* a, const fortran_int_t* lda, float* b,
+        const fortran_int_t* ldb, float* d, float* x, float* y, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGGGLM( const fortran_int_t* n, const fortran_int_t* m,
+        const fortran_int_t* p, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, double* d, double* x, double* y,
+        double* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGGGLM( const fortran_int_t* n, const fortran_int_t* m,
+        const fortran_int_t* p, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* d, void* x, void* y, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZGGGLM( const fortran_int_t* n, const fortran_int_t* m,
+        const fortran_int_t* p, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* d, void* x, void* y, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of gglse
-void LAPACK_SGGLSE( const integer_t* m, const integer_t* n,
-        const integer_t* p, float* a, const integer_t* lda, float* b,
-        const integer_t* ldb, float* c, float* d, float* x, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DGGLSE( const integer_t* m, const integer_t* n,
-        const integer_t* p, double* a, const integer_t* lda, double* b,
-        const integer_t* ldb, double* c, double* d, double* x, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CGGLSE( const integer_t* m, const integer_t* n,
-        const integer_t* p, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* b, const integer_t* ldb, fcomplex_t* c, fcomplex_t* d,
-        fcomplex_t* x, fcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_ZGGLSE( const integer_t* m, const integer_t* n,
-        const integer_t* p, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* b, const integer_t* ldb, dcomplex_t* c, dcomplex_t* d,
-        dcomplex_t* x, dcomplex_t* work, const integer_t* lwork,
-        integer_t* info );
+void LAPACK_SGGLSE( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* p, float* a, const fortran_int_t* lda, float* b,
+        const fortran_int_t* ldb, float* c, float* d, float* x, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGGLSE( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* p, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, double* c, double* d, double* x,
+        double* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGGLSE( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* p, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* c, void* d, void* x, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZGGLSE( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* p, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, void* c, void* d, void* x, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of cgesv
-void LAPACK_ZCGESV( const integer_t* n, const integer_t* nrhs, dcomplex_t* a,
-        const integer_t* lda, integer_t* ipiv, const dcomplex_t* b,
-        const integer_t* ldb, dcomplex_t* x, const integer_t* ldx,
-        dcomplex_t* work, fcomplex_t* swork, double* rwork, integer_t* iter,
-        integer_t* info );
+void LAPACK_ZCGESV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        void* a, const fortran_int_t* lda, fortran_int_t* ipiv, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        void* work, void* swork, double* rwork, fortran_int_t* iter,
+        fortran_int_t* info );
 
 // Value-type variants of cposv
-void LAPACK_ZCPOSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* a, const integer_t* lda,
-        const dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, dcomplex_t* work, fcomplex_t* swork,
-        double* rwork, integer_t* iter, integer_t* info );
+void LAPACK_ZCPOSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda,
+        const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, void* work, void* swork, double* rwork,
+        fortran_int_t* iter, fortran_int_t* info );
 
 // Value-type variants of gbsv
-void LAPACK_SGBSV( const integer_t* n, const integer_t* kl,
-        const integer_t* ku, const integer_t* nrhs, float* ab,
-        const integer_t* ldab, integer_t* ipiv, float* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_DGBSV( const integer_t* n, const integer_t* kl,
-        const integer_t* ku, const integer_t* nrhs, double* ab,
-        const integer_t* ldab, integer_t* ipiv, double* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_CGBSV( const integer_t* n, const integer_t* kl,
-        const integer_t* ku, const integer_t* nrhs, fcomplex_t* ab,
-        const integer_t* ldab, integer_t* ipiv, fcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_ZGBSV( const integer_t* n, const integer_t* kl,
-        const integer_t* ku, const integer_t* nrhs, dcomplex_t* ab,
-        const integer_t* ldab, integer_t* ipiv, dcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
+void LAPACK_SGBSV( const fortran_int_t* n, const fortran_int_t* kl,
+        const fortran_int_t* ku, const fortran_int_t* nrhs, float* ab,
+        const fortran_int_t* ldab, fortran_int_t* ipiv, float* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_DGBSV( const fortran_int_t* n, const fortran_int_t* kl,
+        const fortran_int_t* ku, const fortran_int_t* nrhs, double* ab,
+        const fortran_int_t* ldab, fortran_int_t* ipiv, double* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_CGBSV( const fortran_int_t* n, const fortran_int_t* kl,
+        const fortran_int_t* ku, const fortran_int_t* nrhs, void* ab,
+        const fortran_int_t* ldab, fortran_int_t* ipiv, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZGBSV( const fortran_int_t* n, const fortran_int_t* kl,
+        const fortran_int_t* ku, const fortran_int_t* nrhs, void* ab,
+        const fortran_int_t* ldab, fortran_int_t* ipiv, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of gbsvx
-void LAPACK_SGBSVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        float* ab, const integer_t* ldab, float* afb, const integer_t* ldafb,
-        integer_t* ipiv, char* equed, float* r, float* c, float* b,
-        const integer_t* ldb, float* x, const integer_t* ldx, float* rcond,
-        float* ferr, float* berr, float* work, integer_t* iwork,
-        integer_t* info );
-void LAPACK_DGBSVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        double* ab, const integer_t* ldab, double* afb,
-        const integer_t* ldafb, integer_t* ipiv, char* equed, double* r,
-        double* c, double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CGBSVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        fcomplex_t* ab, const integer_t* ldab, fcomplex_t* afb,
-        const integer_t* ldafb, integer_t* ipiv, char* equed, float* r,
-        float* c, fcomplex_t* b, const integer_t* ldb, fcomplex_t* x,
-        const integer_t* ldx, float* rcond, float* ferr, float* berr,
-        fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZGBSVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* kl, const integer_t* ku, const integer_t* nrhs,
-        dcomplex_t* ab, const integer_t* ldab, dcomplex_t* afb,
-        const integer_t* ldafb, integer_t* ipiv, char* equed, double* r,
-        double* c, dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SGBSVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* kl,
+        const fortran_int_t* ku, const fortran_int_t* nrhs, float* ab,
+        const fortran_int_t* ldab, float* afb, const fortran_int_t* ldafb,
+        fortran_int_t* ipiv, char* equed, float* r, float* c, float* b,
+        const fortran_int_t* ldb, float* x, const fortran_int_t* ldx,
+        float* rcond, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DGBSVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* kl,
+        const fortran_int_t* ku, const fortran_int_t* nrhs, double* ab,
+        const fortran_int_t* ldab, double* afb, const fortran_int_t* ldafb,
+        fortran_int_t* ipiv, char* equed, double* r, double* c, double* b,
+        const fortran_int_t* ldb, double* x, const fortran_int_t* ldx,
+        double* rcond, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CGBSVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* kl,
+        const fortran_int_t* ku, const fortran_int_t* nrhs, void* ab,
+        const fortran_int_t* ldab, void* afb, const fortran_int_t* ldafb,
+        fortran_int_t* ipiv, char* equed, float* r, float* c, void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        float* rcond, float* ferr, float* berr, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZGBSVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* kl,
+        const fortran_int_t* ku, const fortran_int_t* nrhs, void* ab,
+        const fortran_int_t* ldab, void* afb, const fortran_int_t* ldafb,
+        fortran_int_t* ipiv, char* equed, double* r, double* c, void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        double* rcond, double* ferr, double* berr, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of gesv
-void LAPACK_SGESV( const integer_t* n, const integer_t* nrhs, float* a,
-        const integer_t* lda, integer_t* ipiv, float* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_DGESV( const integer_t* n, const integer_t* nrhs, double* a,
-        const integer_t* lda, integer_t* ipiv, double* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_CGESV( const integer_t* n, const integer_t* nrhs, fcomplex_t* a,
-        const integer_t* lda, integer_t* ipiv, fcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_ZGESV( const integer_t* n, const integer_t* nrhs, dcomplex_t* a,
-        const integer_t* lda, integer_t* ipiv, dcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
+void LAPACK_SGESV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        float* a, const fortran_int_t* lda, fortran_int_t* ipiv, float* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_DGESV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        double* a, const fortran_int_t* lda, fortran_int_t* ipiv, double* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_CGESV( const fortran_int_t* n, const fortran_int_t* nrhs, void* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZGESV( const fortran_int_t* n, const fortran_int_t* nrhs, void* a,
+        const fortran_int_t* lda, fortran_int_t* ipiv, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of gesvx
-void LAPACK_SGESVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* nrhs, float* a, const integer_t* lda, float* af,
-        const integer_t* ldaf, integer_t* ipiv, char* equed, float* r,
-        float* c, float* b, const integer_t* ldb, float* x,
-        const integer_t* ldx, float* rcond, float* ferr, float* berr,
-        float* work, integer_t* iwork, integer_t* info );
-void LAPACK_DGESVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* nrhs, double* a, const integer_t* lda, double* af,
-        const integer_t* ldaf, integer_t* ipiv, char* equed, double* r,
-        double* c, double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CGESVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* af, const integer_t* ldaf, integer_t* ipiv, char* equed,
-        float* r, float* c, fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* x, const integer_t* ldx, float* rcond, float* ferr,
-        float* berr, fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZGESVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* af, const integer_t* ldaf, integer_t* ipiv, char* equed,
-        double* r, double* c, dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* x, const integer_t* ldx, double* rcond, double* ferr,
-        double* berr, dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SGESVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* nrhs, float* a,
+        const fortran_int_t* lda, float* af, const fortran_int_t* ldaf,
+        fortran_int_t* ipiv, char* equed, float* r, float* c, float* b,
+        const fortran_int_t* ldb, float* x, const fortran_int_t* ldx,
+        float* rcond, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DGESVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* nrhs, double* a,
+        const fortran_int_t* lda, double* af, const fortran_int_t* ldaf,
+        fortran_int_t* ipiv, char* equed, double* r, double* c, double* b,
+        const fortran_int_t* ldb, double* x, const fortran_int_t* ldx,
+        double* rcond, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CGESVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* nrhs, void* a,
+        const fortran_int_t* lda, void* af, const fortran_int_t* ldaf,
+        fortran_int_t* ipiv, char* equed, float* r, float* c, void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        float* rcond, float* ferr, float* berr, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZGESVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* nrhs, void* a,
+        const fortran_int_t* lda, void* af, const fortran_int_t* ldaf,
+        fortran_int_t* ipiv, char* equed, double* r, double* c, void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        double* rcond, double* ferr, double* berr, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of gtsv
-void LAPACK_SGTSV( const integer_t* n, const integer_t* nrhs, float* dl,
-        float* d, float* du, float* b, const integer_t* ldb, integer_t* info );
-void LAPACK_DGTSV( const integer_t* n, const integer_t* nrhs, double* dl,
-        double* d, double* du, double* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_CGTSV( const integer_t* n, const integer_t* nrhs, fcomplex_t* dl,
-        fcomplex_t* d, fcomplex_t* du, fcomplex_t* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_ZGTSV( const integer_t* n, const integer_t* nrhs, dcomplex_t* dl,
-        dcomplex_t* d, dcomplex_t* du, dcomplex_t* b, const integer_t* ldb,
-        integer_t* info );
+void LAPACK_SGTSV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        float* dl, float* d, float* du, float* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_DGTSV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        double* dl, double* d, double* du, double* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_CGTSV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        void* dl, void* d, void* du, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_ZGTSV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        void* dl, void* d, void* du, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 
 // Value-type variants of gtsvx
-void LAPACK_SGTSVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* nrhs, const float* dl, const float* d,
-        const float* du, float* dlf, float* df, float* duf, float* du2,
-        integer_t* ipiv, const float* b, const integer_t* ldb, float* x,
-        const integer_t* ldx, float* rcond, float* ferr, float* berr,
-        float* work, integer_t* iwork, integer_t* info );
-void LAPACK_DGTSVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* nrhs, const double* dl, const double* d,
-        const double* du, double* dlf, double* df, double* duf, double* du2,
-        integer_t* ipiv, const double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CGTSVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* dl, const fcomplex_t* d,
-        const fcomplex_t* du, fcomplex_t* dlf, fcomplex_t* df,
-        fcomplex_t* duf, fcomplex_t* du2, integer_t* ipiv,
-        const fcomplex_t* b, const integer_t* ldb, fcomplex_t* x,
-        const integer_t* ldx, float* rcond, float* ferr, float* berr,
-        fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZGTSVX( const char* fact, const char* trans, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* dl, const dcomplex_t* d,
-        const dcomplex_t* du, dcomplex_t* dlf, dcomplex_t* df,
-        dcomplex_t* duf, dcomplex_t* du2, integer_t* ipiv,
-        const dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SGTSVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const float* dl,
+        const float* d, const float* du, float* dlf, float* df, float* duf,
+        float* du2, fortran_int_t* ipiv, const float* b,
+        const fortran_int_t* ldb, float* x, const fortran_int_t* ldx,
+        float* rcond, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DGTSVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const double* dl,
+        const double* d, const double* du, double* dlf, double* df,
+        double* duf, double* du2, fortran_int_t* ipiv, const double* b,
+        const fortran_int_t* ldb, double* x, const fortran_int_t* ldx,
+        double* rcond, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CGTSVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* dl,
+        const void* d, const void* du, void* dlf, void* df, void* duf,
+        void* du2, fortran_int_t* ipiv, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        float* rcond, float* ferr, float* berr, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZGTSVX( const char* fact, const char* trans,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* dl,
+        const void* d, const void* du, void* dlf, void* df, void* duf,
+        void* du2, fortran_int_t* ipiv, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        double* rcond, double* ferr, double* berr, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of hesv
-void LAPACK_CHESV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* a, const integer_t* lda,
-        integer_t* ipiv, fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* work, const integer_t* lwork, integer_t* info );
-void LAPACK_ZHESV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* a, const integer_t* lda,
-        integer_t* ipiv, dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* work, const integer_t* lwork, integer_t* info );
+void LAPACK_CHESV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda,
+        fortran_int_t* ipiv, void* b, const fortran_int_t* ldb, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZHESV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda,
+        fortran_int_t* ipiv, void* b, const fortran_int_t* ldb, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of hesvx
-void LAPACK_CHESVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* af, const integer_t* ldaf, integer_t* ipiv,
-        const fcomplex_t* b, const integer_t* ldb, fcomplex_t* x,
-        const integer_t* ldx, float* rcond, float* ferr, float* berr,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        integer_t* info );
-void LAPACK_ZHESVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* af, const integer_t* ldaf, integer_t* ipiv,
-        const dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        integer_t* info );
+void LAPACK_CHESVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* a,
+        const fortran_int_t* lda, void* af, const fortran_int_t* ldaf,
+        fortran_int_t* ipiv, const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, float* rcond, float* ferr, float* berr,
+        void* work, const fortran_int_t* lwork, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZHESVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* a,
+        const fortran_int_t* lda, void* af, const fortran_int_t* ldaf,
+        fortran_int_t* ipiv, const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, double* rcond, double* ferr, double* berr,
+        void* work, const fortran_int_t* lwork, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of hpsv
-void LAPACK_CHPSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* ap, integer_t* ipiv, fcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_ZHPSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* ap, integer_t* ipiv, dcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
+void LAPACK_CHPSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* ap, fortran_int_t* ipiv, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZHPSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* ap, fortran_int_t* ipiv, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of hpsvx
-void LAPACK_CHPSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* ap, fcomplex_t* afp,
-        integer_t* ipiv, const fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* x, const integer_t* ldx, float* rcond, float* ferr,
-        float* berr, fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZHPSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* ap, dcomplex_t* afp,
-        integer_t* ipiv, const dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* x, const integer_t* ldx, double* rcond, double* ferr,
-        double* berr, dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_CHPSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* ap,
+        void* afp, fortran_int_t* ipiv, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        float* rcond, float* ferr, float* berr, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZHPSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* ap,
+        void* afp, fortran_int_t* ipiv, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        double* rcond, double* ferr, double* berr, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of pbsv
-void LAPACK_SPBSV( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, float* ab, const integer_t* ldab, float* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_DPBSV( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, double* ab, const integer_t* ldab, double* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_CPBSV( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, fcomplex_t* ab, const integer_t* ldab,
-        fcomplex_t* b, const integer_t* ldb, integer_t* info );
-void LAPACK_ZPBSV( const char* uplo, const integer_t* n, const integer_t* kd,
-        const integer_t* nrhs, dcomplex_t* ab, const integer_t* ldab,
-        dcomplex_t* b, const integer_t* ldb, integer_t* info );
+void LAPACK_SPBSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, float* ab,
+        const fortran_int_t* ldab, float* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_DPBSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, double* ab,
+        const fortran_int_t* ldab, double* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_CPBSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, void* ab,
+        const fortran_int_t* ldab, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_ZPBSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, const fortran_int_t* nrhs, void* ab,
+        const fortran_int_t* ldab, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 
 // Value-type variants of pbsvx
-void LAPACK_SPBSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* kd, const integer_t* nrhs, float* ab,
-        const integer_t* ldab, float* afb, const integer_t* ldafb,
-        char* equed, float* s, float* b, const integer_t* ldb, float* x,
-        const integer_t* ldx, float* rcond, float* ferr, float* berr,
-        float* work, integer_t* iwork, integer_t* info );
-void LAPACK_DPBSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* kd, const integer_t* nrhs, double* ab,
-        const integer_t* ldab, double* afb, const integer_t* ldafb,
-        char* equed, double* s, double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CPBSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* kd, const integer_t* nrhs, fcomplex_t* ab,
-        const integer_t* ldab, fcomplex_t* afb, const integer_t* ldafb,
-        char* equed, float* s, fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* x, const integer_t* ldx, float* rcond, float* ferr,
-        float* berr, fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZPBSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* kd, const integer_t* nrhs, dcomplex_t* ab,
-        const integer_t* ldab, dcomplex_t* afb, const integer_t* ldafb,
-        char* equed, double* s, dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* x, const integer_t* ldx, double* rcond, double* ferr,
-        double* berr, dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SPBSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, float* ab, const fortran_int_t* ldab,
+        float* afb, const fortran_int_t* ldafb, char* equed, float* s,
+        float* b, const fortran_int_t* ldb, float* x,
+        const fortran_int_t* ldx, float* rcond, float* ferr, float* berr,
+        float* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DPBSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, double* ab, const fortran_int_t* ldab,
+        double* afb, const fortran_int_t* ldafb, char* equed, double* s,
+        double* b, const fortran_int_t* ldb, double* x,
+        const fortran_int_t* ldx, double* rcond, double* ferr, double* berr,
+        double* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CPBSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, void* ab, const fortran_int_t* ldab,
+        void* afb, const fortran_int_t* ldafb, char* equed, float* s, void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        float* rcond, float* ferr, float* berr, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZPBSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd,
+        const fortran_int_t* nrhs, void* ab, const fortran_int_t* ldab,
+        void* afb, const fortran_int_t* ldafb, char* equed, double* s,
+        void* b, const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        double* rcond, double* ferr, double* berr, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of posv
-void LAPACK_SPOSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, float* a, const integer_t* lda, float* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_DPOSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, double* a, const integer_t* lda, double* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_CPOSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* b, const integer_t* ldb, integer_t* info );
-void LAPACK_ZPOSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* b, const integer_t* ldb, integer_t* info );
+void LAPACK_SPOSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, float* a, const fortran_int_t* lda,
+        float* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_DPOSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_CPOSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZPOSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of posvx
-void LAPACK_SPOSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, float* a, const integer_t* lda, float* af,
-        const integer_t* ldaf, char* equed, float* s, float* b,
-        const integer_t* ldb, float* x, const integer_t* ldx, float* rcond,
-        float* ferr, float* berr, float* work, integer_t* iwork,
-        integer_t* info );
-void LAPACK_DPOSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, double* a, const integer_t* lda, double* af,
-        const integer_t* ldaf, char* equed, double* s, double* b,
-        const integer_t* ldb, double* x, const integer_t* ldx, double* rcond,
-        double* ferr, double* berr, double* work, integer_t* iwork,
-        integer_t* info );
-void LAPACK_CPOSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* af, const integer_t* ldaf, char* equed, float* s,
-        fcomplex_t* b, const integer_t* ldb, fcomplex_t* x,
-        const integer_t* ldx, float* rcond, float* ferr, float* berr,
-        fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZPOSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* af, const integer_t* ldaf, char* equed, double* s,
-        dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SPOSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, float* a,
+        const fortran_int_t* lda, float* af, const fortran_int_t* ldaf,
+        char* equed, float* s, float* b, const fortran_int_t* ldb, float* x,
+        const fortran_int_t* ldx, float* rcond, float* ferr, float* berr,
+        float* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DPOSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, double* a,
+        const fortran_int_t* lda, double* af, const fortran_int_t* ldaf,
+        char* equed, double* s, double* b, const fortran_int_t* ldb,
+        double* x, const fortran_int_t* ldx, double* rcond, double* ferr,
+        double* berr, double* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_CPOSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, void* a,
+        const fortran_int_t* lda, void* af, const fortran_int_t* ldaf,
+        char* equed, float* s, void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, float* rcond, float* ferr, float* berr,
+        void* work, float* rwork, fortran_int_t* info );
+void LAPACK_ZPOSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, void* a,
+        const fortran_int_t* lda, void* af, const fortran_int_t* ldaf,
+        char* equed, double* s, void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, double* rcond, double* ferr, double* berr,
+        void* work, double* rwork, fortran_int_t* info );
 
 // Value-type variants of ppsv
-void LAPACK_SPPSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, float* ap, float* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_DPPSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, double* ap, double* b, const integer_t* ldb,
-        integer_t* info );
-void LAPACK_CPPSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* ap, fcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_ZPPSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* ap, dcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
+void LAPACK_SPPSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, float* ap, float* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_DPPSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, double* ap, double* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_CPPSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* ap, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZPPSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* ap, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of ppsvx
-void LAPACK_SPPSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, float* ap, float* afp, char* equed, float* s,
-        float* b, const integer_t* ldb, float* x, const integer_t* ldx,
-        float* rcond, float* ferr, float* berr, float* work, integer_t* iwork,
-        integer_t* info );
-void LAPACK_DPPSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, double* ap, double* afp, char* equed,
-        double* s, double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CPPSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* ap, fcomplex_t* afp, char* equed,
-        float* s, fcomplex_t* b, const integer_t* ldb, fcomplex_t* x,
-        const integer_t* ldx, float* rcond, float* ferr, float* berr,
-        fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZPPSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* ap, dcomplex_t* afp, char* equed,
-        double* s, dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SPPSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, float* ap,
+        float* afp, char* equed, float* s, float* b, const fortran_int_t* ldb,
+        float* x, const fortran_int_t* ldx, float* rcond, float* ferr,
+        float* berr, float* work, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DPPSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, double* ap,
+        double* afp, char* equed, double* s, double* b,
+        const fortran_int_t* ldb, double* x, const fortran_int_t* ldx,
+        double* rcond, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CPPSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, void* ap,
+        void* afp, char* equed, float* s, void* b, const fortran_int_t* ldb,
+        void* x, const fortran_int_t* ldx, float* rcond, float* ferr,
+        float* berr, void* work, float* rwork, fortran_int_t* info );
+void LAPACK_ZPPSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, void* ap,
+        void* afp, char* equed, double* s, void* b, const fortran_int_t* ldb,
+        void* x, const fortran_int_t* ldx, double* rcond, double* ferr,
+        double* berr, void* work, double* rwork, fortran_int_t* info );
 
 // Value-type variants of ptsv
-void LAPACK_SPTSV( const integer_t* n, const integer_t* nrhs, float* d,
-        float* e, float* b, const integer_t* ldb, integer_t* info );
-void LAPACK_DPTSV( const integer_t* n, const integer_t* nrhs, double* d,
-        double* e, double* b, const integer_t* ldb, integer_t* info );
-void LAPACK_CPTSV( const integer_t* n, const integer_t* nrhs, float* d,
-        fcomplex_t* e, fcomplex_t* b, const integer_t* ldb, integer_t* info );
-void LAPACK_ZPTSV( const integer_t* n, const integer_t* nrhs, double* d,
-        dcomplex_t* e, dcomplex_t* b, const integer_t* ldb, integer_t* info );
+void LAPACK_SPTSV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        float* d, float* e, float* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_DPTSV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        double* d, double* e, double* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_CPTSV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        float* d, void* e, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
+void LAPACK_ZPTSV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        double* d, void* e, void* b, const fortran_int_t* ldb,
+        fortran_int_t* info );
 
 // Value-type variants of ptsvx
-void LAPACK_SPTSVX( const char* fact, const integer_t* n,
-        const integer_t* nrhs, const float* d, const float* e, float* df,
-        float* ef, const float* b, const integer_t* ldb, float* x,
-        const integer_t* ldx, float* rcond, float* ferr, float* berr,
-        float* work, integer_t* info );
-void LAPACK_DPTSVX( const char* fact, const integer_t* n,
-        const integer_t* nrhs, const double* d, const double* e, double* df,
-        double* ef, const double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        double* work, integer_t* info );
-void LAPACK_CPTSVX( const char* fact, const integer_t* n,
-        const integer_t* nrhs, const float* d, const fcomplex_t* e, float* df,
-        fcomplex_t* ef, const fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* x, const integer_t* ldx, float* rcond, float* ferr,
-        float* berr, fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZPTSVX( const char* fact, const integer_t* n,
-        const integer_t* nrhs, const double* d, const dcomplex_t* e,
-        double* df, dcomplex_t* ef, const dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* x, const integer_t* ldx, double* rcond, double* ferr,
-        double* berr, dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SPTSVX( const char* fact, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* d, const float* e, float* df,
+        float* ef, const float* b, const fortran_int_t* ldb, float* x,
+        const fortran_int_t* ldx, float* rcond, float* ferr, float* berr,
+        float* work, fortran_int_t* info );
+void LAPACK_DPTSVX( const char* fact, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* d, const double* e,
+        double* df, double* ef, const double* b, const fortran_int_t* ldb,
+        double* x, const fortran_int_t* ldx, double* rcond, double* ferr,
+        double* berr, double* work, fortran_int_t* info );
+void LAPACK_CPTSVX( const char* fact, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* d, const void* e, float* df,
+        void* ef, const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, float* rcond, float* ferr, float* berr,
+        void* work, float* rwork, fortran_int_t* info );
+void LAPACK_ZPTSVX( const char* fact, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* d, const void* e, double* df,
+        void* ef, const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, double* rcond, double* ferr, double* berr,
+        void* work, double* rwork, fortran_int_t* info );
 
 // Value-type variants of sgesv
-void LAPACK_DSGESV( const integer_t* n, const integer_t* nrhs, double* a,
-        const integer_t* lda, integer_t* ipiv, const double* b,
-        const integer_t* ldb, double* x, const integer_t* ldx, double* work,
-        float* swork, integer_t* iter, integer_t* info );
+void LAPACK_DSGESV( const fortran_int_t* n, const fortran_int_t* nrhs,
+        double* a, const fortran_int_t* lda, fortran_int_t* ipiv,
+        const double* b, const fortran_int_t* ldb, double* x,
+        const fortran_int_t* ldx, double* work, float* swork,
+        fortran_int_t* iter, fortran_int_t* info );
 
 // Value-type variants of sposv
-void LAPACK_DSPOSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, double* a, const integer_t* lda,
-        const double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* work, float* swork, integer_t* iter,
-        integer_t* info );
+void LAPACK_DSPOSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, double* a, const fortran_int_t* lda,
+        const double* b, const fortran_int_t* ldb, double* x,
+        const fortran_int_t* ldx, double* work, float* swork,
+        fortran_int_t* iter, fortran_int_t* info );
 
 // Value-type variants of spsv
-void LAPACK_SSPSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, float* ap, integer_t* ipiv, float* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_DSPSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, double* ap, integer_t* ipiv, double* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_CSPSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* ap, integer_t* ipiv, fcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
-void LAPACK_ZSPSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* ap, integer_t* ipiv, dcomplex_t* b,
-        const integer_t* ldb, integer_t* info );
+void LAPACK_SSPSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, float* ap, fortran_int_t* ipiv, float* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_DSPSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, double* ap, fortran_int_t* ipiv, double* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_CSPSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* ap, fortran_int_t* ipiv, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
+void LAPACK_ZSPSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* ap, fortran_int_t* ipiv, void* b,
+        const fortran_int_t* ldb, fortran_int_t* info );
 
 // Value-type variants of spsvx
-void LAPACK_SSPSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* ap, float* afp, integer_t* ipiv,
-        const float* b, const integer_t* ldb, float* x, const integer_t* ldx,
-        float* rcond, float* ferr, float* berr, float* work, integer_t* iwork,
-        integer_t* info );
-void LAPACK_DSPSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* ap, double* afp, integer_t* ipiv,
-        const double* b, const integer_t* ldb, double* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CSPSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* ap, fcomplex_t* afp,
-        integer_t* ipiv, const fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* x, const integer_t* ldx, float* rcond, float* ferr,
-        float* berr, fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZSPSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* ap, dcomplex_t* afp,
-        integer_t* ipiv, const dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* x, const integer_t* ldx, double* rcond, double* ferr,
-        double* berr, dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_SSPSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const float* ap,
+        float* afp, fortran_int_t* ipiv, const float* b,
+        const fortran_int_t* ldb, float* x, const fortran_int_t* ldx,
+        float* rcond, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DSPSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const double* ap,
+        double* afp, fortran_int_t* ipiv, const double* b,
+        const fortran_int_t* ldb, double* x, const fortran_int_t* ldx,
+        double* rcond, double* ferr, double* berr, double* work,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CSPSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* ap,
+        void* afp, fortran_int_t* ipiv, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        float* rcond, float* ferr, float* berr, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZSPSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* ap,
+        void* afp, fortran_int_t* ipiv, const void* b,
+        const fortran_int_t* ldb, void* x, const fortran_int_t* ldx,
+        double* rcond, double* ferr, double* berr, void* work, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of sysv
-void LAPACK_SSYSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, float* a, const integer_t* lda,
-        integer_t* ipiv, float* b, const integer_t* ldb, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DSYSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, double* a, const integer_t* lda,
-        integer_t* ipiv, double* b, const integer_t* ldb, double* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_CSYSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* a, const integer_t* lda,
-        integer_t* ipiv, fcomplex_t* b, const integer_t* ldb,
-        fcomplex_t* work, const integer_t* lwork, integer_t* info );
-void LAPACK_ZSYSV( const char* uplo, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* a, const integer_t* lda,
-        integer_t* ipiv, dcomplex_t* b, const integer_t* ldb,
-        dcomplex_t* work, const integer_t* lwork, integer_t* info );
+void LAPACK_SSYSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, float* a, const fortran_int_t* lda,
+        fortran_int_t* ipiv, float* b, const fortran_int_t* ldb, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DSYSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, double* a, const fortran_int_t* lda,
+        fortran_int_t* ipiv, double* b, const fortran_int_t* ldb,
+        double* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CSYSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda,
+        fortran_int_t* ipiv, void* b, const fortran_int_t* ldb, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZSYSV( const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda,
+        fortran_int_t* ipiv, void* b, const fortran_int_t* ldb, void* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of sysvx
-void LAPACK_SSYSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const float* a, const integer_t* lda,
-        float* af, const integer_t* ldaf, integer_t* ipiv, const float* b,
-        const integer_t* ldb, float* x, const integer_t* ldx, float* rcond,
-        float* ferr, float* berr, float* work, const integer_t* lwork,
-        integer_t* iwork, integer_t* info );
-void LAPACK_DSYSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const double* a, const integer_t* lda,
-        double* af, const integer_t* ldaf, integer_t* ipiv, const double* b,
-        const integer_t* ldb, double* x, const integer_t* ldx, double* rcond,
-        double* ferr, double* berr, double* work, const integer_t* lwork,
-        integer_t* iwork, integer_t* info );
-void LAPACK_CSYSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* af, const integer_t* ldaf, integer_t* ipiv,
-        const fcomplex_t* b, const integer_t* ldb, fcomplex_t* x,
-        const integer_t* ldx, float* rcond, float* ferr, float* berr,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        integer_t* info );
-void LAPACK_ZSYSVX( const char* fact, const char* uplo, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* af, const integer_t* ldaf, integer_t* ipiv,
-        const dcomplex_t* b, const integer_t* ldb, dcomplex_t* x,
-        const integer_t* ldx, double* rcond, double* ferr, double* berr,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        integer_t* info );
+void LAPACK_SSYSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const float* a,
+        const fortran_int_t* lda, float* af, const fortran_int_t* ldaf,
+        fortran_int_t* ipiv, const float* b, const fortran_int_t* ldb,
+        float* x, const fortran_int_t* ldx, float* rcond, float* ferr,
+        float* berr, float* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DSYSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const double* a,
+        const fortran_int_t* lda, double* af, const fortran_int_t* ldaf,
+        fortran_int_t* ipiv, const double* b, const fortran_int_t* ldb,
+        double* x, const fortran_int_t* ldx, double* rcond, double* ferr,
+        double* berr, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CSYSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* a,
+        const fortran_int_t* lda, void* af, const fortran_int_t* ldaf,
+        fortran_int_t* ipiv, const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, float* rcond, float* ferr, float* berr,
+        void* work, const fortran_int_t* lwork, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZSYSVX( const char* fact, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* nrhs, const void* a,
+        const fortran_int_t* lda, void* af, const fortran_int_t* ldaf,
+        fortran_int_t* ipiv, const void* b, const fortran_int_t* ldb, void* x,
+        const fortran_int_t* ldx, double* rcond, double* ferr, double* berr,
+        void* work, const fortran_int_t* lwork, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of gees
 void LAPACK_SGEES( const char* jobvs, const char* sort, logical_t* select,
-        const integer_t* n, float* a, const integer_t* lda, integer_t* sdim,
-        float* wr, float* wi, float* vs, const integer_t* ldvs, float* work,
-        const integer_t* lwork, logical_t* bwork, integer_t* info );
+        const fortran_int_t* n, float* a, const fortran_int_t* lda,
+        fortran_int_t* sdim, float* wr, float* wi, float* vs,
+        const fortran_int_t* ldvs, float* work, const fortran_int_t* lwork,
+        logical_t* bwork, fortran_int_t* info );
 void LAPACK_DGEES( const char* jobvs, const char* sort, logical_t* select,
-        const integer_t* n, double* a, const integer_t* lda, integer_t* sdim,
-        double* wr, double* wi, double* vs, const integer_t* ldvs,
-        double* work, const integer_t* lwork, logical_t* bwork,
-        integer_t* info );
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        fortran_int_t* sdim, double* wr, double* wi, double* vs,
+        const fortran_int_t* ldvs, double* work, const fortran_int_t* lwork,
+        logical_t* bwork, fortran_int_t* info );
 void LAPACK_CGEES( const char* jobvs, const char* sort, logical_t* select,
-        const integer_t* n, fcomplex_t* a, const integer_t* lda,
-        integer_t* sdim, fcomplex_t* w, fcomplex_t* vs, const integer_t* ldvs,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        logical_t* bwork, integer_t* info );
+        const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        fortran_int_t* sdim, void* w, void* vs, const fortran_int_t* ldvs,
+        void* work, const fortran_int_t* lwork, float* rwork,
+        logical_t* bwork, fortran_int_t* info );
 void LAPACK_ZGEES( const char* jobvs, const char* sort, logical_t* select,
-        const integer_t* n, dcomplex_t* a, const integer_t* lda,
-        integer_t* sdim, dcomplex_t* w, dcomplex_t* vs, const integer_t* ldvs,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        logical_t* bwork, integer_t* info );
+        const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        fortran_int_t* sdim, void* w, void* vs, const fortran_int_t* ldvs,
+        void* work, const fortran_int_t* lwork, double* rwork,
+        logical_t* bwork, fortran_int_t* info );
 
 // Value-type variants of geesx
 void LAPACK_SGEESX( const char* jobvs, const char* sort, logical_t* select,
-        const char* sense, const integer_t* n, float* a, const integer_t* lda,
-        integer_t* sdim, float* wr, float* wi, float* vs,
-        const integer_t* ldvs, float* rconde, float* rcondv, float* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        logical_t* bwork, integer_t* info );
+        const char* sense, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, fortran_int_t* sdim, float* wr, float* wi,
+        float* vs, const fortran_int_t* ldvs, float* rconde, float* rcondv,
+        float* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, logical_t* bwork, fortran_int_t* info );
 void LAPACK_DGEESX( const char* jobvs, const char* sort, logical_t* select,
-        const char* sense, const integer_t* n, double* a,
-        const integer_t* lda, integer_t* sdim, double* wr, double* wi,
-        double* vs, const integer_t* ldvs, double* rconde, double* rcondv,
-        double* work, const integer_t* lwork, integer_t* iwork,
-        const integer_t* liwork, logical_t* bwork, integer_t* info );
+        const char* sense, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, fortran_int_t* sdim, double* wr, double* wi,
+        double* vs, const fortran_int_t* ldvs, double* rconde, double* rcondv,
+        double* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, logical_t* bwork, fortran_int_t* info );
 void LAPACK_CGEESX( const char* jobvs, const char* sort, logical_t* select,
-        const char* sense, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, integer_t* sdim, fcomplex_t* w, fcomplex_t* vs,
-        const integer_t* ldvs, float* rconde, float* rcondv, fcomplex_t* work,
-        const integer_t* lwork, float* rwork, logical_t* bwork,
-        integer_t* info );
+        const char* sense, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* sdim, void* w, void* vs,
+        const fortran_int_t* ldvs, float* rconde, float* rcondv, void* work,
+        const fortran_int_t* lwork, float* rwork, logical_t* bwork,
+        fortran_int_t* info );
 void LAPACK_ZGEESX( const char* jobvs, const char* sort, logical_t* select,
-        const char* sense, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, integer_t* sdim, dcomplex_t* w, dcomplex_t* vs,
-        const integer_t* ldvs, double* rconde, double* rcondv,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        logical_t* bwork, integer_t* info );
+        const char* sense, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, fortran_int_t* sdim, void* w, void* vs,
+        const fortran_int_t* ldvs, double* rconde, double* rcondv, void* work,
+        const fortran_int_t* lwork, double* rwork, logical_t* bwork,
+        fortran_int_t* info );
 
 // Value-type variants of geev
-void LAPACK_SGEEV( const char* jobvl, const char* jobvr, const integer_t* n,
-        float* a, const integer_t* lda, float* wr, float* wi, float* vl,
-        const integer_t* ldvl, float* vr, const integer_t* ldvr, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DGEEV( const char* jobvl, const char* jobvr, const integer_t* n,
-        double* a, const integer_t* lda, double* wr, double* wi, double* vl,
-        const integer_t* ldvl, double* vr, const integer_t* ldvr,
-        double* work, const integer_t* lwork, integer_t* info );
-void LAPACK_CGEEV( const char* jobvl, const char* jobvr, const integer_t* n,
-        fcomplex_t* a, const integer_t* lda, fcomplex_t* w, fcomplex_t* vl,
-        const integer_t* ldvl, fcomplex_t* vr, const integer_t* ldvr,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        integer_t* info );
-void LAPACK_ZGEEV( const char* jobvl, const char* jobvr, const integer_t* n,
-        dcomplex_t* a, const integer_t* lda, dcomplex_t* w, dcomplex_t* vl,
-        const integer_t* ldvl, dcomplex_t* vr, const integer_t* ldvr,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        integer_t* info );
+void LAPACK_SGEEV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, float* a, const fortran_int_t* lda, float* wr,
+        float* wi, float* vl, const fortran_int_t* ldvl, float* vr,
+        const fortran_int_t* ldvr, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DGEEV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        double* wr, double* wi, double* vl, const fortran_int_t* ldvl,
+        double* vr, const fortran_int_t* ldvr, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGEEV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* w,
+        void* vl, const fortran_int_t* ldvl, void* vr,
+        const fortran_int_t* ldvr, void* work, const fortran_int_t* lwork,
+        float* rwork, fortran_int_t* info );
+void LAPACK_ZGEEV( const char* jobvl, const char* jobvr,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, void* w,
+        void* vl, const fortran_int_t* ldvl, void* vr,
+        const fortran_int_t* ldvr, void* work, const fortran_int_t* lwork,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of geevx
 void LAPACK_SGEEVX( const char* balanc, const char* jobvl, const char* jobvr,
-        const char* sense, const integer_t* n, float* a, const integer_t* lda,
-        float* wr, float* wi, float* vl, const integer_t* ldvl, float* vr,
-        const integer_t* ldvr, integer_t* ilo, integer_t* ihi, float* scale,
-        float* abnrm, float* rconde, float* rcondv, float* work,
-        const integer_t* lwork, integer_t* iwork, integer_t* info );
+        const char* sense, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* wr, float* wi, float* vl,
+        const fortran_int_t* ldvl, float* vr, const fortran_int_t* ldvr,
+        fortran_int_t* ilo, fortran_int_t* ihi, float* scale, float* abnrm,
+        float* rconde, float* rcondv, float* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_DGEEVX( const char* balanc, const char* jobvl, const char* jobvr,
-        const char* sense, const integer_t* n, double* a,
-        const integer_t* lda, double* wr, double* wi, double* vl,
-        const integer_t* ldvl, double* vr, const integer_t* ldvr,
-        integer_t* ilo, integer_t* ihi, double* scale, double* abnrm,
-        double* rconde, double* rcondv, double* work, const integer_t* lwork,
-        integer_t* iwork, integer_t* info );
+        const char* sense, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* wr, double* wi, double* vl,
+        const fortran_int_t* ldvl, double* vr, const fortran_int_t* ldvr,
+        fortran_int_t* ilo, fortran_int_t* ihi, double* scale, double* abnrm,
+        double* rconde, double* rcondv, double* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* info );
 void LAPACK_CGEEVX( const char* balanc, const char* jobvl, const char* jobvr,
-        const char* sense, const integer_t* n, fcomplex_t* a,
-        const integer_t* lda, fcomplex_t* w, fcomplex_t* vl,
-        const integer_t* ldvl, fcomplex_t* vr, const integer_t* ldvr,
-        integer_t* ilo, integer_t* ihi, float* scale, float* abnrm,
-        float* rconde, float* rcondv, fcomplex_t* work,
-        const integer_t* lwork, float* rwork, integer_t* info );
+        const char* sense, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* w, void* vl,
+        const fortran_int_t* ldvl, void* vr, const fortran_int_t* ldvr,
+        fortran_int_t* ilo, fortran_int_t* ihi, float* scale, float* abnrm,
+        float* rconde, float* rcondv, void* work, const fortran_int_t* lwork,
+        float* rwork, fortran_int_t* info );
 void LAPACK_ZGEEVX( const char* balanc, const char* jobvl, const char* jobvr,
-        const char* sense, const integer_t* n, dcomplex_t* a,
-        const integer_t* lda, dcomplex_t* w, dcomplex_t* vl,
-        const integer_t* ldvl, dcomplex_t* vr, const integer_t* ldvr,
-        integer_t* ilo, integer_t* ihi, double* scale, double* abnrm,
-        double* rconde, double* rcondv, dcomplex_t* work,
-        const integer_t* lwork, double* rwork, integer_t* info );
+        const char* sense, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, void* w, void* vl,
+        const fortran_int_t* ldvl, void* vr, const fortran_int_t* ldvr,
+        fortran_int_t* ilo, fortran_int_t* ihi, double* scale, double* abnrm,
+        double* rconde, double* rcondv, void* work,
+        const fortran_int_t* lwork, double* rwork, fortran_int_t* info );
 
 // Value-type variants of gesdd
-void LAPACK_SGESDD( const char* jobz, const integer_t* m, const integer_t* n,
-        float* a, const integer_t* lda, float* s, float* u,
-        const integer_t* ldu, float* vt, const integer_t* ldvt, float* work,
-        const integer_t* lwork, integer_t* iwork, integer_t* info );
-void LAPACK_DGESDD( const char* jobz, const integer_t* m, const integer_t* n,
-        double* a, const integer_t* lda, double* s, double* u,
-        const integer_t* ldu, double* vt, const integer_t* ldvt, double* work,
-        const integer_t* lwork, integer_t* iwork, integer_t* info );
-void LAPACK_CGESDD( const char* jobz, const integer_t* m, const integer_t* n,
-        fcomplex_t* a, const integer_t* lda, float* s, fcomplex_t* u,
-        const integer_t* ldu, fcomplex_t* vt, const integer_t* ldvt,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        integer_t* iwork, integer_t* info );
-void LAPACK_ZGESDD( const char* jobz, const integer_t* m, const integer_t* n,
-        dcomplex_t* a, const integer_t* lda, double* s, dcomplex_t* u,
-        const integer_t* ldu, dcomplex_t* vt, const integer_t* ldvt,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        integer_t* iwork, integer_t* info );
+void LAPACK_SGESDD( const char* jobz, const fortran_int_t* m,
+        const fortran_int_t* n, float* a, const fortran_int_t* lda, float* s,
+        float* u, const fortran_int_t* ldu, float* vt,
+        const fortran_int_t* ldvt, float* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DGESDD( const char* jobz, const fortran_int_t* m,
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        double* s, double* u, const fortran_int_t* ldu, double* vt,
+        const fortran_int_t* ldvt, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CGESDD( const char* jobz, const fortran_int_t* m,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, float* s,
+        void* u, const fortran_int_t* ldu, void* vt,
+        const fortran_int_t* ldvt, void* work, const fortran_int_t* lwork,
+        float* rwork, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_ZGESDD( const char* jobz, const fortran_int_t* m,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, double* s,
+        void* u, const fortran_int_t* ldu, void* vt,
+        const fortran_int_t* ldvt, void* work, const fortran_int_t* lwork,
+        double* rwork, fortran_int_t* iwork, fortran_int_t* info );
 
 // Value-type variants of gesvd
-void LAPACK_SGESVD( const char* jobu, const char* jobvt, const integer_t* m,
-        const integer_t* n, float* a, const integer_t* lda, float* s,
-        float* u, const integer_t* ldu, float* vt, const integer_t* ldvt,
-        float* work, const integer_t* lwork, integer_t* info );
-void LAPACK_DGESVD( const char* jobu, const char* jobvt, const integer_t* m,
-        const integer_t* n, double* a, const integer_t* lda, double* s,
-        double* u, const integer_t* ldu, double* vt, const integer_t* ldvt,
-        double* work, const integer_t* lwork, integer_t* info );
-void LAPACK_CGESVD( const char* jobu, const char* jobvt, const integer_t* m,
-        const integer_t* n, fcomplex_t* a, const integer_t* lda, float* s,
-        fcomplex_t* u, const integer_t* ldu, fcomplex_t* vt,
-        const integer_t* ldvt, fcomplex_t* work, const integer_t* lwork,
-        float* rwork, integer_t* info );
-void LAPACK_ZGESVD( const char* jobu, const char* jobvt, const integer_t* m,
-        const integer_t* n, dcomplex_t* a, const integer_t* lda, double* s,
-        dcomplex_t* u, const integer_t* ldu, dcomplex_t* vt,
-        const integer_t* ldvt, dcomplex_t* work, const integer_t* lwork,
-        double* rwork, integer_t* info );
+void LAPACK_SGESVD( const char* jobu, const char* jobvt,
+        const fortran_int_t* m, const fortran_int_t* n, float* a,
+        const fortran_int_t* lda, float* s, float* u,
+        const fortran_int_t* ldu, float* vt, const fortran_int_t* ldvt,
+        float* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGESVD( const char* jobu, const char* jobvt,
+        const fortran_int_t* m, const fortran_int_t* n, double* a,
+        const fortran_int_t* lda, double* s, double* u,
+        const fortran_int_t* ldu, double* vt, const fortran_int_t* ldvt,
+        double* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGESVD( const char* jobu, const char* jobvt,
+        const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, float* s, void* u, const fortran_int_t* ldu,
+        void* vt, const fortran_int_t* ldvt, void* work,
+        const fortran_int_t* lwork, float* rwork, fortran_int_t* info );
+void LAPACK_ZGESVD( const char* jobu, const char* jobvt,
+        const fortran_int_t* m, const fortran_int_t* n, void* a,
+        const fortran_int_t* lda, double* s, void* u,
+        const fortran_int_t* ldu, void* vt, const fortran_int_t* ldvt,
+        void* work, const fortran_int_t* lwork, double* rwork,
+        fortran_int_t* info );
 
 // Value-type variants of hbev
-void LAPACK_CHBEV( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* kd, fcomplex_t* ab, const integer_t* ldab, float* w,
-        fcomplex_t* z, const integer_t* ldz, fcomplex_t* work, float* rwork,
-        integer_t* info );
-void LAPACK_ZHBEV( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* kd, dcomplex_t* ab, const integer_t* ldab, double* w,
-        dcomplex_t* z, const integer_t* ldz, dcomplex_t* work, double* rwork,
-        integer_t* info );
+void LAPACK_CHBEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, void* ab, const fortran_int_t* ldab,
+        float* w, void* z, const fortran_int_t* ldz, void* work, float* rwork,
+        fortran_int_t* info );
+void LAPACK_ZHBEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, void* ab, const fortran_int_t* ldab,
+        double* w, void* z, const fortran_int_t* ldz, void* work,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of hbevd
-void LAPACK_CHBEVD( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* kd, fcomplex_t* ab, const integer_t* ldab, float* w,
-        fcomplex_t* z, const integer_t* ldz, fcomplex_t* work,
-        const integer_t* lwork, float* rwork, const integer_t* lrwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_ZHBEVD( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* kd, dcomplex_t* ab, const integer_t* ldab, double* w,
-        dcomplex_t* z, const integer_t* ldz, dcomplex_t* work,
-        const integer_t* lwork, double* rwork, const integer_t* lrwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
+void LAPACK_CHBEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd, void* ab,
+        const fortran_int_t* ldab, float* w, void* z,
+        const fortran_int_t* ldz, void* work, const fortran_int_t* lwork,
+        float* rwork, const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_ZHBEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd, void* ab,
+        const fortran_int_t* ldab, double* w, void* z,
+        const fortran_int_t* ldz, void* work, const fortran_int_t* lwork,
+        double* rwork, const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of hbevx
 void LAPACK_CHBEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, const integer_t* kd, fcomplex_t* ab,
-        const integer_t* ldab, fcomplex_t* q, const integer_t* ldq,
-        const float* vl, const float* vu, const integer_t* il,
-        const integer_t* iu, const float* abstol, integer_t* m, float* w,
-        fcomplex_t* z, const integer_t* ldz, fcomplex_t* work, float* rwork,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd, void* ab,
+        const fortran_int_t* ldab, void* q, const fortran_int_t* ldq,
+        const float* vl, const float* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const float* abstol, fortran_int_t* m,
+        float* w, void* z, const fortran_int_t* ldz, void* work, float* rwork,
+        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t* info );
 void LAPACK_ZHBEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, const integer_t* kd, dcomplex_t* ab,
-        const integer_t* ldab, dcomplex_t* q, const integer_t* ldq,
-        const double* vl, const double* vu, const integer_t* il,
-        const integer_t* iu, const double* abstol, integer_t* m, double* w,
-        dcomplex_t* z, const integer_t* ldz, dcomplex_t* work, double* rwork,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd, void* ab,
+        const fortran_int_t* ldab, void* q, const fortran_int_t* ldq,
+        const double* vl, const double* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const double* abstol, fortran_int_t* m,
+        double* w, void* z, const fortran_int_t* ldz, void* work,
+        double* rwork, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t* info );
 
 // Value-type variants of heev
-void LAPACK_CHEEV( const char* jobz, const char* uplo, const integer_t* n,
-        fcomplex_t* a, const integer_t* lda, float* w, fcomplex_t* work,
-        const integer_t* lwork, float* rwork, integer_t* info );
-void LAPACK_ZHEEV( const char* jobz, const char* uplo, const integer_t* n,
-        dcomplex_t* a, const integer_t* lda, double* w, dcomplex_t* work,
-        const integer_t* lwork, double* rwork, integer_t* info );
+void LAPACK_CHEEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        void* a, const fortran_int_t* lda, float* w, void* work,
+        const fortran_int_t* lwork, float* rwork, fortran_int_t* info );
+void LAPACK_ZHEEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        void* a, const fortran_int_t* lda, double* w, void* work,
+        const fortran_int_t* lwork, double* rwork, fortran_int_t* info );
 
 // Value-type variants of heevd
-void LAPACK_CHEEVD( const char* jobz, const char* uplo, const integer_t* n,
-        fcomplex_t* a, const integer_t* lda, float* w, fcomplex_t* work,
-        const integer_t* lwork, float* rwork, const integer_t* lrwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_ZHEEVD( const char* jobz, const char* uplo, const integer_t* n,
-        dcomplex_t* a, const integer_t* lda, double* w, dcomplex_t* work,
-        const integer_t* lwork, double* rwork, const integer_t* lrwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
+void LAPACK_CHEEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, float* w,
+        void* work, const fortran_int_t* lwork, float* rwork,
+        const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_ZHEEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, void* a, const fortran_int_t* lda, double* w,
+        void* work, const fortran_int_t* lwork, double* rwork,
+        const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of heevr
 void LAPACK_CHEEVR( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, fcomplex_t* a, const integer_t* lda,
-        const float* vl, const float* vu, const integer_t* il,
-        const integer_t* iu, const float* abstol, integer_t* m, float* w,
-        fcomplex_t* z, const integer_t* ldz, integer_t* isuppz,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        const integer_t* lrwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+        const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        const float* vl, const float* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const float* abstol, fortran_int_t* m,
+        float* w, void* z, const fortran_int_t* ldz, fortran_int_t* isuppz,
+        void* work, const fortran_int_t* lwork, float* rwork,
+        const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 void LAPACK_ZHEEVR( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, dcomplex_t* a, const integer_t* lda,
-        const double* vl, const double* vu, const integer_t* il,
-        const integer_t* iu, const double* abstol, integer_t* m, double* w,
-        dcomplex_t* z, const integer_t* ldz, integer_t* isuppz,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        const integer_t* lrwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+        const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        const double* vl, const double* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const double* abstol, fortran_int_t* m,
+        double* w, void* z, const fortran_int_t* ldz, fortran_int_t* isuppz,
+        void* work, const fortran_int_t* lwork, double* rwork,
+        const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of heevx
 void LAPACK_CHEEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, fcomplex_t* a, const integer_t* lda,
-        const float* vl, const float* vu, const integer_t* il,
-        const integer_t* iu, const float* abstol, integer_t* m, float* w,
-        fcomplex_t* z, const integer_t* ldz, fcomplex_t* work,
-        const integer_t* lwork, float* rwork, integer_t* iwork,
-        integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        const float* vl, const float* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const float* abstol, fortran_int_t* m,
+        float* w, void* z, const fortran_int_t* ldz, void* work,
+        const fortran_int_t* lwork, float* rwork, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
 void LAPACK_ZHEEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, dcomplex_t* a, const integer_t* lda,
-        const double* vl, const double* vu, const integer_t* il,
-        const integer_t* iu, const double* abstol, integer_t* m, double* w,
-        dcomplex_t* z, const integer_t* ldz, dcomplex_t* work,
-        const integer_t* lwork, double* rwork, integer_t* iwork,
-        integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, void* a, const fortran_int_t* lda,
+        const double* vl, const double* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const double* abstol, fortran_int_t* m,
+        double* w, void* z, const fortran_int_t* ldz, void* work,
+        const fortran_int_t* lwork, double* rwork, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
 
 // Value-type variants of hpev
-void LAPACK_CHPEV( const char* jobz, const char* uplo, const integer_t* n,
-        fcomplex_t* ap, float* w, fcomplex_t* z, const integer_t* ldz,
-        fcomplex_t* work, float* rwork, integer_t* info );
-void LAPACK_ZHPEV( const char* jobz, const char* uplo, const integer_t* n,
-        dcomplex_t* ap, double* w, dcomplex_t* z, const integer_t* ldz,
-        dcomplex_t* work, double* rwork, integer_t* info );
+void LAPACK_CHPEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        void* ap, float* w, void* z, const fortran_int_t* ldz, void* work,
+        float* rwork, fortran_int_t* info );
+void LAPACK_ZHPEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        void* ap, double* w, void* z, const fortran_int_t* ldz, void* work,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of hpevd
-void LAPACK_CHPEVD( const char* jobz, const char* uplo, const integer_t* n,
-        fcomplex_t* ap, float* w, fcomplex_t* z, const integer_t* ldz,
-        fcomplex_t* work, const integer_t* lwork, float* rwork,
-        const integer_t* lrwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
-void LAPACK_ZHPEVD( const char* jobz, const char* uplo, const integer_t* n,
-        dcomplex_t* ap, double* w, dcomplex_t* z, const integer_t* ldz,
-        dcomplex_t* work, const integer_t* lwork, double* rwork,
-        const integer_t* lrwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+void LAPACK_CHPEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, void* ap, float* w, void* z,
+        const fortran_int_t* ldz, void* work, const fortran_int_t* lwork,
+        float* rwork, const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_ZHPEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, void* ap, double* w, void* z,
+        const fortran_int_t* ldz, void* work, const fortran_int_t* lwork,
+        double* rwork, const fortran_int_t* lrwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of hpevx
 void LAPACK_CHPEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, fcomplex_t* ap, const float* vl, const float* vu,
-        const integer_t* il, const integer_t* iu, const float* abstol,
-        integer_t* m, float* w, fcomplex_t* z, const integer_t* ldz,
-        fcomplex_t* work, float* rwork, integer_t* iwork, integer_t* ifail,
-        integer_t* info );
+        const fortran_int_t* n, void* ap, const float* vl, const float* vu,
+        const fortran_int_t* il, const fortran_int_t* iu, const float* abstol,
+        fortran_int_t* m, float* w, void* z, const fortran_int_t* ldz,
+        void* work, float* rwork, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t* info );
 void LAPACK_ZHPEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, dcomplex_t* ap, const double* vl,
-        const double* vu, const integer_t* il, const integer_t* iu,
-        const double* abstol, integer_t* m, double* w, dcomplex_t* z,
-        const integer_t* ldz, dcomplex_t* work, double* rwork,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, void* ap, const double* vl, const double* vu,
+        const fortran_int_t* il, const fortran_int_t* iu,
+        const double* abstol, fortran_int_t* m, double* w, void* z,
+        const fortran_int_t* ldz, void* work, double* rwork,
+        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t* info );
 
 // Value-type variants of sbev
-void LAPACK_SSBEV( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* kd, float* ab, const integer_t* ldab, float* w,
-        float* z, const integer_t* ldz, float* work, integer_t* info );
-void LAPACK_DSBEV( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* kd, double* ab, const integer_t* ldab, double* w,
-        double* z, const integer_t* ldz, double* work, integer_t* info );
+void LAPACK_SSBEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, float* ab, const fortran_int_t* ldab,
+        float* w, float* z, const fortran_int_t* ldz, float* work,
+        fortran_int_t* info );
+void LAPACK_DSBEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        const fortran_int_t* kd, double* ab, const fortran_int_t* ldab,
+        double* w, double* z, const fortran_int_t* ldz, double* work,
+        fortran_int_t* info );
 
 // Value-type variants of sbevd
-void LAPACK_SSBEVD( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* kd, float* ab, const integer_t* ldab, float* w,
-        float* z, const integer_t* ldz, float* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_DSBEVD( const char* jobz, const char* uplo, const integer_t* n,
-        const integer_t* kd, double* ab, const integer_t* ldab, double* w,
-        double* z, const integer_t* ldz, double* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
+void LAPACK_SSBEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd, float* ab,
+        const fortran_int_t* ldab, float* w, float* z,
+        const fortran_int_t* ldz, float* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
+void LAPACK_DSBEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, const fortran_int_t* kd, double* ab,
+        const fortran_int_t* ldab, double* w, double* z,
+        const fortran_int_t* ldz, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
 
 // Value-type variants of sbevx
 void LAPACK_SSBEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, const integer_t* kd, float* ab,
-        const integer_t* ldab, float* q, const integer_t* ldq,
-        const float* vl, const float* vu, const integer_t* il,
-        const integer_t* iu, const float* abstol, integer_t* m, float* w,
-        float* z, const integer_t* ldz, float* work, integer_t* iwork,
-        integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd, float* ab,
+        const fortran_int_t* ldab, float* q, const fortran_int_t* ldq,
+        const float* vl, const float* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const float* abstol, fortran_int_t* m,
+        float* w, float* z, const fortran_int_t* ldz, float* work,
+        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t* info );
 void LAPACK_DSBEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, const integer_t* kd, double* ab,
-        const integer_t* ldab, double* q, const integer_t* ldq,
-        const double* vl, const double* vu, const integer_t* il,
-        const integer_t* iu, const double* abstol, integer_t* m, double* w,
-        double* z, const integer_t* ldz, double* work, integer_t* iwork,
-        integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, const fortran_int_t* kd, double* ab,
+        const fortran_int_t* ldab, double* q, const fortran_int_t* ldq,
+        const double* vl, const double* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const double* abstol, fortran_int_t* m,
+        double* w, double* z, const fortran_int_t* ldz, double* work,
+        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t* info );
 
 // Value-type variants of spev
-void LAPACK_SSPEV( const char* jobz, const char* uplo, const integer_t* n,
-        float* ap, float* w, float* z, const integer_t* ldz, float* work,
-        integer_t* info );
-void LAPACK_DSPEV( const char* jobz, const char* uplo, const integer_t* n,
-        double* ap, double* w, double* z, const integer_t* ldz, double* work,
-        integer_t* info );
+void LAPACK_SSPEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        float* ap, float* w, float* z, const fortran_int_t* ldz, float* work,
+        fortran_int_t* info );
+void LAPACK_DSPEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        double* ap, double* w, double* z, const fortran_int_t* ldz,
+        double* work, fortran_int_t* info );
 
 // Value-type variants of spevd
-void LAPACK_SSPEVD( const char* jobz, const char* uplo, const integer_t* n,
-        float* ap, float* w, float* z, const integer_t* ldz, float* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
-void LAPACK_DSPEVD( const char* jobz, const char* uplo, const integer_t* n,
-        double* ap, double* w, double* z, const integer_t* ldz, double* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+void LAPACK_SSPEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, float* ap, float* w, float* z,
+        const fortran_int_t* ldz, float* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
+void LAPACK_DSPEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, double* ap, double* w, double* z,
+        const fortran_int_t* ldz, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
 
 // Value-type variants of spevx
 void LAPACK_SSPEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, float* ap, const float* vl, const float* vu,
-        const integer_t* il, const integer_t* iu, const float* abstol,
-        integer_t* m, float* w, float* z, const integer_t* ldz, float* work,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, float* ap, const float* vl, const float* vu,
+        const fortran_int_t* il, const fortran_int_t* iu, const float* abstol,
+        fortran_int_t* m, float* w, float* z, const fortran_int_t* ldz,
+        float* work, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t* info );
 void LAPACK_DSPEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, double* ap, const double* vl, const double* vu,
-        const integer_t* il, const integer_t* iu, const double* abstol,
-        integer_t* m, double* w, double* z, const integer_t* ldz,
-        double* work, integer_t* iwork, integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, double* ap, const double* vl,
+        const double* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        const double* abstol, fortran_int_t* m, double* w, double* z,
+        const fortran_int_t* ldz, double* work, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
 
 // Value-type variants of stev
-void LAPACK_SSTEV( const char* jobz, const integer_t* n, float* d, float* e,
-        float* z, const integer_t* ldz, float* work, integer_t* info );
-void LAPACK_DSTEV( const char* jobz, const integer_t* n, double* d, double* e,
-        double* z, const integer_t* ldz, double* work, integer_t* info );
+void LAPACK_SSTEV( const char* jobz, const fortran_int_t* n, float* d,
+        float* e, float* z, const fortran_int_t* ldz, float* work,
+        fortran_int_t* info );
+void LAPACK_DSTEV( const char* jobz, const fortran_int_t* n, double* d,
+        double* e, double* z, const fortran_int_t* ldz, double* work,
+        fortran_int_t* info );
 
 // Value-type variants of stevd
-void LAPACK_SSTEVD( const char* jobz, const integer_t* n, float* d, float* e,
-        float* z, const integer_t* ldz, float* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_DSTEVD( const char* jobz, const integer_t* n, double* d,
-        double* e, double* z, const integer_t* ldz, double* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+void LAPACK_SSTEVD( const char* jobz, const fortran_int_t* n, float* d,
+        float* e, float* z, const fortran_int_t* ldz, float* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_DSTEVD( const char* jobz, const fortran_int_t* n, double* d,
+        double* e, double* z, const fortran_int_t* ldz, double* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of stevr
-void LAPACK_SSTEVR( const char* jobz, const char* range, const integer_t* n,
-        float* d, float* e, const float* vl, const float* vu,
-        const integer_t* il, const integer_t* iu, const float* abstol,
-        integer_t* m, float* w, float* z, const integer_t* ldz,
-        integer_t* isuppz, float* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
-void LAPACK_DSTEVR( const char* jobz, const char* range, const integer_t* n,
-        double* d, double* e, const double* vl, const double* vu,
-        const integer_t* il, const integer_t* iu, const double* abstol,
-        integer_t* m, double* w, double* z, const integer_t* ldz,
-        integer_t* isuppz, double* work, const integer_t* lwork,
-        integer_t* iwork, const integer_t* liwork, integer_t* info );
+void LAPACK_SSTEVR( const char* jobz, const char* range,
+        const fortran_int_t* n, float* d, float* e, const float* vl,
+        const float* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        const float* abstol, fortran_int_t* m, float* w, float* z,
+        const fortran_int_t* ldz, fortran_int_t* isuppz, float* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_DSTEVR( const char* jobz, const char* range,
+        const fortran_int_t* n, double* d, double* e, const double* vl,
+        const double* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        const double* abstol, fortran_int_t* m, double* w, double* z,
+        const fortran_int_t* ldz, fortran_int_t* isuppz, double* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of stevx
-void LAPACK_SSTEVX( const char* jobz, const char* range, const integer_t* n,
-        float* d, float* e, const float* vl, const float* vu,
-        const integer_t* il, const integer_t* iu, const float* abstol,
-        integer_t* m, float* w, float* z, const integer_t* ldz, float* work,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
-void LAPACK_DSTEVX( const char* jobz, const char* range, const integer_t* n,
-        double* d, double* e, const double* vl, const double* vu,
-        const integer_t* il, const integer_t* iu, const double* abstol,
-        integer_t* m, double* w, double* z, const integer_t* ldz,
-        double* work, integer_t* iwork, integer_t* ifail, integer_t* info );
+void LAPACK_SSTEVX( const char* jobz, const char* range,
+        const fortran_int_t* n, float* d, float* e, const float* vl,
+        const float* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        const float* abstol, fortran_int_t* m, float* w, float* z,
+        const fortran_int_t* ldz, float* work, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
+void LAPACK_DSTEVX( const char* jobz, const char* range,
+        const fortran_int_t* n, double* d, double* e, const double* vl,
+        const double* vu, const fortran_int_t* il, const fortran_int_t* iu,
+        const double* abstol, fortran_int_t* m, double* w, double* z,
+        const fortran_int_t* ldz, double* work, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
 
 // Value-type variants of syev
-void LAPACK_SSYEV( const char* jobz, const char* uplo, const integer_t* n,
-        float* a, const integer_t* lda, float* w, float* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_DSYEV( const char* jobz, const char* uplo, const integer_t* n,
-        double* a, const integer_t* lda, double* w, double* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_SSYEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        float* a, const fortran_int_t* lda, float* w, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DSYEV( const char* jobz, const char* uplo, const fortran_int_t* n,
+        double* a, const fortran_int_t* lda, double* w, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of syevd
-void LAPACK_SSYEVD( const char* jobz, const char* uplo, const integer_t* n,
-        float* a, const integer_t* lda, float* w, float* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
-void LAPACK_DSYEVD( const char* jobz, const char* uplo, const integer_t* n,
-        double* a, const integer_t* lda, double* w, double* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+void LAPACK_SSYEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, float* a, const fortran_int_t* lda, float* w,
+        float* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
+void LAPACK_DSYEVD( const char* jobz, const char* uplo,
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        double* w, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, const fortran_int_t* liwork,
+        fortran_int_t* info );
 
 // Value-type variants of syevr
 void LAPACK_SSYEVR( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, float* a, const integer_t* lda, const float* vl,
-        const float* vu, const integer_t* il, const integer_t* iu,
-        const float* abstol, integer_t* m, float* w, float* z,
-        const integer_t* ldz, integer_t* isuppz, float* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+        const fortran_int_t* n, float* a, const fortran_int_t* lda,
+        const float* vl, const float* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const float* abstol, fortran_int_t* m,
+        float* w, float* z, const fortran_int_t* ldz, fortran_int_t* isuppz,
+        float* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 void LAPACK_DSYEVR( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, double* a, const integer_t* lda, const double* vl,
-        const double* vu, const integer_t* il, const integer_t* iu,
-        const double* abstol, integer_t* m, double* w, double* z,
-        const integer_t* ldz, integer_t* isuppz, double* work,
-        const integer_t* lwork, integer_t* iwork, const integer_t* liwork,
-        integer_t* info );
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        const double* vl, const double* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const double* abstol, fortran_int_t* m,
+        double* w, double* z, const fortran_int_t* ldz, fortran_int_t* isuppz,
+        double* work, const fortran_int_t* lwork, fortran_int_t* iwork,
+        const fortran_int_t* liwork, fortran_int_t* info );
 
 // Value-type variants of syevx
 void LAPACK_SSYEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, float* a, const integer_t* lda, const float* vl,
-        const float* vu, const integer_t* il, const integer_t* iu,
-        const float* abstol, integer_t* m, float* w, float* z,
-        const integer_t* ldz, float* work, const integer_t* lwork,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, float* a, const fortran_int_t* lda,
+        const float* vl, const float* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const float* abstol, fortran_int_t* m,
+        float* w, float* z, const fortran_int_t* ldz, float* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
 void LAPACK_DSYEVX( const char* jobz, const char* range, const char* uplo,
-        const integer_t* n, double* a, const integer_t* lda, const double* vl,
-        const double* vu, const integer_t* il, const integer_t* iu,
-        const double* abstol, integer_t* m, double* w, double* z,
-        const integer_t* ldz, double* work, const integer_t* lwork,
-        integer_t* iwork, integer_t* ifail, integer_t* info );
+        const fortran_int_t* n, double* a, const fortran_int_t* lda,
+        const double* vl, const double* vu, const fortran_int_t* il,
+        const fortran_int_t* iu, const double* abstol, fortran_int_t* m,
+        double* w, double* z, const fortran_int_t* ldz, double* work,
+        const fortran_int_t* lwork, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t* info );
 
 // Value-type variants of gels
-void LAPACK_SGELS( const char* trans, const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, float* a, const integer_t* lda, float* b,
-        const integer_t* ldb, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DGELS( const char* trans, const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, double* a, const integer_t* lda, double* b,
-        const integer_t* ldb, double* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_CGELS( const char* trans, const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* b, const integer_t* ldb, fcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
-void LAPACK_ZGELS( const char* trans, const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* b, const integer_t* ldb, dcomplex_t* work,
-        const integer_t* lwork, integer_t* info );
+void LAPACK_SGELS( const char* trans, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* nrhs, float* a,
+        const fortran_int_t* lda, float* b, const fortran_int_t* ldb,
+        float* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGELS( const char* trans, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* nrhs, double* a,
+        const fortran_int_t* lda, double* b, const fortran_int_t* ldb,
+        double* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGELS( const char* trans, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* nrhs, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        void* work, const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_ZGELS( const char* trans, const fortran_int_t* m,
+        const fortran_int_t* n, const fortran_int_t* nrhs, void* a,
+        const fortran_int_t* lda, void* b, const fortran_int_t* ldb,
+        void* work, const fortran_int_t* lwork, fortran_int_t* info );
 
 // Value-type variants of gelsd
-void LAPACK_SGELSD( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, const float* a, const integer_t* lda, float* b,
-        const integer_t* ldb, float* s, const float* rcond, integer_t* rank,
-        float* work, const integer_t* lwork, integer_t* iwork,
-        integer_t* info );
-void LAPACK_DGELSD( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, const double* a, const integer_t* lda,
-        double* b, const integer_t* ldb, double* s, const double* rcond,
-        integer_t* rank, double* work, const integer_t* lwork,
-        integer_t* iwork, integer_t* info );
-void LAPACK_CGELSD( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* b, const integer_t* ldb, float* s, const float* rcond,
-        integer_t* rank, fcomplex_t* work, const integer_t* lwork,
-        float* rwork, integer_t* iwork, integer_t* info );
-void LAPACK_ZGELSD( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, const dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* b, const integer_t* ldb, double* s, const double* rcond,
-        integer_t* rank, dcomplex_t* work, const integer_t* lwork,
-        double* rwork, integer_t* iwork, integer_t* info );
+void LAPACK_SGELSD( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const float* a, const fortran_int_t* lda,
+        float* b, const fortran_int_t* ldb, float* s, const float* rcond,
+        fortran_int_t* rank, float* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_DGELSD( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, double* s, const double* rcond,
+        fortran_int_t* rank, double* work, const fortran_int_t* lwork,
+        fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_CGELSD( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, float* s, const float* rcond,
+        fortran_int_t* rank, void* work, const fortran_int_t* lwork,
+        float* rwork, fortran_int_t* iwork, fortran_int_t* info );
+void LAPACK_ZGELSD( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, const void* a, const fortran_int_t* lda,
+        void* b, const fortran_int_t* ldb, double* s, const double* rcond,
+        fortran_int_t* rank, void* work, const fortran_int_t* lwork,
+        double* rwork, fortran_int_t* iwork, fortran_int_t* info );
 
 // Value-type variants of gelss
-void LAPACK_SGELSS( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, float* a, const integer_t* lda, float* b,
-        const integer_t* ldb, float* s, const float* rcond, integer_t* rank,
-        float* work, const integer_t* lwork, integer_t* info );
-void LAPACK_DGELSS( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, double* a, const integer_t* lda, double* b,
-        const integer_t* ldb, double* s, const double* rcond, integer_t* rank,
-        double* work, const integer_t* lwork, integer_t* info );
-void LAPACK_CGELSS( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* b, const integer_t* ldb, float* s, const float* rcond,
-        integer_t* rank, fcomplex_t* work, const integer_t* lwork,
-        float* rwork, integer_t* info );
-void LAPACK_ZGELSS( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* b, const integer_t* ldb, double* s, const double* rcond,
-        integer_t* rank, dcomplex_t* work, const integer_t* lwork,
-        double* rwork, integer_t* info );
+void LAPACK_SGELSS( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, float* a, const fortran_int_t* lda,
+        float* b, const fortran_int_t* ldb, float* s, const float* rcond,
+        fortran_int_t* rank, float* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_DGELSS( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, double* s, const double* rcond,
+        fortran_int_t* rank, double* work, const fortran_int_t* lwork,
+        fortran_int_t* info );
+void LAPACK_CGELSS( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, float* s, const float* rcond,
+        fortran_int_t* rank, void* work, const fortran_int_t* lwork,
+        float* rwork, fortran_int_t* info );
+void LAPACK_ZGELSS( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, double* s, const double* rcond,
+        fortran_int_t* rank, void* work, const fortran_int_t* lwork,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of gelsy
-void LAPACK_SGELSY( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, float* a, const integer_t* lda, float* b,
-        const integer_t* ldb, integer_t* jpvt, const float* rcond,
-        integer_t* rank, float* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_DGELSY( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, double* a, const integer_t* lda, double* b,
-        const integer_t* ldb, integer_t* jpvt, const double* rcond,
-        integer_t* rank, double* work, const integer_t* lwork,
-        integer_t* info );
-void LAPACK_CGELSY( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, fcomplex_t* a, const integer_t* lda,
-        fcomplex_t* b, const integer_t* ldb, integer_t* jpvt,
-        const float* rcond, integer_t* rank, fcomplex_t* work,
-        const integer_t* lwork, float* rwork, integer_t* info );
-void LAPACK_ZGELSY( const integer_t* m, const integer_t* n,
-        const integer_t* nrhs, dcomplex_t* a, const integer_t* lda,
-        dcomplex_t* b, const integer_t* ldb, integer_t* jpvt,
-        const double* rcond, integer_t* rank, dcomplex_t* work,
-        const integer_t* lwork, double* rwork, integer_t* info );
+void LAPACK_SGELSY( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, float* a, const fortran_int_t* lda,
+        float* b, const fortran_int_t* ldb, fortran_int_t* jpvt,
+        const float* rcond, fortran_int_t* rank, float* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_DGELSY( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, double* a, const fortran_int_t* lda,
+        double* b, const fortran_int_t* ldb, fortran_int_t* jpvt,
+        const double* rcond, fortran_int_t* rank, double* work,
+        const fortran_int_t* lwork, fortran_int_t* info );
+void LAPACK_CGELSY( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, fortran_int_t* jpvt, const float* rcond,
+        fortran_int_t* rank, void* work, const fortran_int_t* lwork,
+        float* rwork, fortran_int_t* info );
+void LAPACK_ZGELSY( const fortran_int_t* m, const fortran_int_t* n,
+        const fortran_int_t* nrhs, void* a, const fortran_int_t* lda, void* b,
+        const fortran_int_t* ldb, fortran_int_t* jpvt, const double* rcond,
+        fortran_int_t* rank, void* work, const fortran_int_t* lwork,
+        double* rwork, fortran_int_t* info );
 
 // Value-type variants of lalsd
-void LAPACK_SLALSD( const char* uplo, const integer_t* smlsiz,
-        const integer_t* n, const integer_t* nrhs, float* d, float* e,
-        float* b, const integer_t* ldb, const float* rcond, integer_t* rank,
-        float* work, integer_t* iwork, integer_t* info );
-void LAPACK_DLALSD( const char* uplo, const integer_t* smlsiz,
-        const integer_t* n, const integer_t* nrhs, double* d, double* e,
-        double* b, const integer_t* ldb, const double* rcond, integer_t* rank,
-        double* work, integer_t* iwork, integer_t* info );
-void LAPACK_CLALSD( const char* uplo, const integer_t* smlsiz,
-        const integer_t* n, const integer_t* nrhs, float* d, float* e,
-        fcomplex_t* b, const integer_t* ldb, const float* rcond,
-        integer_t* rank, fcomplex_t* work, float* rwork, integer_t* iwork,
-        integer_t* info );
-void LAPACK_ZLALSD( const char* uplo, const integer_t* smlsiz,
-        const integer_t* n, const integer_t* nrhs, double* d, double* e,
-        dcomplex_t* b, const integer_t* ldb, const double* rcond,
-        integer_t* rank, dcomplex_t* work, double* rwork, integer_t* iwork,
-        integer_t* info );
+void LAPACK_SLALSD( const char* uplo, const fortran_int_t* smlsiz,
+        const fortran_int_t* n, const fortran_int_t* nrhs, float* d, float* e,
+        float* b, const fortran_int_t* ldb, const float* rcond,
+        fortran_int_t* rank, float* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_DLALSD( const char* uplo, const fortran_int_t* smlsiz,
+        const fortran_int_t* n, const fortran_int_t* nrhs, double* d,
+        double* e, double* b, const fortran_int_t* ldb, const double* rcond,
+        fortran_int_t* rank, double* work, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_CLALSD( const char* uplo, const fortran_int_t* smlsiz,
+        const fortran_int_t* n, const fortran_int_t* nrhs, float* d, float* e,
+        void* b, const fortran_int_t* ldb, const float* rcond,
+        fortran_int_t* rank, void* work, float* rwork, fortran_int_t* iwork,
+        fortran_int_t* info );
+void LAPACK_ZLALSD( const char* uplo, const fortran_int_t* smlsiz,
+        const fortran_int_t* n, const fortran_int_t* nrhs, double* d,
+        double* e, void* b, const fortran_int_t* ldb, const double* rcond,
+        fortran_int_t* rank, void* work, double* rwork, fortran_int_t* iwork,
+        fortran_int_t* info );
 
 //
 // LAPACK auxiliary routines

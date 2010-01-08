@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,14 +15,20 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_PTTRS_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -30,111 +36,187 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void pttrs( const integer_t n, const integer_t nrhs, const float* d,
-        const float* e, float* b, const integer_t ldb, integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void pttrs( fortran_int_t n, fortran_int_t nrhs, const float* d,
+        const float* e, float* b, fortran_int_t ldb, fortran_int_t& info ) {
     LAPACK_SPTTRS( &n, &nrhs, d, e, b, &ldb, &info );
 }
-inline void pttrs( const integer_t n, const integer_t nrhs, const double* d,
-        const double* e, double* b, const integer_t ldb, integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void pttrs( fortran_int_t n, fortran_int_t nrhs, const double* d,
+        const double* e, double* b, fortran_int_t ldb, fortran_int_t& info ) {
     LAPACK_DPTTRS( &n, &nrhs, d, e, b, &ldb, &info );
 }
-inline void pttrs( const char uplo, const integer_t n, const integer_t nrhs,
-        const float* d, const traits::complex_f* e, traits::complex_f* b,
-        const integer_t ldb, integer_t& info ) {
-    LAPACK_CPTTRS( &uplo, &n, &nrhs, d, traits::complex_ptr(e),
-            traits::complex_ptr(b), &ldb, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void pttrs( char uplo, fortran_int_t n, fortran_int_t nrhs,
+        const float* d, const std::complex<float>* e, std::complex<float>* b,
+        fortran_int_t ldb, fortran_int_t& info ) {
+    LAPACK_CPTTRS( &uplo, &n, &nrhs, d, e, b, &ldb, &info );
 }
-inline void pttrs( const char uplo, const integer_t n, const integer_t nrhs,
-        const double* d, const traits::complex_d* e, traits::complex_d* b,
-        const integer_t ldb, integer_t& info ) {
-    LAPACK_ZPTTRS( &uplo, &n, &nrhs, d, traits::complex_ptr(e),
-            traits::complex_ptr(b), &ldb, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void pttrs( char uplo, fortran_int_t n, fortran_int_t nrhs,
+        const double* d, const std::complex<double>* e,
+        std::complex<double>* b, fortran_int_t ldb, fortran_int_t& info ) {
+    LAPACK_ZPTTRS( &uplo, &n, &nrhs, d, e, b, &ldb, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct pttrs_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to pttrs.
+//
+template< typename Value, typename Enable = void >
+struct pttrs_impl {};
 
-// real specialization
-template< typename ValueType >
-struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct pttrs_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
-            MatrixB& b, integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::vector_traits<
-                VectorE >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
+    static void invoke( const fortran_int_t n, const VectorD& d,
+            const VectorE& e, MatrixB& b, fortran_int_t& info ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                VectorE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::vector_size(d) >= n );
-        BOOST_ASSERT( traits::vector_size(e) >= n-1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        detail::pttrs( n, traits::matrix_num_columns(b),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                info );
+        BOOST_ASSERT( size(d) >= n );
+        BOOST_ASSERT( size(e) >= n-1 );
+        BOOST_ASSERT( size_column(b) >= 0 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
+        detail::pttrs( n, size_column(b), begin_value(d), begin_value(e),
+                begin_value(b), stride_major(b), info );
     }
+
 };
 
-// complex specialization
-template< typename ValueType >
-struct pttrs_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct pttrs_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorD, typename VectorE, typename MatrixB >
-    static void invoke( const char uplo, const integer_t n, const VectorD& d,
-            const VectorE& e, MatrixB& b, integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorE >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
+    static void invoke( const char uplo, const fortran_int_t n,
+            const VectorD& d, const VectorE& e, MatrixB& b,
+            fortran_int_t& info ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorE >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::vector_size(d) >= n );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        detail::pttrs( uplo, n, traits::matrix_num_columns(b),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                info );
+        BOOST_ASSERT( size(d) >= n );
+        BOOST_ASSERT( size_column(b) >= 0 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
+        detail::pttrs( uplo, n, size_column(b), begin_value(d),
+                begin_value(e), begin_value(b), stride_major(b), info );
     }
+
 };
 
 
-// template function to call pttrs
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the pttrs_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for pttrs. Its overload differs for
+// * MatrixB&
+//
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline integer_t pttrs( const integer_t n, const VectorD& d,
+inline std::ptrdiff_t pttrs( const fortran_int_t n, const VectorD& d,
         const VectorE& e, MatrixB& b ) {
-    typedef typename traits::vector_traits< VectorE >::value_type value_type;
-    integer_t info(0);
-    pttrs_impl< value_type >::invoke( n, d, e, b, info );
+    fortran_int_t info(0);
+    pttrs_impl< typename value< VectorE >::type >::invoke( n, d, e, b,
+            info );
     return info;
 }
-// template function to call pttrs
+
+//
+// Overloaded function for pttrs. Its overload differs for
+// * const MatrixB&
+//
 template< typename VectorD, typename VectorE, typename MatrixB >
-inline integer_t pttrs( const char uplo, const integer_t n,
+inline std::ptrdiff_t pttrs( const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const MatrixB& b ) {
+    fortran_int_t info(0);
+    pttrs_impl< typename value< VectorE >::type >::invoke( n, d, e, b,
+            info );
+    return info;
+}
+//
+// Overloaded function for pttrs. Its overload differs for
+// * MatrixB&
+//
+template< typename VectorD, typename VectorE, typename MatrixB >
+inline std::ptrdiff_t pttrs( const char uplo, const fortran_int_t n,
         const VectorD& d, const VectorE& e, MatrixB& b ) {
-    typedef typename traits::vector_traits< VectorE >::value_type value_type;
-    integer_t info(0);
-    pttrs_impl< value_type >::invoke( uplo, n, d, e, b, info );
+    fortran_int_t info(0);
+    pttrs_impl< typename value< VectorE >::type >::invoke( uplo, n, d, e,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for pttrs. Its overload differs for
+// * const MatrixB&
+//
+template< typename VectorD, typename VectorE, typename MatrixB >
+inline std::ptrdiff_t pttrs( const char uplo, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixB& b ) {
+    fortran_int_t info(0);
+    pttrs_impl< typename value< VectorE >::type >::invoke( uplo, n, d, e,
+            b, info );
     return info;
 }
 

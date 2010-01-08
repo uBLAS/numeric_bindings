@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,117 +15,158 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_HEEVD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void heevd( const char jobz, const char uplo, const integer_t n,
-        traits::complex_f* a, const integer_t lda, float* w,
-        traits::complex_f* work, const integer_t lwork, float* rwork,
-        const integer_t lrwork, integer_t* iwork, const integer_t liwork,
-        integer_t& info ) {
-    LAPACK_CHEEVD( &jobz, &uplo, &n, traits::complex_ptr(a), &lda, w,
-            traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
-            &info );
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+template< typename UpLo >
+inline void heevd( char jobz, UpLo, fortran_int_t n, std::complex<float>* a,
+        fortran_int_t lda, float* w, std::complex<float>* work,
+        fortran_int_t lwork, float* rwork, fortran_int_t lrwork,
+        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
+    LAPACK_CHEEVD( &jobz, &lapack_option< UpLo >::value, &n, a, &lda, w, work,
+            &lwork, rwork, &lrwork, iwork, &liwork, &info );
 }
-inline void heevd( const char jobz, const char uplo, const integer_t n,
-        traits::complex_d* a, const integer_t lda, double* w,
-        traits::complex_d* work, const integer_t lwork, double* rwork,
-        const integer_t lrwork, integer_t* iwork, const integer_t liwork,
-        integer_t& info ) {
-    LAPACK_ZHEEVD( &jobz, &uplo, &n, traits::complex_ptr(a), &lda, w,
-            traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
-            &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+template< typename UpLo >
+inline void heevd( char jobz, UpLo, fortran_int_t n, std::complex<double>* a,
+        fortran_int_t lda, double* w, std::complex<double>* work,
+        fortran_int_t lwork, double* rwork, fortran_int_t lrwork,
+        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
+    LAPACK_ZHEEVD( &jobz, &lapack_option< UpLo >::value, &n, a, &lda, w, work,
+            &lwork, rwork, &lrwork, iwork, &liwork, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to heevd.
+//
+template< typename Value >
 struct heevd_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorW, typename WORK,
             typename RWORK, typename IWORK >
     static void invoke( const char jobz, MatrixA& a, VectorW& w,
-            integer_t& info, detail::workspace3< WORK, RWORK, IWORK > work ) {
+            fortran_int_t& info, detail::workspace3< WORK, RWORK,
+            IWORK > work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
-                traits::matrix_uplo_tag(a) == 'L' );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( jobz, traits::matrix_num_columns(a) ));
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_rwork( jobz, traits::matrix_num_columns(a) ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
-                min_size_iwork( jobz, traits::matrix_num_columns(a) ));
-        detail::heevd( jobz, traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(w),
-                traits::vector_storage(work.select(value_type())),
-                traits::vector_size(work.select(value_type())),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_size(work.select(real_type())),
-                traits::vector_storage(work.select(integer_t())),
-                traits::vector_size(work.select(integer_t())), info );
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+                min_size_iwork( jobz, size_column(a) ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( jobz,
+                size_column(a) ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( jobz,
+                size_column(a) ));
+        BOOST_ASSERT( size_column(a) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        detail::heevd( jobz, uplo(), size_column(a), begin_value(a),
+                stride_major(a), begin_value(w),
+                begin_value(work.select(value_type())),
+                size(work.select(value_type())),
+                begin_value(work.select(real_type())),
+                size(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())),
+                size(work.select(fortran_int_t())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixA, typename VectorW >
     static void invoke( const char jobz, MatrixA& a, VectorW& w,
-            integer_t& info, minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work( jobz,
-                traits::matrix_num_columns(a) ) );
-        traits::detail::array< real_type > tmp_rwork( min_size_rwork( jobz,
-                traits::matrix_num_columns(a) ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork( jobz,
-                traits::matrix_num_columns(a) ) );
+            fortran_int_t& info, minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        bindings::detail::array< value_type > tmp_work( min_size_work( jobz,
+                size_column(a) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork( jobz,
+                size_column(a) ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( jobz, size_column(a) ) );
         invoke( jobz, a, w, info, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixA, typename VectorW >
     static void invoke( const char jobz, MatrixA& a, VectorW& w,
-            integer_t& info, optimal_workspace work ) {
+            fortran_int_t& info, optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         value_type opt_size_work;
         real_type opt_size_rwork;
-        integer_t opt_size_iwork;
-        detail::heevd( jobz, traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), traits::vector_storage(w),
-                &opt_size_work, -1, &opt_size_rwork, -1, &opt_size_iwork, -1,
-                info );
-        traits::detail::array< value_type > tmp_work(
+        fortran_int_t opt_size_iwork;
+        detail::heevd( jobz, uplo(), size_column(a), begin_value(a),
+                stride_major(a), begin_value(w), &opt_size_work, -1,
+                &opt_size_rwork, -1, &opt_size_iwork, -1, info );
+        bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        traits::detail::array< real_type > tmp_rwork(
+        bindings::detail::array< real_type > tmp_rwork(
                 traits::detail::to_int( opt_size_rwork ) );
-        traits::detail::array< integer_t > tmp_iwork( opt_size_iwork );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                opt_size_iwork );
         invoke( jobz, a, w, info, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
-    static integer_t min_size_work( const char jobz, const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const char jobz,
+            const std::ptrdiff_t n ) {
         if ( n < 2 )
             return 1;
         else {
@@ -136,7 +177,12 @@ struct heevd_impl {
         }
     }
 
-    static integer_t min_size_rwork( const char jobz, const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array rwork.
+    //
+    static std::ptrdiff_t min_size_rwork( const char jobz,
+            const std::ptrdiff_t n ) {
         if ( n < 2 )
             return 1;
         else {
@@ -147,7 +193,12 @@ struct heevd_impl {
         }
     }
 
-    static integer_t min_size_iwork( const char jobz, const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const char jobz,
+            const std::ptrdiff_t n ) {
         if ( jobz == 'N' || n < 2 )
             return 1;
         else
@@ -156,23 +207,131 @@ struct heevd_impl {
 };
 
 
-// template function to call heevd
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the heevd_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for heevd. Its overload differs for
+// * MatrixA&
+// * VectorW&
+// * User-defined workspace
+//
 template< typename MatrixA, typename VectorW, typename Workspace >
-inline integer_t heevd( const char jobz, MatrixA& a, VectorW& w,
+inline std::ptrdiff_t heevd( const char jobz, MatrixA& a, VectorW& w,
         Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    heevd_impl< value_type >::invoke( jobz, a, w, info, work );
+    fortran_int_t info(0);
+    heevd_impl< typename value< MatrixA >::type >::invoke( jobz, a, w,
+            info, work );
     return info;
 }
 
-// template function to call heevd, default workspace type
+//
+// Overloaded function for heevd. Its overload differs for
+// * MatrixA&
+// * VectorW&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixA, typename VectorW >
-inline integer_t heevd( const char jobz, MatrixA& a, VectorW& w ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    heevd_impl< value_type >::invoke( jobz, a, w, info,
-            optimal_workspace() );
+inline std::ptrdiff_t heevd( const char jobz, MatrixA& a, VectorW& w ) {
+    fortran_int_t info(0);
+    heevd_impl< typename value< MatrixA >::type >::invoke( jobz, a, w,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevd. Its overload differs for
+// * const MatrixA&
+// * VectorW&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename Workspace >
+inline std::ptrdiff_t heevd( const char jobz, const MatrixA& a,
+        VectorW& w, Workspace work ) {
+    fortran_int_t info(0);
+    heevd_impl< typename value< MatrixA >::type >::invoke( jobz, a, w,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevd. Its overload differs for
+// * const MatrixA&
+// * VectorW&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW >
+inline std::ptrdiff_t heevd( const char jobz, const MatrixA& a,
+        VectorW& w ) {
+    fortran_int_t info(0);
+    heevd_impl< typename value< MatrixA >::type >::invoke( jobz, a, w,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevd. Its overload differs for
+// * MatrixA&
+// * const VectorW&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename Workspace >
+inline std::ptrdiff_t heevd( const char jobz, MatrixA& a,
+        const VectorW& w, Workspace work ) {
+    fortran_int_t info(0);
+    heevd_impl< typename value< MatrixA >::type >::invoke( jobz, a, w,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevd. Its overload differs for
+// * MatrixA&
+// * const VectorW&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW >
+inline std::ptrdiff_t heevd( const char jobz, MatrixA& a,
+        const VectorW& w ) {
+    fortran_int_t info(0);
+    heevd_impl< typename value< MatrixA >::type >::invoke( jobz, a, w,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevd. Its overload differs for
+// * const MatrixA&
+// * const VectorW&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename Workspace >
+inline std::ptrdiff_t heevd( const char jobz, const MatrixA& a,
+        const VectorW& w, Workspace work ) {
+    fortran_int_t info(0);
+    heevd_impl< typename value< MatrixA >::type >::invoke( jobz, a, w,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevd. Its overload differs for
+// * const MatrixA&
+// * const VectorW&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW >
+inline std::ptrdiff_t heevd( const char jobz, const MatrixA& a,
+        const VectorW& w ) {
+    fortran_int_t info(0);
+    heevd_impl< typename value< MatrixA >::type >::invoke( jobz, a, w,
+            info, optimal_workspace() );
     return info;
 }
 

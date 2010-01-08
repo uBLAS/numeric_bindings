@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,16 +15,22 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GTRFS_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -32,341 +38,779 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void gtrfs( const char trans, const integer_t n, const integer_t nrhs,
+//
+// Overloaded function for dispatching to float value-type.
+//
+template< typename Trans >
+inline void gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
         const float* dl, const float* d, const float* du, const float* dlf,
         const float* df, const float* duf, const float* du2,
-        const integer_t* ipiv, const float* b, const integer_t ldb, float* x,
-        const integer_t ldx, float* ferr, float* berr, float* work,
-        integer_t* iwork, integer_t& info ) {
-    LAPACK_SGTRFS( &trans, &n, &nrhs, dl, d, du, dlf, df, duf, du2, ipiv, b,
-            &ldb, x, &ldx, ferr, berr, work, iwork, &info );
+        const fortran_int_t* ipiv, const float* b, fortran_int_t ldb,
+        float* x, fortran_int_t ldx, float* ferr, float* berr, float* work,
+        fortran_int_t* iwork, fortran_int_t& info ) {
+    LAPACK_SGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
+            df, duf, du2, ipiv, b, &ldb, x, &ldx, ferr, berr, work, iwork,
+            &info );
 }
-inline void gtrfs( const char trans, const integer_t n, const integer_t nrhs,
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+template< typename Trans >
+inline void gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
         const double* dl, const double* d, const double* du,
         const double* dlf, const double* df, const double* duf,
-        const double* du2, const integer_t* ipiv, const double* b,
-        const integer_t ldb, double* x, const integer_t ldx, double* ferr,
-        double* berr, double* work, integer_t* iwork, integer_t& info ) {
-    LAPACK_DGTRFS( &trans, &n, &nrhs, dl, d, du, dlf, df, duf, du2, ipiv, b,
-            &ldb, x, &ldx, ferr, berr, work, iwork, &info );
+        const double* du2, const fortran_int_t* ipiv, const double* b,
+        fortran_int_t ldb, double* x, fortran_int_t ldx, double* ferr,
+        double* berr, double* work, fortran_int_t* iwork,
+        fortran_int_t& info ) {
+    LAPACK_DGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
+            df, duf, du2, ipiv, b, &ldb, x, &ldx, ferr, berr, work, iwork,
+            &info );
 }
-inline void gtrfs( const char trans, const integer_t n, const integer_t nrhs,
-        const traits::complex_f* dl, const traits::complex_f* d,
-        const traits::complex_f* du, const traits::complex_f* dlf,
-        const traits::complex_f* df, const traits::complex_f* duf,
-        const traits::complex_f* du2, const integer_t* ipiv,
-        const traits::complex_f* b, const integer_t ldb, traits::complex_f* x,
-        const integer_t ldx, float* ferr, float* berr,
-        traits::complex_f* work, float* rwork, integer_t& info ) {
-    LAPACK_CGTRFS( &trans, &n, &nrhs, traits::complex_ptr(dl),
-            traits::complex_ptr(d), traits::complex_ptr(du),
-            traits::complex_ptr(dlf), traits::complex_ptr(df),
-            traits::complex_ptr(duf), traits::complex_ptr(du2), ipiv,
-            traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx, ferr,
-            berr, traits::complex_ptr(work), rwork, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+template< typename Trans >
+inline void gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
+        const std::complex<float>* dl, const std::complex<float>* d,
+        const std::complex<float>* du, const std::complex<float>* dlf,
+        const std::complex<float>* df, const std::complex<float>* duf,
+        const std::complex<float>* du2, const fortran_int_t* ipiv,
+        const std::complex<float>* b, fortran_int_t ldb,
+        std::complex<float>* x, fortran_int_t ldx, float* ferr, float* berr,
+        std::complex<float>* work, float* rwork, fortran_int_t& info ) {
+    LAPACK_CGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
+            df, duf, du2, ipiv, b, &ldb, x, &ldx, ferr, berr, work, rwork,
+            &info );
 }
-inline void gtrfs( const char trans, const integer_t n, const integer_t nrhs,
-        const traits::complex_d* dl, const traits::complex_d* d,
-        const traits::complex_d* du, const traits::complex_d* dlf,
-        const traits::complex_d* df, const traits::complex_d* duf,
-        const traits::complex_d* du2, const integer_t* ipiv,
-        const traits::complex_d* b, const integer_t ldb, traits::complex_d* x,
-        const integer_t ldx, double* ferr, double* berr,
-        traits::complex_d* work, double* rwork, integer_t& info ) {
-    LAPACK_ZGTRFS( &trans, &n, &nrhs, traits::complex_ptr(dl),
-            traits::complex_ptr(d), traits::complex_ptr(du),
-            traits::complex_ptr(dlf), traits::complex_ptr(df),
-            traits::complex_ptr(duf), traits::complex_ptr(du2), ipiv,
-            traits::complex_ptr(b), &ldb, traits::complex_ptr(x), &ldx, ferr,
-            berr, traits::complex_ptr(work), rwork, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+template< typename Trans >
+inline void gtrfs( Trans, fortran_int_t n, fortran_int_t nrhs,
+        const std::complex<double>* dl, const std::complex<double>* d,
+        const std::complex<double>* du, const std::complex<double>* dlf,
+        const std::complex<double>* df, const std::complex<double>* duf,
+        const std::complex<double>* du2, const fortran_int_t* ipiv,
+        const std::complex<double>* b, fortran_int_t ldb,
+        std::complex<double>* x, fortran_int_t ldx, double* ferr,
+        double* berr, std::complex<double>* work, double* rwork,
+        fortran_int_t& info ) {
+    LAPACK_ZGTRFS( &lapack_option< Trans >::value, &n, &nrhs, dl, d, du, dlf,
+            df, duf, du2, ipiv, b, &ldb, x, &ldx, ferr, berr, work, rwork,
+            &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct gtrfs_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to gtrfs.
+//
+template< typename Value, typename Enable = void >
+struct gtrfs_impl {};
 
-// real specialization
-template< typename ValueType >
-struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct gtrfs_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename IWORK >
-    static void invoke( const char trans, const integer_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const fortran_int_t n, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
+            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
             detail::workspace2< WORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorD >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorDU >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorDLF >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorDF >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorDUF >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorDU2 >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::matrix_traits<
-                MatrixX >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorFERR >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorBERR >::value_type >::value) );
-        BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorD >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorDU >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorDLF >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorDF >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorDUF >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorDU2 >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                MatrixX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorFERR >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorBERR >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::vector_size(dl) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(d) >= n );
-        BOOST_ASSERT( traits::vector_size(du) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(dlf) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(df) >= n );
-        BOOST_ASSERT( traits::vector_size(duf) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(du2) >= n-2 );
-        BOOST_ASSERT( traits::vector_size(ipiv) >= n );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( traits::vector_size(berr) >=
-                traits::matrix_num_columns(b) );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( n ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( size(berr) >= size_column(b) );
+        BOOST_ASSERT( size(d) >= n );
+        BOOST_ASSERT( size(df) >= n );
+        BOOST_ASSERT( size(dl) >= n-1 );
+        BOOST_ASSERT( size(dlf) >= n-1 );
+        BOOST_ASSERT( size(du) >= n-1 );
+        BOOST_ASSERT( size(du2) >= n-2 );
+        BOOST_ASSERT( size(duf) >= n-1 );
+        BOOST_ASSERT( size(ipiv) >= n );
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));
-        detail::gtrfs( trans, n, traits::matrix_num_columns(b),
-                traits::vector_storage(dl), traits::vector_storage(d),
-                traits::vector_storage(du), traits::vector_storage(dlf),
-                traits::vector_storage(df), traits::vector_storage(duf),
-                traits::vector_storage(du2), traits::vector_storage(ipiv),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                traits::matrix_storage(x), traits::leading_dimension(x),
-                traits::vector_storage(ferr), traits::vector_storage(berr),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_storage(work.select(integer_t())), info );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size_column(b) >= 0 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
+        detail::gtrfs( trans(), n, size_column(b), begin_value(dl),
+                begin_value(d), begin_value(du), begin_value(dlf),
+                begin_value(df), begin_value(duf), begin_value(du2),
+                begin_value(ipiv), begin_value(b), stride_major(b),
+                begin_value(x), stride_major(x), begin_value(ferr),
+                begin_value(berr), begin_value(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char trans, const integer_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const fortran_int_t n, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
+            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
             minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work( n ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
-        invoke( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
-                berr, info, workspace( tmp_work, tmp_iwork ) );
+        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( n ) );
+        invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+                workspace( tmp_work, tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char trans, const integer_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const fortran_int_t n, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
+            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
             optimal_workspace work ) {
-        invoke( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
-                berr, info, minimal_workspace() );
+        invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+                minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t n ) {
         return n;
     }
 };
 
-// complex specialization
-template< typename ValueType >
-struct gtrfs_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct gtrfs_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR,
             typename WORK, typename RWORK >
-    static void invoke( const char trans, const integer_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const fortran_int_t n, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
+            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
             detail::workspace2< WORK, RWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorFERR >::value_type, typename traits::vector_traits<
-                VectorBERR >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorD >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorDU >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorDLF >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorDF >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorDUF >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorDU2 >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::matrix_traits<
-                MatrixX >::value_type >::value) );
-        BOOST_ASSERT( trans == 'N' || trans == 'T' || trans == 'C' );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorFERR >::type >::type,
+                typename remove_const< typename value<
+                VectorBERR >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorD >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorDU >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorDLF >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorDF >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorDUF >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorDU2 >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                MatrixX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorFERR >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorBERR >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::vector_size(dl) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(d) >= n );
-        BOOST_ASSERT( traits::vector_size(du) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(dlf) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(df) >= n );
-        BOOST_ASSERT( traits::vector_size(duf) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(du2) >= n-2 );
-        BOOST_ASSERT( traits::vector_size(ipiv) >= n );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( traits::vector_size(berr) >=
-                traits::matrix_num_columns(b) );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( n ));
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_rwork( n ));
-        detail::gtrfs( trans, n, traits::matrix_num_columns(b),
-                traits::vector_storage(dl), traits::vector_storage(d),
-                traits::vector_storage(du), traits::vector_storage(dlf),
-                traits::vector_storage(df), traits::vector_storage(duf),
-                traits::vector_storage(du2), traits::vector_storage(ipiv),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                traits::matrix_storage(x), traits::leading_dimension(x),
-                traits::vector_storage(ferr), traits::vector_storage(berr),
-                traits::vector_storage(work.select(value_type())),
-                traits::vector_storage(work.select(real_type())), info );
+        BOOST_ASSERT( size(berr) >= size_column(b) );
+        BOOST_ASSERT( size(d) >= n );
+        BOOST_ASSERT( size(df) >= n );
+        BOOST_ASSERT( size(dl) >= n-1 );
+        BOOST_ASSERT( size(dlf) >= n-1 );
+        BOOST_ASSERT( size(du) >= n-1 );
+        BOOST_ASSERT( size(du2) >= n-2 );
+        BOOST_ASSERT( size(duf) >= n-1 );
+        BOOST_ASSERT( size(ipiv) >= n );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( n ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size_column(b) >= 0 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,n) );
+        detail::gtrfs( trans(), n, size_column(b), begin_value(dl),
+                begin_value(d), begin_value(du), begin_value(dlf),
+                begin_value(df), begin_value(duf), begin_value(du2),
+                begin_value(ipiv), begin_value(b), stride_major(b),
+                begin_value(x), stride_major(x), begin_value(ferr),
+                begin_value(berr), begin_value(work.select(value_type())),
+                begin_value(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char trans, const integer_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const fortran_int_t n, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
+            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
             minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work( n ) );
-        traits::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
-        invoke( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
-                berr, info, workspace( tmp_work, tmp_rwork ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work( n ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork( n ) );
+        invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+                workspace( tmp_work, tmp_rwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename VectorDLF, typename VectorDF, typename VectorDUF,
             typename VectorDU2, typename VectorIPIV, typename MatrixB,
             typename MatrixX, typename VectorFERR, typename VectorBERR >
-    static void invoke( const char trans, const integer_t n,
-            const VectorDL& dl, const VectorD& d, const VectorDU& du,
-            const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
-            const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
-            MatrixX& x, VectorFERR& ferr, VectorBERR& berr, integer_t& info,
+    static void invoke( const fortran_int_t n, const VectorDL& dl,
+            const VectorD& d, const VectorDU& du, const VectorDLF& dlf,
+            const VectorDF& df, const VectorDUF& duf, const VectorDU2& du2,
+            const VectorIPIV& ipiv, const MatrixB& b, MatrixX& x,
+            VectorFERR& ferr, VectorBERR& berr, fortran_int_t& info,
             optimal_workspace work ) {
-        invoke( trans, n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr,
-                berr, info, minimal_workspace() );
+        invoke( n, dl, d, du, dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+                minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array rwork.
+    //
+    static std::ptrdiff_t min_size_rwork( const std::ptrdiff_t n ) {
         return n;
     }
 };
 
 
-// template function to call gtrfs
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the gtrfs_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
 template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDLF, typename VectorDF, typename VectorDUF,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR,
         typename Workspace >
-inline integer_t gtrfs( const char trans, const integer_t n,
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDL& dl, const VectorD& d, const VectorDU& du,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, VectorFERR& ferr, VectorBERR& berr, Workspace work ) {
-    typedef typename traits::vector_traits< VectorDL >::value_type value_type;
-    integer_t info(0);
-    gtrfs_impl< value_type >::invoke( trans, n, dl, d, du, dlf, df, duf,
-            du2, ipiv, b, x, ferr, berr, info, work );
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
     return info;
 }
 
-// template function to call gtrfs, default workspace type
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
 template< typename VectorDL, typename VectorD, typename VectorDU,
         typename VectorDLF, typename VectorDF, typename VectorDUF,
         typename VectorDU2, typename VectorIPIV, typename MatrixB,
         typename MatrixX, typename VectorFERR, typename VectorBERR >
-inline integer_t gtrfs( const char trans, const integer_t n,
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
         const VectorDL& dl, const VectorD& d, const VectorDU& du,
         const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
         const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
         MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
-    typedef typename traits::vector_traits< VectorDL >::value_type value_type;
-    integer_t info(0);
-    gtrfs_impl< value_type >::invoke( trans, n, dl, d, du, dlf, df, duf,
-            du2, ipiv, b, x, ferr, berr, info, optimal_workspace() );
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR,
+        typename Workspace >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * const MatrixX&
+// * VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, VectorBERR& berr ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR,
+        typename Workspace >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR,
+        typename Workspace >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * const MatrixX&
+// * const VectorFERR&
+// * VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, VectorBERR& berr ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR,
+        typename Workspace >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR,
+        typename Workspace >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * const MatrixX&
+// * VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, VectorFERR& ferr, const VectorBERR& berr ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR,
+        typename Workspace >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * User-defined workspace
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR,
+        typename Workspace >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr,
+        Workspace work ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info, work );
+    return info;
+}
+
+//
+// Overloaded function for gtrfs. Its overload differs for
+// * const MatrixX&
+// * const VectorFERR&
+// * const VectorBERR&
+// * Default workspace-type (optimal)
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename VectorDLF, typename VectorDF, typename VectorDUF,
+        typename VectorDU2, typename VectorIPIV, typename MatrixB,
+        typename MatrixX, typename VectorFERR, typename VectorBERR >
+inline std::ptrdiff_t gtrfs( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const VectorDLF& dlf, const VectorDF& df, const VectorDUF& duf,
+        const VectorDU2& du2, const VectorIPIV& ipiv, const MatrixB& b,
+        const MatrixX& x, const VectorFERR& ferr, const VectorBERR& berr ) {
+    fortran_int_t info(0);
+    gtrfs_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            dlf, df, duf, du2, ipiv, b, x, ferr, berr, info,
+            optimal_workspace() );
     return info;
 }
 

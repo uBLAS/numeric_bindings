@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,99 +15,399 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_GTSV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void gtsv( const integer_t n, const integer_t nrhs, float* dl,
-        float* d, float* du, float* b, const integer_t ldb, integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void gtsv( fortran_int_t n, fortran_int_t nrhs, float* dl, float* d,
+        float* du, float* b, fortran_int_t ldb, fortran_int_t& info ) {
     LAPACK_SGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
 }
-inline void gtsv( const integer_t n, const integer_t nrhs, double* dl,
-        double* d, double* du, double* b, const integer_t ldb,
-        integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void gtsv( fortran_int_t n, fortran_int_t nrhs, double* dl, double* d,
+        double* du, double* b, fortran_int_t ldb, fortran_int_t& info ) {
     LAPACK_DGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
 }
-inline void gtsv( const integer_t n, const integer_t nrhs,
-        traits::complex_f* dl, traits::complex_f* d, traits::complex_f* du,
-        traits::complex_f* b, const integer_t ldb, integer_t& info ) {
-    LAPACK_CGTSV( &n, &nrhs, traits::complex_ptr(dl), traits::complex_ptr(d),
-            traits::complex_ptr(du), traits::complex_ptr(b), &ldb, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void gtsv( fortran_int_t n, fortran_int_t nrhs,
+        std::complex<float>* dl, std::complex<float>* d,
+        std::complex<float>* du, std::complex<float>* b, fortran_int_t ldb,
+        fortran_int_t& info ) {
+    LAPACK_CGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
 }
-inline void gtsv( const integer_t n, const integer_t nrhs,
-        traits::complex_d* dl, traits::complex_d* d, traits::complex_d* du,
-        traits::complex_d* b, const integer_t ldb, integer_t& info ) {
-    LAPACK_ZGTSV( &n, &nrhs, traits::complex_ptr(dl), traits::complex_ptr(d),
-            traits::complex_ptr(du), traits::complex_ptr(b), &ldb, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void gtsv( fortran_int_t n, fortran_int_t nrhs,
+        std::complex<double>* dl, std::complex<double>* d,
+        std::complex<double>* du, std::complex<double>* b, fortran_int_t ldb,
+        fortran_int_t& info ) {
+    LAPACK_ZGTSV( &n, &nrhs, dl, d, du, b, &ldb, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to gtsv.
+//
+template< typename Value >
 struct gtsv_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // high-level solve typedefs and functions
-    typedef boost::mpl::bool_<false> has_pivot;
-
-    template< typename MatrixA, typename MatrixB, typename VectorP >
-    static void solve( MatrixA& A, MatrixB& B, VectorP const&,
-            integer_t& info ) {
-        invoke( B, info );
-    }
-
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorDL, typename VectorD, typename VectorDU,
             typename MatrixB >
-    static void invoke( const integer_t n, VectorDL& dl, VectorD& d,
-            VectorDU& du, MatrixB& b, integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorD >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::vector_traits<
-                VectorDU >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorDL >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
+    static void invoke( const fortran_int_t n, VectorDL& dl, VectorD& d,
+            VectorDU& du, MatrixB& b, fortran_int_t& info ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorD >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                VectorDU >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorDL >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorDL >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorDU >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::vector_size(dl) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(d) >= n );
-        BOOST_ASSERT( traits::vector_size(du) >= n-1 );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        detail::gtsv( n, traits::matrix_num_columns(b),
-                traits::vector_storage(dl), traits::vector_storage(d),
-                traits::vector_storage(du), traits::matrix_storage(b),
-                traits::leading_dimension(b), info );
+        BOOST_ASSERT( size(d) >= n );
+        BOOST_ASSERT( size(dl) >= n-1 );
+        BOOST_ASSERT( size(du) >= n-1 );
+        BOOST_ASSERT( size_column(b) >= 0 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
+        detail::gtsv( n, size_column(b), begin_value(dl), begin_value(d),
+                begin_value(du), begin_value(b), stride_major(b), info );
     }
+
 };
 
 
-// template function to call gtsv
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the gtsv_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * VectorDL&
+// * VectorD&
+// * VectorDU&
+// * MatrixB&
+//
 template< typename VectorDL, typename VectorD, typename VectorDU,
         typename MatrixB >
-inline integer_t gtsv( const integer_t n, VectorDL& dl, VectorD& d,
-        VectorDU& du, MatrixB& b ) {
-    typedef typename traits::vector_traits< VectorDL >::value_type value_type;
-    integer_t info(0);
-    gtsv_impl< value_type >::invoke( n, dl, d, du, b, info );
+inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
+        VectorD& d, VectorDU& du, MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * const VectorDL&
+// * VectorD&
+// * VectorDU&
+// * MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n,
+        const VectorDL& dl, VectorD& d, VectorDU& du, MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * VectorDL&
+// * const VectorD&
+// * VectorDU&
+// * MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
+        const VectorD& d, VectorDU& du, MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * const VectorDL&
+// * const VectorD&
+// * VectorDU&
+// * MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, VectorDU& du, MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * VectorDL&
+// * VectorD&
+// * const VectorDU&
+// * MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
+        VectorD& d, const VectorDU& du, MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * const VectorDL&
+// * VectorD&
+// * const VectorDU&
+// * MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n,
+        const VectorDL& dl, VectorD& d, const VectorDU& du, MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * VectorDL&
+// * const VectorD&
+// * const VectorDU&
+// * MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
+        const VectorD& d, const VectorDU& du, MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * const VectorDL&
+// * const VectorD&
+// * const VectorDU&
+// * MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * VectorDL&
+// * VectorD&
+// * VectorDU&
+// * const MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
+        VectorD& d, VectorDU& du, const MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * const VectorDL&
+// * VectorD&
+// * VectorDU&
+// * const MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n,
+        const VectorDL& dl, VectorD& d, VectorDU& du, const MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * VectorDL&
+// * const VectorD&
+// * VectorDU&
+// * const MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
+        const VectorD& d, VectorDU& du, const MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * const VectorDL&
+// * const VectorD&
+// * VectorDU&
+// * const MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, VectorDU& du,
+        const MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * VectorDL&
+// * VectorD&
+// * const VectorDU&
+// * const MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
+        VectorD& d, const VectorDU& du, const MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * const VectorDL&
+// * VectorD&
+// * const VectorDU&
+// * const MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n,
+        const VectorDL& dl, VectorD& d, const VectorDU& du,
+        const MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * VectorDL&
+// * const VectorD&
+// * const VectorDU&
+// * const MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n, VectorDL& dl,
+        const VectorD& d, const VectorDU& du, const MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
+    return info;
+}
+
+//
+// Overloaded function for gtsv. Its overload differs for
+// * const VectorDL&
+// * const VectorD&
+// * const VectorDU&
+// * const MatrixB&
+//
+template< typename VectorDL, typename VectorD, typename VectorDU,
+        typename MatrixB >
+inline std::ptrdiff_t gtsv( const fortran_int_t n,
+        const VectorDL& dl, const VectorD& d, const VectorDU& du,
+        const MatrixB& b ) {
+    fortran_int_t info(0);
+    gtsv_impl< typename value< VectorDL >::type >::invoke( n, dl, d, du,
+            b, info );
     return info;
 }
 

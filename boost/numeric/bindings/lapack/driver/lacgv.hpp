@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,56 +15,104 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_LACGV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void lacgv( const integer_t n, traits::complex_f* x,
-        const integer_t incx ) {
-    LAPACK_CLACGV( &n, traits::complex_ptr(x), &incx );
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void lacgv( fortran_int_t n, std::complex<float>* x,
+        fortran_int_t incx ) {
+    LAPACK_CLACGV( &n, x, &incx );
 }
-inline void lacgv( const integer_t n, traits::complex_d* x,
-        const integer_t incx ) {
-    LAPACK_ZLACGV( &n, traits::complex_ptr(x), &incx );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void lacgv( fortran_int_t n, std::complex<double>* x,
+        fortran_int_t incx ) {
+    LAPACK_ZLACGV( &n, x, &incx );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to lacgv.
+//
+template< typename Value >
 struct lacgv_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorX >
-    static void invoke( const integer_t n, VectorX& x, const integer_t incx ) {
+    static void invoke( const fortran_int_t n, VectorX& x,
+            const fortran_int_t incx ) {
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
         BOOST_ASSERT( n >= 0 );
-        detail::lacgv( n, traits::vector_storage(x), incx );
+        detail::lacgv( n, begin_value(x), incx );
     }
+
 };
 
 
-// template function to call lacgv
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the lacgv_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for lacgv. Its overload differs for
+// * VectorX&
+//
 template< typename VectorX >
-inline integer_t lacgv( const integer_t n, VectorX& x,
-        const integer_t incx ) {
-    typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    integer_t info(0);
-    lacgv_impl< value_type >::invoke( n, x, incx );
+inline std::ptrdiff_t lacgv( const fortran_int_t n, VectorX& x,
+        const fortran_int_t incx ) {
+    fortran_int_t info(0);
+    lacgv_impl< typename value< VectorX >::type >::invoke( n, x, incx );
+    return info;
+}
+
+//
+// Overloaded function for lacgv. Its overload differs for
+// * const VectorX&
+//
+template< typename VectorX >
+inline std::ptrdiff_t lacgv( const fortran_int_t n, const VectorX& x,
+        const fortran_int_t incx ) {
+    fortran_int_t info(0);
+    lacgv_impl< typename value< VectorX >::type >::invoke( n, x, incx );
     return info;
 }
 

@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,17 +15,22 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GGQRF_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -33,226 +38,861 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void ggqrf( const integer_t n, const integer_t m, const integer_t p,
-        float* a, const integer_t lda, float* taua, float* b,
-        const integer_t ldb, float* taub, float* work, const integer_t lwork,
-        integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void ggqrf( fortran_int_t n, fortran_int_t m, fortran_int_t p,
+        float* a, fortran_int_t lda, float* taua, float* b, fortran_int_t ldb,
+        float* taub, float* work, fortran_int_t lwork, fortran_int_t& info ) {
     LAPACK_SGGQRF( &n, &m, &p, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
 }
-inline void ggqrf( const integer_t n, const integer_t m, const integer_t p,
-        double* a, const integer_t lda, double* taua, double* b,
-        const integer_t ldb, double* taub, double* work,
-        const integer_t lwork, integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void ggqrf( fortran_int_t n, fortran_int_t m, fortran_int_t p,
+        double* a, fortran_int_t lda, double* taua, double* b,
+        fortran_int_t ldb, double* taub, double* work, fortran_int_t lwork,
+        fortran_int_t& info ) {
     LAPACK_DGGQRF( &n, &m, &p, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
 }
-inline void ggqrf( const integer_t n, const integer_t m, const integer_t p,
-        traits::complex_f* a, const integer_t lda, traits::complex_f* taua,
-        traits::complex_f* b, const integer_t ldb, traits::complex_f* taub,
-        traits::complex_f* work, const integer_t lwork, integer_t& info ) {
-    LAPACK_CGGQRF( &n, &m, &p, traits::complex_ptr(a), &lda,
-            traits::complex_ptr(taua), traits::complex_ptr(b), &ldb,
-            traits::complex_ptr(taub), traits::complex_ptr(work), &lwork,
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void ggqrf( fortran_int_t n, fortran_int_t m, fortran_int_t p,
+        std::complex<float>* a, fortran_int_t lda, std::complex<float>* taua,
+        std::complex<float>* b, fortran_int_t ldb, std::complex<float>* taub,
+        std::complex<float>* work, fortran_int_t lwork, fortran_int_t& info ) {
+    LAPACK_CGGQRF( &n, &m, &p, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
 }
-inline void ggqrf( const integer_t n, const integer_t m, const integer_t p,
-        traits::complex_d* a, const integer_t lda, traits::complex_d* taua,
-        traits::complex_d* b, const integer_t ldb, traits::complex_d* taub,
-        traits::complex_d* work, const integer_t lwork, integer_t& info ) {
-    LAPACK_ZGGQRF( &n, &m, &p, traits::complex_ptr(a), &lda,
-            traits::complex_ptr(taua), traits::complex_ptr(b), &ldb,
-            traits::complex_ptr(taub), traits::complex_ptr(work), &lwork,
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void ggqrf( fortran_int_t n, fortran_int_t m, fortran_int_t p,
+        std::complex<double>* a, fortran_int_t lda,
+        std::complex<double>* taua, std::complex<double>* b,
+        fortran_int_t ldb, std::complex<double>* taub,
+        std::complex<double>* work, fortran_int_t lwork,
+        fortran_int_t& info ) {
+    LAPACK_ZGGQRF( &n, &m, &p, a, &lda, taua, b, &ldb, taub, work, &lwork,
             &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct ggqrf_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to ggqrf.
+//
+template< typename Value, typename Enable = void >
+struct ggqrf_impl {};
 
-// real specialization
-template< typename ValueType >
-struct ggqrf_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct ggqrf_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB, typename WORK >
     static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, integer_t& info, detail::workspace1<
+            VectorTAUB& taub, fortran_int_t& info, detail::workspace1<
             WORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUA >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUB >::value_type >::value) );
-        BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
-        BOOST_ASSERT( traits::vector_size(taua) >= std::min<
-                std::ptrdiff_t >(traits::matrix_num_rows(b),
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
-        BOOST_ASSERT( traits::vector_size(taub) >= std::min<
-                std::ptrdiff_t >(traits::matrix_num_rows(b),
-                traits::matrix_num_columns(b)) );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
-        detail::ggqrf( traits::matrix_num_rows(b),
-                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(taua), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(taub),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_size(work.select(real_type())), info );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorTAUA >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorTAUB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUB >::value) );
+        BOOST_ASSERT( size(taua) >= std::min< std::ptrdiff_t >(size_row(b),
+                size_column(a)) );
+        BOOST_ASSERT( size(taub) >= std::min< std::ptrdiff_t >(size_row(b),
+                size_column(b)) );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_column(a) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( size_row(b) >= 0 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_row(b)) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_row(b)) );
+        detail::ggqrf( size_row(b), size_column(a), size_column(b),
+                begin_value(a), stride_major(a), begin_value(taua),
+                begin_value(b), stride_major(b), begin_value(taub),
+                begin_value(work.select(real_type())),
+                size(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
     static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(
+            VectorTAUB& taub, fortran_int_t& info,
+            minimal_workspace work ) {
+        bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         invoke( a, taua, b, taub, info, workspace( tmp_work ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
     static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, integer_t& info, optimal_workspace work ) {
+            VectorTAUB& taub, fortran_int_t& info,
+            optimal_workspace work ) {
         real_type opt_size_work;
-        detail::ggqrf( traits::matrix_num_rows(b),
-                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(taua), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(taub),
+        detail::ggqrf( size_row(b), size_column(a), size_column(b),
+                begin_value(a), stride_major(a), begin_value(taua),
+                begin_value(b), stride_major(b), begin_value(taub),
                 &opt_size_work, -1, info );
-        traits::detail::array< real_type > tmp_work(
+        bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         invoke( a, taua, b, taub, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
         $MIN_SIZE
     }
 };
 
-// complex specialization
-template< typename ValueType >
-struct ggqrf_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct ggqrf_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB, typename WORK >
     static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, integer_t& info, detail::workspace1<
+            VectorTAUB& taub, fortran_int_t& info, detail::workspace1<
             WORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUA >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUB >::value_type >::value) );
-        BOOST_ASSERT( traits::matrix_num_rows(b) >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
-        BOOST_ASSERT( traits::vector_size(taua) >= std::min<
-                std::ptrdiff_t >(traits::matrix_num_rows(b),
-                traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(b)) );
-        BOOST_ASSERT( traits::vector_size(taub) >= std::min<
-                std::ptrdiff_t >(traits::matrix_num_rows(b),
-                traits::matrix_num_columns(b)) );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
-        detail::ggqrf( traits::matrix_num_rows(b),
-                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(taua), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(taub),
-                traits::vector_storage(work.select(value_type())),
-                traits::vector_size(work.select(value_type())), info );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorTAUA >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorTAUB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUB >::value) );
+        BOOST_ASSERT( size(taua) >= std::min< std::ptrdiff_t >(size_row(b),
+                size_column(a)) );
+        BOOST_ASSERT( size(taub) >= std::min< std::ptrdiff_t >(size_row(b),
+                size_column(b)) );
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_column(a) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( size_row(b) >= 0 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_row(b)) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_row(b)) );
+        detail::ggqrf( size_row(b), size_column(a), size_column(b),
+                begin_value(a), stride_major(a), begin_value(taua),
+                begin_value(b), stride_major(b), begin_value(taub),
+                begin_value(work.select(value_type())),
+                size(work.select(value_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
     static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, integer_t& info, minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(
+            VectorTAUB& taub, fortran_int_t& info,
+            minimal_workspace work ) {
+        bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
         invoke( a, taua, b, taub, info, workspace( tmp_work ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixA, typename VectorTAUA, typename MatrixB,
             typename VectorTAUB >
     static void invoke( MatrixA& a, VectorTAUA& taua, MatrixB& b,
-            VectorTAUB& taub, integer_t& info, optimal_workspace work ) {
+            VectorTAUB& taub, fortran_int_t& info,
+            optimal_workspace work ) {
         value_type opt_size_work;
-        detail::ggqrf( traits::matrix_num_rows(b),
-                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(taua), traits::matrix_storage(b),
-                traits::leading_dimension(b), traits::vector_storage(taub),
+        detail::ggqrf( size_row(b), size_column(a), size_column(b),
+                begin_value(a), stride_major(a), begin_value(taua),
+                begin_value(b), stride_major(b), begin_value(taub),
                 &opt_size_work, -1, info );
-        traits::detail::array< value_type > tmp_work(
+        bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         invoke( a, taua, b, taub, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
         $MIN_SIZE
     }
 };
 
 
-// template function to call ggqrf
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the ggqrf_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB, typename Workspace >
-inline integer_t ggqrf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+inline std::ptrdiff_t ggqrf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
         VectorTAUB& taub, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    ggqrf_impl< value_type >::invoke( a, taua, b, taub, info, work );
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
     return info;
 }
 
-// template function to call ggqrf, default workspace type
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixA, typename VectorTAUA, typename MatrixB,
         typename VectorTAUB >
-inline integer_t ggqrf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+inline std::ptrdiff_t ggqrf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
         VectorTAUB& taub ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    ggqrf_impl< value_type >::invoke( a, taua, b, taub, info,
-            optimal_workspace() );
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, VectorTAUA& taua,
+        MatrixB& b, VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, VectorTAUA& taua,
+        MatrixB& b, VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( MatrixA& a, const VectorTAUA& taua,
+        MatrixB& b, VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( MatrixA& a, const VectorTAUA& taua,
+        MatrixB& b, VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, const VectorTAUA& taua,
+        MatrixB& b, VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, const VectorTAUA& taua,
+        MatrixB& b, VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * VectorTAUA&
+// * const MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( MatrixA& a, VectorTAUA& taua,
+        const MatrixB& b, VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * VectorTAUA&
+// * const MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( MatrixA& a, VectorTAUA& taua,
+        const MatrixB& b, VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * VectorTAUA&
+// * const MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, VectorTAUA& taua,
+        const MatrixB& b, VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * VectorTAUA&
+// * const MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, VectorTAUA& taua,
+        const MatrixB& b, VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * const VectorTAUA&
+// * const MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( MatrixA& a, const VectorTAUA& taua,
+        const MatrixB& b, VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * const VectorTAUA&
+// * const MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( MatrixA& a, const VectorTAUA& taua,
+        const MatrixB& b, VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * const VectorTAUA&
+// * const MatrixB&
+// * VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, const VectorTAUA& taua,
+        const MatrixB& b, VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * const VectorTAUA&
+// * const MatrixB&
+// * VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, const VectorTAUA& taua,
+        const MatrixB& b, VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * VectorTAUA&
+// * MatrixB&
+// * const VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+        const VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * VectorTAUA&
+// * MatrixB&
+// * const VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( MatrixA& a, VectorTAUA& taua, MatrixB& b,
+        const VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * VectorTAUA&
+// * MatrixB&
+// * const VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, VectorTAUA& taua,
+        MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * VectorTAUA&
+// * MatrixB&
+// * const VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, VectorTAUA& taua,
+        MatrixB& b, const VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * const VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( MatrixA& a, const VectorTAUA& taua,
+        MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * const VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( MatrixA& a, const VectorTAUA& taua,
+        MatrixB& b, const VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * const VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, const VectorTAUA& taua,
+        MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * const VectorTAUA&
+// * MatrixB&
+// * const VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, const VectorTAUA& taua,
+        MatrixB& b, const VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * VectorTAUA&
+// * const MatrixB&
+// * const VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( MatrixA& a, VectorTAUA& taua,
+        const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * VectorTAUA&
+// * const MatrixB&
+// * const VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( MatrixA& a, VectorTAUA& taua,
+        const MatrixB& b, const VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * VectorTAUA&
+// * const MatrixB&
+// * const VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, VectorTAUA& taua,
+        const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * VectorTAUA&
+// * const MatrixB&
+// * const VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, VectorTAUA& taua,
+        const MatrixB& b, const VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * const VectorTAUA&
+// * const MatrixB&
+// * const VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( MatrixA& a, const VectorTAUA& taua,
+        const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * MatrixA&
+// * const VectorTAUA&
+// * const MatrixB&
+// * const VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( MatrixA& a, const VectorTAUA& taua,
+        const MatrixB& b, const VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * const VectorTAUA&
+// * const MatrixB&
+// * const VectorTAUB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB, typename Workspace >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, const VectorTAUA& taua,
+        const MatrixB& b, const VectorTAUB& taub, Workspace work ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, work );
+    return info;
+}
+
+//
+// Overloaded function for ggqrf. Its overload differs for
+// * const MatrixA&
+// * const VectorTAUA&
+// * const MatrixB&
+// * const VectorTAUB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorTAUA, typename MatrixB,
+        typename VectorTAUB >
+inline std::ptrdiff_t ggqrf( const MatrixA& a, const VectorTAUA& taua,
+        const MatrixB& b, const VectorTAUB& taub ) {
+    fortran_int_t info(0);
+    ggqrf_impl< typename value< MatrixA >::type >::invoke( a, taua, b,
+            taub, info, optimal_workspace() );
     return info;
 }
 

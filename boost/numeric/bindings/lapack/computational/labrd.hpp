@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,14 +15,19 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_LABRD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -30,164 +35,3006 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
-        float* a, const integer_t lda, float* d, float* e, float* tauq,
-        float* taup, float* x, const integer_t ldx, float* y,
-        const integer_t ldy ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void labrd( fortran_int_t m, fortran_int_t n, fortran_int_t nb,
+        float* a, fortran_int_t lda, float* d, float* e, float* tauq,
+        float* taup, float* x, fortran_int_t ldx, float* y,
+        fortran_int_t ldy ) {
     LAPACK_SLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
 }
-inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
-        double* a, const integer_t lda, double* d, double* e, double* tauq,
-        double* taup, double* x, const integer_t ldx, double* y,
-        const integer_t ldy ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void labrd( fortran_int_t m, fortran_int_t n, fortran_int_t nb,
+        double* a, fortran_int_t lda, double* d, double* e, double* tauq,
+        double* taup, double* x, fortran_int_t ldx, double* y,
+        fortran_int_t ldy ) {
     LAPACK_DLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
 }
-inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
-        traits::complex_f* a, const integer_t lda, float* d, float* e,
-        traits::complex_f* tauq, traits::complex_f* taup,
-        traits::complex_f* x, const integer_t ldx, traits::complex_f* y,
-        const integer_t ldy ) {
-    LAPACK_CLABRD( &m, &n, &nb, traits::complex_ptr(a), &lda, d, e,
-            traits::complex_ptr(tauq), traits::complex_ptr(taup),
-            traits::complex_ptr(x), &ldx, traits::complex_ptr(y), &ldy );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void labrd( fortran_int_t m, fortran_int_t n, fortran_int_t nb,
+        std::complex<float>* a, fortran_int_t lda, float* d, float* e,
+        std::complex<float>* tauq, std::complex<float>* taup,
+        std::complex<float>* x, fortran_int_t ldx, std::complex<float>* y,
+        fortran_int_t ldy ) {
+    LAPACK_CLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
 }
-inline void labrd( const integer_t m, const integer_t n, const integer_t nb,
-        traits::complex_d* a, const integer_t lda, double* d, double* e,
-        traits::complex_d* tauq, traits::complex_d* taup,
-        traits::complex_d* x, const integer_t ldx, traits::complex_d* y,
-        const integer_t ldy ) {
-    LAPACK_ZLABRD( &m, &n, &nb, traits::complex_ptr(a), &lda, d, e,
-            traits::complex_ptr(tauq), traits::complex_ptr(taup),
-            traits::complex_ptr(x), &ldx, traits::complex_ptr(y), &ldy );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void labrd( fortran_int_t m, fortran_int_t n, fortran_int_t nb,
+        std::complex<double>* a, fortran_int_t lda, double* d, double* e,
+        std::complex<double>* tauq, std::complex<double>* taup,
+        std::complex<double>* x, fortran_int_t ldx, std::complex<double>* y,
+        fortran_int_t ldy ) {
+    LAPACK_ZLABRD( &m, &n, &nb, a, &lda, d, e, tauq, taup, x, &ldx, y, &ldy );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct labrd_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to labrd.
+//
+template< typename Value, typename Enable = void >
+struct labrd_impl {};
 
-// real specialization
-template< typename ValueType >
-struct labrd_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct labrd_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
             typename MatrixY >
     static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
             VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorD >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorE >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUQ >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUP >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixX >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixY >::value_type >::value) );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(d) >=
-                traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::vector_size(e) >=
-                traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::vector_size(tauq) >=
-                traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::vector_size(taup) >=
-                traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::leading_dimension(x) >=
-                traits::matrix_num_rows(a) );
-        BOOST_ASSERT( traits::leading_dimension(y) >=
-                traits::matrix_num_columns(a) );
-        detail::labrd( traits::matrix_num_rows(a),
-                traits::matrix_num_columns(a), traits::matrix_num_columns(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::vector_storage(tauq), traits::vector_storage(taup),
-                traits::matrix_storage(x), traits::leading_dimension(x),
-                traits::matrix_storage(y), traits::leading_dimension(y) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorD >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorTAUQ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorTAUP >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUQ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUP >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixY >::value) );
+        BOOST_ASSERT( size(d) >= size_column(a) );
+        BOOST_ASSERT( size(e) >= size_column(a) );
+        BOOST_ASSERT( size(taup) >= size_column(a) );
+        BOOST_ASSERT( size(tauq) >= size_column(a) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
+        BOOST_ASSERT( size_minor(y) == 1 || stride_minor(y) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_row(a)) );
+        BOOST_ASSERT( stride_major(x) >= size_row(a) );
+        BOOST_ASSERT( stride_major(y) >= size_column(a) );
+        detail::labrd( size_row(a), size_column(a), size_column(a),
+                begin_value(a), stride_major(a), begin_value(d),
+                begin_value(e), begin_value(tauq), begin_value(taup),
+                begin_value(x), stride_major(x), begin_value(y),
+                stride_major(y) );
     }
+
 };
 
-// complex specialization
-template< typename ValueType >
-struct labrd_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct labrd_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorD, typename VectorE,
             typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
             typename MatrixY >
     static void invoke( MatrixA& a, VectorD& d, VectorE& e, VectorTAUQ& tauq,
             VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::vector_traits<
-                VectorE >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUQ >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorTAUP >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixX >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixY >::value_type >::value) );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::vector_size(d) >=
-                traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::vector_size(e) >=
-                traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::vector_size(tauq) >=
-                traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::vector_size(taup) >=
-                traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(a)) );
-        BOOST_ASSERT( traits::leading_dimension(y) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        detail::labrd( traits::matrix_num_rows(a),
-                traits::matrix_num_columns(a), traits::matrix_num_columns(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::vector_storage(tauq), traits::vector_storage(taup),
-                traits::matrix_storage(x), traits::leading_dimension(x),
-                traits::matrix_storage(y), traits::leading_dimension(y) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                VectorE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorTAUQ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorTAUP >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixY >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUQ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorTAUP >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixY >::value) );
+        BOOST_ASSERT( size(d) >= size_column(a) );
+        BOOST_ASSERT( size(e) >= size_column(a) );
+        BOOST_ASSERT( size(taup) >= size_column(a) );
+        BOOST_ASSERT( size(tauq) >= size_column(a) );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
+        BOOST_ASSERT( size_minor(y) == 1 || stride_minor(y) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_row(a)) );
+        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
+                size_row(a)) );
+        BOOST_ASSERT( stride_major(y) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        detail::labrd( size_row(a), size_column(a), size_column(a),
+                begin_value(a), stride_major(a), begin_value(d),
+                begin_value(e), begin_value(tauq), begin_value(taup),
+                begin_value(x), stride_major(x), begin_value(y),
+                stride_major(y) );
     }
+
 };
 
 
-// template function to call labrd
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the labrd_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
 template< typename MatrixA, typename VectorD, typename VectorE,
         typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
         typename MatrixY >
-inline integer_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
         VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    labrd_impl< value_type >::invoke( a, d, e, tauq, taup, x, y );
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAUQ& tauq, VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d, VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, VectorD& d, const VectorE& e,
+        const VectorTAUQ& tauq, const VectorTAUP& taup, const MatrixX& x,
+        const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
+    return info;
+}
+
+//
+// Overloaded function for labrd. Its overload differs for
+// * const MatrixA&
+// * const VectorD&
+// * const VectorE&
+// * const VectorTAUQ&
+// * const VectorTAUP&
+// * const MatrixX&
+// * const MatrixY&
+//
+template< typename MatrixA, typename VectorD, typename VectorE,
+        typename VectorTAUQ, typename VectorTAUP, typename MatrixX,
+        typename MatrixY >
+inline std::ptrdiff_t labrd( const MatrixA& a, const VectorD& d,
+        const VectorE& e, const VectorTAUQ& tauq, const VectorTAUP& taup,
+        const MatrixX& x, const MatrixY& y ) {
+    fortran_int_t info(0);
+    labrd_impl< typename value< MatrixA >::type >::invoke( a, d, e, tauq,
+            taup, x, y );
     return info;
 }
 

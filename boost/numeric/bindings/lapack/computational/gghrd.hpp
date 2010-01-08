@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,107 +15,428 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GGHRD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void gghrd( const char compq, const char compz, const integer_t n,
-        const integer_t ilo, const integer_t ihi, float* a,
-        const integer_t lda, float* b, const integer_t ldb, float* q,
-        const integer_t ldq, float* z, const integer_t ldz, integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void gghrd( char compq, char compz, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, float* a, fortran_int_t lda, float* b,
+        fortran_int_t ldb, float* q, fortran_int_t ldq, float* z,
+        fortran_int_t ldz, fortran_int_t& info ) {
     LAPACK_SGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );
 }
-inline void gghrd( const char compq, const char compz, const integer_t n,
-        const integer_t ilo, const integer_t ihi, double* a,
-        const integer_t lda, double* b, const integer_t ldb, double* q,
-        const integer_t ldq, double* z, const integer_t ldz,
-        integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void gghrd( char compq, char compz, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, double* a, fortran_int_t lda, double* b,
+        fortran_int_t ldb, double* q, fortran_int_t ldq, double* z,
+        fortran_int_t ldz, fortran_int_t& info ) {
     LAPACK_DGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
             z, &ldz, &info );
 }
-inline void gghrd( const char compq, const char compz, const integer_t n,
-        const integer_t ilo, const integer_t ihi, traits::complex_f* a,
-        const integer_t lda, traits::complex_f* b, const integer_t ldb,
-        traits::complex_f* q, const integer_t ldq, traits::complex_f* z,
-        const integer_t ldz, integer_t& info ) {
-    LAPACK_CGGHRD( &compq, &compz, &n, &ilo, &ihi, traits::complex_ptr(a),
-            &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
-            traits::complex_ptr(z), &ldz, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void gghrd( char compq, char compz, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, std::complex<float>* a, fortran_int_t lda,
+        std::complex<float>* b, fortran_int_t ldb, std::complex<float>* q,
+        fortran_int_t ldq, std::complex<float>* z, fortran_int_t ldz,
+        fortran_int_t& info ) {
+    LAPACK_CGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
+            z, &ldz, &info );
 }
-inline void gghrd( const char compq, const char compz, const integer_t n,
-        const integer_t ilo, const integer_t ihi, traits::complex_d* a,
-        const integer_t lda, traits::complex_d* b, const integer_t ldb,
-        traits::complex_d* q, const integer_t ldq, traits::complex_d* z,
-        const integer_t ldz, integer_t& info ) {
-    LAPACK_ZGGHRD( &compq, &compz, &n, &ilo, &ihi, traits::complex_ptr(a),
-            &lda, traits::complex_ptr(b), &ldb, traits::complex_ptr(q), &ldq,
-            traits::complex_ptr(z), &ldz, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void gghrd( char compq, char compz, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, std::complex<double>* a, fortran_int_t lda,
+        std::complex<double>* b, fortran_int_t ldb, std::complex<double>* q,
+        fortran_int_t ldq, std::complex<double>* z, fortran_int_t ldz,
+        fortran_int_t& info ) {
+    LAPACK_ZGGHRD( &compq, &compz, &n, &ilo, &ihi, a, &lda, b, &ldb, q, &ldq,
+            z, &ldz, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to gghrd.
+//
+template< typename Value >
 struct gghrd_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename MatrixB, typename MatrixQ,
             typename MatrixZ >
-    static void invoke( const char compq, const char compz, const integer_t n,
-            const integer_t ilo, MatrixA& a, MatrixB& b, MatrixQ& q,
-            MatrixZ& z, integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixQ >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type >::value) );
+    static void invoke( const char compq, const char compz,
+            const fortran_int_t n, const fortran_int_t ilo,
+            MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z,
+            fortran_int_t& info ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixQ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixZ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
         BOOST_ASSERT( compq == 'N' || compq == 'I' || compq == 'V' );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        detail::gghrd( compq, compz, n, ilo, traits::matrix_num_columns(a),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                traits::matrix_storage(q), traits::leading_dimension(q),
-                traits::matrix_storage(z), traits::leading_dimension(z),
-                info );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
+        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
+        detail::gghrd( compq, compz, n, ilo, size_column(a), begin_value(a),
+                stride_major(a), begin_value(b), stride_major(b),
+                begin_value(q), stride_major(q), begin_value(z),
+                stride_major(z), info );
     }
+
 };
 
 
-// template function to call gghrd
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the gghrd_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * MatrixQ&
+// * MatrixZ&
+//
 template< typename MatrixA, typename MatrixB, typename MatrixQ,
         typename MatrixZ >
-inline integer_t gghrd( const char compq, const char compz,
-        const integer_t n, const integer_t ilo, MatrixA& a, MatrixB& b,
-        MatrixQ& q, MatrixZ& z ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    gghrd_impl< value_type >::invoke( compq, compz, n, ilo, a, b, q, z,
-            info );
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
+        MatrixB& b, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * MatrixQ&
+// * MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const MatrixA& a, MatrixB& b, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
+        const MatrixB& b, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const MatrixA& a, const MatrixB& b, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
+        MatrixB& b, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const MatrixA& a, MatrixB& b, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
+        const MatrixB& b, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const MatrixQ&
+// * MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const MatrixA& a, const MatrixB& b, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
+        MatrixB& b, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const MatrixA& a, MatrixB& b, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
+        const MatrixB& b, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * MatrixQ&
+// * const MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const MatrixA& a, const MatrixB& b, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * const MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
+        MatrixB& b, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * const MatrixA&
+// * MatrixB&
+// * const MatrixQ&
+// * const MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const MatrixA& a, MatrixB& b, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * MatrixA&
+// * const MatrixB&
+// * const MatrixQ&
+// * const MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo, MatrixA& a,
+        const MatrixB& b, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
+    return info;
+}
+
+//
+// Overloaded function for gghrd. Its overload differs for
+// * const MatrixA&
+// * const MatrixB&
+// * const MatrixQ&
+// * const MatrixZ&
+//
+template< typename MatrixA, typename MatrixB, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t gghrd( const char compq, const char compz,
+        const fortran_int_t n, const fortran_int_t ilo,
+        const MatrixA& a, const MatrixB& b, const MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    gghrd_impl< typename value< MatrixA >::type >::invoke( compq, compz,
+            n, ilo, a, b, q, z, info );
     return info;
 }
 

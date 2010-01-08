@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -89,6 +89,7 @@
 #include <boost/numeric/bindings/lapack/computational/hetri.hpp>
 #include <boost/numeric/bindings/lapack/computational/hetrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/hprfs.hpp>
+#include <boost/numeric/bindings/lapack/computational/hptrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/hptrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/lacon.hpp>
 #include <boost/numeric/bindings/lapack/computational/latrs.hpp>
@@ -97,6 +98,8 @@
 #include <boost/numeric/bindings/lapack/computational/pbrfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/pbtrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/pbtrs.hpp>
+#include <boost/numeric/bindings/lapack/computational/pftrf.hpp>
+#include <boost/numeric/bindings/lapack/computational/pftri.hpp>
 #include <boost/numeric/bindings/lapack/computational/pftrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/pocon.hpp>
 #include <boost/numeric/bindings/lapack/computational/poequ.hpp>
@@ -105,10 +108,12 @@
 #include <boost/numeric/bindings/lapack/computational/potri.hpp>
 #include <boost/numeric/bindings/lapack/computational/potrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/pprfs.hpp>
+#include <boost/numeric/bindings/lapack/computational/pptrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/pptrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/ptrfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/pttrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/sprfs.hpp>
+#include <boost/numeric/bindings/lapack/computational/sptrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/sptrs.hpp>
 #include <boost/numeric/bindings/lapack/computational/sycon.hpp>
 #include <boost/numeric/bindings/lapack/computational/syrfs.hpp>
@@ -118,6 +123,7 @@
 #include <boost/numeric/bindings/lapack/computational/tbcon.hpp>
 #include <boost/numeric/bindings/lapack/computational/tbrfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/tbtrs.hpp>
+#include <boost/numeric/bindings/lapack/computational/tftri.hpp>
 #include <boost/numeric/bindings/lapack/computational/tprfs.hpp>
 #include <boost/numeric/bindings/lapack/computational/tptri.hpp>
 #include <boost/numeric/bindings/lapack/computational/tptrs.hpp>

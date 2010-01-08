@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,124 +15,209 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_UPMTR_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/trans_tag.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void upmtr( const char side, const char uplo, const char trans,
-        const integer_t m, const integer_t n, const traits::complex_f* ap,
-        const traits::complex_f* tau, traits::complex_f* c,
-        const integer_t ldc, traits::complex_f* work, integer_t& info ) {
-    LAPACK_CUPMTR( &side, &uplo, &trans, &m, &n, traits::complex_ptr(ap),
-            traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
-            traits::complex_ptr(work), &info );
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+template< typename Trans >
+inline void upmtr( char side, char uplo, Trans, fortran_int_t m,
+        fortran_int_t n, const std::complex<float>* ap,
+        const std::complex<float>* tau, std::complex<float>* c,
+        fortran_int_t ldc, std::complex<float>* work, fortran_int_t& info ) {
+    LAPACK_CUPMTR( &side, &uplo, &lapack_option< Trans >::value, &m, &n, ap,
+            tau, c, &ldc, work, &info );
 }
-inline void upmtr( const char side, const char uplo, const char trans,
-        const integer_t m, const integer_t n, const traits::complex_d* ap,
-        const traits::complex_d* tau, traits::complex_d* c,
-        const integer_t ldc, traits::complex_d* work, integer_t& info ) {
-    LAPACK_ZUPMTR( &side, &uplo, &trans, &m, &n, traits::complex_ptr(ap),
-            traits::complex_ptr(tau), traits::complex_ptr(c), &ldc,
-            traits::complex_ptr(work), &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+template< typename Trans >
+inline void upmtr( char side, char uplo, Trans, fortran_int_t m,
+        fortran_int_t n, const std::complex<double>* ap,
+        const std::complex<double>* tau, std::complex<double>* c,
+        fortran_int_t ldc, std::complex<double>* work, fortran_int_t& info ) {
+    LAPACK_ZUPMTR( &side, &uplo, &lapack_option< Trans >::value, &m, &n, ap,
+            tau, c, &ldc, work, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to upmtr.
+//
+template< typename Value >
 struct upmtr_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorAP, typename VectorTAU, typename MatrixC,
             typename WORK >
-    static void invoke( const char side, const char uplo, const char trans,
-            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
-            integer_t& info, detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorAP >::value_type, typename traits::vector_traits<
-                VectorTAU >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorAP >::value_type, typename traits::matrix_traits<
-                MatrixC >::value_type >::value) );
+    static void invoke( const char side, const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixC& c, fortran_int_t& info,
+            detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorAP >::type >::type,
+                typename remove_const< typename value<
+                VectorTAU >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorAP >::type >::type,
+                typename remove_const< typename value<
+                MatrixC >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixC >::value) );
         BOOST_ASSERT( side == 'L' || side == 'R' );
-        BOOST_ASSERT( uplo == 'U' || uplo == 'L' );
-        BOOST_ASSERT( trans == 'N' || trans == 'C' );
-        BOOST_ASSERT( traits::matrix_num_rows(c) >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(c) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(c) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(c)) );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
-        detail::upmtr( side, uplo, trans, traits::matrix_num_rows(c),
-                traits::matrix_num_columns(c), traits::vector_storage(ap),
-                traits::vector_storage(tau), traits::matrix_storage(c),
-                traits::leading_dimension(c),
-                traits::vector_storage(work.select(value_type())), info );
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_column(c) >= 0 );
+        BOOST_ASSERT( size_minor(c) == 1 || stride_minor(c) == 1 );
+        BOOST_ASSERT( size_row(c) >= 0 );
+        BOOST_ASSERT( stride_major(c) >= std::max< std::ptrdiff_t >(1,
+                size_row(c)) );
+        detail::upmtr( side, uplo, trans(), size_row(c), size_column(c),
+                begin_value(ap), begin_value(tau), begin_value(c),
+                stride_major(c), begin_value(work.select(value_type())),
+                info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static void invoke( const char side, const char uplo, const char trans,
-            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
-            integer_t& info, minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(
+    static void invoke( const char side, const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixC& c, fortran_int_t& info,
+            minimal_workspace work ) {
+        bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        invoke( side, uplo, trans, ap, tau, c, info, workspace( tmp_work ) );
+        invoke( side, uplo, ap, tau, c, info, workspace( tmp_work ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorAP, typename VectorTAU, typename MatrixC >
-    static void invoke( const char side, const char uplo, const char trans,
-            const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
-            integer_t& info, optimal_workspace work ) {
-        invoke( side, uplo, trans, ap, tau, c, info, minimal_workspace() );
+    static void invoke( const char side, const char uplo, const VectorAP& ap,
+            const VectorTAU& tau, MatrixC& c, fortran_int_t& info,
+            optimal_workspace work ) {
+        invoke( side, uplo, ap, tau, c, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
         $MIN_SIZE
     }
 };
 
 
-// template function to call upmtr
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the upmtr_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for upmtr. Its overload differs for
+// * MatrixC&
+// * User-defined workspace
+//
 template< typename VectorAP, typename VectorTAU, typename MatrixC,
         typename Workspace >
-inline integer_t upmtr( const char side, const char uplo,
-        const char trans, const VectorAP& ap, const VectorTAU& tau,
-        MatrixC& c, Workspace work ) {
-    typedef typename traits::vector_traits< VectorAP >::value_type value_type;
-    integer_t info(0);
-    upmtr_impl< value_type >::invoke( side, uplo, trans, ap, tau, c,
-            info, work );
+inline std::ptrdiff_t upmtr( const char side, const char uplo,
+        const VectorAP& ap, const VectorTAU& tau, MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    upmtr_impl< typename value< VectorAP >::type >::invoke( side, uplo,
+            ap, tau, c, info, work );
     return info;
 }
 
-// template function to call upmtr, default workspace type
+//
+// Overloaded function for upmtr. Its overload differs for
+// * MatrixC&
+// * Default workspace-type (optimal)
+//
 template< typename VectorAP, typename VectorTAU, typename MatrixC >
-inline integer_t upmtr( const char side, const char uplo,
-        const char trans, const VectorAP& ap, const VectorTAU& tau,
-        MatrixC& c ) {
-    typedef typename traits::vector_traits< VectorAP >::value_type value_type;
-    integer_t info(0);
-    upmtr_impl< value_type >::invoke( side, uplo, trans, ap, tau, c,
-            info, optimal_workspace() );
+inline std::ptrdiff_t upmtr( const char side, const char uplo,
+        const VectorAP& ap, const VectorTAU& tau, MatrixC& c ) {
+    fortran_int_t info(0);
+    upmtr_impl< typename value< VectorAP >::type >::invoke( side, uplo,
+            ap, tau, c, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for upmtr. Its overload differs for
+// * const MatrixC&
+// * User-defined workspace
+//
+template< typename VectorAP, typename VectorTAU, typename MatrixC,
+        typename Workspace >
+inline std::ptrdiff_t upmtr( const char side, const char uplo,
+        const VectorAP& ap, const VectorTAU& tau, const MatrixC& c,
+        Workspace work ) {
+    fortran_int_t info(0);
+    upmtr_impl< typename value< VectorAP >::type >::invoke( side, uplo,
+            ap, tau, c, info, work );
+    return info;
+}
+
+//
+// Overloaded function for upmtr. Its overload differs for
+// * const MatrixC&
+// * Default workspace-type (optimal)
+//
+template< typename VectorAP, typename VectorTAU, typename MatrixC >
+inline std::ptrdiff_t upmtr( const char side, const char uplo,
+        const VectorAP& ap, const VectorTAU& tau, const MatrixC& c ) {
+    fortran_int_t info(0);
+    upmtr_impl< typename value< VectorAP >::type >::invoke( side, uplo,
+            ap, tau, c, info, optimal_workspace() );
     return info;
 }
 

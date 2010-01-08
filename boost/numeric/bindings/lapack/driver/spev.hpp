@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,108 +15,408 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_SPEV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void spev( const char jobz, const char uplo, const integer_t n,
-        float* ap, float* w, float* z, const integer_t ldz, float* work,
-        integer_t& info ) {
-    LAPACK_SSPEV( &jobz, &uplo, &n, ap, w, z, &ldz, work, &info );
+//
+// Overloaded function for dispatching to float value-type.
+//
+template< typename UpLo >
+inline void spev( char jobz, UpLo, fortran_int_t n, float* ap, float* w,
+        float* z, fortran_int_t ldz, float* work, fortran_int_t& info ) {
+    LAPACK_SSPEV( &jobz, &lapack_option< UpLo >::value, &n, ap, w, z, &ldz,
+            work, &info );
 }
-inline void spev( const char jobz, const char uplo, const integer_t n,
-        double* ap, double* w, double* z, const integer_t ldz, double* work,
-        integer_t& info ) {
-    LAPACK_DSPEV( &jobz, &uplo, &n, ap, w, z, &ldz, work, &info );
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+template< typename UpLo >
+inline void spev( char jobz, UpLo, fortran_int_t n, double* ap, double* w,
+        double* z, fortran_int_t ldz, double* work, fortran_int_t& info ) {
+    LAPACK_DSPEV( &jobz, &lapack_option< UpLo >::value, &n, ap, w, z, &ldz,
+            work, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to spev.
+//
+template< typename Value >
 struct spev_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixAP, typename VectorW, typename MatrixZ,
             typename WORK >
-    static void invoke( const char jobz, const integer_t n, MatrixAP& ap,
-            VectorW& w, MatrixZ& z, integer_t& info, detail::workspace1<
-            WORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAP >::value_type, typename traits::vector_traits<
-                VectorW >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAP >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type >::value) );
+    static void invoke( const char jobz, const fortran_int_t n,
+            MatrixAP& ap, VectorW& w, MatrixZ& z, fortran_int_t& info,
+            detail::workspace1< WORK > work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAP >::type >::type,
+                typename remove_const< typename value<
+                VectorW >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAP >::type >::type,
+                typename remove_const< typename value<
+                MatrixZ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixAP >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( traits::matrix_uplo_tag(ap) == 'U' ||
-                traits::matrix_uplo_tag(ap) == 'L' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( n ));
-        detail::spev( jobz, traits::matrix_uplo_tag(ap), n,
-                traits::matrix_storage(ap), traits::vector_storage(w),
-                traits::matrix_storage(z), traits::leading_dimension(z),
-                traits::vector_storage(work.select(real_type())), info );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
+        detail::spev( jobz, uplo(), n, begin_value(ap), begin_value(w),
+                begin_value(z), stride_major(z),
+                begin_value(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixAP, typename VectorW, typename MatrixZ >
-    static void invoke( const char jobz, const integer_t n, MatrixAP& ap,
-            VectorW& w, MatrixZ& z, integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work( n ) );
+    static void invoke( const char jobz, const fortran_int_t n,
+            MatrixAP& ap, VectorW& w, MatrixZ& z, fortran_int_t& info,
+            minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
+        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
         invoke( jobz, n, ap, w, z, info, workspace( tmp_work ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixAP, typename VectorW, typename MatrixZ >
-    static void invoke( const char jobz, const integer_t n, MatrixAP& ap,
-            VectorW& w, MatrixZ& z, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char jobz, const fortran_int_t n,
+            MatrixAP& ap, VectorW& w, MatrixZ& z, fortran_int_t& info,
+            optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixAP >::type uplo;
         invoke( jobz, n, ap, w, z, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         return 3*n;
     }
 };
 
 
-// template function to call spev
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the spev_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for spev. Its overload differs for
+// * MatrixAP&
+// * VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
 template< typename MatrixAP, typename VectorW, typename MatrixZ,
         typename Workspace >
-inline integer_t spev( const char jobz, const integer_t n, MatrixAP& ap,
-        VectorW& w, MatrixZ& z, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
-    integer_t info(0);
-    spev_impl< value_type >::invoke( jobz, n, ap, w, z, info, work );
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        MatrixAP& ap, VectorW& w, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, work );
     return info;
 }
 
-// template function to call spev, default workspace type
+//
+// Overloaded function for spev. Its overload differs for
+// * MatrixAP&
+// * VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixAP, typename VectorW, typename MatrixZ >
-inline integer_t spev( const char jobz, const integer_t n, MatrixAP& ap,
-        VectorW& w, MatrixZ& z ) {
-    typedef typename traits::matrix_traits< MatrixAP >::value_type value_type;
-    integer_t info(0);
-    spev_impl< value_type >::invoke( jobz, n, ap, w, z, info,
-            optimal_workspace() );
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        MatrixAP& ap, VectorW& w, MatrixZ& z ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * const MatrixAP&
+// * VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        const MatrixAP& ap, VectorW& w, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * const MatrixAP&
+// * VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        const MatrixAP& ap, VectorW& w, MatrixZ& z ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * MatrixAP&
+// * const VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        MatrixAP& ap, const VectorW& w, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * MatrixAP&
+// * const VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        MatrixAP& ap, const VectorW& w, MatrixZ& z ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * const MatrixAP&
+// * const VectorW&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        const MatrixAP& ap, const VectorW& w, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * const MatrixAP&
+// * const VectorW&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        const MatrixAP& ap, const VectorW& w, MatrixZ& z ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * MatrixAP&
+// * VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        MatrixAP& ap, VectorW& w, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * MatrixAP&
+// * VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        MatrixAP& ap, VectorW& w, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * const MatrixAP&
+// * VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        const MatrixAP& ap, VectorW& w, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * const MatrixAP&
+// * VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        const MatrixAP& ap, VectorW& w, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * MatrixAP&
+// * const VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        MatrixAP& ap, const VectorW& w, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * MatrixAP&
+// * const VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        MatrixAP& ap, const VectorW& w, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * const MatrixAP&
+// * const VectorW&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        const MatrixAP& ap, const VectorW& w, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for spev. Its overload differs for
+// * const MatrixAP&
+// * const VectorW&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAP, typename VectorW, typename MatrixZ >
+inline std::ptrdiff_t spev( const char jobz, const fortran_int_t n,
+        const MatrixAP& ap, const VectorW& w, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    spev_impl< typename value< MatrixAP >::type >::invoke( jobz, n, ap,
+            w, z, info, optimal_workspace() );
     return info;
 }
 

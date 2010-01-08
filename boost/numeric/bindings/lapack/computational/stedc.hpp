@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,17 +15,22 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_STEDC_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -33,219 +38,563 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void stedc( const char compz, const integer_t n, float* d, float* e,
-        float* z, const integer_t ldz, float* work, const integer_t lwork,
-        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void stedc( char compz, fortran_int_t n, float* d, float* e, float* z,
+        fortran_int_t ldz, float* work, fortran_int_t lwork,
+        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
     LAPACK_SSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
             &info );
 }
-inline void stedc( const char compz, const integer_t n, double* d, double* e,
-        double* z, const integer_t ldz, double* work, const integer_t lwork,
-        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void stedc( char compz, fortran_int_t n, double* d, double* e,
+        double* z, fortran_int_t ldz, double* work, fortran_int_t lwork,
+        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
     LAPACK_DSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, iwork, &liwork,
             &info );
 }
-inline void stedc( const char compz, const integer_t n, float* d, float* e,
-        traits::complex_f* z, const integer_t ldz, traits::complex_f* work,
-        const integer_t lwork, float* rwork, const integer_t lrwork,
-        integer_t* iwork, const integer_t liwork, integer_t& info ) {
-    LAPACK_CSTEDC( &compz, &n, d, e, traits::complex_ptr(z), &ldz,
-            traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
-            &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void stedc( char compz, fortran_int_t n, float* d, float* e,
+        std::complex<float>* z, fortran_int_t ldz, std::complex<float>* work,
+        fortran_int_t lwork, float* rwork, fortran_int_t lrwork,
+        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
+    LAPACK_CSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, rwork, &lrwork,
+            iwork, &liwork, &info );
 }
-inline void stedc( const char compz, const integer_t n, double* d, double* e,
-        traits::complex_d* z, const integer_t ldz, traits::complex_d* work,
-        const integer_t lwork, double* rwork, const integer_t lrwork,
-        integer_t* iwork, const integer_t liwork, integer_t& info ) {
-    LAPACK_ZSTEDC( &compz, &n, d, e, traits::complex_ptr(z), &ldz,
-            traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork, &liwork,
-            &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void stedc( char compz, fortran_int_t n, double* d, double* e,
+        std::complex<double>* z, fortran_int_t ldz,
+        std::complex<double>* work, fortran_int_t lwork, double* rwork,
+        fortran_int_t lrwork, fortran_int_t* iwork, fortran_int_t liwork,
+        fortran_int_t& info ) {
+    LAPACK_ZSTEDC( &compz, &n, d, e, z, &ldz, work, &lwork, rwork, &lrwork,
+            iwork, &liwork, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct stedc_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to stedc.
+//
+template< typename Value, typename Enable = void >
+struct stedc_impl {};
 
-// real specialization
-template< typename ValueType >
-struct stedc_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct stedc_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorD, typename VectorE, typename MatrixZ,
             typename WORK, typename IWORK >
-    static void invoke( const char compz, const integer_t n, VectorD& d,
-            VectorE& e, MatrixZ& z, integer_t& info, detail::workspace2< WORK,
-            IWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::vector_traits<
-                VectorE >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type >::value) );
+    static void invoke( const char compz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixZ& z, fortran_int_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                VectorE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                MatrixZ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::vector_size(e) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( size(e) >= n-1 );
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( compz, n ));
-        detail::stedc( compz, n, traits::vector_storage(d),
-                traits::vector_storage(e), traits::matrix_storage(z),
-                traits::leading_dimension(z),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_size(work.select(real_type())),
-                traits::vector_storage(work.select(integer_t())),
-                traits::vector_size(work.select(integer_t())), info );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
+        detail::stedc( compz, n, begin_value(d), begin_value(e),
+                begin_value(z), stride_major(z),
+                begin_value(work.select(real_type())),
+                size(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())),
+                size(work.select(fortran_int_t())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( const char compz, const integer_t n, VectorD& d,
-            VectorE& e, MatrixZ& z, integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(
+    static void invoke( const char compz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixZ& z, fortran_int_t& info,
+            minimal_workspace work ) {
+        bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork( compz,
-                n ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( compz, n ) );
         invoke( compz, n, d, e, z, info, workspace( tmp_work, tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( const char compz, const integer_t n, VectorD& d,
-            VectorE& e, MatrixZ& z, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char compz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixZ& z, fortran_int_t& info,
+            optimal_workspace work ) {
         real_type opt_size_work;
-        integer_t opt_size_iwork;
-        detail::stedc( compz, n, traits::vector_storage(d),
-                traits::vector_storage(e), traits::matrix_storage(z),
-                traits::leading_dimension(z), &opt_size_work, -1,
+        fortran_int_t opt_size_iwork;
+        detail::stedc( compz, n, begin_value(d), begin_value(e),
+                begin_value(z), stride_major(z), &opt_size_work, -1,
                 &opt_size_iwork, -1, info );
-        traits::detail::array< real_type > tmp_work(
+        bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        traits::detail::array< integer_t > tmp_iwork( opt_size_iwork );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                opt_size_iwork );
         invoke( compz, n, d, e, z, info, workspace( tmp_work, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
         $MIN_SIZE
     }
 
-    static integer_t min_size_iwork( const char compz, const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const char compz,
+            const std::ptrdiff_t n ) {
         // some formula
     }
 };
 
-// complex specialization
-template< typename ValueType >
-struct stedc_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct stedc_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorD, typename VectorE, typename MatrixZ,
             typename WORK, typename RWORK, typename IWORK >
-    static void invoke( const char compz, const integer_t n, VectorD& d,
-            VectorE& e, MatrixZ& z, integer_t& info, detail::workspace3< WORK,
-            RWORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::vector_traits<
-                VectorE >::value_type >::value) );
+    static void invoke( const char compz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixZ& z, fortran_int_t& info,
+            detail::workspace3< WORK, RWORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                VectorE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::vector_size(e) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_rwork( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( size(e) >= n-1 );
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( compz, n ));
-        detail::stedc( compz, n, traits::vector_storage(d),
-                traits::vector_storage(e), traits::matrix_storage(z),
-                traits::leading_dimension(z),
-                traits::vector_storage(work.select(value_type())),
-                traits::vector_size(work.select(value_type())),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_size(work.select(real_type())),
-                traits::vector_storage(work.select(integer_t())),
-                traits::vector_size(work.select(integer_t())), info );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
+                $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
+        detail::stedc( compz, n, begin_value(d), begin_value(e),
+                begin_value(z), stride_major(z),
+                begin_value(work.select(value_type())),
+                size(work.select(value_type())),
+                begin_value(work.select(real_type())),
+                size(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())),
+                size(work.select(fortran_int_t())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( const char compz, const integer_t n, VectorD& d,
-            VectorE& e, MatrixZ& z, integer_t& info, minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(
+    static void invoke( const char compz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixZ& z, fortran_int_t& info,
+            minimal_workspace work ) {
+        bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        traits::detail::array< real_type > tmp_rwork( min_size_rwork(
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
                 $CALL_MIN_SIZE ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork( compz,
-                n ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( compz, n ) );
         invoke( compz, n, d, e, z, info, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorD, typename VectorE, typename MatrixZ >
-    static void invoke( const char compz, const integer_t n, VectorD& d,
-            VectorE& e, MatrixZ& z, integer_t& info, optimal_workspace work ) {
+    static void invoke( const char compz, const fortran_int_t n,
+            VectorD& d, VectorE& e, MatrixZ& z, fortran_int_t& info,
+            optimal_workspace work ) {
         value_type opt_size_work;
         real_type opt_size_rwork;
-        integer_t opt_size_iwork;
-        detail::stedc( compz, n, traits::vector_storage(d),
-                traits::vector_storage(e), traits::matrix_storage(z),
-                traits::leading_dimension(z), &opt_size_work, -1,
+        fortran_int_t opt_size_iwork;
+        detail::stedc( compz, n, begin_value(d), begin_value(e),
+                begin_value(z), stride_major(z), &opt_size_work, -1,
                 &opt_size_rwork, -1, &opt_size_iwork, -1, info );
-        traits::detail::array< value_type > tmp_work(
+        bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        traits::detail::array< real_type > tmp_rwork(
+        bindings::detail::array< real_type > tmp_rwork(
                 traits::detail::to_int( opt_size_rwork ) );
-        traits::detail::array< integer_t > tmp_iwork( opt_size_iwork );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                opt_size_iwork );
         invoke( compz, n, d, e, z, info, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
         $MIN_SIZE
     }
 
-    static integer_t min_size_rwork( $ARGUMENTS ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array rwork.
+    //
+    static std::ptrdiff_t min_size_rwork( $ARGUMENTS ) {
         $MIN_SIZE
     }
 
-    static integer_t min_size_iwork( const char compz, const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const char compz,
+            const std::ptrdiff_t n ) {
         // some formula
     }
 };
 
 
-// template function to call stedc
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the stedc_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixZ&
+// * User-defined workspace
+//
 template< typename VectorD, typename VectorE, typename MatrixZ,
         typename Workspace >
-inline integer_t stedc( const char compz, const integer_t n, VectorD& d,
-        VectorE& e, MatrixZ& z, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
-    integer_t info(0);
-    stedc_impl< value_type >::invoke( compz, n, d, e, z, info, work );
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, work );
     return info;
 }
 
-// template function to call stedc, default workspace type
+//
+// Overloaded function for stedc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
 template< typename VectorD, typename VectorE, typename MatrixZ >
-inline integer_t stedc( const char compz, const integer_t n, VectorD& d,
-        VectorE& e, MatrixZ& z ) {
-    typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
-    integer_t info(0);
-    stedc_impl< value_type >::invoke( compz, n, d, e, z, info,
-            optimal_workspace() );
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        VectorD& d, VectorE& e, MatrixZ& z ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixZ >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        const VectorD& d, VectorE& e, MatrixZ& z ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixZ >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        VectorD& d, const VectorE& e, MatrixZ& z ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixZ >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, MatrixZ& z ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixZ >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        VectorD& d, VectorE& e, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixZ >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        const VectorD& d, VectorE& e, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixZ >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        VectorD& d, const VectorE& e, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stedc. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename MatrixZ >
+inline std::ptrdiff_t stedc( const char compz, const fortran_int_t n,
+        const VectorD& d, const VectorE& e, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    stedc_impl< typename value< MatrixZ >::type >::invoke( compz, n, d,
+            e, z, info, optimal_workspace() );
     return info;
 }
 

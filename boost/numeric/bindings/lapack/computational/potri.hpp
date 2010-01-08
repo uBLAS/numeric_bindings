@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,69 +15,127 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_POTRI_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void potri( const char uplo, const integer_t n, float* a,
-        const integer_t lda, integer_t& info ) {
-    LAPACK_SPOTRI( &uplo, &n, a, &lda, &info );
+//
+// Overloaded function for dispatching to float value-type.
+//
+template< typename UpLo >
+inline void potri( UpLo, fortran_int_t n, float* a, fortran_int_t lda,
+        fortran_int_t& info ) {
+    LAPACK_SPOTRI( &lapack_option< UpLo >::value, &n, a, &lda, &info );
 }
-inline void potri( const char uplo, const integer_t n, double* a,
-        const integer_t lda, integer_t& info ) {
-    LAPACK_DPOTRI( &uplo, &n, a, &lda, &info );
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+template< typename UpLo >
+inline void potri( UpLo, fortran_int_t n, double* a, fortran_int_t lda,
+        fortran_int_t& info ) {
+    LAPACK_DPOTRI( &lapack_option< UpLo >::value, &n, a, &lda, &info );
 }
-inline void potri( const char uplo, const integer_t n, traits::complex_f* a,
-        const integer_t lda, integer_t& info ) {
-    LAPACK_CPOTRI( &uplo, &n, traits::complex_ptr(a), &lda, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+template< typename UpLo >
+inline void potri( UpLo, fortran_int_t n, std::complex<float>* a,
+        fortran_int_t lda, fortran_int_t& info ) {
+    LAPACK_CPOTRI( &lapack_option< UpLo >::value, &n, a, &lda, &info );
 }
-inline void potri( const char uplo, const integer_t n, traits::complex_d* a,
-        const integer_t lda, integer_t& info ) {
-    LAPACK_ZPOTRI( &uplo, &n, traits::complex_ptr(a), &lda, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+template< typename UpLo >
+inline void potri( UpLo, fortran_int_t n, std::complex<double>* a,
+        fortran_int_t lda, fortran_int_t& info ) {
+    LAPACK_ZPOTRI( &lapack_option< UpLo >::value, &n, a, &lda, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to potri.
+//
+template< typename Value >
 struct potri_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA >
-    static void invoke( MatrixA& a, integer_t& info ) {
-        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
-                traits::matrix_uplo_tag(a) == 'L' );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        detail::potri( traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), info );
+    static void invoke( MatrixA& a, fortran_int_t& info ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_ASSERT( size_column(a) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        detail::potri( uplo(), size_column(a), begin_value(a),
+                stride_major(a), info );
     }
+
 };
 
 
-// template function to call potri
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the potri_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for potri. Its overload differs for
+// * MatrixA&
+//
 template< typename MatrixA >
-inline integer_t potri( MatrixA& a ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    potri_impl< value_type >::invoke( a, info );
+inline std::ptrdiff_t potri( MatrixA& a ) {
+    fortran_int_t info(0);
+    potri_impl< typename value< MatrixA >::type >::invoke( a, info );
+    return info;
+}
+
+//
+// Overloaded function for potri. Its overload differs for
+// * const MatrixA&
+//
+template< typename MatrixA >
+inline std::ptrdiff_t potri( const MatrixA& a ) {
+    fortran_int_t info(0);
+    potri_impl< typename value< MatrixA >::type >::invoke( a, info );
     return info;
 }
 

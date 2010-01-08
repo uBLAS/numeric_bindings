@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,17 +15,22 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_HGEQZ_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -33,314 +38,9579 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void hgeqz( const char job, const char compq, const char compz,
-        const integer_t n, const integer_t ilo, const integer_t ihi, float* h,
-        const integer_t ldh, float* t, const integer_t ldt, float* alphar,
-        float* alphai, float* beta, float* q, const integer_t ldq, float* z,
-        const integer_t ldz, float* work, const integer_t lwork,
-        integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void hgeqz( char job, char compq, char compz, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, float* h, fortran_int_t ldh,
+        float* t, fortran_int_t ldt, float* alphar, float* alphai,
+        float* beta, float* q, fortran_int_t ldq, float* z, fortran_int_t ldz,
+        float* work, fortran_int_t lwork, fortran_int_t& info ) {
     LAPACK_SHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
             alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
 }
-inline void hgeqz( const char job, const char compq, const char compz,
-        const integer_t n, const integer_t ilo, const integer_t ihi,
-        double* h, const integer_t ldh, double* t, const integer_t ldt,
-        double* alphar, double* alphai, double* beta, double* q,
-        const integer_t ldq, double* z, const integer_t ldz, double* work,
-        const integer_t lwork, integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void hgeqz( char job, char compq, char compz, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, double* h, fortran_int_t ldh,
+        double* t, fortran_int_t ldt, double* alphar, double* alphai,
+        double* beta, double* q, fortran_int_t ldq, double* z,
+        fortran_int_t ldz, double* work, fortran_int_t lwork,
+        fortran_int_t& info ) {
     LAPACK_DHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
             alphar, alphai, beta, q, &ldq, z, &ldz, work, &lwork, &info );
 }
-inline void hgeqz( const char job, const char compq, const char compz,
-        const integer_t n, const integer_t ilo, const integer_t ihi,
-        traits::complex_f* h, const integer_t ldh, traits::complex_f* t,
-        const integer_t ldt, traits::complex_f* alpha,
-        traits::complex_f* beta, traits::complex_f* q, const integer_t ldq,
-        traits::complex_f* z, const integer_t ldz, traits::complex_f* work,
-        const integer_t lwork, float* rwork, integer_t& info ) {
-    LAPACK_CHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi,
-            traits::complex_ptr(h), &ldh, traits::complex_ptr(t), &ldt,
-            traits::complex_ptr(alpha), traits::complex_ptr(beta),
-            traits::complex_ptr(q), &ldq, traits::complex_ptr(z), &ldz,
-            traits::complex_ptr(work), &lwork, rwork, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void hgeqz( char job, char compq, char compz, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, std::complex<float>* h,
+        fortran_int_t ldh, std::complex<float>* t, fortran_int_t ldt,
+        std::complex<float>* alpha, std::complex<float>* beta,
+        std::complex<float>* q, fortran_int_t ldq, std::complex<float>* z,
+        fortran_int_t ldz, std::complex<float>* work, fortran_int_t lwork,
+        float* rwork, fortran_int_t& info ) {
+    LAPACK_CHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
+            alpha, beta, q, &ldq, z, &ldz, work, &lwork, rwork, &info );
 }
-inline void hgeqz( const char job, const char compq, const char compz,
-        const integer_t n, const integer_t ilo, const integer_t ihi,
-        traits::complex_d* h, const integer_t ldh, traits::complex_d* t,
-        const integer_t ldt, traits::complex_d* alpha,
-        traits::complex_d* beta, traits::complex_d* q, const integer_t ldq,
-        traits::complex_d* z, const integer_t ldz, traits::complex_d* work,
-        const integer_t lwork, double* rwork, integer_t& info ) {
-    LAPACK_ZHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi,
-            traits::complex_ptr(h), &ldh, traits::complex_ptr(t), &ldt,
-            traits::complex_ptr(alpha), traits::complex_ptr(beta),
-            traits::complex_ptr(q), &ldq, traits::complex_ptr(z), &ldz,
-            traits::complex_ptr(work), &lwork, rwork, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void hgeqz( char job, char compq, char compz, fortran_int_t n,
+        fortran_int_t ilo, fortran_int_t ihi, std::complex<double>* h,
+        fortran_int_t ldh, std::complex<double>* t, fortran_int_t ldt,
+        std::complex<double>* alpha, std::complex<double>* beta,
+        std::complex<double>* q, fortran_int_t ldq, std::complex<double>* z,
+        fortran_int_t ldz, std::complex<double>* work, fortran_int_t lwork,
+        double* rwork, fortran_int_t& info ) {
+    LAPACK_ZHGEQZ( &job, &compq, &compz, &n, &ilo, &ihi, h, &ldh, t, &ldt,
+            alpha, beta, q, &ldq, z, &ldz, work, &lwork, rwork, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct hgeqz_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to hgeqz.
+//
+template< typename Value, typename Enable = void >
+struct hgeqz_impl {};
 
-// real specialization
-template< typename ValueType >
-struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct hgeqz_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
             typename MatrixZ, typename WORK >
     static void invoke( const char job, const char compq, const char compz,
-            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
-            VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
-            integer_t& info, detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixT >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixH >::value_type, typename traits::vector_traits<
-                VectorALPHAR >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixH >::value_type, typename traits::vector_traits<
-                VectorALPHAI >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixH >::value_type, typename traits::vector_traits<
-                VectorBETA >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixQ >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type >::value) );
-        BOOST_ASSERT( job == 'E' || job == 'S' );
+            const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+            VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+            MatrixQ& q, MatrixZ& z, fortran_int_t& info,
+            detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixH >::type >::type,
+                typename remove_const< typename value<
+                MatrixT >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixH >::type >::type,
+                typename remove_const< typename value<
+                VectorALPHAR >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixH >::type >::type,
+                typename remove_const< typename value<
+                VectorALPHAI >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixH >::type >::type,
+                typename remove_const< typename value<
+                VectorBETA >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixH >::type >::type,
+                typename remove_const< typename value<
+                MatrixQ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixH >::type >::type,
+                typename remove_const< typename value<
+                MatrixZ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixH >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHAR >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHAI >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorBETA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
         BOOST_ASSERT( compq == 'N' || compq == 'I' || compq == 'V' );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
-        BOOST_ASSERT( traits::matrix_num_columns(h) >= 0 );
-        BOOST_ASSERT( traits::vector_size(alphar) >=
-                traits::matrix_num_columns(h) );
-        BOOST_ASSERT( traits::vector_size(beta) >=
-                traits::matrix_num_columns(h) );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( traits::matrix_num_columns(h) ));
-        detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h), ilo,
-                traits::matrix_num_columns(h), traits::matrix_storage(h),
-                traits::leading_dimension(h), traits::matrix_storage(t),
-                traits::leading_dimension(t), traits::vector_storage(alphar),
-                traits::vector_storage(alphai), traits::vector_storage(beta),
-                traits::matrix_storage(q), traits::leading_dimension(q),
-                traits::matrix_storage(z), traits::leading_dimension(z),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_size(work.select(real_type())), info );
+        BOOST_ASSERT( job == 'E' || job == 'S' );
+        BOOST_ASSERT( size(alphar) >= size_column(h) );
+        BOOST_ASSERT( size(beta) >= size_column(h) );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                size_column(h) ));
+        BOOST_ASSERT( size_column(h) >= 0 );
+        BOOST_ASSERT( size_minor(h) == 1 || stride_minor(h) == 1 );
+        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
+        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
+        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
+        detail::hgeqz( job, compq, compz, size_column(h), ilo, size_column(h),
+                begin_value(h), stride_major(h), begin_value(t),
+                stride_major(t), begin_value(alphar), begin_value(alphai),
+                begin_value(beta), begin_value(q), stride_major(q),
+                begin_value(z), stride_major(z),
+                begin_value(work.select(real_type())),
+                size(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
             typename MatrixZ >
     static void invoke( const char job, const char compq, const char compz,
-            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
-            VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
-            integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_num_columns(h) ) );
+            const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+            VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+            MatrixQ& q, MatrixZ& z, fortran_int_t& info,
+            minimal_workspace work ) {
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                size_column(h) ) );
         invoke( job, compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
                 info, workspace( tmp_work ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
             typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
             typename MatrixZ >
     static void invoke( const char job, const char compq, const char compz,
-            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHAR& alphar,
-            VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
-            integer_t& info, optimal_workspace work ) {
+            const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+            VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+            MatrixQ& q, MatrixZ& z, fortran_int_t& info,
+            optimal_workspace work ) {
         real_type opt_size_work;
-        detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h),
-                ilo, traits::matrix_num_columns(h), traits::matrix_storage(h),
-                traits::leading_dimension(h), traits::matrix_storage(t),
-                traits::leading_dimension(t), traits::vector_storage(alphar),
-                traits::vector_storage(alphai), traits::vector_storage(beta),
-                traits::matrix_storage(q), traits::leading_dimension(q),
-                traits::matrix_storage(z), traits::leading_dimension(z),
+        detail::hgeqz( job, compq, compz, size_column(h), ilo,
+                size_column(h), begin_value(h), stride_major(h),
+                begin_value(t), stride_major(t), begin_value(alphar),
+                begin_value(alphai), begin_value(beta), begin_value(q),
+                stride_major(q), begin_value(z), stride_major(z),
                 &opt_size_work, -1, info );
-        traits::detail::array< real_type > tmp_work(
+        bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         invoke( job, compq, compz, ilo, h, t, alphar, alphai, beta, q, z,
                 info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
-        return std::max( 1, n );
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, n );
     }
 };
 
-// complex specialization
-template< typename ValueType >
-struct hgeqz_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct hgeqz_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixH, typename MatrixT, typename VectorALPHA,
             typename VectorBETA, typename MatrixQ, typename MatrixZ,
             typename WORK, typename RWORK >
     static void invoke( const char job, const char compq, const char compz,
-            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
-            VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& info,
-            detail::workspace2< WORK, RWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixT >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixH >::value_type, typename traits::vector_traits<
-                VectorALPHA >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixH >::value_type, typename traits::vector_traits<
-                VectorBETA >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixQ >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixH >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type >::value) );
-        BOOST_ASSERT( job == 'E' || job == 'S' );
+            const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+            VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+            fortran_int_t& info, detail::workspace2< WORK, RWORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixH >::type >::type,
+                typename remove_const< typename value<
+                MatrixT >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixH >::type >::type,
+                typename remove_const< typename value<
+                VectorALPHA >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixH >::type >::type,
+                typename remove_const< typename value<
+                VectorBETA >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixH >::type >::type,
+                typename remove_const< typename value<
+                MatrixQ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixH >::type >::type,
+                typename remove_const< typename value<
+                MatrixZ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixH >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixT >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorALPHA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorBETA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
         BOOST_ASSERT( compq == 'N' || compq == 'I' || compq == 'V' );
         BOOST_ASSERT( compz == 'N' || compz == 'I' || compz == 'V' );
-        BOOST_ASSERT( traits::matrix_num_columns(h) >= 0 );
-        BOOST_ASSERT( traits::vector_size(alpha) >=
-                traits::matrix_num_columns(h) );
-        BOOST_ASSERT( traits::vector_size(beta) >=
-                traits::matrix_num_columns(h) );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( traits::matrix_num_columns(h) ));
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_rwork( traits::matrix_num_columns(h) ));
-        detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h), ilo,
-                traits::matrix_num_columns(h), traits::matrix_storage(h),
-                traits::leading_dimension(h), traits::matrix_storage(t),
-                traits::leading_dimension(t), traits::vector_storage(alpha),
-                traits::vector_storage(beta), traits::matrix_storage(q),
-                traits::leading_dimension(q), traits::matrix_storage(z),
-                traits::leading_dimension(z),
-                traits::vector_storage(work.select(value_type())),
-                traits::vector_size(work.select(value_type())),
-                traits::vector_storage(work.select(real_type())), info );
+        BOOST_ASSERT( job == 'E' || job == 'S' );
+        BOOST_ASSERT( size(alpha) >= size_column(h) );
+        BOOST_ASSERT( size(beta) >= size_column(h) );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
+                size_column(h) ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                size_column(h) ));
+        BOOST_ASSERT( size_column(h) >= 0 );
+        BOOST_ASSERT( size_minor(h) == 1 || stride_minor(h) == 1 );
+        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
+        BOOST_ASSERT( size_minor(t) == 1 || stride_minor(t) == 1 );
+        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
+        detail::hgeqz( job, compq, compz, size_column(h), ilo, size_column(h),
+                begin_value(h), stride_major(h), begin_value(t),
+                stride_major(t), begin_value(alpha), begin_value(beta),
+                begin_value(q), stride_major(q), begin_value(z),
+                stride_major(z), begin_value(work.select(value_type())),
+                size(work.select(value_type())),
+                begin_value(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixH, typename MatrixT, typename VectorALPHA,
             typename VectorBETA, typename MatrixQ, typename MatrixZ >
     static void invoke( const char job, const char compq, const char compz,
-            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
-            VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& info,
-            minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_num_columns(h) ) );
-        traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_num_columns(h) ) );
+            const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+            VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+            fortran_int_t& info, minimal_workspace work ) {
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                size_column(h) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                size_column(h) ) );
         invoke( job, compq, compz, ilo, h, t, alpha, beta, q, z, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixH, typename MatrixT, typename VectorALPHA,
             typename VectorBETA, typename MatrixQ, typename MatrixZ >
     static void invoke( const char job, const char compq, const char compz,
-            const integer_t ilo, MatrixH& h, MatrixT& t, VectorALPHA& alpha,
-            VectorBETA& beta, MatrixQ& q, MatrixZ& z, integer_t& info,
-            optimal_workspace work ) {
+            const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+            VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+            fortran_int_t& info, optimal_workspace work ) {
         value_type opt_size_work;
-        traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_num_columns(h) ) );
-        detail::hgeqz( job, compq, compz, traits::matrix_num_columns(h),
-                ilo, traits::matrix_num_columns(h), traits::matrix_storage(h),
-                traits::leading_dimension(h), traits::matrix_storage(t),
-                traits::leading_dimension(t), traits::vector_storage(alpha),
-                traits::vector_storage(beta), traits::matrix_storage(q),
-                traits::leading_dimension(q), traits::matrix_storage(z),
-                traits::leading_dimension(z), &opt_size_work, -1,
-                traits::vector_storage(tmp_rwork), info );
-        traits::detail::array< value_type > tmp_work(
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                size_column(h) ) );
+        detail::hgeqz( job, compq, compz, size_column(h), ilo,
+                size_column(h), begin_value(h), stride_major(h),
+                begin_value(t), stride_major(t), begin_value(alpha),
+                begin_value(beta), begin_value(q), stride_major(q),
+                begin_value(z), stride_major(z), &opt_size_work, -1,
+                begin_value(tmp_rwork), info );
+        bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         invoke( job, compq, compz, ilo, h, t, alpha, beta, q, z, info,
                 workspace( tmp_work, tmp_rwork ) );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
-        return std::max( 1, n );
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, n );
     }
 
-    static integer_t min_size_rwork( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array rwork.
+    //
+    static std::ptrdiff_t min_size_rwork( const std::ptrdiff_t n ) {
         return n;
     }
 };
 
 
-// template function to call hgeqz
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the hgeqz_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ, typename Workspace >
-inline integer_t hgeqz( const char job, const char compq,
-        const char compz, const integer_t ilo, MatrixH& h, MatrixT& t,
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
-    integer_t info(0);
-    hgeqz_impl< value_type >::invoke( job, compq, compz, ilo, h, t,
-            alphar, alphai, beta, q, z, info, work );
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
     return info;
 }
 
-// template function to call hgeqz, default workspace type
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
         typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
         typename MatrixZ >
-inline integer_t hgeqz( const char job, const char compq,
-        const char compz, const integer_t ilo, MatrixH& h, MatrixT& t,
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
         MatrixQ& q, MatrixZ& z ) {
-    typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
-    integer_t info(0);
-    hgeqz_impl< value_type >::invoke( job, compq, compz, ilo, h, t,
-            alphar, alphai, beta, q, z, info, optimal_workspace() );
-    return info;
-}
-// template function to call hgeqz
-template< typename MatrixH, typename MatrixT, typename VectorALPHA,
-        typename VectorBETA, typename MatrixQ, typename MatrixZ,
-        typename Workspace >
-inline integer_t hgeqz( const char job, const char compq,
-        const char compz, const integer_t ilo, MatrixH& h, MatrixT& t,
-        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
-        Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
-    integer_t info(0);
-    hgeqz_impl< value_type >::invoke( job, compq, compz, ilo, h, t,
-            alpha, beta, q, z, info, work );
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
     return info;
 }
 
-// template function to call hgeqz, default workspace type
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, VectorALPHAI& alphai, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar, VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHAR& alphar, const VectorALPHAI& alphai,
+        const VectorBETA& beta, const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ, typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHAR&
+// * const VectorALPHAI&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHAR,
+        typename VectorALPHAI, typename VectorBETA, typename MatrixQ,
+        typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHAR& alphar,
+        const VectorALPHAI& alphai, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alphar, alphai, beta, q, z, info,
+            optimal_workspace() );
+    return info;
+}
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixH, typename MatrixT, typename VectorALPHA,
         typename VectorBETA, typename MatrixQ, typename MatrixZ >
-inline integer_t hgeqz( const char job, const char compq,
-        const char compz, const integer_t ilo, MatrixH& h, MatrixT& t,
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
         VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
-    typedef typename traits::matrix_traits< MatrixH >::value_type value_type;
-    integer_t info(0);
-    hgeqz_impl< value_type >::invoke( job, compq, compz, ilo, h, t,
-            alpha, beta, q, z, info, optimal_workspace() );
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z,
+        Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h, MatrixT& t,
+        const VectorALPHA& alpha, const VectorBETA& beta, const MatrixQ& q,
+        const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * User-defined workspace
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ,
+        typename Workspace >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z, Workspace work ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, work );
+    return info;
+}
+
+//
+// Overloaded function for hgeqz. Its overload differs for
+// * const MatrixH&
+// * const MatrixT&
+// * const VectorALPHA&
+// * const VectorBETA&
+// * const MatrixQ&
+// * const MatrixZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixH, typename MatrixT, typename VectorALPHA,
+        typename VectorBETA, typename MatrixQ, typename MatrixZ >
+inline std::ptrdiff_t hgeqz( const char job, const char compq,
+        const char compz, const fortran_int_t ilo, const MatrixH& h,
+        const MatrixT& t, const VectorALPHA& alpha, const VectorBETA& beta,
+        const MatrixQ& q, const MatrixZ& z ) {
+    fortran_int_t info(0);
+    hgeqz_impl< typename value< MatrixH >::type >::invoke( job, compq,
+            compz, ilo, h, t, alpha, beta, q, z, info, optimal_workspace() );
     return info;
 }
 

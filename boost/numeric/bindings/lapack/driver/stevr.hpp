@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,177 +15,3747 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_STEVR_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void stevr( const char jobz, const char range, const integer_t n,
-        float* d, float* e, const float vl, const float vu,
-        const integer_t il, const integer_t iu, const float abstol,
-        integer_t& m, float* w, float* z, const integer_t ldz,
-        integer_t* isuppz, float* work, const integer_t lwork,
-        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void stevr( char jobz, char range, fortran_int_t n, float* d, float* e,
+        float vl, float vu, fortran_int_t il, fortran_int_t iu, float abstol,
+        fortran_int_t& m, float* w, float* z, fortran_int_t ldz,
+        fortran_int_t* isuppz, float* work, fortran_int_t lwork,
+        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
     LAPACK_SSTEVR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
 }
-inline void stevr( const char jobz, const char range, const integer_t n,
-        double* d, double* e, const double vl, const double vu,
-        const integer_t il, const integer_t iu, const double abstol,
-        integer_t& m, double* w, double* z, const integer_t ldz,
-        integer_t* isuppz, double* work, const integer_t lwork,
-        integer_t* iwork, const integer_t liwork, integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void stevr( char jobz, char range, fortran_int_t n, double* d,
+        double* e, double vl, double vu, fortran_int_t il, fortran_int_t iu,
+        double abstol, fortran_int_t& m, double* w, double* z,
+        fortran_int_t ldz, fortran_int_t* isuppz, double* work,
+        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t liwork,
+        fortran_int_t& info ) {
     LAPACK_DSTEVR( &jobz, &range, &n, d, e, &vl, &vu, &il, &iu, &abstol, &m,
             w, z, &ldz, isuppz, work, &lwork, iwork, &liwork, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to stevr.
+//
+template< typename Value >
 struct stevr_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ, typename WORK,
             typename IWORK >
-    static void invoke( const char jobz, const char range, const integer_t n,
-            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
-            const integer_t il, const integer_t iu, const real_type abstol,
-            integer_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz,
-            integer_t& info, detail::workspace2< WORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::vector_traits<
-                VectorE >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::vector_traits<
-                VectorW >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type >::value) );
+    static void invoke( const char jobz, const char range,
+            const fortran_int_t n, VectorD& d, VectorE& e,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                VectorE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                VectorW >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                MatrixZ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorISUPPZ >::value) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
-        BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::vector_size(d) >= n );
-        BOOST_ASSERT( traits::vector_size(e) >= std::max< std::ptrdiff_t >(1,
-                n-1) );
-        BOOST_ASSERT( traits::vector_size(w) >= n );
-        BOOST_ASSERT( traits::vector_size(isuppz) >= 2*std::max<
-                std::ptrdiff_t >(1,m) );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( n ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
+        BOOST_ASSERT( size(d) >= n );
+        BOOST_ASSERT( size(e) >= std::max< std::ptrdiff_t >(1,n-1) );
+        BOOST_ASSERT( size(isuppz) >= 2*std::max< std::ptrdiff_t >(1,m) );
+        BOOST_ASSERT( size(w) >= n );
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));
-        detail::stevr( jobz, range, n, traits::vector_storage(d),
-                traits::vector_storage(e), vl, vu, il, iu, abstol, m,
-                traits::vector_storage(w), traits::matrix_storage(z),
-                traits::leading_dimension(z), traits::vector_storage(isuppz),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_size(work.select(real_type())),
-                traits::vector_storage(work.select(integer_t())),
-                traits::vector_size(work.select(integer_t())), info );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
+        detail::stevr( jobz, range, n, begin_value(d), begin_value(e), vl, vu,
+                il, iu, abstol, m, begin_value(w), begin_value(z),
+                stride_major(z), begin_value(isuppz),
+                begin_value(work.select(real_type())),
+                size(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())),
+                size(work.select(fortran_int_t())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ >
-    static void invoke( const char jobz, const char range, const integer_t n,
-            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
-            const integer_t il, const integer_t iu, const real_type abstol,
-            integer_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz,
-            integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work( n ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
+    static void invoke( const char jobz, const char range,
+            const fortran_int_t n, VectorD& d, VectorE& e,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
+            minimal_workspace work ) {
+        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( n ) );
         invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
                 info, workspace( tmp_work, tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename MatrixZ, typename VectorISUPPZ >
-    static void invoke( const char jobz, const char range, const integer_t n,
-            VectorD& d, VectorE& e, const real_type vl, const real_type vu,
-            const integer_t il, const integer_t iu, const real_type abstol,
-            integer_t& m, VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz,
-            integer_t& info, optimal_workspace work ) {
+    static void invoke( const char jobz, const char range,
+            const fortran_int_t n, VectorD& d, VectorE& e,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
+            optimal_workspace work ) {
         real_type opt_size_work;
-        integer_t opt_size_iwork;
-        detail::stevr( jobz, range, n, traits::vector_storage(d),
-                traits::vector_storage(e), vl, vu, il, iu, abstol, m,
-                traits::vector_storage(w), traits::matrix_storage(z),
-                traits::leading_dimension(z), traits::vector_storage(isuppz),
-                &opt_size_work, -1, &opt_size_iwork, -1, info );
-        traits::detail::array< real_type > tmp_work(
+        fortran_int_t opt_size_iwork;
+        detail::stevr( jobz, range, n, begin_value(d), begin_value(e),
+                vl, vu, il, iu, abstol, m, begin_value(w), begin_value(z),
+                stride_major(z), begin_value(isuppz), &opt_size_work, -1,
+                &opt_size_iwork, -1, info );
+        bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        traits::detail::array< integer_t > tmp_iwork( opt_size_iwork );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                opt_size_iwork );
         invoke( jobz, range, n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz,
                 info, workspace( tmp_work, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
-        return std::max( 1, 20*n );
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, 20*n );
     }
 
-    static integer_t min_size_iwork( const integer_t n ) {
-        return std::max( 1, 10*n );
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, 10*n );
     }
 };
 
 
-// template function to call stevr
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the stevr_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorISUPPZ, typename Workspace >
-inline integer_t stevr( const char jobz, const char range,
-        const integer_t n, VectorD& d, VectorE& e,
-        const typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type vl,
-        const typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type vu, const integer_t il,
-        const integer_t iu, const typename traits::type_traits<
-        typename traits::vector_traits<
-        VectorD >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
-    integer_t info(0);
-    stevr_impl< value_type >::invoke( jobz, range, n, d, e, vl, vu, il,
-            iu, abstol, m, w, z, isuppz, info, work );
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
     return info;
 }
 
-// template function to call stevr, default workspace type
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
 template< typename VectorD, typename VectorE, typename VectorW,
         typename MatrixZ, typename VectorISUPPZ >
-inline integer_t stevr( const char jobz, const char range,
-        const integer_t n, VectorD& d, VectorE& e,
-        const typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type vl,
-        const typename traits::type_traits< typename traits::vector_traits<
-        VectorD >::value_type >::real_type vu, const integer_t il,
-        const integer_t iu, const typename traits::type_traits<
-        typename traits::vector_traits<
-        VectorD >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz ) {
-    typedef typename traits::vector_traits< VectorD >::value_type value_type;
-    integer_t info(0);
-    stevr_impl< value_type >::invoke( jobz, range, n, d, e, vl, vu, il,
-            iu, abstol, m, w, z, isuppz, info, optimal_workspace() );
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stevr. Its overload differs for
+// * const VectorD&
+// * const VectorE&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename MatrixZ, typename VectorISUPPZ >
+inline std::ptrdiff_t stevr( const char jobz, const char range,
+        const fortran_int_t n, const VectorD& d, const VectorE& e,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type vl, const typename remove_imaginary<
+        typename value< VectorD >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        VectorD >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    stevr_impl< typename value< VectorD >::type >::invoke( jobz, range,
+            n, d, e, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
     return info;
 }
 

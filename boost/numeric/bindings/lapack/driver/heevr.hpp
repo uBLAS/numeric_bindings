@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,197 +15,1865 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_HEEVR_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void heevr( const char jobz, const char range, const char uplo,
-        const integer_t n, traits::complex_f* a, const integer_t lda,
-        const float vl, const float vu, const integer_t il,
-        const integer_t iu, const float abstol, integer_t& m, float* w,
-        traits::complex_f* z, const integer_t ldz, integer_t* isuppz,
-        traits::complex_f* work, const integer_t lwork, float* rwork,
-        const integer_t lrwork, integer_t* iwork, const integer_t liwork,
-        integer_t& info ) {
-    LAPACK_CHEEVR( &jobz, &range, &uplo, &n, traits::complex_ptr(a), &lda,
-            &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z), &ldz,
-            isuppz, traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork,
-            &liwork, &info );
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+template< typename UpLo >
+inline void heevr( char jobz, char range, UpLo, fortran_int_t n,
+        std::complex<float>* a, fortran_int_t lda, float vl, float vu,
+        fortran_int_t il, fortran_int_t iu, float abstol, fortran_int_t& m,
+        float* w, std::complex<float>* z, fortran_int_t ldz,
+        fortran_int_t* isuppz, std::complex<float>* work, fortran_int_t lwork,
+        float* rwork, fortran_int_t lrwork, fortran_int_t* iwork,
+        fortran_int_t liwork, fortran_int_t& info ) {
+    LAPACK_CHEEVR( &jobz, &range, &lapack_option< UpLo >::value, &n, a, &lda,
+            &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, isuppz, work, &lwork,
+            rwork, &lrwork, iwork, &liwork, &info );
 }
-inline void heevr( const char jobz, const char range, const char uplo,
-        const integer_t n, traits::complex_d* a, const integer_t lda,
-        const double vl, const double vu, const integer_t il,
-        const integer_t iu, const double abstol, integer_t& m, double* w,
-        traits::complex_d* z, const integer_t ldz, integer_t* isuppz,
-        traits::complex_d* work, const integer_t lwork, double* rwork,
-        const integer_t lrwork, integer_t* iwork, const integer_t liwork,
-        integer_t& info ) {
-    LAPACK_ZHEEVR( &jobz, &range, &uplo, &n, traits::complex_ptr(a), &lda,
-            &vl, &vu, &il, &iu, &abstol, &m, w, traits::complex_ptr(z), &ldz,
-            isuppz, traits::complex_ptr(work), &lwork, rwork, &lrwork, iwork,
-            &liwork, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+template< typename UpLo >
+inline void heevr( char jobz, char range, UpLo, fortran_int_t n,
+        std::complex<double>* a, fortran_int_t lda, double vl, double vu,
+        fortran_int_t il, fortran_int_t iu, double abstol, fortran_int_t& m,
+        double* w, std::complex<double>* z, fortran_int_t ldz,
+        fortran_int_t* isuppz, std::complex<double>* work,
+        fortran_int_t lwork, double* rwork, fortran_int_t lrwork,
+        fortran_int_t* iwork, fortran_int_t liwork, fortran_int_t& info ) {
+    LAPACK_ZHEEVR( &jobz, &range, &lapack_option< UpLo >::value, &n, a, &lda,
+            &vl, &vu, &il, &iu, &abstol, &m, w, z, &ldz, isuppz, work, &lwork,
+            rwork, &lrwork, iwork, &liwork, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to heevr.
+//
+template< typename Value >
 struct heevr_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ, typename WORK, typename RWORK,
             typename IWORK >
     static void invoke( const char jobz, const char range, MatrixA& a,
-            const real_type vl, const real_type vu, const integer_t il,
-            const integer_t iu, const real_type abstol, integer_t& m,
-            VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, integer_t& info,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
             detail::workspace3< WORK, RWORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type >::value) );
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixZ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorW >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorISUPPZ >::value) );
         BOOST_ASSERT( jobz == 'N' || jobz == 'V' );
         BOOST_ASSERT( range == 'A' || range == 'V' || range == 'I' );
-        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
-                traits::matrix_uplo_tag(a) == 'L' );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::vector_size(w) >=
-                traits::matrix_num_columns(a) );
-        BOOST_ASSERT( traits::vector_size(isuppz) >= 2*std::max<
-                std::ptrdiff_t >(1,m) );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( traits::matrix_num_columns(a) ));
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_rwork( traits::matrix_num_columns(a) ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
-                min_size_iwork( traits::matrix_num_columns(a) ));
-        detail::heevr( jobz, range, traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), vl, vu, il, iu, abstol, m,
-                traits::vector_storage(w), traits::matrix_storage(z),
-                traits::leading_dimension(z), traits::vector_storage(isuppz),
-                traits::vector_storage(work.select(value_type())),
-                traits::vector_size(work.select(value_type())),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_size(work.select(real_type())),
-                traits::vector_storage(work.select(integer_t())),
-                traits::vector_size(work.select(integer_t())), info );
+        BOOST_ASSERT( size(isuppz) >= 2*std::max< std::ptrdiff_t >(1,m) );
+        BOOST_ASSERT( size(w) >= size_column(a) );
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+                min_size_iwork( size_column(a) ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
+                size_column(a) ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                size_column(a) ));
+        BOOST_ASSERT( size_column(a) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        detail::heevr( jobz, range, uplo(), size_column(a), begin_value(a),
+                stride_major(a), vl, vu, il, iu, abstol, m, begin_value(w),
+                begin_value(z), stride_major(z), begin_value(isuppz),
+                begin_value(work.select(value_type())),
+                size(work.select(value_type())),
+                begin_value(work.select(real_type())),
+                size(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())),
+                size(work.select(fortran_int_t())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ >
     static void invoke( const char jobz, const char range, MatrixA& a,
-            const real_type vl, const real_type vu, const integer_t il,
-            const integer_t iu, const real_type abstol, integer_t& m,
-            VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, integer_t& info,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
             minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_num_columns(a) ) );
-        traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_num_columns(a) ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_num_columns(a) ) );
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                size_column(a) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                size_column(a) ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( size_column(a) ) );
         invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
                 workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixA, typename VectorW, typename MatrixZ,
             typename VectorISUPPZ >
     static void invoke( const char jobz, const char range, MatrixA& a,
-            const real_type vl, const real_type vu, const integer_t il,
-            const integer_t iu, const real_type abstol, integer_t& m,
-            VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, integer_t& info,
+            const real_type vl, const real_type vu,
+            const fortran_int_t il, const fortran_int_t iu,
+            const real_type abstol, fortran_int_t& m, VectorW& w,
+            MatrixZ& z, VectorISUPPZ& isuppz, fortran_int_t& info,
             optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         value_type opt_size_work;
         real_type opt_size_rwork;
-        integer_t opt_size_iwork;
-        detail::heevr( jobz, range, traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), vl, vu, il, iu, abstol, m,
-                traits::vector_storage(w), traits::matrix_storage(z),
-                traits::leading_dimension(z), traits::vector_storage(isuppz),
-                &opt_size_work, -1, &opt_size_rwork, -1, &opt_size_iwork, -1,
-                info );
-        traits::detail::array< value_type > tmp_work(
+        fortran_int_t opt_size_iwork;
+        detail::heevr( jobz, range, uplo(), size_column(a),
+                begin_value(a), stride_major(a), vl, vu, il, iu, abstol, m,
+                begin_value(w), begin_value(z), stride_major(z),
+                begin_value(isuppz), &opt_size_work, -1, &opt_size_rwork, -1,
+                &opt_size_iwork, -1, info );
+        bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        traits::detail::array< real_type > tmp_rwork(
+        bindings::detail::array< real_type > tmp_rwork(
                 traits::detail::to_int( opt_size_rwork ) );
-        traits::detail::array< integer_t > tmp_iwork( opt_size_iwork );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                opt_size_iwork );
         invoke( jobz, range, a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
                 workspace( tmp_work, tmp_rwork, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
-        return std::max( 1, 2*n );
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, 2*n );
     }
 
-    static integer_t min_size_rwork( const integer_t n ) {
-        return std::max( 1, 24*n );
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array rwork.
+    //
+    static std::ptrdiff_t min_size_rwork( const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, 24*n );
     }
 
-    static integer_t min_size_iwork( const integer_t n ) {
-        return std::max( 1, 10*n );
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t n ) {
+        return std::max< std::ptrdiff_t >( 1, 10*n );
     }
 };
 
 
-// template function to call heevr
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the heevr_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorISUPPZ, typename Workspace >
-inline integer_t heevr( const char jobz, const char range, MatrixA& a,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vl,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vu, const integer_t il,
-        const integer_t iu, const typename traits::type_traits<
-        typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    heevr_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,
-            abstol, m, w, z, isuppz, info, work );
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
     return info;
 }
 
-// template function to call heevr, default workspace type
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixA, typename VectorW, typename MatrixZ,
         typename VectorISUPPZ >
-inline integer_t heevr( const char jobz, const char range, MatrixA& a,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vl,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type vu, const integer_t il,
-        const integer_t iu, const typename traits::type_traits<
-        typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type abstol, integer_t& m, VectorW& w,
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
         MatrixZ& z, VectorISUPPZ& isuppz ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    heevr_impl< value_type >::invoke( jobz, range, a, vl, vu, il, iu,
-            abstol, m, w, z, isuppz, info, optimal_workspace() );
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz, Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m, VectorW& w,
+        const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ, typename Workspace >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz,
+        Workspace work ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info, work );
+    return info;
+}
+
+//
+// Overloaded function for heevr. Its overload differs for
+// * const MatrixA&
+// * const fortran_int_t&
+// * const VectorW&
+// * const MatrixZ&
+// * const VectorISUPPZ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorW, typename MatrixZ,
+        typename VectorISUPPZ >
+inline std::ptrdiff_t heevr( const char jobz, const char range,
+        const MatrixA& a, const typename remove_imaginary< typename value<
+        MatrixA >::type >::type vl, const typename remove_imaginary<
+        typename value< MatrixA >::type >::type vu,
+        const fortran_int_t il, const fortran_int_t iu,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type abstol, const fortran_int_t& m,
+        const VectorW& w, const MatrixZ& z, const VectorISUPPZ& isuppz ) {
+    fortran_int_t info(0);
+    heevr_impl< typename value< MatrixA >::type >::invoke( jobz, range,
+            a, vl, vu, il, iu, abstol, m, w, z, isuppz, info,
+            optimal_workspace() );
     return info;
 }
 

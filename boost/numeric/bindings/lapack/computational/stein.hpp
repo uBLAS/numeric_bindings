@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,16 +15,21 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_STEIN_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -32,242 +37,463 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void stein( const integer_t n, const float* d, const float* e,
-        const integer_t m, const float* w, const integer_t* iblock,
-        const integer_t* isplit, float* z, const integer_t ldz, float* work,
-        integer_t* iwork, integer_t* ifail, integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void stein( fortran_int_t n, const float* d, const float* e,
+        fortran_int_t m, const float* w, const fortran_int_t* iblock,
+        const fortran_int_t* isplit, float* z, fortran_int_t ldz, float* work,
+        fortran_int_t* iwork, fortran_int_t* ifail, fortran_int_t& info ) {
     LAPACK_SSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );
 }
-inline void stein( const integer_t n, const double* d, const double* e,
-        const integer_t m, const double* w, const integer_t* iblock,
-        const integer_t* isplit, double* z, const integer_t ldz, double* work,
-        integer_t* iwork, integer_t* ifail, integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void stein( fortran_int_t n, const double* d, const double* e,
+        fortran_int_t m, const double* w, const fortran_int_t* iblock,
+        const fortran_int_t* isplit, double* z, fortran_int_t ldz,
+        double* work, fortran_int_t* iwork, fortran_int_t* ifail,
+        fortran_int_t& info ) {
     LAPACK_DSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
             ifail, &info );
 }
-inline void stein( const integer_t n, const float* d, const float* e,
-        const integer_t m, const float* w, const integer_t* iblock,
-        const integer_t* isplit, traits::complex_f* z, const integer_t ldz,
-        float* work, integer_t* iwork, integer_t* ifail, integer_t& info ) {
-    LAPACK_CSTEIN( &n, d, e, &m, w, iblock, isplit, traits::complex_ptr(z),
-            &ldz, work, iwork, ifail, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void stein( fortran_int_t n, const float* d, const float* e,
+        fortran_int_t m, const float* w, const fortran_int_t* iblock,
+        const fortran_int_t* isplit, std::complex<float>* z,
+        fortran_int_t ldz, float* work, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t& info ) {
+    LAPACK_CSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
+            ifail, &info );
 }
-inline void stein( const integer_t n, const double* d, const double* e,
-        const integer_t m, const double* w, const integer_t* iblock,
-        const integer_t* isplit, traits::complex_d* z, const integer_t ldz,
-        double* work, integer_t* iwork, integer_t* ifail, integer_t& info ) {
-    LAPACK_ZSTEIN( &n, d, e, &m, w, iblock, isplit, traits::complex_ptr(z),
-            &ldz, work, iwork, ifail, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void stein( fortran_int_t n, const double* d, const double* e,
+        fortran_int_t m, const double* w, const fortran_int_t* iblock,
+        const fortran_int_t* isplit, std::complex<double>* z,
+        fortran_int_t ldz, double* work, fortran_int_t* iwork,
+        fortran_int_t* ifail, fortran_int_t& info ) {
+    LAPACK_ZSTEIN( &n, d, e, &m, w, iblock, isplit, z, &ldz, work, iwork,
+            ifail, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct stein_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to stein.
+//
+template< typename Value, typename Enable = void >
+struct stein_impl {};
 
-// real specialization
-template< typename ValueType >
-struct stein_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct stein_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL, typename WORK, typename IWORK >
-    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
-            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
-            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
-            integer_t& info, detail::workspace2< WORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::vector_traits<
-                VectorE >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::vector_traits<
-                VectorW >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::matrix_traits<
-                MatrixZ >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorIBLOCK >::value_type, typename traits::vector_traits<
-                VectorISPLIT >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorIBLOCK >::value_type, typename traits::vector_traits<
-                VectorIFAIL >::value_type >::value) );
+    static void invoke( const fortran_int_t n, const VectorD& d,
+            const VectorE& e, const fortran_int_t m, const VectorW& w,
+            const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
+            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                VectorE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                VectorW >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                MatrixZ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorIBLOCK >::type >::type,
+                typename remove_const< typename value<
+                VectorISPLIT >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorIBLOCK >::type >::type,
+                typename remove_const< typename value<
+                VectorIFAIL >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAIL >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::vector_size(d) >= n );
-        BOOST_ASSERT( traits::vector_size(e) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(w) >= n );
-        BOOST_ASSERT( traits::vector_size(isplit) >= n );
-        BOOST_ASSERT( traits::leading_dimension(z) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( n ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( size(d) >= n );
+        BOOST_ASSERT( size(e) >= n-1 );
+        BOOST_ASSERT( size(isplit) >= n );
+        BOOST_ASSERT( size(w) >= n );
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));
-        detail::stein( n, traits::vector_storage(d),
-                traits::vector_storage(e), m, traits::vector_storage(w),
-                traits::vector_storage(iblock),
-                traits::vector_storage(isplit), traits::matrix_storage(z),
-                traits::leading_dimension(z),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_storage(work.select(integer_t())),
-                traits::vector_storage(ifail), info );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
+        BOOST_ASSERT( stride_major(z) >= std::max< std::ptrdiff_t >(1,n) );
+        detail::stein( n, begin_value(d), begin_value(e), m, begin_value(w),
+                begin_value(iblock), begin_value(isplit), begin_value(z),
+                stride_major(z), begin_value(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())),
+                begin_value(ifail), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
-            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
-            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
-            integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work( n ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
+    static void invoke( const fortran_int_t n, const VectorD& d,
+            const VectorE& e, const fortran_int_t m, const VectorW& w,
+            const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
+            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
+            minimal_workspace work ) {
+        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( n ) );
         invoke( n, d, e, m, w, iblock, isplit, z, ifail, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
-            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
-            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
-            integer_t& info, optimal_workspace work ) {
+    static void invoke( const fortran_int_t n, const VectorD& d,
+            const VectorE& e, const fortran_int_t m, const VectorW& w,
+            const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
+            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
+            optimal_workspace work ) {
         invoke( n, d, e, m, w, iblock, isplit, z, ifail, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         return 5*n;
     }
 
-    static integer_t min_size_iwork( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t n ) {
         return n;
     }
 };
 
-// complex specialization
-template< typename ValueType >
-struct stein_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct stein_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL, typename WORK, typename IWORK >
-    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
-            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
-            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
-            integer_t& info, detail::workspace2< WORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::vector_traits<
-                VectorE >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorD >::value_type, typename traits::vector_traits<
-                VectorW >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorIBLOCK >::value_type, typename traits::vector_traits<
-                VectorISPLIT >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorIBLOCK >::value_type, typename traits::vector_traits<
-                VectorIFAIL >::value_type >::value) );
+    static void invoke( const fortran_int_t n, const VectorD& d,
+            const VectorE& e, const fortran_int_t m, const VectorW& w,
+            const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
+            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
+            detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                VectorE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorD >::type >::type,
+                typename remove_const< typename value<
+                VectorW >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorIBLOCK >::type >::type,
+                typename remove_const< typename value<
+                VectorISPLIT >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorIBLOCK >::type >::type,
+                typename remove_const< typename value<
+                VectorIFAIL >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixZ >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorIFAIL >::value) );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::vector_size(d) >= n );
-        BOOST_ASSERT( traits::vector_size(e) >= n-1 );
-        BOOST_ASSERT( traits::vector_size(w) >= n );
-        BOOST_ASSERT( traits::vector_size(isplit) >= n );
-        BOOST_ASSERT( traits::leading_dimension(z) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( n ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( size(d) >= n );
+        BOOST_ASSERT( size(e) >= n-1 );
+        BOOST_ASSERT( size(isplit) >= n );
+        BOOST_ASSERT( size(w) >= n );
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( n ));
-        detail::stein( n, traits::vector_storage(d),
-                traits::vector_storage(e), m, traits::vector_storage(w),
-                traits::vector_storage(iblock),
-                traits::vector_storage(isplit), traits::matrix_storage(z),
-                traits::leading_dimension(z),
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_storage(work.select(integer_t())),
-                traits::vector_storage(ifail), info );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size_minor(z) == 1 || stride_minor(z) == 1 );
+        BOOST_ASSERT( stride_major(z) >= std::max< std::ptrdiff_t >(1,n) );
+        detail::stein( n, begin_value(d), begin_value(e), m, begin_value(w),
+                begin_value(iblock), begin_value(isplit), begin_value(z),
+                stride_major(z), begin_value(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())),
+                begin_value(ifail), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
-            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
-            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
-            integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work( n ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork( n ) );
+    static void invoke( const fortran_int_t n, const VectorD& d,
+            const VectorE& e, const fortran_int_t m, const VectorW& w,
+            const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
+            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
+            minimal_workspace work ) {
+        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( n ) );
         invoke( n, d, e, m, w, iblock, isplit, z, ifail, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorD, typename VectorE, typename VectorW,
             typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
             typename VectorIFAIL >
-    static void invoke( const integer_t n, const VectorD& d, const VectorE& e,
-            const integer_t m, const VectorW& w, const VectorIBLOCK& iblock,
-            const VectorISPLIT& isplit, MatrixZ& z, VectorIFAIL& ifail,
-            integer_t& info, optimal_workspace work ) {
+    static void invoke( const fortran_int_t n, const VectorD& d,
+            const VectorE& e, const fortran_int_t m, const VectorW& w,
+            const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
+            MatrixZ& z, VectorIFAIL& ifail, fortran_int_t& info,
+            optimal_workspace work ) {
         invoke( n, d, e, m, w, iblock, isplit, z, ifail, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         return 5*n;
     }
 
-    static integer_t min_size_iwork( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t n ) {
         return n;
     }
 };
 
 
-// template function to call stein
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the stein_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for stein. Its overload differs for
+// * MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
 template< typename VectorD, typename VectorE, typename VectorW,
         typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
         typename VectorIFAIL, typename Workspace >
-inline integer_t stein( const integer_t n, const VectorD& d,
-        const VectorE& e, const integer_t m, const VectorW& w,
+inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
         VectorIFAIL& ifail, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
-    integer_t info(0);
-    stein_impl< value_type >::invoke( n, d, e, m, w, iblock, isplit, z,
-            ifail, info, work );
+    fortran_int_t info(0);
+    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
+            iblock, isplit, z, ifail, info, work );
     return info;
 }
 
-// template function to call stein, default workspace type
+//
+// Overloaded function for stein. Its overload differs for
+// * MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
 template< typename VectorD, typename VectorE, typename VectorW,
         typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
         typename VectorIFAIL >
-inline integer_t stein( const integer_t n, const VectorD& d,
-        const VectorE& e, const integer_t m, const VectorW& w,
+inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const fortran_int_t m, const VectorW& w,
         const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
         VectorIFAIL& ifail ) {
-    typedef typename traits::matrix_traits< MatrixZ >::value_type value_type;
-    integer_t info(0);
-    stein_impl< value_type >::invoke( n, d, e, m, w, iblock, isplit, z,
-            ifail, info, optimal_workspace() );
+    fortran_int_t info(0);
+    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
+            iblock, isplit, z, ifail, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stein. Its overload differs for
+// * const MatrixZ&
+// * VectorIFAIL&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const fortran_int_t m, const VectorW& w,
+        const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
+        const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
+            iblock, isplit, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stein. Its overload differs for
+// * const MatrixZ&
+// * VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const fortran_int_t m, const VectorW& w,
+        const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
+        const MatrixZ& z, VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
+            iblock, isplit, z, ifail, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stein. Its overload differs for
+// * MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const fortran_int_t m, const VectorW& w,
+        const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
+        const VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
+            iblock, isplit, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stein. Its overload differs for
+// * MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const fortran_int_t m, const VectorW& w,
+        const VectorIBLOCK& iblock, const VectorISPLIT& isplit, MatrixZ& z,
+        const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
+            iblock, isplit, z, ifail, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for stein. Its overload differs for
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * User-defined workspace
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
+        typename VectorIFAIL, typename Workspace >
+inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const fortran_int_t m, const VectorW& w,
+        const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
+        const MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
+    fortran_int_t info(0);
+    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
+            iblock, isplit, z, ifail, info, work );
+    return info;
+}
+
+//
+// Overloaded function for stein. Its overload differs for
+// * const MatrixZ&
+// * const VectorIFAIL&
+// * Default workspace-type (optimal)
+//
+template< typename VectorD, typename VectorE, typename VectorW,
+        typename VectorIBLOCK, typename VectorISPLIT, typename MatrixZ,
+        typename VectorIFAIL >
+inline std::ptrdiff_t stein( const fortran_int_t n, const VectorD& d,
+        const VectorE& e, const fortran_int_t m, const VectorW& w,
+        const VectorIBLOCK& iblock, const VectorISPLIT& isplit,
+        const MatrixZ& z, const VectorIFAIL& ifail ) {
+    fortran_int_t info(0);
+    stein_impl< typename value< MatrixZ >::type >::invoke( n, d, e, m, w,
+            iblock, isplit, z, ifail, info, optimal_workspace() );
     return info;
 }
 

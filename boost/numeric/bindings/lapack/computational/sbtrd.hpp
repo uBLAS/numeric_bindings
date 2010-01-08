@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,127 +15,746 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_SBTRD_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void sbtrd( const char vect, const char uplo, const integer_t n,
-        const integer_t kd, float* ab, const integer_t ldab, float* d,
-        float* e, float* q, const integer_t ldq, float* work,
-        integer_t& info ) {
-    LAPACK_SSBTRD( &vect, &uplo, &n, &kd, ab, &ldab, d, e, q, &ldq, work,
-            &info );
+//
+// Overloaded function for dispatching to float value-type.
+//
+template< typename UpLo >
+inline void sbtrd( char vect, UpLo, fortran_int_t n, fortran_int_t kd,
+        float* ab, fortran_int_t ldab, float* d, float* e, float* q,
+        fortran_int_t ldq, float* work, fortran_int_t& info ) {
+    LAPACK_SSBTRD( &vect, &lapack_option< UpLo >::value, &n, &kd, ab, &ldab,
+            d, e, q, &ldq, work, &info );
 }
-inline void sbtrd( const char vect, const char uplo, const integer_t n,
-        const integer_t kd, double* ab, const integer_t ldab, double* d,
-        double* e, double* q, const integer_t ldq, double* work,
-        integer_t& info ) {
-    LAPACK_DSBTRD( &vect, &uplo, &n, &kd, ab, &ldab, d, e, q, &ldq, work,
-            &info );
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+template< typename UpLo >
+inline void sbtrd( char vect, UpLo, fortran_int_t n, fortran_int_t kd,
+        double* ab, fortran_int_t ldab, double* d, double* e, double* q,
+        fortran_int_t ldq, double* work, fortran_int_t& info ) {
+    LAPACK_DSBTRD( &vect, &lapack_option< UpLo >::value, &n, &kd, ab, &ldab,
+            d, e, q, &ldq, work, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to sbtrd.
+//
+template< typename Value >
 struct sbtrd_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ, typename WORK >
-    static void invoke( const char vect, const integer_t n,
-            const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
-            MatrixQ& q, integer_t& info, detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::vector_traits<
-                VectorD >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::vector_traits<
-                VectorE >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixAB >::value_type, typename traits::matrix_traits<
-                MatrixQ >::value_type >::value) );
-        BOOST_ASSERT( vect == 'N' || vect == 'V' || vect == 'U' );
-        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
-                traits::matrix_uplo_tag(a) == 'L' );
+    static void invoke( const char vect, const fortran_int_t n,
+            MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
+            fortran_int_t& info, detail::workspace1< WORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                VectorD >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                VectorE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixAB >::type >::type,
+                typename remove_const< typename value<
+                MatrixQ >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixAB >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorD >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorE >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixQ >::value) );
+        BOOST_ASSERT( bandwidth_upper(ab) >= 0 );
         BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( kd >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(ab) >= kd+1 );
-        BOOST_ASSERT( traits::vector_size(d) >= n );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( n ));
-        detail::sbtrd( vect, traits::matrix_uplo_tag(a), n, kd,
-                traits::matrix_storage(ab), traits::leading_dimension(ab),
-                traits::vector_storage(d), traits::vector_storage(e),
-                traits::matrix_storage(q), traits::leading_dimension(q),
-                traits::vector_storage(work.select(real_type())), info );
+        BOOST_ASSERT( size(d) >= n );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work( n ));
+        BOOST_ASSERT( size_minor(ab) == 1 || stride_minor(ab) == 1 );
+        BOOST_ASSERT( size_minor(q) == 1 || stride_minor(q) == 1 );
+        BOOST_ASSERT( stride_major(ab) >= bandwidth_upper(ab)+1 );
+        BOOST_ASSERT( vect == 'N' || vect == 'V' || vect == 'U' );
+        detail::sbtrd( vect, uplo(), n, bandwidth_upper(ab), begin_value(ab),
+                stride_major(ab), begin_value(d), begin_value(e),
+                begin_value(q), stride_major(q),
+                begin_value(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ >
-    static void invoke( const char vect, const integer_t n,
-            const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
-            MatrixQ& q, integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work( n ) );
-        invoke( vect, n, kd, ab, d, e, q, info, workspace( tmp_work ) );
+    static void invoke( const char vect, const fortran_int_t n,
+            MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
+            fortran_int_t& info, minimal_workspace work ) {
+        bindings::detail::array< real_type > tmp_work( min_size_work( n ) );
+        invoke( vect, n, ab, d, e, q, info, workspace( tmp_work ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixAB, typename VectorD, typename VectorE,
             typename MatrixQ >
-    static void invoke( const char vect, const integer_t n,
-            const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
-            MatrixQ& q, integer_t& info, optimal_workspace work ) {
-        invoke( vect, n, kd, ab, d, e, q, info, minimal_workspace() );
+    static void invoke( const char vect, const fortran_int_t n,
+            MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
+            fortran_int_t& info, optimal_workspace work ) {
+        invoke( vect, n, ab, d, e, q, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         return n;
     }
 };
 
 
-// template function to call sbtrd
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the sbtrd_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * User-defined workspace
+//
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ, typename Workspace >
-inline integer_t sbtrd( const char vect, const integer_t n,
-        const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
-        Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
-    integer_t info(0);
-    sbtrd_impl< value_type >::invoke( vect, n, kd, ab, d, e, q, info,
-            work );
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q, Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
     return info;
 }
 
-// template function to call sbtrd, default workspace type
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixAB, typename VectorD, typename VectorE,
         typename MatrixQ >
-inline integer_t sbtrd( const char vect, const integer_t n,
-        const integer_t kd, MatrixAB& ab, VectorD& d, VectorE& e,
-        MatrixQ& q ) {
-    typedef typename traits::matrix_traits< MatrixAB >::value_type value_type;
-    integer_t info(0);
-    sbtrd_impl< value_type >::invoke( vect, n, kd, ab, d, e, q, info,
-            optimal_workspace() );
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, VectorD& d, VectorE& e, MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, const VectorD& d, VectorE& e, MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, const VectorD& d, VectorE& e, MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, const VectorD& d, VectorE& e, MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, const VectorD& d, VectorE& e, MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, VectorD& d, const VectorE& e, MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, VectorD& d, const VectorE& e, MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, VectorD& d, const VectorE& e, MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, VectorD& d, const VectorE& e, MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, const VectorD& d, const VectorE& e, MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, const VectorD& d, const VectorE& e, MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, const VectorD& d, const VectorE& e, MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, const VectorD& d, const VectorE& e, MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, VectorD& d, VectorE& e, const MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, VectorD& d, VectorE& e, const MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, VectorD& d, VectorE& e, const MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, VectorD& d, VectorE& e, const MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, const VectorD& d, VectorE& e, const MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, const VectorD& d, VectorE& e, const MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, const VectorD& d, VectorE& e, const MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * VectorE&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, const VectorD& d, VectorE& e, const MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, VectorD& d, const VectorE& e, const MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, VectorD& d, const VectorE& e, const MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, VectorD& d, const VectorE& e, const MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, VectorD& d, const VectorE& e, const MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, const VectorD& d, const VectorE& e, const MatrixQ& q,
+        Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        MatrixAB& ab, const VectorD& d, const VectorE& e, const MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * User-defined workspace
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ, typename Workspace >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, const VectorD& d, const VectorE& e,
+        const MatrixQ& q, Workspace work ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, work );
+    return info;
+}
+
+//
+// Overloaded function for sbtrd. Its overload differs for
+// * const MatrixAB&
+// * const VectorD&
+// * const VectorE&
+// * const MatrixQ&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixAB, typename VectorD, typename VectorE,
+        typename MatrixQ >
+inline std::ptrdiff_t sbtrd( const char vect, const fortran_int_t n,
+        const MatrixAB& ab, const VectorD& d, const VectorE& e,
+        const MatrixQ& q ) {
+    fortran_int_t info(0);
+    sbtrd_impl< typename value< MatrixAB >::type >::invoke( vect, n, ab,
+            d, e, q, info, optimal_workspace() );
     return info;
 }
 

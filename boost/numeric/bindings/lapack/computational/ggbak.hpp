@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,14 +15,19 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_GGBAK_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -30,124 +35,185 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void ggbak( const char job, const char side, const integer_t n,
-        const integer_t ilo, const integer_t ihi, const float* lscale,
-        const float* rscale, const integer_t m, float* v, const integer_t ldv,
-        integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void ggbak( char job, char side, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, const float* lscale, const float* rscale,
+        fortran_int_t m, float* v, fortran_int_t ldv, fortran_int_t& info ) {
     LAPACK_SGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m, v, &ldv,
             &info );
 }
-inline void ggbak( const char job, const char side, const integer_t n,
-        const integer_t ilo, const integer_t ihi, const double* lscale,
-        const double* rscale, const integer_t m, double* v,
-        const integer_t ldv, integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void ggbak( char job, char side, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, const double* lscale, const double* rscale,
+        fortran_int_t m, double* v, fortran_int_t ldv, fortran_int_t& info ) {
     LAPACK_DGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m, v, &ldv,
             &info );
 }
-inline void ggbak( const char job, const char side, const integer_t n,
-        const integer_t ilo, const integer_t ihi, const float* lscale,
-        const float* rscale, const integer_t m, traits::complex_f* v,
-        const integer_t ldv, integer_t& info ) {
-    LAPACK_CGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m,
-            traits::complex_ptr(v), &ldv, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void ggbak( char job, char side, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, const float* lscale, const float* rscale,
+        fortran_int_t m, std::complex<float>* v, fortran_int_t ldv,
+        fortran_int_t& info ) {
+    LAPACK_CGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m, v, &ldv,
+            &info );
 }
-inline void ggbak( const char job, const char side, const integer_t n,
-        const integer_t ilo, const integer_t ihi, const double* lscale,
-        const double* rscale, const integer_t m, traits::complex_d* v,
-        const integer_t ldv, integer_t& info ) {
-    LAPACK_ZGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m,
-            traits::complex_ptr(v), &ldv, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void ggbak( char job, char side, fortran_int_t n, fortran_int_t ilo,
+        fortran_int_t ihi, const double* lscale, const double* rscale,
+        fortran_int_t m, std::complex<double>* v, fortran_int_t ldv,
+        fortran_int_t& info ) {
+    LAPACK_ZGGBAK( &job, &side, &n, &ilo, &ihi, lscale, rscale, &m, v, &ldv,
+            &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct ggbak_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to ggbak.
+//
+template< typename Value, typename Enable = void >
+struct ggbak_impl {};
 
-// real specialization
-template< typename ValueType >
-struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct ggbak_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
-    static void invoke( const char job, const char side, const integer_t ilo,
-            const integer_t ihi, const VectorLSCALE& lscale,
-            const VectorRSCALE& rscale, MatrixV& v, integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorLSCALE >::value_type, typename traits::vector_traits<
-                VectorRSCALE >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorLSCALE >::value_type, typename traits::matrix_traits<
-                MatrixV >::value_type >::value) );
+    static void invoke( const char job, const char side,
+            const fortran_int_t ilo, const fortran_int_t ihi,
+            const VectorLSCALE& lscale, const VectorRSCALE& rscale,
+            MatrixV& v, fortran_int_t& info ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorLSCALE >::type >::type,
+                typename remove_const< typename value<
+                VectorRSCALE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorLSCALE >::type >::type,
+                typename remove_const< typename value<
+                MatrixV >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( side == 'R' || side == 'L' );
-        BOOST_ASSERT( traits::matrix_num_rows(v) >= 0 );
-        BOOST_ASSERT( traits::vector_size(lscale) >=
-                traits::matrix_num_rows(v) );
-        BOOST_ASSERT( traits::vector_size(rscale) >=
-                traits::matrix_num_rows(v) );
-        BOOST_ASSERT( traits::matrix_num_columns(v) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(v) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(v)) );
-        detail::ggbak( job, side, traits::matrix_num_rows(v), ilo, ihi,
-                traits::vector_storage(lscale),
-                traits::vector_storage(rscale), traits::matrix_num_columns(v),
-                traits::matrix_storage(v), traits::leading_dimension(v),
-                info );
+        BOOST_ASSERT( size(lscale) >= size_row(v) );
+        BOOST_ASSERT( size(rscale) >= size_row(v) );
+        BOOST_ASSERT( size_column(v) >= 0 );
+        BOOST_ASSERT( size_minor(v) == 1 || stride_minor(v) == 1 );
+        BOOST_ASSERT( size_row(v) >= 0 );
+        BOOST_ASSERT( stride_major(v) >= std::max< std::ptrdiff_t >(1,
+                size_row(v)) );
+        detail::ggbak( job, side, size_row(v), ilo, ihi, begin_value(lscale),
+                begin_value(rscale), size_column(v), begin_value(v),
+                stride_major(v), info );
     }
+
 };
 
-// complex specialization
-template< typename ValueType >
-struct ggbak_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct ggbak_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // templated specialization
+    //
+    // Static member function, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
-    static void invoke( const char job, const char side, const integer_t ilo,
-            const integer_t ihi, const VectorLSCALE& lscale,
-            const VectorRSCALE& rscale, MatrixV& v, integer_t& info ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorLSCALE >::value_type, typename traits::vector_traits<
-                VectorRSCALE >::value_type >::value) );
+    static void invoke( const char job, const char side,
+            const fortran_int_t ilo, const fortran_int_t ihi,
+            const VectorLSCALE& lscale, const VectorRSCALE& rscale,
+            MatrixV& v, fortran_int_t& info ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorLSCALE >::type >::type,
+                typename remove_const< typename value<
+                VectorRSCALE >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixV >::value) );
         BOOST_ASSERT( job == 'N' || job == 'P' || job == 'S' || job == 'B' );
         BOOST_ASSERT( side == 'R' || side == 'L' );
-        BOOST_ASSERT( traits::matrix_num_rows(v) >= 0 );
-        BOOST_ASSERT( traits::vector_size(lscale) >=
-                traits::matrix_num_rows(v) );
-        BOOST_ASSERT( traits::vector_size(rscale) >=
-                traits::matrix_num_rows(v) );
-        BOOST_ASSERT( traits::matrix_num_columns(v) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(v) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_rows(v)) );
-        detail::ggbak( job, side, traits::matrix_num_rows(v), ilo, ihi,
-                traits::vector_storage(lscale),
-                traits::vector_storage(rscale), traits::matrix_num_columns(v),
-                traits::matrix_storage(v), traits::leading_dimension(v),
-                info );
+        BOOST_ASSERT( size(lscale) >= size_row(v) );
+        BOOST_ASSERT( size(rscale) >= size_row(v) );
+        BOOST_ASSERT( size_column(v) >= 0 );
+        BOOST_ASSERT( size_minor(v) == 1 || stride_minor(v) == 1 );
+        BOOST_ASSERT( size_row(v) >= 0 );
+        BOOST_ASSERT( stride_major(v) >= std::max< std::ptrdiff_t >(1,
+                size_row(v)) );
+        detail::ggbak( job, side, size_row(v), ilo, ihi, begin_value(lscale),
+                begin_value(rscale), size_column(v), begin_value(v),
+                stride_major(v), info );
     }
+
 };
 
 
-// template function to call ggbak
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the ggbak_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for ggbak. Its overload differs for
+// * MatrixV&
+//
 template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
-inline integer_t ggbak( const char job, const char side,
-        const integer_t ilo, const integer_t ihi, const VectorLSCALE& lscale,
-        const VectorRSCALE& rscale, MatrixV& v ) {
-    typedef typename traits::matrix_traits< MatrixV >::value_type value_type;
-    integer_t info(0);
-    ggbak_impl< value_type >::invoke( job, side, ilo, ihi, lscale,
-            rscale, v, info );
+inline std::ptrdiff_t ggbak( const char job, const char side,
+        const fortran_int_t ilo, const fortran_int_t ihi,
+        const VectorLSCALE& lscale, const VectorRSCALE& rscale, MatrixV& v ) {
+    fortran_int_t info(0);
+    ggbak_impl< typename value< MatrixV >::type >::invoke( job, side,
+            ilo, ihi, lscale, rscale, v, info );
+    return info;
+}
+
+//
+// Overloaded function for ggbak. Its overload differs for
+// * const MatrixV&
+//
+template< typename VectorLSCALE, typename VectorRSCALE, typename MatrixV >
+inline std::ptrdiff_t ggbak( const char job, const char side,
+        const fortran_int_t ilo, const fortran_int_t ihi,
+        const VectorLSCALE& lscale, const VectorRSCALE& rscale,
+        const MatrixV& v ) {
+    fortran_int_t info(0);
+    ggbak_impl< typename value< MatrixV >::type >::invoke( job, side,
+            ilo, ihi, lscale, rscale, v, info );
     return info;
 }
 

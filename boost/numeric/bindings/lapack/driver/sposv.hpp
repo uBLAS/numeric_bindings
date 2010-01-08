@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,126 +15,421 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_SPOSV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void sposv( const char uplo, const integer_t n, const integer_t nrhs,
-        double* a, const integer_t lda, const double* b, const integer_t ldb,
-        double* x, const integer_t ldx, double* work, float* swork,
-        integer_t& iter, integer_t& info ) {
-    LAPACK_DSPOSV( &uplo, &n, &nrhs, a, &lda, b, &ldb, x, &ldx, work, swork,
-            &iter, &info );
+//
+// Overloaded function for dispatching to double value-type.
+//
+template< typename UpLo >
+inline void sposv( UpLo, fortran_int_t n, fortran_int_t nrhs, double* a,
+        fortran_int_t lda, const double* b, fortran_int_t ldb, double* x,
+        fortran_int_t ldx, double* work, float* swork, fortran_int_t& iter,
+        fortran_int_t& info ) {
+    LAPACK_DSPOSV( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, b, &ldb,
+            x, &ldx, work, swork, &iter, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to sposv.
+//
+template< typename Value >
 struct sposv_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename MatrixB, typename MatrixX,
             typename WORK, typename SWORK >
     static void invoke( MatrixA& a, const MatrixB& b, MatrixX& x,
-            integer_t& iter, integer_t& info, detail::workspace2< WORK,
-            SWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixX >::value_type >::value) );
-        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
-                traits::matrix_uplo_tag(a) == 'L' );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(x) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_swork( traits::matrix_num_columns(a),
-                traits::matrix_num_columns(b) ));
-        detail::sposv( traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                traits::matrix_storage(x), traits::leading_dimension(x),
-                traits::matrix_storage(work),
-                traits::vector_storage(work.select(real_type())), iter, info );
+            fortran_int_t& iter, fortran_int_t& info,
+            detail::workspace2< WORK, SWORK > work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixX >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixX >::value) );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_swork(
+                size_column(a), size_column(b) ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_column(a) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( size_minor(x) == 1 || stride_minor(x) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        BOOST_ASSERT( stride_major(x) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        detail::sposv( uplo(), size_column(a), size_column(b), begin_value(a),
+                stride_major(a), begin_value(b), stride_major(b),
+                begin_value(x), stride_major(x), begin_value(work),
+                begin_value(work.select(real_type())), iter, info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixA, typename MatrixB, typename MatrixX >
     static void invoke( MatrixA& a, const MatrixB& b, MatrixX& x,
-            integer_t& iter, integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(
+            fortran_int_t& iter, fortran_int_t& info,
+            minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        traits::detail::array< real_type > tmp_swork( min_size_swork(
-                traits::matrix_num_columns(a),
-                traits::matrix_num_columns(b) ) );
+        bindings::detail::array< real_type > tmp_swork( min_size_swork(
+                size_column(a), size_column(b) ) );
         invoke( a, b, x, iter, info, workspace( tmp_work, tmp_swork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixA, typename MatrixB, typename MatrixX >
     static void invoke( MatrixA& a, const MatrixB& b, MatrixX& x,
-            integer_t& iter, integer_t& info, optimal_workspace work ) {
+            fortran_int_t& iter, fortran_int_t& info,
+            optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         invoke( a, b, x, iter, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
         $MIN_SIZE
     }
 
-    static integer_t min_size_swork( const integer_t n,
-            const integer_t nrhs ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array swork.
+    //
+    static std::ptrdiff_t min_size_swork( const std::ptrdiff_t n,
+            const std::ptrdiff_t nrhs ) {
         return n*(n+nrhs);
     }
 };
 
 
-// template function to call sposv
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the sposv_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * MatrixA&
+// * MatrixX&
+// * fortran_int_t&
+// * User-defined workspace
+//
 template< typename MatrixA, typename MatrixB, typename MatrixX,
         typename Workspace >
-inline integer_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
-        integer_t& iter, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    sposv_impl< value_type >::invoke( a, b, x, iter, info, work );
+inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
+        fortran_int_t& iter, Workspace work ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, work );
     return info;
 }
 
-// template function to call sposv, default workspace type
+//
+// Overloaded function for sposv. Its overload differs for
+// * MatrixA&
+// * MatrixX&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline integer_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
-        integer_t& iter ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    sposv_impl< value_type >::invoke( a, b, x, iter, info,
-            optimal_workspace() );
+inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
+        fortran_int_t& iter ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * const MatrixA&
+// * MatrixX&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX,
+        typename Workspace >
+inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
+        MatrixX& x, fortran_int_t& iter, Workspace work ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * const MatrixA&
+// * MatrixX&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX >
+inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
+        MatrixX& x, fortran_int_t& iter ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * MatrixA&
+// * const MatrixX&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX,
+        typename Workspace >
+inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
+        const MatrixX& x, fortran_int_t& iter, Workspace work ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * MatrixA&
+// * const MatrixX&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX >
+inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
+        const MatrixX& x, fortran_int_t& iter ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * const MatrixA&
+// * const MatrixX&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX,
+        typename Workspace >
+inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
+        const MatrixX& x, fortran_int_t& iter, Workspace work ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * const MatrixA&
+// * const MatrixX&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX >
+inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
+        const MatrixX& x, fortran_int_t& iter ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * MatrixA&
+// * MatrixX&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX,
+        typename Workspace >
+inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
+        const fortran_int_t& iter, Workspace work ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * MatrixA&
+// * MatrixX&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX >
+inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
+        const fortran_int_t& iter ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * const MatrixA&
+// * MatrixX&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX,
+        typename Workspace >
+inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
+        MatrixX& x, const fortran_int_t& iter, Workspace work ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * const MatrixA&
+// * MatrixX&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX >
+inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
+        MatrixX& x, const fortran_int_t& iter ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * MatrixA&
+// * const MatrixX&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX,
+        typename Workspace >
+inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
+        const MatrixX& x, const fortran_int_t& iter, Workspace work ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * MatrixA&
+// * const MatrixX&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX >
+inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
+        const MatrixX& x, const fortran_int_t& iter ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * const MatrixA&
+// * const MatrixX&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX,
+        typename Workspace >
+inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
+        const MatrixX& x, const fortran_int_t& iter, Workspace work ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for sposv. Its overload differs for
+// * const MatrixA&
+// * const MatrixX&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename MatrixB, typename MatrixX >
+inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
+        const MatrixX& x, const fortran_int_t& iter ) {
+    fortran_int_t info(0);
+    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
+            info, optimal_workspace() );
     return info;
 }
 

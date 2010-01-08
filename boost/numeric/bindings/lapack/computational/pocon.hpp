@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,16 +15,22 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_POCON_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -32,176 +38,272 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void pocon( const char uplo, const integer_t n, const float* a,
-        const integer_t lda, const float anorm, float& rcond, float* work,
-        integer_t* iwork, integer_t& info ) {
-    LAPACK_SPOCON( &uplo, &n, a, &lda, &anorm, &rcond, work, iwork, &info );
+//
+// Overloaded function for dispatching to float value-type.
+//
+template< typename UpLo >
+inline void pocon( UpLo, fortran_int_t n, const float* a, fortran_int_t lda,
+        float anorm, float& rcond, float* work, fortran_int_t* iwork,
+        fortran_int_t& info ) {
+    LAPACK_SPOCON( &lapack_option< UpLo >::value, &n, a, &lda, &anorm, &rcond,
+            work, iwork, &info );
 }
-inline void pocon( const char uplo, const integer_t n, const double* a,
-        const integer_t lda, const double anorm, double& rcond, double* work,
-        integer_t* iwork, integer_t& info ) {
-    LAPACK_DPOCON( &uplo, &n, a, &lda, &anorm, &rcond, work, iwork, &info );
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+template< typename UpLo >
+inline void pocon( UpLo, fortran_int_t n, const double* a, fortran_int_t lda,
+        double anorm, double& rcond, double* work, fortran_int_t* iwork,
+        fortran_int_t& info ) {
+    LAPACK_DPOCON( &lapack_option< UpLo >::value, &n, a, &lda, &anorm, &rcond,
+            work, iwork, &info );
 }
-inline void pocon( const char uplo, const integer_t n,
-        const traits::complex_f* a, const integer_t lda, const float anorm,
-        float& rcond, traits::complex_f* work, float* rwork,
-        integer_t& info ) {
-    LAPACK_CPOCON( &uplo, &n, traits::complex_ptr(a), &lda, &anorm, &rcond,
-            traits::complex_ptr(work), rwork, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+template< typename UpLo >
+inline void pocon( UpLo, fortran_int_t n, const std::complex<float>* a,
+        fortran_int_t lda, float anorm, float& rcond,
+        std::complex<float>* work, float* rwork, fortran_int_t& info ) {
+    LAPACK_CPOCON( &lapack_option< UpLo >::value, &n, a, &lda, &anorm, &rcond,
+            work, rwork, &info );
 }
-inline void pocon( const char uplo, const integer_t n,
-        const traits::complex_d* a, const integer_t lda, const double anorm,
-        double& rcond, traits::complex_d* work, double* rwork,
-        integer_t& info ) {
-    LAPACK_ZPOCON( &uplo, &n, traits::complex_ptr(a), &lda, &anorm, &rcond,
-            traits::complex_ptr(work), rwork, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+template< typename UpLo >
+inline void pocon( UpLo, fortran_int_t n, const std::complex<double>* a,
+        fortran_int_t lda, double anorm, double& rcond,
+        std::complex<double>* work, double* rwork, fortran_int_t& info ) {
+    LAPACK_ZPOCON( &lapack_option< UpLo >::value, &n, a, &lda, &anorm, &rcond,
+            work, rwork, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct pocon_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to pocon.
+//
+template< typename Value, typename Enable = void >
+struct pocon_impl {};
 
-// real specialization
-template< typename ValueType >
-struct pocon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct pocon_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename WORK, typename IWORK >
     static void invoke( const MatrixA& a, const real_type anorm,
-            real_type& rcond, integer_t& info, detail::workspace2< WORK,
-            IWORK > work ) {
-        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
-                traits::matrix_uplo_tag(a) == 'L' );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( traits::matrix_num_columns(a) ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
-                min_size_iwork( traits::matrix_num_columns(a) ));
-        detail::pocon( traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), anorm, rcond,
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_storage(work.select(integer_t())), info );
+            real_type& rcond, fortran_int_t& info, detail::workspace2<
+            WORK, IWORK > work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
+                min_size_iwork( size_column(a) ));
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                size_column(a) ));
+        BOOST_ASSERT( size_column(a) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        detail::pocon( uplo(), size_column(a), begin_value(a),
+                stride_major(a), anorm, rcond,
+                begin_value(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixA >
     static void invoke( const MatrixA& a, const real_type anorm,
-            real_type& rcond, integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(
-                traits::matrix_num_columns(a) ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                traits::matrix_num_columns(a) ) );
+            real_type& rcond, fortran_int_t& info,
+            minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        bindings::detail::array< real_type > tmp_work( min_size_work(
+                size_column(a) ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( size_column(a) ) );
         invoke( a, anorm, rcond, info, workspace( tmp_work, tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixA >
     static void invoke( const MatrixA& a, const real_type anorm,
-            real_type& rcond, integer_t& info, optimal_workspace work ) {
+            real_type& rcond, fortran_int_t& info,
+            optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         invoke( a, anorm, rcond, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         return 3*n;
     }
 
-    static integer_t min_size_iwork( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( const std::ptrdiff_t n ) {
         return n;
     }
 };
 
-// complex specialization
-template< typename ValueType >
-struct pocon_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct pocon_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename WORK, typename RWORK >
     static void invoke( const MatrixA& a, const real_type anorm,
-            real_type& rcond, integer_t& info, detail::workspace2< WORK,
-            RWORK > work ) {
-        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
-                traits::matrix_uplo_tag(a) == 'L' );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( traits::matrix_num_columns(a) ));
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_rwork( traits::matrix_num_columns(a) ));
-        detail::pocon( traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_storage(a),
-                traits::leading_dimension(a), anorm, rcond,
-                traits::vector_storage(work.select(value_type())),
-                traits::vector_storage(work.select(real_type())), info );
+            real_type& rcond, fortran_int_t& info, detail::workspace2<
+            WORK, RWORK > work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork(
+                size_column(a) ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                size_column(a) ));
+        BOOST_ASSERT( size_column(a) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        detail::pocon( uplo(), size_column(a), begin_value(a),
+                stride_major(a), anorm, rcond,
+                begin_value(work.select(value_type())),
+                begin_value(work.select(real_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixA >
     static void invoke( const MatrixA& a, const real_type anorm,
-            real_type& rcond, integer_t& info, minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(
-                traits::matrix_num_columns(a) ) );
-        traits::detail::array< real_type > tmp_rwork( min_size_rwork(
-                traits::matrix_num_columns(a) ) );
+            real_type& rcond, fortran_int_t& info,
+            minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                size_column(a) ) );
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork(
+                size_column(a) ) );
         invoke( a, anorm, rcond, info, workspace( tmp_work, tmp_rwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixA >
     static void invoke( const MatrixA& a, const real_type anorm,
-            real_type& rcond, integer_t& info, optimal_workspace work ) {
+            real_type& rcond, fortran_int_t& info,
+            optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         invoke( a, anorm, rcond, info, minimal_workspace() );
     }
 
-    static integer_t min_size_work( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n ) {
         return 2*n;
     }
 
-    static integer_t min_size_rwork( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array rwork.
+    //
+    static std::ptrdiff_t min_size_rwork( const std::ptrdiff_t n ) {
         return n;
     }
 };
 
 
-// template function to call pocon
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the pocon_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for pocon. Its overload differs for
+// * User-defined workspace
+//
 template< typename MatrixA, typename Workspace >
-inline integer_t pocon( const MatrixA& a,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type anorm,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type& rcond, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    pocon_impl< value_type >::invoke( a, anorm, rcond, info, work );
+inline std::ptrdiff_t pocon( const MatrixA& a,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type anorm, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond, Workspace work ) {
+    fortran_int_t info(0);
+    pocon_impl< typename value< MatrixA >::type >::invoke( a, anorm,
+            rcond, info, work );
     return info;
 }
 
-// template function to call pocon, default workspace type
+//
+// Overloaded function for pocon. Its overload differs for
+// * Default workspace-type (optimal)
+//
 template< typename MatrixA >
-inline integer_t pocon( const MatrixA& a,
-        const typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type anorm,
-        typename traits::type_traits< typename traits::matrix_traits<
-        MatrixA >::value_type >::real_type& rcond ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    pocon_impl< value_type >::invoke( a, anorm, rcond, info,
-            optimal_workspace() );
+inline std::ptrdiff_t pocon( const MatrixA& a,
+        const typename remove_imaginary< typename value<
+        MatrixA >::type >::type anorm, typename remove_imaginary<
+        typename value< MatrixA >::type >::type& rcond ) {
+    fortran_int_t info(0);
+    pocon_impl< typename value< MatrixA >::type >::invoke( a, anorm,
+            rcond, info, optimal_workspace() );
     return info;
 }
 

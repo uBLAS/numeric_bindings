@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,16 +15,21 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_LACON_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -32,141 +37,327 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void lacon( const integer_t n, float* v, float* x, integer_t* isgn,
-        float& est, integer_t& kase ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void lacon( fortran_int_t n, float* v, float* x, fortran_int_t* isgn,
+        float& est, fortran_int_t& kase ) {
     LAPACK_SLACON( &n, v, x, isgn, &est, &kase );
 }
-inline void lacon( const integer_t n, double* v, double* x, integer_t* isgn,
-        double& est, integer_t& kase ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void lacon( fortran_int_t n, double* v, double* x, fortran_int_t* isgn,
+        double& est, fortran_int_t& kase ) {
     LAPACK_DLACON( &n, v, x, isgn, &est, &kase );
 }
-inline void lacon( const integer_t n, traits::complex_f* v,
-        traits::complex_f* x, float& est, integer_t& kase ) {
-    LAPACK_CLACON( &n, traits::complex_ptr(v), traits::complex_ptr(x), &est,
-            &kase );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void lacon( fortran_int_t n, std::complex<float>* v,
+        std::complex<float>* x, float& est, fortran_int_t& kase ) {
+    LAPACK_CLACON( &n, v, x, &est, &kase );
 }
-inline void lacon( const integer_t n, traits::complex_d* v,
-        traits::complex_d* x, double& est, integer_t& kase ) {
-    LAPACK_ZLACON( &n, traits::complex_ptr(v), traits::complex_ptr(x), &est,
-            &kase );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void lacon( fortran_int_t n, std::complex<double>* v,
+        std::complex<double>* x, double& est, fortran_int_t& kase ) {
+    LAPACK_ZLACON( &n, v, x, &est, &kase );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct lacon_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to lacon.
+//
+template< typename Value, typename Enable = void >
+struct lacon_impl {};
 
-// real specialization
-template< typename ValueType >
-struct lacon_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct lacon_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorX, typename V, typename ISGN >
-    static void invoke( const integer_t n, VectorX& x, real_type& est,
-            integer_t& kase, detail::workspace2< V, ISGN > work ) {
+    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
+            fortran_int_t& kase, detail::workspace2< V, ISGN > work ) {
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
         BOOST_ASSERT( n >= 1 );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_v( n ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_isgn( n ));
-        detail::lacon( n, traits::vector_storage(work.select(real_type())),
-                traits::vector_storage(x),
-                traits::vector_storage(work.select(integer_t())), est, kase );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_v( n ));
+        detail::lacon( n, begin_value(work.select(real_type())),
+                begin_value(x), begin_value(work.select(fortran_int_t())),
+                est, kase );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorX >
-    static void invoke( const integer_t n, VectorX& x, real_type& est,
-            integer_t& kase, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_v( min_size_v( n ) );
-        traits::detail::array< integer_t > tmp_isgn( min_size_isgn( n ) );
+    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
+            fortran_int_t& kase, minimal_workspace work ) {
+        bindings::detail::array< real_type > tmp_v( min_size_v( n ) );
+        bindings::detail::array<
+                fortran_int_t > tmp_isgn( min_size_isgn( n ) );
         invoke( n, x, est, kase, workspace( tmp_v, tmp_isgn ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorX >
-    static void invoke( const integer_t n, VectorX& x, real_type& est,
-            integer_t& kase, optimal_workspace work ) {
+    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
+            fortran_int_t& kase, optimal_workspace work ) {
         invoke( n, x, est, kase, minimal_workspace() );
     }
 
-    static integer_t min_size_v( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array v.
+    //
+    static std::ptrdiff_t min_size_v( const std::ptrdiff_t n ) {
         return n;
     }
 
-    static integer_t min_size_isgn( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array isgn.
+    //
+    static std::ptrdiff_t min_size_isgn( const std::ptrdiff_t n ) {
         return n;
     }
 };
 
-// complex specialization
-template< typename ValueType >
-struct lacon_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct lacon_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorX, typename V >
-    static void invoke( const integer_t n, VectorX& x, real_type& est,
-            integer_t& kase, detail::workspace1< V > work ) {
+    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
+            fortran_int_t& kase, detail::workspace1< V > work ) {
+        BOOST_STATIC_ASSERT( (is_mutable< VectorX >::value) );
         BOOST_ASSERT( n >= 1 );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_v( n ));
-        detail::lacon( n, traits::vector_storage(work.select(value_type())),
-                traits::vector_storage(x), est, kase );
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_v( n ));
+        detail::lacon( n, begin_value(work.select(value_type())),
+                begin_value(x), est, kase );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorX >
-    static void invoke( const integer_t n, VectorX& x, real_type& est,
-            integer_t& kase, minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_v( min_size_v( n ) );
+    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
+            fortran_int_t& kase, minimal_workspace work ) {
+        bindings::detail::array< value_type > tmp_v( min_size_v( n ) );
         invoke( n, x, est, kase, workspace( tmp_v ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorX >
-    static void invoke( const integer_t n, VectorX& x, real_type& est,
-            integer_t& kase, optimal_workspace work ) {
+    static void invoke( const fortran_int_t n, VectorX& x, real_type& est,
+            fortran_int_t& kase, optimal_workspace work ) {
         invoke( n, x, est, kase, minimal_workspace() );
     }
 
-    static integer_t min_size_v( const integer_t n ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array v.
+    //
+    static std::ptrdiff_t min_size_v( const std::ptrdiff_t n ) {
         return n;
     }
 };
 
 
-// template function to call lacon
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the lacon_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for lacon. Its overload differs for
+// * VectorX&
+// * fortran_int_t&
+// * User-defined workspace
+//
 template< typename VectorX, typename Workspace >
-inline integer_t lacon( const integer_t n, VectorX& x,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorX >::value_type >::real_type& est, integer_t& kase,
+inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
+        typename remove_imaginary< typename value<
+        VectorX >::type >::type& est, fortran_int_t& kase,
         Workspace work ) {
-    typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    integer_t info(0);
-    lacon_impl< value_type >::invoke( n, x, est, kase, work );
+    fortran_int_t info(0);
+    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
+            kase, work );
     return info;
 }
 
-// template function to call lacon, default workspace type
+//
+// Overloaded function for lacon. Its overload differs for
+// * VectorX&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
 template< typename VectorX >
-inline integer_t lacon( const integer_t n, VectorX& x,
-        typename traits::type_traits< typename traits::vector_traits<
-        VectorX >::value_type >::real_type& est, integer_t& kase ) {
-    typedef typename traits::vector_traits< VectorX >::value_type value_type;
-    integer_t info(0);
-    lacon_impl< value_type >::invoke( n, x, est, kase,
-            optimal_workspace() );
+inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
+        typename remove_imaginary< typename value<
+        VectorX >::type >::type& est, fortran_int_t& kase ) {
+    fortran_int_t info(0);
+    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
+            kase, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for lacon. Its overload differs for
+// * const VectorX&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorX, typename Workspace >
+inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
+        typename remove_imaginary< typename value<
+        VectorX >::type >::type& est, fortran_int_t& kase,
+        Workspace work ) {
+    fortran_int_t info(0);
+    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
+            kase, work );
+    return info;
+}
+
+//
+// Overloaded function for lacon. Its overload differs for
+// * const VectorX&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorX >
+inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
+        typename remove_imaginary< typename value<
+        VectorX >::type >::type& est, fortran_int_t& kase ) {
+    fortran_int_t info(0);
+    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
+            kase, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for lacon. Its overload differs for
+// * VectorX&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorX, typename Workspace >
+inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
+        typename remove_imaginary< typename value<
+        VectorX >::type >::type& est, const fortran_int_t& kase,
+        Workspace work ) {
+    fortran_int_t info(0);
+    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
+            kase, work );
+    return info;
+}
+
+//
+// Overloaded function for lacon. Its overload differs for
+// * VectorX&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorX >
+inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
+        typename remove_imaginary< typename value<
+        VectorX >::type >::type& est, const fortran_int_t& kase ) {
+    fortran_int_t info(0);
+    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
+            kase, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for lacon. Its overload differs for
+// * const VectorX&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorX, typename Workspace >
+inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
+        typename remove_imaginary< typename value<
+        VectorX >::type >::type& est, const fortran_int_t& kase,
+        Workspace work ) {
+    fortran_int_t info(0);
+    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
+            kase, work );
+    return info;
+}
+
+//
+// Overloaded function for lacon. Its overload differs for
+// * const VectorX&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorX >
+inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
+        typename remove_imaginary< typename value<
+        VectorX >::type >::type& est, const fortran_int_t& kase ) {
+    fortran_int_t info(0);
+    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
+            kase, optimal_workspace() );
     return info;
 }
 

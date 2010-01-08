@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,17 +15,22 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_COMPUTATIONAL_TGSNA_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_complex.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
+#include <boost/numeric/bindings/is_real.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/traits/is_complex.hpp>
-#include <boost/numeric/bindings/traits/is_real.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 #include <boost/utility/enable_if.hpp>
 
 namespace boost {
@@ -33,284 +38,699 @@ namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void tgsna( const char job, const char howmny, const logical_t* select,
-        const integer_t n, const float* a, const integer_t lda,
-        const float* b, const integer_t ldb, const float* vl,
-        const integer_t ldvl, const float* vr, const integer_t ldvr, float* s,
-        float* dif, const integer_t mm, integer_t& m, float* work,
-        const integer_t lwork, integer_t* iwork, integer_t& info ) {
+//
+// Overloaded function for dispatching to float value-type.
+//
+inline void tgsna( char job, char howmny, const logical_t* select,
+        fortran_int_t n, const float* a, fortran_int_t lda, const float* b,
+        fortran_int_t ldb, const float* vl, fortran_int_t ldvl,
+        const float* vr, fortran_int_t ldvr, float* s, float* dif,
+        fortran_int_t mm, fortran_int_t& m, float* work, fortran_int_t lwork,
+        fortran_int_t* iwork, fortran_int_t& info ) {
     LAPACK_STGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,
             &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
 }
-inline void tgsna( const char job, const char howmny, const logical_t* select,
-        const integer_t n, const double* a, const integer_t lda,
-        const double* b, const integer_t ldb, const double* vl,
-        const integer_t ldvl, const double* vr, const integer_t ldvr,
-        double* s, double* dif, const integer_t mm, integer_t& m,
-        double* work, const integer_t lwork, integer_t* iwork,
-        integer_t& info ) {
+
+//
+// Overloaded function for dispatching to double value-type.
+//
+inline void tgsna( char job, char howmny, const logical_t* select,
+        fortran_int_t n, const double* a, fortran_int_t lda, const double* b,
+        fortran_int_t ldb, const double* vl, fortran_int_t ldvl,
+        const double* vr, fortran_int_t ldvr, double* s, double* dif,
+        fortran_int_t mm, fortran_int_t& m, double* work, fortran_int_t lwork,
+        fortran_int_t* iwork, fortran_int_t& info ) {
     LAPACK_DTGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,
             &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
 }
-inline void tgsna( const char job, const char howmny, const logical_t* select,
-        const integer_t n, const traits::complex_f* a, const integer_t lda,
-        const traits::complex_f* b, const integer_t ldb,
-        const traits::complex_f* vl, const integer_t ldvl,
-        const traits::complex_f* vr, const integer_t ldvr, float* s,
-        float* dif, const integer_t mm, integer_t& m, traits::complex_f* work,
-        const integer_t lwork, integer_t* iwork, integer_t& info ) {
-    LAPACK_CTGSNA( &job, &howmny, select, &n, traits::complex_ptr(a), &lda,
-            traits::complex_ptr(b), &ldb, traits::complex_ptr(vl), &ldvl,
-            traits::complex_ptr(vr), &ldvr, s, dif, &mm, &m,
-            traits::complex_ptr(work), &lwork, iwork, &info );
+
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+inline void tgsna( char job, char howmny, const logical_t* select,
+        fortran_int_t n, const std::complex<float>* a, fortran_int_t lda,
+        const std::complex<float>* b, fortran_int_t ldb,
+        const std::complex<float>* vl, fortran_int_t ldvl,
+        const std::complex<float>* vr, fortran_int_t ldvr, float* s,
+        float* dif, fortran_int_t mm, fortran_int_t& m,
+        std::complex<float>* work, fortran_int_t lwork, fortran_int_t* iwork,
+        fortran_int_t& info ) {
+    LAPACK_CTGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,
+            &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
 }
-inline void tgsna( const char job, const char howmny, const logical_t* select,
-        const integer_t n, const traits::complex_d* a, const integer_t lda,
-        const traits::complex_d* b, const integer_t ldb,
-        const traits::complex_d* vl, const integer_t ldvl,
-        const traits::complex_d* vr, const integer_t ldvr, double* s,
-        double* dif, const integer_t mm, integer_t& m,
-        traits::complex_d* work, const integer_t lwork, integer_t* iwork,
-        integer_t& info ) {
-    LAPACK_ZTGSNA( &job, &howmny, select, &n, traits::complex_ptr(a), &lda,
-            traits::complex_ptr(b), &ldb, traits::complex_ptr(vl), &ldvl,
-            traits::complex_ptr(vr), &ldvr, s, dif, &mm, &m,
-            traits::complex_ptr(work), &lwork, iwork, &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+inline void tgsna( char job, char howmny, const logical_t* select,
+        fortran_int_t n, const std::complex<double>* a, fortran_int_t lda,
+        const std::complex<double>* b, fortran_int_t ldb,
+        const std::complex<double>* vl, fortran_int_t ldvl,
+        const std::complex<double>* vr, fortran_int_t ldvr, double* s,
+        double* dif, fortran_int_t mm, fortran_int_t& m,
+        std::complex<double>* work, fortran_int_t lwork, fortran_int_t* iwork,
+        fortran_int_t& info ) {
+    LAPACK_ZTGSNA( &job, &howmny, select, &n, a, &lda, b, &ldb, vl, &ldvl, vr,
+            &ldvr, s, dif, &mm, &m, work, &lwork, iwork, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType, typename Enable = void >
-struct tgsna_impl{};
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to tgsna.
+//
+template< typename Value, typename Enable = void >
+struct tgsna_impl {};
 
-// real specialization
-template< typename ValueType >
-struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_real<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a real type.
+//
+template< typename Value >
+struct tgsna_impl< Value, typename boost::enable_if< is_real< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF, typename WORK, typename IWORK >
     static void invoke( const char job, const char howmny,
-            const VectorSELECT& select, const integer_t n, const MatrixA& a,
-            const MatrixB& b, const MatrixVL& vl, const MatrixVR& vr,
-            VectorS& s, VectorDIF& dif, const integer_t mm, integer_t& m,
-            integer_t& info, detail::workspace2< WORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixVL >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixVR >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorS >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::vector_traits<
-                VectorDIF >::value_type >::value) );
-        BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
+            const VectorSELECT& select, const fortran_int_t n,
+            const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorDIF& dif,
+            const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixVL >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixVR >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorS >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                VectorDIF >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorDIF >::value) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
         BOOST_ASSERT( mm >= m );
-        BOOST_ASSERT( traits::vector_size(work.select(real_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( $CALL_MIN_SIZE ));
-        detail::tgsna( job, howmny, traits::vector_storage(select), n,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                traits::matrix_storage(vl), traits::leading_dimension(vl),
-                traits::matrix_storage(vr), traits::leading_dimension(vr),
-                traits::vector_storage(s), traits::vector_storage(dif), mm, m,
-                traits::vector_storage(work.select(real_type())),
-                traits::vector_size(work.select(real_type())),
-                traits::vector_storage(work.select(integer_t())), info );
+        BOOST_ASSERT( size(work.select(real_type())) >= min_size_work(
+                $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
+        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
+        detail::tgsna( job, howmny, begin_value(select), n, begin_value(a),
+                stride_major(a), begin_value(b), stride_major(b),
+                begin_value(vl), stride_major(vl), begin_value(vr),
+                stride_major(vr), begin_value(s), begin_value(dif), mm, m,
+                begin_value(work.select(real_type())),
+                size(work.select(real_type())),
+                begin_value(work.select(fortran_int_t())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF >
     static void invoke( const char job, const char howmny,
-            const VectorSELECT& select, const integer_t n, const MatrixA& a,
-            const MatrixB& b, const MatrixVL& vl, const MatrixVR& vr,
-            VectorS& s, VectorDIF& dif, const integer_t mm, integer_t& m,
-            integer_t& info, minimal_workspace work ) {
-        traits::detail::array< real_type > tmp_work( min_size_work(
+            const VectorSELECT& select, const fortran_int_t n,
+            const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorDIF& dif,
+            const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, minimal_workspace work ) {
+        bindings::detail::array< real_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( $CALL_MIN_SIZE ) );
         invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF >
     static void invoke( const char job, const char howmny,
-            const VectorSELECT& select, const integer_t n, const MatrixA& a,
-            const MatrixB& b, const MatrixVL& vl, const MatrixVR& vr,
-            VectorS& s, VectorDIF& dif, const integer_t mm, integer_t& m,
-            integer_t& info, optimal_workspace work ) {
+            const VectorSELECT& select, const fortran_int_t n,
+            const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorDIF& dif,
+            const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, optimal_workspace work ) {
         real_type opt_size_work;
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                $CALL_MIN_SIZE ) );
-        detail::tgsna( job, howmny, traits::vector_storage(select), n,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                traits::matrix_storage(vl), traits::leading_dimension(vl),
-                traits::matrix_storage(vr), traits::leading_dimension(vr),
-                traits::vector_storage(s), traits::vector_storage(dif), mm, m,
-                &opt_size_work, -1, traits::vector_storage(tmp_iwork), info );
-        traits::detail::array< real_type > tmp_work(
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( $CALL_MIN_SIZE ) );
+        detail::tgsna( job, howmny, begin_value(select), n,
+                begin_value(a), stride_major(a), begin_value(b),
+                stride_major(b), begin_value(vl), stride_major(vl),
+                begin_value(vr), stride_major(vr), begin_value(s),
+                begin_value(dif), mm, m, &opt_size_work, -1,
+                begin_value(tmp_iwork), info );
+        bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
         $MIN_SIZE
     }
 
-    static integer_t min_size_iwork( $ARGUMENTS ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( $ARGUMENTS ) {
         $MIN_SIZE
     }
 };
 
-// complex specialization
-template< typename ValueType >
-struct tgsna_impl< ValueType, typename boost::enable_if< traits::is_complex<ValueType> >::type > {
+//
+// This implementation is enabled if Value is a complex type.
+//
+template< typename Value >
+struct tgsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type > {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF, typename WORK, typename IWORK >
     static void invoke( const char job, const char howmny,
-            const VectorSELECT& select, const integer_t n, const MatrixA& a,
-            const MatrixB& b, const MatrixVL& vl, const MatrixVR& vr,
-            VectorS& s, VectorDIF& dif, const integer_t mm, integer_t& m,
-            integer_t& info, detail::workspace2< WORK, IWORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::vector_traits<
-                VectorS >::value_type, typename traits::vector_traits<
-                VectorDIF >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixVL >::value_type >::value) );
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixVR >::value_type >::value) );
-        BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
+            const VectorSELECT& select, const fortran_int_t n,
+            const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorDIF& dif,
+            const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, detail::workspace2< WORK, IWORK > work ) {
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< VectorS >::type >::type,
+                typename remove_const< typename value<
+                VectorDIF >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixVL >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixVR >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorDIF >::value) );
         BOOST_ASSERT( howmny == 'A' || howmny == 'S' );
-        BOOST_ASSERT( n >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,n) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( job == 'E' || job == 'V' || job == 'B' );
         BOOST_ASSERT( mm >= m );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work( $CALL_MIN_SIZE ));
-        BOOST_ASSERT( traits::vector_size(work.select(integer_t())) >=
+        BOOST_ASSERT( n >= 0 );
+        BOOST_ASSERT( size(work.select(fortran_int_t())) >=
                 min_size_iwork( $CALL_MIN_SIZE ));
-        detail::tgsna( job, howmny, traits::vector_storage(select), n,
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::matrix_storage(b), traits::leading_dimension(b),
-                traits::matrix_storage(vl), traits::leading_dimension(vl),
-                traits::matrix_storage(vr), traits::leading_dimension(vr),
-                traits::vector_storage(s), traits::vector_storage(dif), mm, m,
-                traits::vector_storage(work.select(value_type())),
-                traits::vector_size(work.select(value_type())),
-                traits::vector_storage(work.select(integer_t())), info );
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                $CALL_MIN_SIZE ));
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( size_minor(vl) == 1 || stride_minor(vl) == 1 );
+        BOOST_ASSERT( size_minor(vr) == 1 || stride_minor(vr) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,n) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,n) );
+        detail::tgsna( job, howmny, begin_value(select), n, begin_value(a),
+                stride_major(a), begin_value(b), stride_major(b),
+                begin_value(vl), stride_major(vl), begin_value(vr),
+                stride_major(vr), begin_value(s), begin_value(dif), mm, m,
+                begin_value(work.select(value_type())),
+                size(work.select(value_type())),
+                begin_value(work.select(fortran_int_t())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF >
     static void invoke( const char job, const char howmny,
-            const VectorSELECT& select, const integer_t n, const MatrixA& a,
-            const MatrixB& b, const MatrixVL& vl, const MatrixVR& vr,
-            VectorS& s, VectorDIF& dif, const integer_t mm, integer_t& m,
-            integer_t& info, minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work(
+            const VectorSELECT& select, const fortran_int_t n,
+            const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorDIF& dif,
+            const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, minimal_workspace work ) {
+        bindings::detail::array< value_type > tmp_work( min_size_work(
                 $CALL_MIN_SIZE ) );
-        traits::detail::array< integer_t > tmp_iwork( min_size_iwork(
-                $CALL_MIN_SIZE ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( $CALL_MIN_SIZE ) );
         invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
                 workspace( tmp_work, tmp_iwork ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename VectorSELECT, typename MatrixA, typename MatrixB,
             typename MatrixVL, typename MatrixVR, typename VectorS,
             typename VectorDIF >
     static void invoke( const char job, const char howmny,
-            const VectorSELECT& select, const integer_t n, const MatrixA& a,
-            const MatrixB& b, const MatrixVL& vl, const MatrixVR& vr,
-            VectorS& s, VectorDIF& dif, const integer_t mm, integer_t& m,
-            integer_t& info, optimal_workspace work ) {
+            const VectorSELECT& select, const fortran_int_t n,
+            const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+            const MatrixVR& vr, VectorS& s, VectorDIF& dif,
+            const fortran_int_t mm, fortran_int_t& m,
+            fortran_int_t& info, optimal_workspace work ) {
         invoke( job, howmny, select, n, a, b, vl, vr, s, dif, mm, m, info,
                 minimal_workspace() );
     }
 
-    static integer_t min_size_work( $ARGUMENTS ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work( $ARGUMENTS ) {
         $MIN_SIZE
     }
 
-    static integer_t min_size_iwork( $ARGUMENTS ) {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array iwork.
+    //
+    static std::ptrdiff_t min_size_iwork( $ARGUMENTS ) {
         $MIN_SIZE
     }
 };
 
 
-// template function to call tgsna
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the tgsna_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * VectorS&
+// * VectorDIF&
+// * fortran_int_t&
+// * User-defined workspace
+//
 template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixVL, typename MatrixVR, typename VectorS,
         typename VectorDIF, typename Workspace >
-inline integer_t tgsna( const char job, const char howmny,
-        const VectorSELECT& select, const integer_t n, const MatrixA& a,
-        const MatrixB& b, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
-        VectorDIF& dif, const integer_t mm, integer_t& m, Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    tgsna_impl< value_type >::invoke( job, howmny, select, n, a, b, vl,
-            vr, s, dif, mm, m, info, work );
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, VectorS& s, VectorDIF& dif,
+        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info, work );
     return info;
 }
 
-// template function to call tgsna, default workspace type
+//
+// Overloaded function for tgsna. Its overload differs for
+// * VectorS&
+// * VectorDIF&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
 template< typename VectorSELECT, typename MatrixA, typename MatrixB,
         typename MatrixVL, typename MatrixVR, typename VectorS,
         typename VectorDIF >
-inline integer_t tgsna( const char job, const char howmny,
-        const VectorSELECT& select, const integer_t n, const MatrixA& a,
-        const MatrixB& b, const MatrixVL& vl, const MatrixVR& vr, VectorS& s,
-        VectorDIF& dif, const integer_t mm, integer_t& m ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    tgsna_impl< value_type >::invoke( job, howmny, select, n, a, b, vl,
-            vr, s, dif, mm, m, info, optimal_workspace() );
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, VectorS& s, VectorDIF& dif,
+        const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * const VectorS&
+// * VectorDIF&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF, typename Workspace >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, const VectorS& s, VectorDIF& dif,
+        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * const VectorS&
+// * VectorDIF&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, const VectorS& s, VectorDIF& dif,
+        const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * VectorS&
+// * const VectorDIF&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF, typename Workspace >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, VectorS& s, const VectorDIF& dif,
+        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * VectorS&
+// * const VectorDIF&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, VectorS& s, const VectorDIF& dif,
+        const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * const VectorS&
+// * const VectorDIF&
+// * fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF, typename Workspace >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, const VectorS& s, const VectorDIF& dif,
+        const fortran_int_t mm, fortran_int_t& m, Workspace work ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * const VectorS&
+// * const VectorDIF&
+// * fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, const VectorS& s, const VectorDIF& dif,
+        const fortran_int_t mm, fortran_int_t& m ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * VectorS&
+// * VectorDIF&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF, typename Workspace >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, VectorS& s, VectorDIF& dif,
+        const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * VectorS&
+// * VectorDIF&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, VectorS& s, VectorDIF& dif,
+        const fortran_int_t mm, const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * const VectorS&
+// * VectorDIF&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF, typename Workspace >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, const VectorS& s, VectorDIF& dif,
+        const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * const VectorS&
+// * VectorDIF&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, const VectorS& s, VectorDIF& dif,
+        const fortran_int_t mm, const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * VectorS&
+// * const VectorDIF&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF, typename Workspace >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, VectorS& s, const VectorDIF& dif,
+        const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * VectorS&
+// * const VectorDIF&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, VectorS& s, const VectorDIF& dif,
+        const fortran_int_t mm, const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info,
+            optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * const VectorS&
+// * const VectorDIF&
+// * const fortran_int_t&
+// * User-defined workspace
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF, typename Workspace >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, const VectorS& s, const VectorDIF& dif,
+        const fortran_int_t mm, const fortran_int_t& m,
+        Workspace work ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info, work );
+    return info;
+}
+
+//
+// Overloaded function for tgsna. Its overload differs for
+// * const VectorS&
+// * const VectorDIF&
+// * const fortran_int_t&
+// * Default workspace-type (optimal)
+//
+template< typename VectorSELECT, typename MatrixA, typename MatrixB,
+        typename MatrixVL, typename MatrixVR, typename VectorS,
+        typename VectorDIF >
+inline std::ptrdiff_t tgsna( const char job, const char howmny,
+        const VectorSELECT& select, const fortran_int_t n,
+        const MatrixA& a, const MatrixB& b, const MatrixVL& vl,
+        const MatrixVR& vr, const VectorS& s, const VectorDIF& dif,
+        const fortran_int_t mm, const fortran_int_t& m ) {
+    fortran_int_t info(0);
+    tgsna_impl< typename value< MatrixA >::type >::invoke( job, howmny,
+            select, n, a, b, vl, vr, s, dif, mm, m, info,
+            optimal_workspace() );
     return info;
 }
 

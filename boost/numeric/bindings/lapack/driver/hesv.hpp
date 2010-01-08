@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2003--2009
+// Copyright (c) 2002--2010
 // Toon Knapen, Karl Meerbergen, Kresimir Fresl,
 // Thomas Klimpel and Rutger ter Borg
 //
@@ -15,142 +15,417 @@
 #define BOOST_NUMERIC_BINDINGS_LAPACK_DRIVER_HESV_HPP
 
 #include <boost/assert.hpp>
-#include <boost/mpl/bool.hpp>
+#include <boost/numeric/bindings/begin.hpp>
+#include <boost/numeric/bindings/data_side.hpp>
+#include <boost/numeric/bindings/detail/array.hpp>
+#include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/lapack/detail/lapack.h>
+#include <boost/numeric/bindings/lapack/detail/lapack_option.hpp>
 #include <boost/numeric/bindings/lapack/workspace.hpp>
-#include <boost/numeric/bindings/traits/detail/array.hpp>
+#include <boost/numeric/bindings/remove_imaginary.hpp>
+#include <boost/numeric/bindings/size.hpp>
+#include <boost/numeric/bindings/stride.hpp>
 #include <boost/numeric/bindings/traits/detail/utils.hpp>
-#include <boost/numeric/bindings/traits/traits.hpp>
-#include <boost/numeric/bindings/traits/type_traits.hpp>
+#include <boost/numeric/bindings/value.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
+#include <boost/type_traits/remove_const.hpp>
 
 namespace boost {
 namespace numeric {
 namespace bindings {
 namespace lapack {
 
-//$DESCRIPTION
-
-// overloaded functions to call lapack
+//
+// The detail namespace contains value-type-overloaded functions that
+// dispatch to the appropriate back-end LAPACK-routine.
+//
 namespace detail {
 
-inline void hesv( const char uplo, const integer_t n, const integer_t nrhs,
-        traits::complex_f* a, const integer_t lda, integer_t* ipiv,
-        traits::complex_f* b, const integer_t ldb, traits::complex_f* work,
-        const integer_t lwork, integer_t& info ) {
-    LAPACK_CHESV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
-            traits::complex_ptr(b), &ldb, traits::complex_ptr(work), &lwork,
-            &info );
+//
+// Overloaded function for dispatching to complex<float> value-type.
+//
+template< typename UpLo >
+inline void hesv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        std::complex<float>* a, fortran_int_t lda, fortran_int_t* ipiv,
+        std::complex<float>* b, fortran_int_t ldb, std::complex<float>* work,
+        fortran_int_t lwork, fortran_int_t& info ) {
+    LAPACK_CHESV( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
+            &ldb, work, &lwork, &info );
 }
-inline void hesv( const char uplo, const integer_t n, const integer_t nrhs,
-        traits::complex_d* a, const integer_t lda, integer_t* ipiv,
-        traits::complex_d* b, const integer_t ldb, traits::complex_d* work,
-        const integer_t lwork, integer_t& info ) {
-    LAPACK_ZHESV( &uplo, &n, &nrhs, traits::complex_ptr(a), &lda, ipiv,
-            traits::complex_ptr(b), &ldb, traits::complex_ptr(work), &lwork,
-            &info );
+
+//
+// Overloaded function for dispatching to complex<double> value-type.
+//
+template< typename UpLo >
+inline void hesv( UpLo, fortran_int_t n, fortran_int_t nrhs,
+        std::complex<double>* a, fortran_int_t lda, fortran_int_t* ipiv,
+        std::complex<double>* b, fortran_int_t ldb,
+        std::complex<double>* work, fortran_int_t lwork,
+        fortran_int_t& info ) {
+    LAPACK_ZHESV( &lapack_option< UpLo >::value, &n, &nrhs, a, &lda, ipiv, b,
+            &ldb, work, &lwork, &info );
 }
+
 } // namespace detail
 
-// value-type based template
-template< typename ValueType >
+//
+// Value-type based template class. Use this class if you need a type
+// for dispatching to hesv.
+//
+template< typename Value >
 struct hesv_impl {
 
-    typedef ValueType value_type;
-    typedef typename traits::type_traits<ValueType>::real_type real_type;
+    typedef Value value_type;
+    typedef typename remove_imaginary< Value >::type real_type;
+    typedef tag::column_major order;
 
-    // high-level solve typedefs and functions
-    typedef boost::mpl::bool_<true> has_pivot;
-
-    template< typename MatrixA, typename MatrixB, typename VectorP >
-    static void solve( MatrixA& A, MatrixB& B, VectorP& pivot,
-            integer_t& info ) {
-        invoke( A, pivot, B, info );
-    }
-
-    template< typename MatrixA, typename MatrixB, typename VectorP >
-    static void solve( MatrixA& A, MatrixB& B, VectorP const&,
-            integer_t& info ) {
-        traits::detail::array<
-                integer_t > pivot( traits::matrix_num_columns(A) );
-        invoke( A, pivot, B, info );
-    }
-
-    // user-defined workspace specialization
+    //
+    // Static member function for user-defined workspaces, that
+    // * Deduces the required arguments for dispatching to LAPACK, and
+    // * Asserts that most arguments make sense.
+    //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB,
             typename WORK >
     static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            integer_t& info, detail::workspace1< WORK > work ) {
-        BOOST_STATIC_ASSERT( (boost::is_same< typename traits::matrix_traits<
-                MatrixA >::value_type, typename traits::matrix_traits<
-                MatrixB >::value_type >::value) );
-        BOOST_ASSERT( traits::matrix_uplo_tag(a) == 'U' ||
-                traits::matrix_uplo_tag(a) == 'L' );
-        BOOST_ASSERT( traits::matrix_num_columns(a) >= 0 );
-        BOOST_ASSERT( traits::matrix_num_columns(b) >= 0 );
-        BOOST_ASSERT( traits::leading_dimension(a) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::leading_dimension(b) >= std::max<
-                std::ptrdiff_t >(1,traits::matrix_num_columns(a)) );
-        BOOST_ASSERT( traits::vector_size(work.select(value_type())) >=
-                min_size_work());
-        detail::hesv( traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(ipiv), traits::matrix_storage(b),
-                traits::leading_dimension(b),
-                traits::vector_storage(work.select(value_type())),
-                traits::vector_size(work.select(value_type())), info );
+            fortran_int_t& info, detail::workspace1< WORK > work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
+                typename value< MatrixA >::type >::type,
+                typename remove_const< typename value<
+                MatrixB >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< VectorIPIV >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work());
+        BOOST_ASSERT( size_column(a) >= 0 );
+        BOOST_ASSERT( size_column(b) >= 0 );
+        BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
+        BOOST_ASSERT( size_minor(b) == 1 || stride_minor(b) == 1 );
+        BOOST_ASSERT( stride_major(a) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        BOOST_ASSERT( stride_major(b) >= std::max< std::ptrdiff_t >(1,
+                size_column(a)) );
+        detail::hesv( uplo(), size_column(a), size_column(b), begin_value(a),
+                stride_major(a), begin_value(ipiv), begin_value(b),
+                stride_major(b), begin_value(work.select(value_type())),
+                size(work.select(value_type())), info );
     }
 
-    // minimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the minimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member function
+    // * Enables the unblocked algorithm (BLAS level 2)
+    //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            integer_t& info, minimal_workspace work ) {
-        traits::detail::array< value_type > tmp_work( min_size_work() );
+            fortran_int_t& info, minimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
+        bindings::detail::array< value_type > tmp_work( min_size_work() );
         invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
-    // optimal workspace specialization
+    //
+    // Static member function that
+    // * Figures out the optimal workspace requirements, and passes
+    //   the results to the user-defined workspace overload of the 
+    //   invoke static member
+    // * Enables the blocked algorithm (BLAS level 3)
+    //
     template< typename MatrixA, typename VectorIPIV, typename MatrixB >
     static void invoke( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
-            integer_t& info, optimal_workspace work ) {
+            fortran_int_t& info, optimal_workspace work ) {
+        typedef typename result_of::data_side< MatrixA >::type uplo;
         value_type opt_size_work;
-        detail::hesv( traits::matrix_uplo_tag(a),
-                traits::matrix_num_columns(a), traits::matrix_num_columns(b),
-                traits::matrix_storage(a), traits::leading_dimension(a),
-                traits::vector_storage(ipiv), traits::matrix_storage(b),
-                traits::leading_dimension(b), &opt_size_work, -1, info );
-        traits::detail::array< value_type > tmp_work(
+        detail::hesv( uplo(), size_column(a), size_column(b),
+                begin_value(a), stride_major(a), begin_value(ipiv),
+                begin_value(b), stride_major(b), &opt_size_work, -1, info );
+        bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         invoke( a, ipiv, b, info, workspace( tmp_work ) );
     }
 
-    static integer_t min_size_work() {
+    //
+    // Static member function that returns the minimum size of
+    // workspace-array work.
+    //
+    static std::ptrdiff_t min_size_work() {
         return 1;
     }
 };
 
 
-// template function to call hesv
+//
+// Functions for direct use. These functions are overloaded for temporaries,
+// so that wrapped types can still be passed and used for write-access. In
+// addition, if applicable, they are overloaded for user-defined workspaces.
+// Calls to these functions are passed to the hesv_impl classes. In the 
+// documentation, most overloads are collapsed to avoid a large number of
+// prototypes which are very similar.
+//
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * VectorIPIV&
+// * MatrixB&
+// * User-defined workspace
+//
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename Workspace >
-inline integer_t hesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
+inline std::ptrdiff_t hesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b,
         Workspace work ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    hesv_impl< value_type >::invoke( a, ipiv, b, info, work );
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, work );
     return info;
 }
 
-// template function to call hesv, default workspace type
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * VectorIPIV&
+// * MatrixB&
+// * Default workspace-type (optimal)
+//
 template< typename MatrixA, typename VectorIPIV, typename MatrixB >
-inline integer_t hesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
-    typedef typename traits::matrix_traits< MatrixA >::value_type value_type;
-    integer_t info(0);
-    hesv_impl< value_type >::invoke( a, ipiv, b, info,
-            optimal_workspace() );
+inline std::ptrdiff_t hesv( MatrixA& a, VectorIPIV& ipiv, MatrixB& b ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * VectorIPIV&
+// * MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline std::ptrdiff_t hesv( const MatrixA& a, VectorIPIV& ipiv,
+        MatrixB& b, Workspace work ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * VectorIPIV&
+// * MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline std::ptrdiff_t hesv( const MatrixA& a, VectorIPIV& ipiv,
+        MatrixB& b ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * const VectorIPIV&
+// * MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline std::ptrdiff_t hesv( MatrixA& a, const VectorIPIV& ipiv,
+        MatrixB& b, Workspace work ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * const VectorIPIV&
+// * MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline std::ptrdiff_t hesv( MatrixA& a, const VectorIPIV& ipiv,
+        MatrixB& b ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * const VectorIPIV&
+// * MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline std::ptrdiff_t hesv( const MatrixA& a, const VectorIPIV& ipiv,
+        MatrixB& b, Workspace work ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * const VectorIPIV&
+// * MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline std::ptrdiff_t hesv( const MatrixA& a, const VectorIPIV& ipiv,
+        MatrixB& b ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * VectorIPIV&
+// * const MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline std::ptrdiff_t hesv( MatrixA& a, VectorIPIV& ipiv,
+        const MatrixB& b, Workspace work ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * VectorIPIV&
+// * const MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline std::ptrdiff_t hesv( MatrixA& a, VectorIPIV& ipiv,
+        const MatrixB& b ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * VectorIPIV&
+// * const MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline std::ptrdiff_t hesv( const MatrixA& a, VectorIPIV& ipiv,
+        const MatrixB& b, Workspace work ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * VectorIPIV&
+// * const MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline std::ptrdiff_t hesv( const MatrixA& a, VectorIPIV& ipiv,
+        const MatrixB& b ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * const VectorIPIV&
+// * const MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline std::ptrdiff_t hesv( MatrixA& a, const VectorIPIV& ipiv,
+        const MatrixB& b, Workspace work ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * MatrixA&
+// * const VectorIPIV&
+// * const MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline std::ptrdiff_t hesv( MatrixA& a, const VectorIPIV& ipiv,
+        const MatrixB& b ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, optimal_workspace() );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * const VectorIPIV&
+// * const MatrixB&
+// * User-defined workspace
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB,
+        typename Workspace >
+inline std::ptrdiff_t hesv( const MatrixA& a, const VectorIPIV& ipiv,
+        const MatrixB& b, Workspace work ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, work );
+    return info;
+}
+
+//
+// Overloaded function for hesv. Its overload differs for
+// * const MatrixA&
+// * const VectorIPIV&
+// * const MatrixB&
+// * Default workspace-type (optimal)
+//
+template< typename MatrixA, typename VectorIPIV, typename MatrixB >
+inline std::ptrdiff_t hesv( const MatrixA& a, const VectorIPIV& ipiv,
+        const MatrixB& b ) {
+    fortran_int_t info(0);
+    hesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b,
+            info, optimal_workspace() );
     return info;
 }
 

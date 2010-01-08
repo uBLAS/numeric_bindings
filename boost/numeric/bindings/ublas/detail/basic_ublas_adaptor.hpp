@@ -24,7 +24,7 @@ template< typename T, typename Id, typename P1 = mpl::void_,
 struct basic_ublas_adaptor {
 
     typedef typename copy_const< Id, T >::type adapted_type;
-    typedef typename property_insert< adapted_type, P1, P2 >::type property_map;
+    typedef typename property_insert< adapted_type, P1, P2, P3 >::type property_map;
 
     static std::ptrdiff_t size1( const Id& id ) {
         return id.size1();

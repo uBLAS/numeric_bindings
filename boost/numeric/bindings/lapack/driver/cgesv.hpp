@@ -189,7 +189,6 @@ struct cgesv_impl {
 // * MatrixA&
 // * VectorIPIV&
 // * MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -208,7 +207,6 @@ inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
 // * MatrixA&
 // * VectorIPIV&
 // * MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -226,7 +224,6 @@ inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
 // * const MatrixA&
 // * VectorIPIV&
 // * MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -245,7 +242,6 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
 // * const MatrixA&
 // * VectorIPIV&
 // * MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -263,7 +259,6 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
 // * MatrixA&
 // * const VectorIPIV&
 // * MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -282,7 +277,6 @@ inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
 // * MatrixA&
 // * const VectorIPIV&
 // * MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -300,7 +294,6 @@ inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
 // * const MatrixA&
 // * const VectorIPIV&
 // * MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -319,7 +312,6 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
 // * const MatrixA&
 // * const VectorIPIV&
 // * MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -337,7 +329,6 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
 // * MatrixA&
 // * VectorIPIV&
 // * const MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -356,7 +347,6 @@ inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
 // * MatrixA&
 // * VectorIPIV&
 // * const MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -374,7 +364,6 @@ inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
 // * const MatrixA&
 // * VectorIPIV&
 // * const MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -393,7 +382,6 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
 // * const MatrixA&
 // * VectorIPIV&
 // * const MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -411,7 +399,6 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
 // * MatrixA&
 // * const VectorIPIV&
 // * const MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -430,7 +417,6 @@ inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
 // * MatrixA&
 // * const VectorIPIV&
 // * const MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -448,7 +434,6 @@ inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
 // * const MatrixA&
 // * const VectorIPIV&
 // * const MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
@@ -467,309 +452,12 @@ inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
 // * const MatrixA&
 // * const VectorIPIV&
 // * const MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename VectorIPIV, typename MatrixB,
         typename MatrixX >
 inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
         const MatrixB& b, const MatrixX& x, fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * MatrixA&
-// * VectorIPIV&
-// * MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const fortran_int_t& iter,
-        Workspace work ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * MatrixA&
-// * VectorIPIV&
-// * MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * const MatrixA&
-// * VectorIPIV&
-// * MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const fortran_int_t& iter,
-        Workspace work ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * const MatrixA&
-// * VectorIPIV&
-// * MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const fortran_int_t& iter,
-        Workspace work ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const fortran_int_t& iter,
-        Workspace work ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, MatrixX& x, const fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * MatrixA&
-// * VectorIPIV&
-// * const MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const fortran_int_t& iter,
-        Workspace work ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * MatrixA&
-// * VectorIPIV&
-// * const MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline std::ptrdiff_t cgesv( MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * const MatrixA&
-// * VectorIPIV&
-// * const MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const fortran_int_t& iter,
-        Workspace work ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * const MatrixA&
-// * VectorIPIV&
-// * const MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline std::ptrdiff_t cgesv( const MatrixA& a, VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * const MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const fortran_int_t& iter,
-        Workspace work ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * MatrixA&
-// * const VectorIPIV&
-// * const MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline std::ptrdiff_t cgesv( MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * const MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX, typename Workspace >
-inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const fortran_int_t& iter,
-        Workspace work ) {
-    fortran_int_t info(0);
-    cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
-            iter, info, work );
-    return info;
-}
-
-//
-// Overloaded function for cgesv. Its overload differs for
-// * const MatrixA&
-// * const VectorIPIV&
-// * const MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename VectorIPIV, typename MatrixB,
-        typename MatrixX >
-inline std::ptrdiff_t cgesv( const MatrixA& a, const VectorIPIV& ipiv,
-        const MatrixB& b, const MatrixX& x, const fortran_int_t& iter ) {
     fortran_int_t info(0);
     cgesv_impl< typename value< MatrixA >::type >::invoke( a, ipiv, b, x,
             iter, info, optimal_workspace() );

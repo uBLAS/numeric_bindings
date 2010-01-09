@@ -234,7 +234,6 @@ struct hbgvx_impl {
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -263,7 +262,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -292,7 +290,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -321,7 +318,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -350,7 +346,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -379,7 +374,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -408,7 +402,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -437,7 +430,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -466,7 +458,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -495,7 +486,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -524,7 +514,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -553,7 +542,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -582,7 +570,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -611,7 +598,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -640,7 +626,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -669,7 +654,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -698,471 +682,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1191,7 +710,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1220,7 +738,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1249,7 +766,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1278,7 +794,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1307,7 +822,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1336,7 +850,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1365,7 +878,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1394,7 +906,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1423,7 +934,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1452,7 +962,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1481,7 +990,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1510,7 +1018,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1539,7 +1046,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1568,7 +1074,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1597,7 +1102,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -1626,471 +1130,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2119,7 +1158,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2148,7 +1186,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2177,7 +1214,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2206,7 +1242,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2235,7 +1270,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2264,7 +1298,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2293,7 +1326,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2322,7 +1354,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2351,7 +1382,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2380,7 +1410,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2409,7 +1438,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2438,7 +1466,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2467,7 +1494,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2496,7 +1522,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2525,7 +1550,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -2554,471 +1578,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3048,7 +1607,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3077,7 +1635,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3107,7 +1664,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3136,7 +1692,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3166,7 +1721,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3195,7 +1749,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3225,7 +1778,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3254,7 +1806,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3284,7 +1835,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3313,7 +1863,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3343,7 +1892,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3372,7 +1920,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3402,7 +1949,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3431,7 +1977,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3461,7 +2006,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -3490,479 +2034,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -3991,7 +2062,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4020,7 +2090,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4049,7 +2118,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4078,7 +2146,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4107,7 +2174,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4136,7 +2202,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4165,7 +2230,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4194,7 +2258,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4223,7 +2286,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4252,7 +2314,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4281,7 +2342,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4310,7 +2370,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4339,7 +2398,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4368,7 +2426,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4397,7 +2454,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4426,471 +2482,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4920,7 +2511,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4949,7 +2539,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -4979,7 +2568,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5008,7 +2596,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5038,7 +2625,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5067,7 +2653,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5097,7 +2682,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5126,7 +2710,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5156,7 +2739,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5185,7 +2767,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5215,7 +2796,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5244,7 +2824,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5274,7 +2853,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5303,7 +2881,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5333,7 +2910,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -5362,479 +2938,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -5863,7 +2966,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -5892,7 +2994,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -5921,7 +3022,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -5950,7 +3050,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -5979,7 +3078,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6008,7 +3106,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6037,7 +3134,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6066,7 +3162,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6095,7 +3190,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6124,7 +3218,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6153,7 +3246,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6182,7 +3274,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6211,7 +3302,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6240,7 +3330,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6269,7 +3358,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6298,479 +3386,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6800,7 +3415,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6829,7 +3443,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6859,7 +3472,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6888,7 +3500,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6918,7 +3529,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6947,7 +3557,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -6977,7 +3586,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -7006,7 +3614,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -7036,7 +3643,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -7065,7 +3671,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -7095,7 +3700,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -7124,7 +3728,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -7154,7 +3757,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -7183,7 +3785,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -7213,7 +3814,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
 // * const MatrixAB&
 // * const MatrixBB&
 // * const MatrixQ&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -7229,478 +3829,6 @@ inline std::ptrdiff_t hbgvx( const char jobz, const char range,
         const fortran_int_t il, const fortran_int_t iu,
         const typename remove_imaginary< typename value<
         MatrixAB >::type >::type abstol, fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb, MatrixQ& q,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL,
-        typename Workspace >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
-        const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,
-            n, ab, bb, q, vl, vu, il, iu, abstol, m, w, z, ifail, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hbgvx. Its overload differs for
-// * const MatrixAB&
-// * const MatrixBB&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixAB, typename MatrixBB, typename MatrixQ,
-        typename VectorW, typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hbgvx( const char jobz, const char range,
-        const fortran_int_t n, const MatrixAB& ab, const MatrixBB& bb,
-        const MatrixQ& q, const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type vl, const typename remove_imaginary<
-        typename value< MatrixAB >::type >::type vu,
-        const fortran_int_t il, const fortran_int_t iu,
-        const typename remove_imaginary< typename value<
-        MatrixAB >::type >::type abstol, const fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
     fortran_int_t info(0);
     hbgvx_impl< typename value< MatrixAB >::type >::invoke( jobz, range,

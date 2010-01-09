@@ -332,7 +332,6 @@ struct gelss_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * MatrixA&
 // * MatrixB&
 // * VectorS&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorS,
@@ -352,7 +351,6 @@ inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, VectorS& s,
 // * MatrixA&
 // * MatrixB&
 // * VectorS&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorS >
@@ -370,7 +368,6 @@ inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, VectorS& s,
 // * const MatrixA&
 // * MatrixB&
 // * VectorS&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorS,
@@ -390,7 +387,6 @@ inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b, VectorS& s,
 // * const MatrixA&
 // * MatrixB&
 // * VectorS&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorS >
@@ -408,7 +404,6 @@ inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b, VectorS& s,
 // * MatrixA&
 // * const MatrixB&
 // * VectorS&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorS,
@@ -428,7 +423,6 @@ inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b, VectorS& s,
 // * MatrixA&
 // * const MatrixB&
 // * VectorS&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorS >
@@ -446,7 +440,6 @@ inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b, VectorS& s,
 // * const MatrixA&
 // * const MatrixB&
 // * VectorS&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorS,
@@ -466,7 +459,6 @@ inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
 // * const MatrixA&
 // * const MatrixB&
 // * VectorS&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorS >
@@ -484,7 +476,6 @@ inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
 // * MatrixA&
 // * MatrixB&
 // * const VectorS&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorS,
@@ -504,7 +495,6 @@ inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, const VectorS& s,
 // * MatrixA&
 // * MatrixB&
 // * const VectorS&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorS >
@@ -522,7 +512,6 @@ inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, const VectorS& s,
 // * const MatrixA&
 // * MatrixB&
 // * const VectorS&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorS,
@@ -542,7 +531,6 @@ inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b,
 // * const MatrixA&
 // * MatrixB&
 // * const VectorS&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorS >
@@ -560,7 +548,6 @@ inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b,
 // * MatrixA&
 // * const MatrixB&
 // * const VectorS&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorS,
@@ -580,7 +567,6 @@ inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b,
 // * MatrixA&
 // * const MatrixB&
 // * const VectorS&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorS >
@@ -598,7 +584,6 @@ inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b,
 // * const MatrixA&
 // * const MatrixB&
 // * const VectorS&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorS,
@@ -618,317 +603,12 @@ inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
 // * const MatrixA&
 // * const MatrixB&
 // * const VectorS&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorS >
 inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
         const VectorS& s, const typename remove_imaginary< typename value<
         MatrixA >::type >::type rcond, fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorS&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorS,
-        typename Workspace >
-inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorS&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorS >
-inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorS&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorS,
-        typename Workspace >
-inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorS&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorS >
-inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorS&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorS,
-        typename Workspace >
-inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorS&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorS >
-inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b, VectorS& s,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorS&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorS,
-        typename Workspace >
-inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
-        VectorS& s, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorS&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorS >
-inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
-        VectorS& s, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorS&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorS,
-        typename Workspace >
-inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, const VectorS& s,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorS&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorS >
-inline std::ptrdiff_t gelss( MatrixA& a, MatrixB& b, const VectorS& s,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorS&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorS,
-        typename Workspace >
-inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b,
-        const VectorS& s, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorS&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorS >
-inline std::ptrdiff_t gelss( const MatrixA& a, MatrixB& b,
-        const VectorS& s, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorS&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorS,
-        typename Workspace >
-inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b,
-        const VectorS& s, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorS&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorS >
-inline std::ptrdiff_t gelss( MatrixA& a, const MatrixB& b,
-        const VectorS& s, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorS&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorS,
-        typename Workspace >
-inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
-        const VectorS& s, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelss. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorS&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorS >
-inline std::ptrdiff_t gelss( const MatrixA& a, const MatrixB& b,
-        const VectorS& s, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
     fortran_int_t info(0);
     gelss_impl< typename value< MatrixA >::type >::invoke( a, b, s,
             rcond, rank, info, optimal_workspace() );

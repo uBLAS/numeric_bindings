@@ -372,7 +372,6 @@ struct hsein_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -398,7 +397,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -424,7 +422,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -450,7 +447,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -476,7 +472,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -502,7 +497,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -528,7 +522,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -554,7 +547,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -580,7 +572,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -606,7 +597,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -632,7 +622,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -658,7 +647,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -684,7 +672,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -710,7 +697,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -736,7 +722,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -762,7 +747,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -788,7 +772,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -814,7 +797,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -840,7 +822,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -866,7 +847,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -892,7 +872,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -918,7 +897,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -944,7 +922,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -970,7 +947,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -996,7 +972,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -1022,7 +997,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -1048,7 +1022,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -1074,7 +1047,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -1100,7 +1072,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -1126,7 +1097,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -1152,7 +1122,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -1178,7 +1147,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -1204,851 +1172,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2074,7 +1197,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2100,7 +1222,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2126,7 +1247,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2152,7 +1272,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2178,7 +1297,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2204,7 +1322,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2230,7 +1347,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2256,7 +1372,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2282,7 +1397,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2308,7 +1422,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2334,7 +1447,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2360,7 +1472,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2386,7 +1497,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2412,7 +1522,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2438,7 +1547,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2464,7 +1572,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2490,7 +1597,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2516,7 +1622,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2542,7 +1647,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2568,7 +1672,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2594,7 +1697,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2620,7 +1722,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2646,7 +1747,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2672,7 +1772,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2698,7 +1797,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2724,7 +1822,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2750,7 +1847,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2776,7 +1872,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2802,7 +1897,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2828,7 +1922,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -2854,7 +1947,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -2880,851 +1972,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -3750,7 +1997,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -3776,7 +2022,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -3802,7 +2047,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -3828,7 +2072,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -3854,7 +2097,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -3880,7 +2122,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -3906,7 +2147,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -3932,7 +2172,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -3958,7 +2197,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -3984,7 +2222,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -4010,7 +2247,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -4036,7 +2272,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -4062,7 +2297,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -4088,7 +2322,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -4114,7 +2347,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -4140,7 +2372,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -4166,7 +2397,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -4192,7 +2422,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -4218,7 +2447,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -4244,7 +2472,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -4270,7 +2497,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -4296,7 +2522,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -4322,7 +2547,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -4348,7 +2572,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -4374,7 +2597,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -4400,7 +2622,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -4426,7 +2647,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -4452,7 +2672,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -4478,7 +2697,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -4504,7 +2722,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -4530,7 +2747,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -4556,851 +2772,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -5427,7 +2798,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -5453,7 +2823,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -5480,7 +2849,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -5506,7 +2874,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -5533,7 +2900,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -5559,7 +2925,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -5586,7 +2951,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -5612,7 +2976,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -5639,7 +3002,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -5665,7 +3027,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -5692,7 +3053,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -5718,7 +3078,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -5745,7 +3104,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -5771,7 +3129,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -5798,7 +3155,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -5824,7 +3180,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -5851,7 +3206,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -5877,7 +3231,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -5904,7 +3257,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -5930,7 +3282,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -5957,7 +3308,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -5983,7 +3333,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -6010,7 +3359,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -6036,7 +3384,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -6063,7 +3410,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -6089,7 +3435,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -6116,7 +3461,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -6142,7 +3486,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -6169,7 +3512,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -6195,7 +3537,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -6222,7 +3563,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorWR&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -6235,860 +3575,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
         const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
         const MatrixVR& vr, const fortran_int_t mm, fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        MatrixVR& vr, const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorSELECT&
-// * const VectorWR&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorWR,
-        typename VectorWI, typename MatrixVL, typename MatrixVR,
-        typename VectorIFAILL, typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorWR& wr, const VectorWI& wi, const MatrixVL& vl,
-        const MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
     fortran_int_t info(0);
     hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
             initv, select, h, wr, wi, vl, vr, mm, m, ifaill, ifailr, info,
@@ -7100,7 +3586,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -7124,7 +3609,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -7148,7 +3632,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -7172,7 +3655,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -7197,7 +3679,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -7221,7 +3702,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -7246,7 +3726,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -7270,7 +3749,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -7295,7 +3773,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -7319,7 +3796,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -7344,7 +3820,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -7368,7 +3843,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -7393,7 +3867,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -7417,7 +3890,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -7442,7 +3914,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -7466,7 +3937,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -7491,399 +3961,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -7907,7 +3984,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -7932,7 +4008,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -7956,7 +4031,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -7981,7 +4055,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -8005,7 +4078,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8030,7 +4102,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -8054,7 +4125,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8079,7 +4149,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -8103,7 +4172,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8128,7 +4196,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -8152,7 +4219,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8177,7 +4243,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -8201,7 +4266,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8226,7 +4290,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * User-defined workspace
@@ -8250,7 +4313,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8275,399 +4337,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -8691,7 +4360,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8716,7 +4384,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -8740,7 +4407,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8765,7 +4431,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -8789,7 +4454,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8814,7 +4478,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -8838,7 +4501,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8863,7 +4525,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -8887,7 +4548,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8912,7 +4572,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -8936,7 +4595,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -8961,7 +4619,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -8985,7 +4642,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -9010,7 +4666,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -9034,7 +4689,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -9059,399 +4713,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -9475,7 +4736,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -9500,7 +4760,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -9525,7 +4784,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -9550,7 +4808,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -9575,7 +4832,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -9600,7 +4856,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -9625,7 +4880,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -9650,7 +4904,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -9675,7 +4928,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -9700,7 +4952,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -9725,7 +4976,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -9750,7 +5000,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -9775,7 +5024,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -9800,7 +5048,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * User-defined workspace
@@ -9825,7 +5072,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
 // * const VectorW&
 // * const MatrixVL&
 // * const MatrixVR&
-// * fortran_int_t&
 // * const VectorIFAILL&
 // * const VectorIFAILR&
 // * Default workspace-type (optimal)
@@ -9837,405 +5083,6 @@ inline std::ptrdiff_t hsein( const char side, const char eigsrc,
         const char initv, const VectorSELECT& select, const MatrixH& h,
         const VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
         const fortran_int_t mm, fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr, Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, MatrixVR& vr, const fortran_int_t mm,
-        const fortran_int_t& m, const VectorIFAILL& ifaill,
-        const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR, typename Workspace >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
-        const VectorIFAILL& ifaill, const VectorIFAILR& ifailr,
-        Workspace work ) {
-    fortran_int_t info(0);
-    hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,
-            initv, select, h, w, vl, vr, mm, m, ifaill, ifailr, info, work );
-    return info;
-}
-
-//
-// Overloaded function for hsein. Its overload differs for
-// * const VectorW&
-// * const MatrixVL&
-// * const MatrixVR&
-// * const fortran_int_t&
-// * const VectorIFAILL&
-// * const VectorIFAILR&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixH, typename VectorW,
-        typename MatrixVL, typename MatrixVR, typename VectorIFAILL,
-        typename VectorIFAILR >
-inline std::ptrdiff_t hsein( const char side, const char eigsrc,
-        const char initv, const VectorSELECT& select, const MatrixH& h,
-        const VectorW& w, const MatrixVL& vl, const MatrixVR& vr,
-        const fortran_int_t mm, const fortran_int_t& m,
         const VectorIFAILL& ifaill, const VectorIFAILR& ifailr ) {
     fortran_int_t info(0);
     hsein_impl< typename value< MatrixH >::type >::invoke( side, eigsrc,

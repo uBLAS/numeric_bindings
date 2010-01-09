@@ -173,7 +173,6 @@ struct sposv_impl {
 // Overloaded function for sposv. Its overload differs for
 // * MatrixA&
 // * MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX,
@@ -190,7 +189,6 @@ inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
 // Overloaded function for sposv. Its overload differs for
 // * MatrixA&
 // * MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX >
@@ -206,7 +204,6 @@ inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
 // Overloaded function for sposv. Its overload differs for
 // * const MatrixA&
 // * MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX,
@@ -223,7 +220,6 @@ inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
 // Overloaded function for sposv. Its overload differs for
 // * const MatrixA&
 // * MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX >
@@ -239,7 +235,6 @@ inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
 // Overloaded function for sposv. Its overload differs for
 // * MatrixA&
 // * const MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX,
@@ -256,7 +251,6 @@ inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
 // Overloaded function for sposv. Its overload differs for
 // * MatrixA&
 // * const MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX >
@@ -272,7 +266,6 @@ inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
 // Overloaded function for sposv. Its overload differs for
 // * const MatrixA&
 // * const MatrixX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX,
@@ -289,144 +282,11 @@ inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
 // Overloaded function for sposv. Its overload differs for
 // * const MatrixA&
 // * const MatrixX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename MatrixX >
 inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
         const MatrixX& x, fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
-            info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for sposv. Its overload differs for
-// * MatrixA&
-// * MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX,
-        typename Workspace >
-inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
-        const fortran_int_t& iter, Workspace work ) {
-    fortran_int_t info(0);
-    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
-            info, work );
-    return info;
-}
-
-//
-// Overloaded function for sposv. Its overload differs for
-// * MatrixA&
-// * MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b, MatrixX& x,
-        const fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
-            info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for sposv. Its overload differs for
-// * const MatrixA&
-// * MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX,
-        typename Workspace >
-inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
-        MatrixX& x, const fortran_int_t& iter, Workspace work ) {
-    fortran_int_t info(0);
-    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
-            info, work );
-    return info;
-}
-
-//
-// Overloaded function for sposv. Its overload differs for
-// * const MatrixA&
-// * MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
-        MatrixX& x, const fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
-            info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for sposv. Its overload differs for
-// * MatrixA&
-// * const MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX,
-        typename Workspace >
-inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
-        const MatrixX& x, const fortran_int_t& iter, Workspace work ) {
-    fortran_int_t info(0);
-    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
-            info, work );
-    return info;
-}
-
-//
-// Overloaded function for sposv. Its overload differs for
-// * MatrixA&
-// * const MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline std::ptrdiff_t sposv( MatrixA& a, const MatrixB& b,
-        const MatrixX& x, const fortran_int_t& iter ) {
-    fortran_int_t info(0);
-    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
-            info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for sposv. Its overload differs for
-// * const MatrixA&
-// * const MatrixX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX,
-        typename Workspace >
-inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
-        const MatrixX& x, const fortran_int_t& iter, Workspace work ) {
-    fortran_int_t info(0);
-    sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
-            info, work );
-    return info;
-}
-
-//
-// Overloaded function for sposv. Its overload differs for
-// * const MatrixA&
-// * const MatrixX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename MatrixX >
-inline std::ptrdiff_t sposv( const MatrixA& a, const MatrixB& b,
-        const MatrixX& x, const fortran_int_t& iter ) {
     fortran_int_t info(0);
     sposv_impl< typename value< MatrixA >::type >::invoke( a, b, x, iter,
             info, optimal_workspace() );

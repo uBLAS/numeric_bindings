@@ -232,7 +232,6 @@ struct lacon_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 //
 // Overloaded function for lacon. Its overload differs for
 // * VectorX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorX, typename Workspace >
@@ -249,7 +248,6 @@ inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
 //
 // Overloaded function for lacon. Its overload differs for
 // * VectorX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorX >
@@ -265,7 +263,6 @@ inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
 //
 // Overloaded function for lacon. Its overload differs for
 // * const VectorX&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorX, typename Workspace >
@@ -282,79 +279,12 @@ inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
 //
 // Overloaded function for lacon. Its overload differs for
 // * const VectorX&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorX >
 inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
         typename remove_imaginary< typename value<
         VectorX >::type >::type& est, fortran_int_t& kase ) {
-    fortran_int_t info(0);
-    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
-            kase, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for lacon. Its overload differs for
-// * VectorX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorX, typename Workspace >
-inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
-        typename remove_imaginary< typename value<
-        VectorX >::type >::type& est, const fortran_int_t& kase,
-        Workspace work ) {
-    fortran_int_t info(0);
-    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
-            kase, work );
-    return info;
-}
-
-//
-// Overloaded function for lacon. Its overload differs for
-// * VectorX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorX >
-inline std::ptrdiff_t lacon( const fortran_int_t n, VectorX& x,
-        typename remove_imaginary< typename value<
-        VectorX >::type >::type& est, const fortran_int_t& kase ) {
-    fortran_int_t info(0);
-    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
-            kase, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for lacon. Its overload differs for
-// * const VectorX&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorX, typename Workspace >
-inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
-        typename remove_imaginary< typename value<
-        VectorX >::type >::type& est, const fortran_int_t& kase,
-        Workspace work ) {
-    fortran_int_t info(0);
-    lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
-            kase, work );
-    return info;
-}
-
-//
-// Overloaded function for lacon. Its overload differs for
-// * const VectorX&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorX >
-inline std::ptrdiff_t lacon( const fortran_int_t n, const VectorX& x,
-        typename remove_imaginary< typename value<
-        VectorX >::type >::type& est, const fortran_int_t& kase ) {
     fortran_int_t info(0);
     lacon_impl< typename value< VectorX >::type >::invoke( n, x, est,
             kase, optimal_workspace() );

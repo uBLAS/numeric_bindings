@@ -235,7 +235,6 @@ struct hegvx_impl {
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -263,7 +262,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -291,7 +289,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -319,7 +316,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -347,7 +343,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -375,7 +370,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -403,7 +397,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -431,7 +424,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -459,239 +451,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -719,7 +478,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -747,7 +505,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -775,7 +532,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -803,7 +559,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -831,7 +586,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -859,7 +613,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -887,7 +640,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * VectorIFAIL&
@@ -915,239 +667,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1175,7 +694,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1203,7 +721,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1231,7 +748,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1259,7 +775,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1287,7 +802,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1315,7 +829,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1343,7 +856,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1371,239 +883,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1632,7 +911,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1660,7 +938,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1689,7 +966,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1717,7 +993,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1746,7 +1021,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1774,7 +1048,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1803,7 +1076,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * VectorIFAIL&
@@ -1831,239 +1103,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2091,7 +1130,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2119,7 +1157,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2147,7 +1184,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2175,7 +1211,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2203,7 +1238,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2231,7 +1265,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2259,7 +1292,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2287,239 +1319,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2548,7 +1347,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2576,7 +1374,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2605,7 +1402,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2633,7 +1429,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2662,7 +1457,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2690,7 +1484,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2719,7 +1512,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * MatrixZ&
 // * const VectorIFAIL&
@@ -2747,239 +1539,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3008,7 +1567,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3036,7 +1594,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3065,7 +1622,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3093,7 +1649,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3122,7 +1677,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3150,7 +1704,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3179,7 +1732,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3207,239 +1759,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3468,7 +1787,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3496,7 +1814,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3525,7 +1842,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3553,7 +1869,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3582,7 +1897,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3610,7 +1924,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3639,7 +1952,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
 // Overloaded function for hegvx. Its overload differs for
 // * const MatrixA&
 // * const MatrixB&
-// * fortran_int_t&
 // * const VectorW&
 // * const MatrixZ&
 // * const VectorIFAIL&
@@ -3656,238 +1968,6 @@ inline std::ptrdiff_t hegvx( const fortran_int_t itype,
         const fortran_int_t iu, const typename remove_imaginary<
         typename value< MatrixA >::type >::type abstol, fortran_int_t& m,
         const VectorW& w, const MatrixZ& z, const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL, typename Workspace >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail, Workspace work ) {
-    fortran_int_t info(0);
-    hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
-            range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,
-            work );
-    return info;
-}
-
-//
-// Overloaded function for hegvx. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const fortran_int_t&
-// * const VectorW&
-// * const MatrixZ&
-// * const VectorIFAIL&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorW,
-        typename MatrixZ, typename VectorIFAIL >
-inline std::ptrdiff_t hegvx( const fortran_int_t itype,
-        const char jobz, const char range, const fortran_int_t n,
-        const MatrixA& a, const MatrixB& b, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type vl,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type vu, const fortran_int_t il,
-        const fortran_int_t iu, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type abstol,
-        const fortran_int_t& m, const VectorW& w, const MatrixZ& z,
-        const VectorIFAIL& ifail ) {
     fortran_int_t info(0);
     hegvx_impl< typename value< MatrixA >::type >::invoke( itype, jobz,
             range, n, a, b, vl, vu, il, iu, abstol, m, w, z, ifail, info,

@@ -185,7 +185,6 @@ struct trsen_impl {
 // * MatrixT&
 // * MatrixQ&
 // * VectorW&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -206,7 +205,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * MatrixT&
 // * MatrixQ&
 // * VectorW&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -227,7 +225,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * const MatrixT&
 // * MatrixQ&
 // * VectorW&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -248,7 +245,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * const MatrixT&
 // * MatrixQ&
 // * VectorW&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -269,7 +265,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * MatrixT&
 // * const MatrixQ&
 // * VectorW&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -290,7 +285,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * MatrixT&
 // * const MatrixQ&
 // * VectorW&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -311,7 +305,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * const MatrixT&
 // * const MatrixQ&
 // * VectorW&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -333,7 +326,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * const MatrixT&
 // * const MatrixQ&
 // * VectorW&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -355,7 +347,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * MatrixT&
 // * MatrixQ&
 // * const VectorW&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -376,7 +367,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * MatrixT&
 // * MatrixQ&
 // * const VectorW&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -397,7 +387,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * const MatrixT&
 // * MatrixQ&
 // * const VectorW&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -419,7 +408,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * const MatrixT&
 // * MatrixQ&
 // * const VectorW&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -441,7 +429,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * MatrixT&
 // * const MatrixQ&
 // * const VectorW&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -463,7 +450,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * MatrixT&
 // * const MatrixQ&
 // * const VectorW&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -485,7 +471,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * const MatrixT&
 // * const MatrixQ&
 // * const VectorW&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -507,7 +492,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
 // * const MatrixT&
 // * const MatrixQ&
 // * const VectorW&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
@@ -518,350 +502,6 @@ inline std::ptrdiff_t trsen( const char job, const char compq,
         typename value< VectorSELECT >::type >::type& s,
         typename remove_imaginary< typename value<
         VectorSELECT >::type >::type& sep ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
-// * VectorW&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
-        const fortran_int_t& m, typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
-// * VectorW&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, MatrixQ& q, VectorW& w,
-        const fortran_int_t& m, typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-// * VectorW&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, MatrixQ& q, VectorW& w,
-        const fortran_int_t& m, typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-// * VectorW&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, MatrixQ& q, VectorW& w,
-        const fortran_int_t& m, typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-// * VectorW&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, const MatrixQ& q, VectorW& w,
-        const fortran_int_t& m, typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-// * VectorW&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, const MatrixQ& q, VectorW& w,
-        const fortran_int_t& m, typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-// * VectorW&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, const MatrixQ& q,
-        VectorW& w, const fortran_int_t& m, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& s,
-        typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& sep, Workspace work ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-// * VectorW&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, const MatrixQ& q,
-        VectorW& w, const fortran_int_t& m, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& s,
-        typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& sep ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
-// * const VectorW&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, MatrixQ& q, const VectorW& w,
-        const fortran_int_t& m, typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
-// * const VectorW&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, MatrixQ& q, const VectorW& w,
-        const fortran_int_t& m, typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-// * const VectorW&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, MatrixQ& q,
-        const VectorW& w, const fortran_int_t& m,
-        typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-// * const VectorW&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, MatrixQ& q,
-        const VectorW& w, const fortran_int_t& m,
-        typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-// * const VectorW&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, const MatrixQ& q,
-        const VectorW& w, const fortran_int_t& m,
-        typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-// * const VectorW&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, MatrixT& t, const MatrixQ& q,
-        const VectorW& w, const fortran_int_t& m,
-        typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-// * const VectorW&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW, typename Workspace >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, const MatrixQ& q,
-        const VectorW& w, const fortran_int_t& m,
-        typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep, Workspace work ) {
-    fortran_int_t info(0);
-    trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
-            compq, select, t, q, w, m, s, sep, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsen. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-// * const VectorW&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixQ,
-        typename VectorW >
-inline std::ptrdiff_t trsen( const char job, const char compq,
-        const VectorSELECT& select, const MatrixT& t, const MatrixQ& q,
-        const VectorW& w, const fortran_int_t& m,
-        typename remove_imaginary< typename value<
-        VectorSELECT >::type >::type& s, typename remove_imaginary<
-        typename value< VectorSELECT >::type >::type& sep ) {
     fortran_int_t info(0);
     trsen_impl< typename value< VectorSELECT >::type >::invoke( job,
             compq, select, t, q, w, m, s, sep, info, optimal_workspace() );

@@ -216,7 +216,6 @@ struct laebz_impl {
 // * VectorNVAL&
 // * MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * User-defined workspace
 //
@@ -245,7 +244,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -274,7 +272,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * User-defined workspace
 //
@@ -303,7 +300,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -332,7 +328,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * const MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * User-defined workspace
 //
@@ -361,7 +356,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * const MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -390,7 +384,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * const MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * User-defined workspace
 //
@@ -419,7 +412,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * const MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -448,7 +440,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * User-defined workspace
 //
@@ -477,7 +468,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -506,7 +496,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * User-defined workspace
 //
@@ -536,7 +525,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -565,7 +553,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * const MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * User-defined workspace
 //
@@ -595,7 +582,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * const MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -624,7 +610,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * const MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * User-defined workspace
 //
@@ -654,7 +639,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * const MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -683,475 +667,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * MatrixAB&
 // * VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * const MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * const MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * const MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
-        VectorC& c, const fortran_int_t& mout, MatrixNAB& nab,
-        Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * const MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
-        VectorC& c, const fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
-        const fortran_int_t& mout, MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
-        const fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout, MatrixNAB& nab,
-        Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * const MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout, MatrixNAB& nab,
-        Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * const MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * const MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout, MatrixNAB& nab,
-        Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * const MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout, MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * User-defined workspace
 //
@@ -1180,7 +695,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -1209,7 +723,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * User-defined workspace
 //
@@ -1238,7 +751,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -1267,7 +779,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * const MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * User-defined workspace
 //
@@ -1296,7 +807,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * const MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -1325,7 +835,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * const MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * User-defined workspace
 //
@@ -1355,7 +864,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * const MatrixAB&
 // * VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -1384,7 +892,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * User-defined workspace
 //
@@ -1413,7 +920,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -1442,7 +948,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * User-defined workspace
 //
@@ -1472,7 +977,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -1501,7 +1005,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * const MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * User-defined workspace
 //
@@ -1531,7 +1034,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * VectorNVAL&
 // * const MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -1560,7 +1062,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * const MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * User-defined workspace
 //
@@ -1590,7 +1091,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
 // * const VectorNVAL&
 // * const MatrixAB&
 // * const VectorC&
-// * fortran_int_t&
 // * const MatrixNAB&
 // * Default workspace-type (optimal)
 //
@@ -1607,477 +1107,6 @@ inline std::ptrdiff_t laebz( const fortran_int_t ijob,
         VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
         const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
         const VectorC& c, fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * const MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * const MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab, VectorC& c,
-        const fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * const MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
-        VectorC& c, const fortran_int_t& mout, const MatrixNAB& nab,
-        Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * const MatrixAB&
-// * VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
-        VectorC& c, const fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
-        const fortran_int_t& mout, const MatrixNAB& nab, Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, MatrixAB& ab, const VectorC& c,
-        const fortran_int_t& mout, const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout, const MatrixNAB& nab,
-        Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout,
-        const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * const MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout, const MatrixNAB& nab,
-        Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * VectorNVAL&
-// * const MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, VectorNVAL& nval, const MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout,
-        const MatrixNAB& nab ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * const MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * User-defined workspace
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB, typename Workspace >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout, const MatrixNAB& nab,
-        Workspace work ) {
-    fortran_int_t info(0);
-    laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
-            n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,
-            mout, nab, info, work );
-    return info;
-}
-
-//
-// Overloaded function for laebz. Its overload differs for
-// * const VectorNVAL&
-// * const MatrixAB&
-// * const VectorC&
-// * const fortran_int_t&
-// * const MatrixNAB&
-// * Default workspace-type (optimal)
-//
-template< typename VectorD, typename VectorE, typename VectorE2,
-        typename VectorNVAL, typename MatrixAB, typename VectorC,
-        typename MatrixNAB >
-inline std::ptrdiff_t laebz( const fortran_int_t ijob,
-        const fortran_int_t nitmax, const fortran_int_t n,
-        const fortran_int_t minp, const fortran_int_t nbmin,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type abstol, const typename remove_imaginary<
-        typename value< VectorD >::type >::type reltol,
-        const typename remove_imaginary< typename value<
-        VectorD >::type >::type pivmin, const VectorD& d, const VectorE& e,
-        const VectorE2& e2, const VectorNVAL& nval, const MatrixAB& ab,
-        const VectorC& c, const fortran_int_t& mout,
-        const MatrixNAB& nab ) {
     fortran_int_t info(0);
     laebz_impl< typename value< VectorD >::type >::invoke( ijob, nitmax,
             n, minp, nbmin, abstol, reltol, pivmin, d, e, e2, nval, ab, c,

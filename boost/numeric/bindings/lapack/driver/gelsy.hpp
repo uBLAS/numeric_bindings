@@ -320,7 +320,6 @@ struct gelsy_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // * MatrixA&
 // * MatrixB&
 // * VectorJPVT&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT,
@@ -340,7 +339,6 @@ inline std::ptrdiff_t gelsy( MatrixA& a, MatrixB& b, VectorJPVT& jpvt,
 // * MatrixA&
 // * MatrixB&
 // * VectorJPVT&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT >
@@ -358,7 +356,6 @@ inline std::ptrdiff_t gelsy( MatrixA& a, MatrixB& b, VectorJPVT& jpvt,
 // * const MatrixA&
 // * MatrixB&
 // * VectorJPVT&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT,
@@ -378,7 +375,6 @@ inline std::ptrdiff_t gelsy( const MatrixA& a, MatrixB& b,
 // * const MatrixA&
 // * MatrixB&
 // * VectorJPVT&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT >
@@ -396,7 +392,6 @@ inline std::ptrdiff_t gelsy( const MatrixA& a, MatrixB& b,
 // * MatrixA&
 // * const MatrixB&
 // * VectorJPVT&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT,
@@ -416,7 +411,6 @@ inline std::ptrdiff_t gelsy( MatrixA& a, const MatrixB& b,
 // * MatrixA&
 // * const MatrixB&
 // * VectorJPVT&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT >
@@ -434,7 +428,6 @@ inline std::ptrdiff_t gelsy( MatrixA& a, const MatrixB& b,
 // * const MatrixA&
 // * const MatrixB&
 // * VectorJPVT&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT,
@@ -454,7 +447,6 @@ inline std::ptrdiff_t gelsy( const MatrixA& a, const MatrixB& b,
 // * const MatrixA&
 // * const MatrixB&
 // * VectorJPVT&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT >
@@ -472,7 +464,6 @@ inline std::ptrdiff_t gelsy( const MatrixA& a, const MatrixB& b,
 // * MatrixA&
 // * MatrixB&
 // * const VectorJPVT&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT,
@@ -492,7 +483,6 @@ inline std::ptrdiff_t gelsy( MatrixA& a, MatrixB& b,
 // * MatrixA&
 // * MatrixB&
 // * const VectorJPVT&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT >
@@ -511,7 +501,6 @@ inline std::ptrdiff_t gelsy( MatrixA& a, MatrixB& b,
 // * const MatrixA&
 // * MatrixB&
 // * const VectorJPVT&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT,
@@ -531,7 +520,6 @@ inline std::ptrdiff_t gelsy( const MatrixA& a, MatrixB& b,
 // * const MatrixA&
 // * MatrixB&
 // * const VectorJPVT&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT >
@@ -550,7 +538,6 @@ inline std::ptrdiff_t gelsy( const MatrixA& a, MatrixB& b,
 // * MatrixA&
 // * const MatrixB&
 // * const VectorJPVT&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT,
@@ -570,7 +557,6 @@ inline std::ptrdiff_t gelsy( MatrixA& a, const MatrixB& b,
 // * MatrixA&
 // * const MatrixB&
 // * const VectorJPVT&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT >
@@ -589,7 +575,6 @@ inline std::ptrdiff_t gelsy( MatrixA& a, const MatrixB& b,
 // * const MatrixA&
 // * const MatrixB&
 // * const VectorJPVT&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT,
@@ -609,7 +594,6 @@ inline std::ptrdiff_t gelsy( const MatrixA& a, const MatrixB& b,
 // * const MatrixA&
 // * const MatrixB&
 // * const VectorJPVT&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename MatrixA, typename MatrixB, typename VectorJPVT >
@@ -617,314 +601,6 @@ inline std::ptrdiff_t gelsy( const MatrixA& a, const MatrixB& b,
         const VectorJPVT& jpvt, const typename remove_imaginary<
         typename value< MatrixA >::type >::type rcond,
         fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorJPVT&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT,
-        typename Workspace >
-inline std::ptrdiff_t gelsy( MatrixA& a, MatrixB& b, VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * VectorJPVT&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT >
-inline std::ptrdiff_t gelsy( MatrixA& a, MatrixB& b, VectorJPVT& jpvt,
-        const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorJPVT&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT,
-        typename Workspace >
-inline std::ptrdiff_t gelsy( const MatrixA& a, MatrixB& b,
-        VectorJPVT& jpvt, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * VectorJPVT&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT >
-inline std::ptrdiff_t gelsy( const MatrixA& a, MatrixB& b,
-        VectorJPVT& jpvt, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorJPVT&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT,
-        typename Workspace >
-inline std::ptrdiff_t gelsy( MatrixA& a, const MatrixB& b,
-        VectorJPVT& jpvt, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * VectorJPVT&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT >
-inline std::ptrdiff_t gelsy( MatrixA& a, const MatrixB& b,
-        VectorJPVT& jpvt, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorJPVT&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT,
-        typename Workspace >
-inline std::ptrdiff_t gelsy( const MatrixA& a, const MatrixB& b,
-        VectorJPVT& jpvt, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank,
-        Workspace work ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * VectorJPVT&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT >
-inline std::ptrdiff_t gelsy( const MatrixA& a, const MatrixB& b,
-        VectorJPVT& jpvt, const typename remove_imaginary< typename value<
-        MatrixA >::type >::type rcond, const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorJPVT&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT,
-        typename Workspace >
-inline std::ptrdiff_t gelsy( MatrixA& a, MatrixB& b,
-        const VectorJPVT& jpvt, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type rcond,
-        const fortran_int_t& rank, Workspace work ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * MatrixA&
-// * MatrixB&
-// * const VectorJPVT&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT >
-inline std::ptrdiff_t gelsy( MatrixA& a, MatrixB& b,
-        const VectorJPVT& jpvt, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type rcond,
-        const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorJPVT&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT,
-        typename Workspace >
-inline std::ptrdiff_t gelsy( const MatrixA& a, MatrixB& b,
-        const VectorJPVT& jpvt, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type rcond,
-        const fortran_int_t& rank, Workspace work ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * const MatrixA&
-// * MatrixB&
-// * const VectorJPVT&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT >
-inline std::ptrdiff_t gelsy( const MatrixA& a, MatrixB& b,
-        const VectorJPVT& jpvt, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type rcond,
-        const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorJPVT&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT,
-        typename Workspace >
-inline std::ptrdiff_t gelsy( MatrixA& a, const MatrixB& b,
-        const VectorJPVT& jpvt, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type rcond,
-        const fortran_int_t& rank, Workspace work ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * MatrixA&
-// * const MatrixB&
-// * const VectorJPVT&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT >
-inline std::ptrdiff_t gelsy( MatrixA& a, const MatrixB& b,
-        const VectorJPVT& jpvt, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type rcond,
-        const fortran_int_t& rank ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorJPVT&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT,
-        typename Workspace >
-inline std::ptrdiff_t gelsy( const MatrixA& a, const MatrixB& b,
-        const VectorJPVT& jpvt, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type rcond,
-        const fortran_int_t& rank, Workspace work ) {
-    fortran_int_t info(0);
-    gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
-            rcond, rank, info, work );
-    return info;
-}
-
-//
-// Overloaded function for gelsy. Its overload differs for
-// * const MatrixA&
-// * const MatrixB&
-// * const VectorJPVT&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename MatrixA, typename MatrixB, typename VectorJPVT >
-inline std::ptrdiff_t gelsy( const MatrixA& a, const MatrixB& b,
-        const VectorJPVT& jpvt, const typename remove_imaginary<
-        typename value< MatrixA >::type >::type rcond,
-        const fortran_int_t& rank ) {
     fortran_int_t info(0);
     gelsy_impl< typename value< MatrixA >::type >::invoke( a, b, jpvt,
             rcond, rank, info, optimal_workspace() );

@@ -352,7 +352,6 @@ struct trsna_impl< Value, typename boost::enable_if< is_complex< Value > >::type
 // Overloaded function for trsna. Its overload differs for
 // * VectorS&
 // * VectorSEP&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -372,7 +371,6 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 // Overloaded function for trsna. Its overload differs for
 // * VectorS&
 // * VectorSEP&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -391,7 +389,6 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 // Overloaded function for trsna. Its overload differs for
 // * const VectorS&
 // * VectorSEP&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -411,7 +408,6 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 // Overloaded function for trsna. Its overload differs for
 // * const VectorS&
 // * VectorSEP&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -430,7 +426,6 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 // Overloaded function for trsna. Its overload differs for
 // * VectorS&
 // * const VectorSEP&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -450,7 +445,6 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 // Overloaded function for trsna. Its overload differs for
 // * VectorS&
 // * const VectorSEP&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -469,7 +463,6 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 // Overloaded function for trsna. Its overload differs for
 // * const VectorS&
 // * const VectorSEP&
-// * fortran_int_t&
 // * User-defined workspace
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -489,7 +482,6 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
 // Overloaded function for trsna. Its overload differs for
 // * const VectorS&
 // * const VectorSEP&
-// * fortran_int_t&
 // * Default workspace-type (optimal)
 //
 template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
@@ -498,166 +490,6 @@ inline std::ptrdiff_t trsna( const char job, const char howmny,
         const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
         const MatrixVR& vr, const VectorS& s, const VectorSEP& sep,
         const fortran_int_t mm, fortran_int_t& m ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsna. Its overload differs for
-// * VectorS&
-// * VectorSEP&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
-        typename MatrixVR, typename VectorS, typename VectorSEP,
-        typename Workspace >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, VectorS& s, VectorSEP& sep,
-        const fortran_int_t mm, const fortran_int_t& m,
-        Workspace work ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsna. Its overload differs for
-// * VectorS&
-// * VectorSEP&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
-        typename MatrixVR, typename VectorS, typename VectorSEP >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, VectorS& s, VectorSEP& sep,
-        const fortran_int_t mm, const fortran_int_t& m ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsna. Its overload differs for
-// * const VectorS&
-// * VectorSEP&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
-        typename MatrixVR, typename VectorS, typename VectorSEP,
-        typename Workspace >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, const VectorS& s, VectorSEP& sep,
-        const fortran_int_t mm, const fortran_int_t& m,
-        Workspace work ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsna. Its overload differs for
-// * const VectorS&
-// * VectorSEP&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
-        typename MatrixVR, typename VectorS, typename VectorSEP >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, const VectorS& s, VectorSEP& sep,
-        const fortran_int_t mm, const fortran_int_t& m ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsna. Its overload differs for
-// * VectorS&
-// * const VectorSEP&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
-        typename MatrixVR, typename VectorS, typename VectorSEP,
-        typename Workspace >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, VectorS& s, const VectorSEP& sep,
-        const fortran_int_t mm, const fortran_int_t& m,
-        Workspace work ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsna. Its overload differs for
-// * VectorS&
-// * const VectorSEP&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
-        typename MatrixVR, typename VectorS, typename VectorSEP >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, VectorS& s, const VectorSEP& sep,
-        const fortran_int_t mm, const fortran_int_t& m ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, optimal_workspace() );
-    return info;
-}
-
-//
-// Overloaded function for trsna. Its overload differs for
-// * const VectorS&
-// * const VectorSEP&
-// * const fortran_int_t&
-// * User-defined workspace
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
-        typename MatrixVR, typename VectorS, typename VectorSEP,
-        typename Workspace >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, const VectorS& s, const VectorSEP& sep,
-        const fortran_int_t mm, const fortran_int_t& m,
-        Workspace work ) {
-    fortran_int_t info(0);
-    trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
-            select, t, vl, vr, s, sep, mm, m, info, work );
-    return info;
-}
-
-//
-// Overloaded function for trsna. Its overload differs for
-// * const VectorS&
-// * const VectorSEP&
-// * const fortran_int_t&
-// * Default workspace-type (optimal)
-//
-template< typename VectorSELECT, typename MatrixT, typename MatrixVL,
-        typename MatrixVR, typename VectorS, typename VectorSEP >
-inline std::ptrdiff_t trsna( const char job, const char howmny,
-        const VectorSELECT& select, const MatrixT& t, const MatrixVL& vl,
-        const MatrixVR& vr, const VectorS& s, const VectorSEP& sep,
-        const fortran_int_t mm, const fortran_int_t& m ) {
     fortran_int_t info(0);
     trsna_impl< typename value< MatrixT >::type >::invoke( job, howmny,
             select, t, vl, vr, s, sep, mm, m, info, optimal_workspace() );

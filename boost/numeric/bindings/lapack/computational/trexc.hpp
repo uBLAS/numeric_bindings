@@ -214,8 +214,6 @@ $MIN_SIZE_FUNCS
 // Overloaded function for trexc. Its overload differs for
 // * MatrixT&
 // * MatrixQ&
-// * fortran_int_t&
-// * fortran_int_t&
 //
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
@@ -230,8 +228,6 @@ inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
 // Overloaded function for trexc. Its overload differs for
 // * const MatrixT&
 // * MatrixQ&
-// * fortran_int_t&
-// * fortran_int_t&
 //
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
@@ -246,8 +242,6 @@ inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
 // Overloaded function for trexc. Its overload differs for
 // * MatrixT&
 // * const MatrixQ&
-// * fortran_int_t&
-// * fortran_int_t&
 //
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
@@ -262,211 +256,10 @@ inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
 // Overloaded function for trexc. Its overload differs for
 // * const MatrixT&
 // * const MatrixQ&
-// * fortran_int_t&
-// * fortran_int_t&
 //
 template< typename MatrixT, typename MatrixQ >
 inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
         const MatrixQ& q, fortran_int_t& ifst, fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
-// * const fortran_int_t&
-// * fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
-        const fortran_int_t& ifst, fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-// * const fortran_int_t&
-// * fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        MatrixQ& q, const fortran_int_t& ifst, fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
-        const MatrixQ& q, const fortran_int_t& ifst,
-        fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        const MatrixQ& q, const fortran_int_t& ifst,
-        fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
-// * fortran_int_t&
-// * const fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
-        fortran_int_t& ifst, const fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-// * fortran_int_t&
-// * const fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        MatrixQ& q, fortran_int_t& ifst, const fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-// * fortran_int_t&
-// * const fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
-        const MatrixQ& q, fortran_int_t& ifst,
-        const fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-// * fortran_int_t&
-// * const fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        const MatrixQ& q, fortran_int_t& ifst,
-        const fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, MatrixT& t, MatrixQ& q,
-        const fortran_int_t& ifst, const fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * MatrixQ&
-// * const fortran_int_t&
-// * const fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        MatrixQ& q, const fortran_int_t& ifst,
-        const fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * MatrixT&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, MatrixT& t,
-        const MatrixQ& q, const fortran_int_t& ifst,
-        const fortran_int_t& ilst ) {
-    fortran_int_t info(0);
-    trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
-            ifst, ilst, info );
-    return info;
-}
-
-//
-// Overloaded function for trexc. Its overload differs for
-// * const MatrixT&
-// * const MatrixQ&
-// * const fortran_int_t&
-// * const fortran_int_t&
-//
-template< typename MatrixT, typename MatrixQ >
-inline std::ptrdiff_t trexc( const char compq, const MatrixT& t,
-        const MatrixQ& q, const fortran_int_t& ifst,
-        const fortran_int_t& ilst ) {
     fortran_int_t info(0);
     trexc_impl< typename value< MatrixT >::type >::invoke( compq, t, q,
             ifst, ilst, info );

@@ -26,4 +26,5 @@ MINMN,SMLSIZ, NLVL, NRHS
 $TEMPLATE[gelsd.real.min_size_work]
 $INTEGER_TYPE smlsiz_plus_one = smlsiz + 1;
 return std::max< $INTEGER_TYPE >( 1, 12*minmn + 2*minmn*smlsiz + 8*minmn*nlvl + minmn*nrhs + smlsiz_plus_one * smlsiz_plus_one );
+$TEMPLATE[gelsd.real.A.level2_permute]
 $TEMPLATE[end]

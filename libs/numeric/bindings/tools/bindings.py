@@ -261,6 +261,7 @@ def generate_const_variants( prefix, argument_list, template_map ):
            'char' not in argument and \
            'ptrdiff_t' not in argument and \
            'typename' not in argument and \
+           '$LIBRARY_INT_TYPE' not in argument and \
            '&' in argument:
             permute_indices.append( i )
         else:

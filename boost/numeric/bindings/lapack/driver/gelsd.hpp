@@ -134,9 +134,9 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
-        std::ptrdiff_t nlvl = static_cast<std::ptrdiff_t>(((std::log(
-                static_cast<real_type>(minmn)) /
-                std::log(static_cast<real_type>(2.))) / (smlsiz+1)) + 1);
+        std::ptrdiff_t nlvl = static_cast<std::ptrdiff_t>(std::log(
+                static_cast<real_type>(minmn)/static_cast<real_type>(smlsiz+
+                1))/std::log(2.0)) + 1;
         BOOST_ASSERT( size(s) >= std::min< std::ptrdiff_t >(size_row(a),
                 size_column(a)) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
@@ -174,9 +174,9 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
-        std::ptrdiff_t nlvl = static_cast<std::ptrdiff_t>(((std::log(
-                static_cast<real_type>(minmn)) /
-                std::log(static_cast<real_type>(2.))) / (smlsiz+1)) + 1);
+        std::ptrdiff_t nlvl = static_cast<std::ptrdiff_t>(std::log(
+                static_cast<real_type>(minmn)/static_cast<real_type>(smlsiz+
+                1))/std::log(2.0)) + 1;
         bindings::detail::array< real_type > tmp_work( min_size_work( minmn,
                 smlsiz, nlvl, size_column(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -262,9 +262,9 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
-        std::ptrdiff_t nlvl = static_cast<std::ptrdiff_t>(((std::log(
-                static_cast<real_type>(minmn)) /
-                std::log(static_cast<real_type>(2.))) / (smlsiz+1)) + 1);
+        std::ptrdiff_t nlvl = static_cast<std::ptrdiff_t>(std::log(
+                static_cast<real_type>(minmn)/static_cast<real_type>(smlsiz+
+                1))/std::log(2.0)) + 1;
         BOOST_ASSERT( size(s) >= std::min< std::ptrdiff_t >(size_row(a),
                 size_column(a)) );
         BOOST_ASSERT( size(work.select(fortran_int_t())) >=
@@ -305,9 +305,9 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
                 size_column(a) );
         std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
-        std::ptrdiff_t nlvl = static_cast<std::ptrdiff_t>(((std::log(
-                static_cast<real_type>(minmn)) /
-                std::log(static_cast<real_type>(2.))) / (smlsiz+1)) + 1);
+        std::ptrdiff_t nlvl = static_cast<std::ptrdiff_t>(std::log(
+                static_cast<real_type>(minmn)/static_cast<real_type>(smlsiz+
+                1))/std::log(2.0)) + 1;
         bindings::detail::array< value_type > tmp_work( min_size_work( minmn,
                 size_column(b) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( minmn,

@@ -12,6 +12,7 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/detail/adaptor.hpp>
 #include <boost/numeric/bindings/end.hpp>
+#include <boost/numeric/bindings/ublas/detail/basic_ublas_adaptor.hpp>
 #include <boost/numeric/bindings/ublas/detail/convert_to.hpp>
 #include <boost/numeric/bindings/value.hpp>
 #include <boost/numeric/bindings/ublas/matrix_expression.hpp>

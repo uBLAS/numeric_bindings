@@ -1036,6 +1036,14 @@ def parse_file( filename, template_map ):
           argument_map[ argument_name ][ 'comment_lines' ] = [ comment_line_nr ]
           split_regex = re.compile( '\/| or ' )
           argument_map[ argument_name ][ 'io' ] = split_regex.split( match_lapack_style.group(2) )
+          # If you want to override the detected io type of an argument,
+          # add a template like gelsd.real.A.io with contents of the io-type separated by ';'
+          override_io_key = subroutine_group_name.lower() + '.' + subroutine_value_type + '.' + \
+            argument_name + '.io'
+          if my_has_key( override_io_key, template_map ):
+            argument_map[ argument_name ][ 'io' ] = \
+                template_map[ my_has_key( override_io_key, template_map ) ].strip().split( ";" )
+          # continue
           if preceding_argument != '':
             argument_map[ preceding_argument ][ 'comment_lines' ] += [ comment_line_nr ]
           preceding_argument = argument_name

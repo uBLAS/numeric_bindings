@@ -2,6 +2,7 @@
 #include <boost/numeric/bindings/std/vector.hpp>
 #include <boost/numeric/bindings/ublas/banded.hpp>
 #include <boost/numeric/bindings/ublas/vector.hpp>
+#include <boost/numeric/bindings/bandwidth.hpp>
 #include <boost/numeric/bindings/lapack/computational/gbtrf.hpp>
 #include <boost/numeric/bindings/lapack/computational/gbtrs.hpp>
 #include <vector>
@@ -21,8 +22,8 @@ void InPlaceSolve(MatrA& a, MatrB& b)
 {
   // if the matrix has kl lower and ku upper diagonals, then we should have
   // allocated kl lower and kl+ku upper diagonals
-  integer_t const kl = traits::matrix_lower_bandwidth (a);
-  integer_t const ku = traits::matrix_upper_bandwidth (a) - kl;
+  integer_t const kl = bindings::bandwidth_lower (a);
+  integer_t const ku = bindings::bandwidth_upper (a) - kl;
   std::vector<integer_t> piv(a.size1());
   int ret = lapack::gbtrf(bindings::size_row(a), bindings::size_column(a), kl, ku, a, piv);
   if (ret < 0) {

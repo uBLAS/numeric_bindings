@@ -21,10 +21,6 @@
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 
-// included to implicitly convert a vector to an nx1 matrix
-// so that it is compatible with lapack binding
-#include <boost/numeric/bindings/ublas/vector2.hpp>
-
 namespace ublas = boost::numeric::ublas;
 namespace bindings = boost::numeric::bindings;
 

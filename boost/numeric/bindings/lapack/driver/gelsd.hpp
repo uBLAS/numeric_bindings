@@ -49,9 +49,9 @@ namespace detail {
 // Overloaded function for dispatching to float value-type.
 //
 inline void gelsd( fortran_int_t m, fortran_int_t n, fortran_int_t nrhs,
-        const float* a, fortran_int_t lda, float* b, fortran_int_t ldb,
-        float* s, float rcond, fortran_int_t& rank, float* work,
-        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t& info ) {
+        float* a, fortran_int_t lda, float* b, fortran_int_t ldb, float* s,
+        float rcond, fortran_int_t& rank, float* work, fortran_int_t lwork,
+        fortran_int_t* iwork, fortran_int_t& info ) {
     LAPACK_SGELSD( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank, work,
             &lwork, iwork, &info );
 }
@@ -60,9 +60,9 @@ inline void gelsd( fortran_int_t m, fortran_int_t n, fortran_int_t nrhs,
 // Overloaded function for dispatching to double value-type.
 //
 inline void gelsd( fortran_int_t m, fortran_int_t n, fortran_int_t nrhs,
-        const double* a, fortran_int_t lda, double* b, fortran_int_t ldb,
-        double* s, double rcond, fortran_int_t& rank, double* work,
-        fortran_int_t lwork, fortran_int_t* iwork, fortran_int_t& info ) {
+        double* a, fortran_int_t lda, double* b, fortran_int_t ldb, double* s,
+        double rcond, fortran_int_t& rank, double* work, fortran_int_t lwork,
+        fortran_int_t* iwork, fortran_int_t& info ) {
     LAPACK_DGELSD( &m, &n, &nrhs, a, &lda, b, &ldb, s, &rcond, &rank, work,
             &lwork, iwork, &info );
 }
@@ -117,7 +117,7 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     //
     template< typename MatrixA, typename MatrixB, typename VectorS,
             typename WORK, typename IWORK >
-    static void invoke( const MatrixA& a, MatrixB& b, VectorS& s,
+    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
             fortran_int_t& info, detail::workspace2< WORK, IWORK > work ) {
         BOOST_STATIC_ASSERT( (boost::is_same< typename remove_const<
@@ -128,6 +128,7 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
                 typename value< MatrixA >::type >::type,
                 typename remove_const< typename value<
                 VectorS >::type >::type >::value) );
+        BOOST_STATIC_ASSERT( (is_mutable< MatrixA >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< MatrixB >::value) );
         BOOST_STATIC_ASSERT( (is_mutable< VectorS >::value) );
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
@@ -167,7 +168,7 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the unblocked algorithm (BLAS level 2)
     //
     template< typename MatrixA, typename MatrixB, typename VectorS >
-    static void invoke( const MatrixA& a, MatrixB& b, VectorS& s,
+    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
             fortran_int_t& info, minimal_workspace work ) {
         std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
@@ -191,7 +192,7 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     // * Enables the blocked algorithm (BLAS level 3)
     //
     template< typename MatrixA, typename MatrixB, typename VectorS >
-    static void invoke( const MatrixA& a, MatrixB& b, VectorS& s,
+    static void invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
             fortran_int_t& info, optimal_workspace work ) {
         real_type opt_size_work;

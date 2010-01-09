@@ -3853,12 +3853,12 @@ void LAPACK_ZGELS( const char* trans, const fortran_int_t* m,
 
 // Value-type variants of gelsd
 void LAPACK_SGELSD( const fortran_int_t* m, const fortran_int_t* n,
-        const fortran_int_t* nrhs, const float* a, const fortran_int_t* lda,
+        const fortran_int_t* nrhs, float* a, const fortran_int_t* lda,
         float* b, const fortran_int_t* ldb, float* s, const float* rcond,
         fortran_int_t* rank, float* work, const fortran_int_t* lwork,
         fortran_int_t* iwork, fortran_int_t* info );
 void LAPACK_DGELSD( const fortran_int_t* m, const fortran_int_t* n,
-        const fortran_int_t* nrhs, const double* a, const fortran_int_t* lda,
+        const fortran_int_t* nrhs, double* a, const fortran_int_t* lda,
         double* b, const fortran_int_t* ldb, double* s, const double* rcond,
         fortran_int_t* rank, double* work, const fortran_int_t* lwork,
         fortran_int_t* iwork, fortran_int_t* info );

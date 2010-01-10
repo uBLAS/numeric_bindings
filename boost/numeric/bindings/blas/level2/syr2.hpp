@@ -18,7 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -91,7 +90,7 @@ inline void syr2( Order, UpLo, int n, double alpha, const double* x, int incx,
 template< typename Order, typename UpLo >
 inline void syr2( Order, UpLo, int n, float alpha, const float* x, int incx,
         const float* y, int incy, float* a, int lda ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSsyr2( blas_option< UpLo >::value, n, alpha, x, incx, y, incy, a,
             lda );
 }
@@ -104,7 +103,7 @@ inline void syr2( Order, UpLo, int n, float alpha, const float* x, int incx,
 template< typename Order, typename UpLo >
 inline void syr2( Order, UpLo, int n, double alpha, const double* x, int incx,
         const double* y, int incy, double* a, int lda ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
 
@@ -118,7 +117,7 @@ template< typename Order, typename UpLo >
 inline void syr2( Order, UpLo, fortran_int_t n, float alpha, const float* x,
         fortran_int_t incx, const float* y, fortran_int_t incy, float* a,
         fortran_int_t lda ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SSYR2( &blas_option< UpLo >::value, &n, &alpha, x, &incx, y, &incy,
             a, &lda );
 }
@@ -132,7 +131,7 @@ template< typename Order, typename UpLo >
 inline void syr2( Order, UpLo, fortran_int_t n, double alpha, const double* x,
         fortran_int_t incx, const double* y, fortran_int_t incy, double* a,
         fortran_int_t lda ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DSYR2( &blas_option< UpLo >::value, &n, &alpha, x, &incx, y, &incy,
             a, &lda );
 }

@@ -18,7 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -91,7 +90,7 @@ inline void hpr( Order, UpLo, int n, double alpha,
 template< typename Order, typename UpLo >
 inline void hpr( Order, UpLo, int n, float alpha,
         const std::complex<float>* x, int incx, std::complex<float>* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasChpr( blas_option< UpLo >::value, n, alpha, x, incx, ap );
 }
 
@@ -103,7 +102,7 @@ inline void hpr( Order, UpLo, int n, float alpha,
 template< typename Order, typename UpLo >
 inline void hpr( Order, UpLo, int n, double alpha,
         const std::complex<double>* x, int incx, std::complex<double>* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
 
@@ -117,7 +116,7 @@ template< typename Order, typename UpLo >
 inline void hpr( Order, UpLo, fortran_int_t n, float alpha,
         const std::complex<float>* x, fortran_int_t incx,
         std::complex<float>* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CHPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
 }
 
@@ -130,7 +129,7 @@ template< typename Order, typename UpLo >
 inline void hpr( Order, UpLo, fortran_int_t n, double alpha,
         const std::complex<double>* x, fortran_int_t incx,
         std::complex<double>* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZHPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
 }
 

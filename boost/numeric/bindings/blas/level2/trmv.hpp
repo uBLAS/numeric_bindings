@@ -19,7 +19,6 @@
 #include <boost/numeric/bindings/blas/detail/default_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -123,7 +122,7 @@ inline void trmv( Order, UpLo, Trans, Diag, int n,
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trmv( Order, UpLo, Trans, Diag, int n, const float* a, int lda,
         float* x, int incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasStrmv( blas_option< UpLo >::value, blas_option< Trans >::value,
             blas_option< Diag >::value, n, a, lda, x, incx );
 }
@@ -136,7 +135,7 @@ inline void trmv( Order, UpLo, Trans, Diag, int n, const float* a, int lda,
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trmv( Order, UpLo, Trans, Diag, int n, const double* a, int lda,
         double* x, int incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
 
@@ -149,7 +148,7 @@ template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trmv( Order, UpLo, Trans, Diag, int n,
         const std::complex<float>* a, int lda, std::complex<float>* x,
         int incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
 
@@ -162,7 +161,7 @@ template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trmv( Order, UpLo, Trans, Diag, int n,
         const std::complex<double>* a, int lda, std::complex<double>* x,
         int incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
 
@@ -175,7 +174,7 @@ inline void trmv( Order, UpLo, Trans, Diag, int n,
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trmv( Order, UpLo, Trans, Diag, fortran_int_t n, const float* a,
         fortran_int_t lda, float* x, fortran_int_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_STRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );
 }
@@ -188,7 +187,7 @@ inline void trmv( Order, UpLo, Trans, Diag, fortran_int_t n, const float* a,
 template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trmv( Order, UpLo, Trans, Diag, fortran_int_t n, const double* a,
         fortran_int_t lda, double* x, fortran_int_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DTRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );
 }
@@ -202,7 +201,7 @@ template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trmv( Order, UpLo, Trans, Diag, fortran_int_t n,
         const std::complex<float>* a, fortran_int_t lda,
         std::complex<float>* x, fortran_int_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CTRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );
 }
@@ -216,7 +215,7 @@ template< typename Order, typename UpLo, typename Trans, typename Diag >
 inline void trmv( Order, UpLo, Trans, Diag, fortran_int_t n,
         const std::complex<double>* a, fortran_int_t lda,
         std::complex<double>* x, fortran_int_t incx ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZTRMV( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &blas_option< Diag >::value, &n, a, &lda, x, &incx );
 }

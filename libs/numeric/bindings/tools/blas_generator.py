@@ -98,8 +98,8 @@ def write_functions( info_map, group, template_map, base_dir ):
                 arg_list.insert( 0, "Order" )
                 cblas_arg_list.insert( 0, "cblas_option< Order >::value" )
                 typename_list.insert( 0, "typename Order" )
-                level0_static_asserts.append( "BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );" )
-                includes += [ "#include <boost/numeric/bindings/is_column_major.hpp>" ]
+                level0_static_asserts.append( "BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );" )
+                includes += [ "#include <boost/type_traits/is_same.hpp>" ]
 
         sub_template = sub_template.replace( "$TYPES", ", ".join( typename_list ) )
         sub_template = sub_template.replace( "template<  >\n", "" )

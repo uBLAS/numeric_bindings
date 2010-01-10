@@ -19,7 +19,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -98,7 +97,7 @@ inline void hbmv( Order, UpLo, int n, int k, std::complex<float> alpha,
         const std::complex<float>* a, int lda, const std::complex<float>* x,
         int incx, std::complex<float> beta, std::complex<float>* y,
         int incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasChbmv( blas_option< UpLo >::value, n, k, alpha, a, lda, x, incx,
             beta, y, incy );
 }
@@ -113,7 +112,7 @@ inline void hbmv( Order, UpLo, int n, int k, std::complex<double> alpha,
         const std::complex<double>* a, int lda, const std::complex<double>* x,
         int incx, std::complex<double> beta, std::complex<double>* y,
         int incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
 
@@ -129,7 +128,7 @@ inline void hbmv( Order, UpLo, fortran_int_t n, fortran_int_t k,
         fortran_int_t lda, const std::complex<float>* x, fortran_int_t incx,
         std::complex<float> beta, std::complex<float>* y,
         fortran_int_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CHBMV( &blas_option< UpLo >::value, &n, &k, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
 }
@@ -145,7 +144,7 @@ inline void hbmv( Order, UpLo, fortran_int_t n, fortran_int_t k,
         fortran_int_t lda, const std::complex<double>* x, fortran_int_t incx,
         std::complex<double> beta, std::complex<double>* y,
         fortran_int_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZHBMV( &blas_option< UpLo >::value, &n, &k, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
 }

@@ -18,7 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -91,7 +90,7 @@ inline void symv( Order, UpLo, int n, double alpha, const double* a, int lda,
 template< typename Order, typename UpLo >
 inline void symv( Order, UpLo, int n, float alpha, const float* a, int lda,
         const float* x, int incx, float beta, float* y, int incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSsymv( blas_option< UpLo >::value, n, alpha, a, lda, x, incx, beta,
             y, incy );
 }
@@ -104,7 +103,7 @@ inline void symv( Order, UpLo, int n, float alpha, const float* a, int lda,
 template< typename Order, typename UpLo >
 inline void symv( Order, UpLo, int n, double alpha, const double* a, int lda,
         const double* x, int incx, double beta, double* y, int incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
 
@@ -118,7 +117,7 @@ template< typename Order, typename UpLo >
 inline void symv( Order, UpLo, fortran_int_t n, float alpha, const float* a,
         fortran_int_t lda, const float* x, fortran_int_t incx, float beta,
         float* y, fortran_int_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SSYMV( &blas_option< UpLo >::value, &n, &alpha, a, &lda, x, &incx,
             &beta, y, &incy );
 }
@@ -132,7 +131,7 @@ template< typename Order, typename UpLo >
 inline void symv( Order, UpLo, fortran_int_t n, double alpha, const double* a,
         fortran_int_t lda, const double* x, fortran_int_t incx, double beta,
         double* y, fortran_int_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DSYMV( &blas_option< UpLo >::value, &n, &alpha, a, &lda, x, &incx,
             &beta, y, &incy );
 }

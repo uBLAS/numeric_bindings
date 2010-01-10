@@ -18,7 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -94,7 +93,7 @@ template< typename Order, typename UpLo >
 inline void hpr2( Order, UpLo, int n, std::complex<float> alpha,
         const std::complex<float>* x, int incx, const std::complex<float>* y,
         int incy, std::complex<float>* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasChpr2( blas_option< UpLo >::value, n, alpha, x, incx, y, incy, ap );
 }
 
@@ -107,7 +106,7 @@ template< typename Order, typename UpLo >
 inline void hpr2( Order, UpLo, int n, std::complex<double> alpha,
         const std::complex<double>* x, int incx,
         const std::complex<double>* y, int incy, std::complex<double>* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
 
@@ -122,7 +121,7 @@ inline void hpr2( Order, UpLo, fortran_int_t n, std::complex<float> alpha,
         const std::complex<float>* x, fortran_int_t incx,
         const std::complex<float>* y, fortran_int_t incy,
         std::complex<float>* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CHPR2( &blas_option< UpLo >::value, &n, &alpha, x, &incx, y, &incy,
             ap );
 }
@@ -137,7 +136,7 @@ inline void hpr2( Order, UpLo, fortran_int_t n, std::complex<double> alpha,
         const std::complex<double>* x, fortran_int_t incx,
         const std::complex<double>* y, fortran_int_t incy,
         std::complex<double>* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZHPR2( &blas_option< UpLo >::value, &n, &alpha, x, &incx, y, &incy,
             ap );
 }

@@ -17,7 +17,6 @@
 #include <boost/assert.hpp>
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/blas/detail/default_order.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -120,7 +119,7 @@ inline void gemv( Order, Trans, int m, int n, std::complex<double> alpha,
 template< typename Order, typename Trans >
 inline void gemv( Order, Trans, int m, int n, float alpha, const float* a,
         int lda, const float* x, int incx, float beta, float* y, int incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSgemv( blas_option< Trans >::value, m, n, alpha, a, lda, x, incx,
             beta, y, incy );
 }
@@ -134,7 +133,7 @@ template< typename Order, typename Trans >
 inline void gemv( Order, Trans, int m, int n, double alpha, const double* a,
         int lda, const double* x, int incx, double beta, double* y,
         int incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasDgemv( blas_option< Trans >::value, m, n, alpha, a, lda, x, incx,
             beta, y, incy );
 }
@@ -149,7 +148,7 @@ inline void gemv( Order, Trans, int m, int n, std::complex<float> alpha,
         const std::complex<float>* a, int lda, const std::complex<float>* x,
         int incx, std::complex<float> beta, std::complex<float>* y,
         int incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasCgemv( blas_option< Trans >::value, m, n, alpha, a, lda, x, incx,
             beta, y, incy );
 }
@@ -164,7 +163,7 @@ inline void gemv( Order, Trans, int m, int n, std::complex<double> alpha,
         const std::complex<double>* a, int lda, const std::complex<double>* x,
         int incx, std::complex<double> beta, std::complex<double>* y,
         int incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasZgemv( blas_option< Trans >::value, m, n, alpha, a, lda, x, incx,
             beta, y, incy );
 }
@@ -179,7 +178,7 @@ template< typename Order, typename Trans >
 inline void gemv( Order, Trans, fortran_int_t m, fortran_int_t n, float alpha,
         const float* a, fortran_int_t lda, const float* x, fortran_int_t incx,
         float beta, float* y, fortran_int_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SGEMV( &blas_option< Trans >::value, &m, &n, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
 }
@@ -193,7 +192,7 @@ template< typename Order, typename Trans >
 inline void gemv( Order, Trans, fortran_int_t m, fortran_int_t n,
         double alpha, const double* a, fortran_int_t lda, const double* x,
         fortran_int_t incx, double beta, double* y, fortran_int_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DGEMV( &blas_option< Trans >::value, &m, &n, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
 }
@@ -209,7 +208,7 @@ inline void gemv( Order, Trans, fortran_int_t m, fortran_int_t n,
         fortran_int_t lda, const std::complex<float>* x, fortran_int_t incx,
         std::complex<float> beta, std::complex<float>* y,
         fortran_int_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CGEMV( &blas_option< Trans >::value, &m, &n, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
 }
@@ -225,7 +224,7 @@ inline void gemv( Order, Trans, fortran_int_t m, fortran_int_t n,
         fortran_int_t lda, const std::complex<double>* x, fortran_int_t incx,
         std::complex<double> beta, std::complex<double>* y,
         fortran_int_t incy ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZGEMV( &blas_option< Trans >::value, &m, &n, &alpha, a, &lda, x,
             &incx, &beta, y, &incy );
 }

@@ -18,7 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -100,7 +99,7 @@ inline void her2k( Order, UpLo, Trans, int n, int k,
         std::complex<float> alpha, const std::complex<float>* a, int lda,
         const std::complex<float>* b, int ldb, float beta,
         std::complex<float>* c, int ldc ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasCher2k( blas_option< UpLo >::value, blas_option< Trans >::value, n,
             k, alpha, a, lda, b, ldb, beta, c, ldc );
 }
@@ -115,7 +114,7 @@ inline void her2k( Order, UpLo, Trans, int n, int k,
         std::complex<double> alpha, const std::complex<double>* a, int lda,
         const std::complex<double>* b, int ldb, double beta,
         std::complex<double>* c, int ldc ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
 
@@ -130,7 +129,7 @@ inline void her2k( Order, UpLo, Trans, fortran_int_t n, fortran_int_t k,
         std::complex<float> alpha, const std::complex<float>* a,
         fortran_int_t lda, const std::complex<float>* b, fortran_int_t ldb,
         float beta, std::complex<float>* c, fortran_int_t ldc ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CHER2K( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
 }
@@ -145,7 +144,7 @@ inline void her2k( Order, UpLo, Trans, fortran_int_t n, fortran_int_t k,
         std::complex<double> alpha, const std::complex<double>* a,
         fortran_int_t lda, const std::complex<double>* b, fortran_int_t ldb,
         double beta, std::complex<double>* c, fortran_int_t ldc ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZHER2K( &blas_option< UpLo >::value, &blas_option< Trans >::value,
             &n, &k, &alpha, a, &lda, b, &ldb, &beta, c, &ldc );
 }

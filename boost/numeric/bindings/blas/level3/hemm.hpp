@@ -18,7 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -99,7 +98,7 @@ inline void hemm( Order, char side, UpLo, int m, int n,
         std::complex<float> alpha, const std::complex<float>* a, int lda,
         const std::complex<float>* b, int ldb, std::complex<float> beta,
         std::complex<float>* c, int ldc ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasChemm( side, blas_option< UpLo >::value, m, n, alpha, a, lda, b,
             ldb, beta, c, ldc );
 }
@@ -114,7 +113,7 @@ inline void hemm( Order, char side, UpLo, int m, int n,
         std::complex<double> alpha, const std::complex<double>* a, int lda,
         const std::complex<double>* b, int ldb, std::complex<double> beta,
         std::complex<double>* c, int ldc ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
 
@@ -129,7 +128,7 @@ inline void hemm( Order, char side, UpLo, fortran_int_t m, fortran_int_t n,
         std::complex<float> alpha, const std::complex<float>* a,
         fortran_int_t lda, const std::complex<float>* b, fortran_int_t ldb,
         std::complex<float> beta, std::complex<float>* c, fortran_int_t ldc ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CHEMM( &side, &blas_option< UpLo >::value, &m, &n, &alpha, a, &lda,
             b, &ldb, &beta, c, &ldc );
 }
@@ -145,7 +144,7 @@ inline void hemm( Order, char side, UpLo, fortran_int_t m, fortran_int_t n,
         fortran_int_t lda, const std::complex<double>* b, fortran_int_t ldb,
         std::complex<double> beta, std::complex<double>* c,
         fortran_int_t ldc ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZHEMM( &side, &blas_option< UpLo >::value, &m, &n, &alpha, a, &lda,
             b, &ldb, &beta, c, &ldc );
 }

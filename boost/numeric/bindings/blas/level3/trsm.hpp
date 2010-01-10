@@ -19,7 +19,6 @@
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
 #include <boost/numeric/bindings/diag_tag.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -123,7 +122,7 @@ inline void trsm( Order, char side, UpLo, TransA, Diag, int m, int n,
 template< typename Order, typename UpLo, typename TransA, typename Diag >
 inline void trsm( Order, char side, UpLo, TransA, Diag, int m, int n,
         float alpha, const float* a, int lda, float* b, int ldb ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasStrsm( side, blas_option< UpLo >::value, blas_option<
             TransA >::value, blas_option< Diag >::value, m, n, alpha, a, lda,
             b, ldb );
@@ -137,7 +136,7 @@ inline void trsm( Order, char side, UpLo, TransA, Diag, int m, int n,
 template< typename Order, typename UpLo, typename TransA, typename Diag >
 inline void trsm( Order, char side, UpLo, TransA, Diag, int m, int n,
         double alpha, const double* a, int lda, double* b, int ldb ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasDtrsm( side, blas_option< UpLo >::value, blas_option<
             TransA >::value, blas_option< Diag >::value, m, n, alpha, a, lda,
             b, ldb );
@@ -152,7 +151,7 @@ template< typename Order, typename UpLo, typename TransA, typename Diag >
 inline void trsm( Order, char side, UpLo, TransA, Diag, int m, int n,
         std::complex<float> alpha, const std::complex<float>* a, int lda,
         std::complex<float>* b, int ldb ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasCtrsm( side, blas_option< UpLo >::value, blas_option<
             TransA >::value, blas_option< Diag >::value, m, n, alpha, a, lda,
             b, ldb );
@@ -167,7 +166,7 @@ template< typename Order, typename UpLo, typename TransA, typename Diag >
 inline void trsm( Order, char side, UpLo, TransA, Diag, int m, int n,
         std::complex<double> alpha, const std::complex<double>* a, int lda,
         std::complex<double>* b, int ldb ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasZtrsm( side, blas_option< UpLo >::value, blas_option<
             TransA >::value, blas_option< Diag >::value, m, n, alpha, a, lda,
             b, ldb );
@@ -183,7 +182,7 @@ template< typename Order, typename UpLo, typename TransA, typename Diag >
 inline void trsm( Order, char side, UpLo, TransA, Diag, fortran_int_t m,
         fortran_int_t n, float alpha, const float* a, fortran_int_t lda,
         float* b, fortran_int_t ldb ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_STRSM( &side, &blas_option< UpLo >::value, &blas_option<
             TransA >::value, &blas_option< Diag >::value, &m, &n, &alpha, a,
             &lda, b, &ldb );
@@ -198,7 +197,7 @@ template< typename Order, typename UpLo, typename TransA, typename Diag >
 inline void trsm( Order, char side, UpLo, TransA, Diag, fortran_int_t m,
         fortran_int_t n, double alpha, const double* a, fortran_int_t lda,
         double* b, fortran_int_t ldb ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DTRSM( &side, &blas_option< UpLo >::value, &blas_option<
             TransA >::value, &blas_option< Diag >::value, &m, &n, &alpha, a,
             &lda, b, &ldb );
@@ -214,7 +213,7 @@ inline void trsm( Order, char side, UpLo, TransA, Diag, fortran_int_t m,
         fortran_int_t n, std::complex<float> alpha,
         const std::complex<float>* a, fortran_int_t lda,
         std::complex<float>* b, fortran_int_t ldb ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_CTRSM( &side, &blas_option< UpLo >::value, &blas_option<
             TransA >::value, &blas_option< Diag >::value, &m, &n, &alpha, a,
             &lda, b, &ldb );
@@ -230,7 +229,7 @@ inline void trsm( Order, char side, UpLo, TransA, Diag, fortran_int_t m,
         fortran_int_t n, std::complex<double> alpha,
         const std::complex<double>* a, fortran_int_t lda,
         std::complex<double>* b, fortran_int_t ldb ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_ZTRSM( &side, &blas_option< UpLo >::value, &blas_option<
             TransA >::value, &blas_option< Diag >::value, &m, &n, &alpha, a,
             &lda, b, &ldb );

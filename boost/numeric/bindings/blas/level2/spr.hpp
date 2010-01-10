@@ -18,7 +18,6 @@
 #include <boost/numeric/bindings/begin.hpp>
 #include <boost/numeric/bindings/data_order.hpp>
 #include <boost/numeric/bindings/data_side.hpp>
-#include <boost/numeric/bindings/is_column_major.hpp>
 #include <boost/numeric/bindings/is_mutable.hpp>
 #include <boost/numeric/bindings/remove_imaginary.hpp>
 #include <boost/numeric/bindings/size.hpp>
@@ -91,7 +90,7 @@ inline void spr( Order, UpLo, int n, double alpha, const double* x, int incx,
 template< typename Order, typename UpLo >
 inline void spr( Order, UpLo, int n, float alpha, const float* x, int incx,
         float* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     cublasSspr( blas_option< UpLo >::value, n, alpha, x, incx, ap );
 }
 
@@ -103,7 +102,7 @@ inline void spr( Order, UpLo, int n, float alpha, const float* x, int incx,
 template< typename Order, typename UpLo >
 inline void spr( Order, UpLo, int n, double alpha, const double* x, int incx,
         double* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     // NOT FOUND();
 }
 
@@ -116,7 +115,7 @@ inline void spr( Order, UpLo, int n, double alpha, const double* x, int incx,
 template< typename Order, typename UpLo >
 inline void spr( Order, UpLo, fortran_int_t n, float alpha, const float* x,
         fortran_int_t incx, float* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_SSPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
 }
 
@@ -128,7 +127,7 @@ inline void spr( Order, UpLo, fortran_int_t n, float alpha, const float* x,
 template< typename Order, typename UpLo >
 inline void spr( Order, UpLo, fortran_int_t n, double alpha, const double* x,
         fortran_int_t incx, double* ap ) {
-    BOOST_STATIC_ASSERT( (is_column_major<Order>::value) );
+    BOOST_STATIC_ASSERT( (is_same<Order, tag::column_major>::value) );
     BLAS_DSPR( &blas_option< UpLo >::value, &n, &alpha, x, &incx, ap );
 }
 

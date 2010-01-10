@@ -14,9 +14,9 @@ $TEMPLATE[gelsd.complex.min_size_rwork]
 $INTEGER_TYPE smlsiz_plus_one = smlsiz + 1;
 return std::max< $INTEGER_TYPE >( 1, 10*minmn + 2*minmn*smlsiz + 8*minmn*nlvl + 3*smlsiz*nrhs + smlsiz_plus_one * smlsiz_plus_one );
 $TEMPLATE[gelsd.complex.min_size_work.args]
-MINMN, NRHS
+N, MINMN, NRHS
 $TEMPLATE[gelsd.complex.min_size_work]
-return std::max< $INTEGER_TYPE >( 1, 2*minmn + minmn*nrhs );
+return std::max< $INTEGER_TYPE >( 1, 2*minmn + std::max< $INTEGER_TYPE >( n, minmn*nrhs ) );
 $TEMPLATE[gelsd.all.min_size_iwork.args]
 MINMN,NLVL
 $TEMPLATE[gelsd.all.min_size_iwork]

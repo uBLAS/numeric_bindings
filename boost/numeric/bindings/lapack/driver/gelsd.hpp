@@ -274,8 +274,8 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 min_size_iwork( minmn, nlvl ));
         BOOST_ASSERT( size(work.select(real_type())) >= min_size_rwork( minmn,
                 smlsiz, nlvl, size_column(b) ));
-        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work( minmn,
-                size_column(b) ));
+        BOOST_ASSERT( size(work.select(value_type())) >= min_size_work(
+                size_column(a), minmn, size_column(b) ));
         BOOST_ASSERT( size_column(a) >= 0 );
         BOOST_ASSERT( size_column(b) >= 0 );
         BOOST_ASSERT( size_minor(a) == 1 || stride_minor(a) == 1 );
@@ -312,8 +312,8 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
                 std::ptrdiff_t >( static_cast<std::ptrdiff_t>(std::log(
                 static_cast<real_type>(minmn)/static_cast<real_type>(smlsiz+
                 1))/std::log(2.0)) + 1, 0 );
-        bindings::detail::array< value_type > tmp_work( min_size_work( minmn,
-                size_column(b) ) );
+        bindings::detail::array< value_type > tmp_work( min_size_work(
+                size_column(a), minmn, size_column(b) ) );
         bindings::detail::array< real_type > tmp_rwork( min_size_rwork( minmn,
                 smlsiz, nlvl, size_column(b) ) );
         bindings::detail::array< fortran_int_t > tmp_iwork(
@@ -354,9 +354,10 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     // Static member function that returns the minimum size of
     // workspace-array work.
     //
-    static std::ptrdiff_t min_size_work( const std::ptrdiff_t minmn,
-            const std::ptrdiff_t nrhs ) {
-        return std::max< std::ptrdiff_t >( 1, 2*minmn + minmn*nrhs );
+    static std::ptrdiff_t min_size_work( const std::ptrdiff_t n,
+            const std::ptrdiff_t minmn, const std::ptrdiff_t nrhs ) {
+        return std::max< std::ptrdiff_t >( 1, 2*minmn + std::max<
+                std::ptrdiff_t >( n, minmn*nrhs ) );
     }
 
     //

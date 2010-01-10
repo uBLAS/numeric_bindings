@@ -55,6 +55,7 @@ int main()
 	{
 		oss << "sgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End sgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing dgelsd" << std::endl;
@@ -62,6 +63,7 @@ int main()
 	{
 		oss << "dgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End dgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing cgelsd" << std::endl;
@@ -69,6 +71,7 @@ int main()
 	{
 		oss << "cgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End cgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing zgelsd" << std::endl;
@@ -76,6 +79,7 @@ int main()
 	{
 		oss << "zgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End zgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "End Square Matrix Least Squares Tests" << std::endl;
@@ -89,6 +93,7 @@ int main()
 	{
 		oss << "sgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End sgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing dgelsd" << std::endl;
@@ -96,6 +101,7 @@ int main()
 	{
 		oss << "dgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End dgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing cgelsd" << std::endl;
@@ -103,6 +109,7 @@ int main()
 	{
 		oss << "cgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End cgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing zgelsd" << std::endl;
@@ -110,6 +117,7 @@ int main()
 	{
 		oss << "zgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End zgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "End Underdetermined Matrix Least Squares Tests" << std::endl;
@@ -123,6 +131,7 @@ int main()
 	{
 		oss << "sgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End sgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing dgelsd" << std::endl;
@@ -130,6 +139,7 @@ int main()
 	{
 		oss << "dgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End dgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing cgelsd" << std::endl;
@@ -137,6 +147,7 @@ int main()
 	{
 		oss << "cgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End cgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing zgelsd" << std::endl;
@@ -144,6 +155,7 @@ int main()
 	{
 		oss << "zgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End zgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "End Overdetermined Matrix Least Squares Test" << std::endl;
@@ -157,6 +169,7 @@ int main()
 	{
 		oss << "sgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End sgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing dgelsd" << std::endl;
@@ -164,6 +177,7 @@ int main()
 	{
 		oss << "dgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End dgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing cgelsd" << std::endl;
@@ -171,6 +185,7 @@ int main()
 	{
 		oss << "cgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End cgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "Testing zgelsd" << std::endl;
@@ -178,6 +193,7 @@ int main()
 	{
 		oss << "zgelsd passed." << std::endl;
 	}
+        else return 255;
 	oss << "End zgelsd tests" << std::endl;
 	oss << std::endl;
 	oss << "End Multiple Solution Vectors Least Squares Test" << std::endl;

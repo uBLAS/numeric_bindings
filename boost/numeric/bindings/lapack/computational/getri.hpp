@@ -230,8 +230,8 @@ struct getri_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
             optimal_workspace work ) {
         real_type opt_size_work;
-        detail::getri( size_column(a), begin_value(a), stride_major(a),
-                begin_value(ipiv), &opt_size_work, -1 );
+        detail::getri( order(), size_column(a), begin_value(a),
+                stride_major(a), begin_value(ipiv), &opt_size_work, -1 );
         bindings::detail::array< real_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, ipiv, workspace( tmp_work ) );
@@ -304,8 +304,8 @@ struct getri_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, const VectorIPIV& ipiv,
             optimal_workspace work ) {
         value_type opt_size_work;
-        detail::getri( size_column(a), begin_value(a), stride_major(a),
-                begin_value(ipiv), &opt_size_work, -1 );
+        detail::getri( order(), size_column(a), begin_value(a),
+                stride_major(a), begin_value(ipiv), &opt_size_work, -1 );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
         return invoke( a, ipiv, workspace( tmp_work ) );

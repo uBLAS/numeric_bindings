@@ -218,6 +218,13 @@ struct gelsd_impl< Value, typename boost::enable_if< is_real< Value > >::type > 
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
             optimal_workspace work ) {
+        std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
+                size_column(a) );
+        std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
+        std::ptrdiff_t nlvl = std::max<
+                std::ptrdiff_t >( static_cast<std::ptrdiff_t>(std::log(
+                static_cast<real_type>(minmn)/static_cast<real_type>(smlsiz+
+                1))/std::log(2.0)) + 1, 0 );
         real_type opt_size_work;
         bindings::detail::array< fortran_int_t > tmp_iwork(
                 min_size_iwork( minmn, nlvl ) );
@@ -353,19 +360,24 @@ struct gelsd_impl< Value, typename boost::enable_if< is_complex< Value > >::type
     static std::ptrdiff_t invoke( MatrixA& a, MatrixB& b, VectorS& s,
             const real_type rcond, fortran_int_t& rank,
             optimal_workspace work ) {
+        std::ptrdiff_t minmn = std::min< std::ptrdiff_t >( size_row(a),
+                size_column(a) );
+        std::ptrdiff_t smlsiz = ilaenv(9, "GELSD", "");
+        std::ptrdiff_t nlvl = std::max<
+                std::ptrdiff_t >( static_cast<std::ptrdiff_t>(std::log(
+                static_cast<real_type>(minmn)/static_cast<real_type>(smlsiz+
+                1))/std::log(2.0)) + 1, 0 );
         value_type opt_size_work;
-        real_type opt_size_rwork;
-        fortran_int_t opt_size_iwork;
+        bindings::detail::array< real_type > tmp_rwork( min_size_rwork( minmn,
+                smlsiz, nlvl, size_column(b) ) );
+        bindings::detail::array< fortran_int_t > tmp_iwork(
+                min_size_iwork( minmn, nlvl ) );
         detail::gelsd( size_row(a), size_column(a), size_column(b),
                 begin_value(a), stride_major(a), begin_value(b),
                 stride_major(b), begin_value(s), rcond, rank, &opt_size_work,
-                -1, &opt_size_rwork, &opt_size_iwork );
+                -1, begin_value(tmp_rwork), begin_value(tmp_iwork) );
         bindings::detail::array< value_type > tmp_work(
                 traits::detail::to_int( opt_size_work ) );
-        bindings::detail::array< real_type > tmp_rwork(
-                traits::detail::to_int( opt_size_rwork ) );
-        bindings::detail::array< fortran_int_t > tmp_iwork(
-                opt_size_iwork );
         return invoke( a, b, s, rcond, rank, workspace( tmp_work, tmp_rwork,
                 tmp_iwork ) );
     }

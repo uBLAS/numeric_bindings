@@ -22,6 +22,13 @@ typedef std::complex<double> cmpx_t;
 typedef ublas::matrix<double, ublas::column_major> m_t;
 typedef ublas::matrix<cmpx_t, ublas::column_major> cm_t;
 
+#if defined BOOST_NUMERIC_BINDINGS_LAPACK_CLAPACK
+typedef int integer_t;
+#else
+typedef fortran_int_t integer_t;
+#endif
+
+
 int main() {
 
   cout << endl; 
@@ -33,7 +40,7 @@ int main() {
   size_t nrhs = 2; 
   m_t x (n, nrhs), b (n, nrhs);  // b -- right-hand side matrix
 
-  std::vector< fortran_int_t > ipiv (n);  // pivot vector
+  std::vector< integer_t > ipiv (n);  // pivot vector
 
   init_symm (a); 
   //     [n   n-1 n-2  ... 1]
@@ -68,7 +75,7 @@ int main() {
   cout << endl; 
   cout << "complex system:" << endl << endl; 
   cm_t ca (3, 3), cb (3, 1), cx (3, 1);
-  std::vector< fortran_int_t > ipiv2 (3); 
+  std::vector< integer_t > ipiv2 (3); 
 
   ca (0, 0) = cmpx_t (3, 0);
   ca (0, 1) = cmpx_t (4, 2);

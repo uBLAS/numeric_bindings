@@ -306,6 +306,7 @@ def write_functions( info_map, group, template_map, base_dir ):
       # Insert the order_type() if appropriate
       if "has_clapack_order_arg" in info_map[ subroutine ]:
           level0_arg_list.insert( 0, "order()" )
+          workspace_query_arg_list.insert( 0, "order()" )
 
       # Level 1 replacements
       level1_template = level1_template.replace( "$TYPEDEFS", "\n        ".join( typedef_list ) )
